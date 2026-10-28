@@ -34,3 +34,10 @@ yarn-error.log*
 .env
 .env.local
 .env.*.local
+
+# Backups & Archives
+backups/
+*.bak
+*.rar
+*.zip
+
