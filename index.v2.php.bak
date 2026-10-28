@@ -1,0 +1,872 @@
+<?php
+/**
+ * VLU FLAGSHIP STORE - Cửa Hàng Trải Nghiệm Công Nghệ Cao Cấp
+ * Phong cách Apple Store kết hợp Shopify hiện đại
+ */
+
+// Bọc bộ nhớ đệm để bắt các lỗi echo thô nếu CSDL MySQL chưa bật
+ob_start();
+@include_once 'db.php';
+$db_init_msg = ob_get_clean();
+
+$db_connected = false;
+$db_products = [];
+
+if (isset($conn) && $conn instanceof PDO) {
+    try {
+        $stmt = $conn->query("SELECT * FROM products ORDER BY id ASC");
+        if ($stmt) {
+            $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
+            if (!empty($rows)) {
+                $db_products = $rows;
+                $db_connected = true;
+            }
+        }
+    } catch (Exception $e) {
+        $db_connected = false;
+    }
+}
+
+// Dữ liệu Banners cho Hero Slider trượt ngang (Flagship chính hãng)
+$banners = [
+    [
+        'id' => 1,
+        'eyebrow' => 'Apple · Flagship',
+        'title' => 'iPhone 18 Pro Max',
+        'text' => 'Dòng flagship cao cấp nhất của Apple, đỉnh cao công nghệ Titanium cùng chip A20 Pro siêu mạnh mẽ.',
+        'link' => '#apple',
+        'link_text' => 'Khám phá Apple',
+        'bg_class' => 'bg-ink',
+        'glow' => 'bg-white/10',
+        'image' => 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT22AeLwtuGWfzz2Zz5S7Z3mbFGoqrb3tq5lFQ1oE1eiw&s=10'
+    ],
+    [
+        'id' => 2,
+        'eyebrow' => 'Samsung · Flagship',
+        'title' => 'Galaxy S26 Ultra',
+        'text' => 'Flagship Android đỉnh cao với Galaxy AI, bút S Pen tích hợp và camera zoom quang học 100x.',
+        'link' => '#samsung',
+        'link_text' => 'Khám phá Samsung',
+        'bg_class' => 'bg-[#1F4BFF]',
+        'glow' => 'bg-white/15',
+        'image' => 'https://upload.wikimedia.org/wikipedia/commons/9/97/Samsung_Galaxy_S24_Ultra.jpg'
+    ],
+    [
+        'id' => 3,
+        'eyebrow' => 'Xiaomi · Flagship',
+        'title' => 'Xiaomi 17 Ultra',
+        'text' => 'Ống kính quang học hợp tác huyền thoại Leica, cảm biến 1-inch cho trải nghiệm nhiếp ảnh di động đỉnh cao.',
+        'link' => '#xiaomi',
+        'link_text' => 'Khám phá Xiaomi',
+        'bg_class' => 'bg-[#FF6A00]',
+        'glow' => 'bg-black/10',
+        'image' => 'https://upload.wikimedia.org/wikipedia/commons/6/68/Xiaomi_13_Ultra.jpg'
+    ],
+    [
+        'id' => 4,
+        'eyebrow' => 'OPPO · Flagship',
+        'title' => 'OPPO Find X9 Ultra',
+        'text' => 'Camera kép tiềm vọng độc quyền hợp tác Hasselblad cùng công nghệ sạc nhanh SuperVOOC thế hệ mới.',
+        'link' => '#oppo',
+        'link_text' => 'Khám phá OPPO',
+        'bg_class' => 'bg-[#0B7A55]',
+        'glow' => 'bg-white/15',
+        'image' => 'https://upload.wikimedia.org/wikipedia/commons/b/b8/Oppo_Find_X9_Ultra.jpg'
+    ]
+];
+
+// Danh mục và sản phẩm mặc định (Chuẩn 3 sản phẩm Apple với link CDN Apple kích thước 680x528)
+$brands = [
+    'apple' => [
+        'id' => 1,
+        'slug' => 'apple',
+        'name' => 'Apple',
+        'bar_color' => 'bg-slate-900',
+        'card_bg' => 'bg-[#fbfbfd]',
+        'products' => [
+            [
+                'id' => 101,
+                'name' => 'iPhone 18 Pro & iPhone 18 Pro Max',
+                'description' => 'Đỉnh cao công nghệ Titanium, chip A20 Pro siêu mạnh mẽ.',
+                'variant' => '256GB / 512GB',
+                'price' => 34990000,
+                'old_price' => 36990000,
+                'badge' => 'Flagship Pro',
+                'badge_class' => 'bg-slate-950 text-amber-300 ring-1 ring-amber-300/40',
+                'image' => 'https://store.storeimages.cdn-apple.com/1/as-images.apple.com/is/iphone-card-40-18pro-202609?wid=680&hei=528&fmt=webp-alpha&qlt=90&.v=WVVFRzUzVk1oblJhbW9PbGNSU25jcFNJalVlVHVCTjJxZkxGR3RXNmIrUkMxQXc4S3pBZE5lUDJlTzVYSUYydHY0MVFCSUNCeVRPb2RzNGdVbXhiNXhCbWE1TGhoSFp5aDJBOWRRNHhQSXNYcGtxWkc1RWF3UDE2eUN0RXBLM0I&traceId=1'
+            ],
+            [
+                'id' => 102,
+                'name' => 'iPhone Air',
+                'description' => 'Thiết kế siêu mỏng nhẹ đột phá, hiệu năng vượt trội.',
+                'variant' => '256GB',
+                'price' => 26990000,
+                'old_price' => 28990000,
+                'badge' => 'Mới Ra Mắt',
+                'badge_class' => 'bg-slate-900 text-white',
+                'image' => 'https://store.storeimages.cdn-apple.com/1/as-images.apple.com/is/iphone-card-40-17air-202509?wid=680&hei=528&fmt=webp&qlt=90&.v=WVVFRzUzVk1oblJhbW9PbGNSU25jci9mUU0zMkc5ekxlZHFEM05NWkp3NUMxQXc4S3pBZE5lUDJlTzVYSUYydGk5SGhrZjlNVDEvQUJHaFZKbmlDaXd1QXZyUkd1TjF3TkduY3c5MTZGSFk&traceId=1'
+            ],
+            [
+                'id' => 103,
+                'name' => 'iPhone 17',
+                'description' => 'Màu sắc trẻ trung, camera kép nâng cấp toàn diện.',
+                'variant' => '128GB',
+                'price' => 22990000,
+                'old_price' => null,
+                'badge' => 'Bán Chạy',
+                'badge_class' => 'bg-red-600 text-white',
+                'image' => 'https://store.storeimages.cdn-apple.com/1/as-images.apple.com/is/iphone-card-40-17-202509?wid=680&hei=528&fmt=webp&qlt=90&.v=WVVFRzUzVk1oblJhbW9PbGNSU25jaVVYemprcUVJOVFFWHE5dFpoU3I4Sm5ML3J2aVFRb0EwSmJmUy8xMXRKRnNlcHVqbkRNcUJRcDlCTTlNKzAzbFBXc0NUZXVkT2dXaEhWWENVRDQ1SzA&traceId=1'
+            ]
+        ]
+    ],
+    'samsung' => [
+        'id' => 2,
+        'slug' => 'samsung',
+        'name' => 'Samsung',
+        'bar_color' => 'bg-[#1F4BFF]',
+        'card_bg' => 'bg-[#f4f7fc]',
+        'products' => [
+            [
+                'id' => 201,
+                'name' => 'Galaxy S26 Ultra',
+                'description' => 'Flagship Android đỉnh cao với Galaxy AI, bút S Pen tích hợp và camera 200MP.',
+                'variant' => '256GB',
+                'price' => 31990000,
+                'old_price' => null,
+                'badge' => 'Mới',
+                'badge_class' => 'bg-slate-900 text-white',
+                'image' => 'https://upload.wikimedia.org/wikipedia/commons/9/97/Samsung_Galaxy_S24_Ultra.jpg'
+            ],
+            [
+                'id' => 202,
+                'name' => 'Galaxy Z Fold8',
+                'description' => 'Thiết kế gập mở màn hình lớn như tablet, bản lề flex siêu mỏng không nếp gấp.',
+                'variant' => '512GB',
+                'price' => 44990000,
+                'old_price' => null,
+                'badge' => 'Đột Phá',
+                'badge_class' => 'bg-slate-900 text-white',
+                'image' => 'https://upload.wikimedia.org/wikipedia/commons/thumb/0/0c/Samsung_Galaxy_Z_Fold6.png/800px-Samsung_Galaxy_Z_Fold6.png'
+            ],
+            [
+                'id' => 203,
+                'name' => 'Galaxy Z Flip8',
+                'description' => 'Gập vỏ sò nhỏ gọn bỏ túi, màn hình phụ Flex Window đa năng và chụp selfie rảnh tay.',
+                'variant' => '256GB',
+                'price' => 25990000,
+                'old_price' => 28990000,
+                'badge' => '-10%',
+                'badge_class' => 'bg-red-600 text-white',
+                'image' => 'https://upload.wikimedia.org/wikipedia/commons/f/f5/Samsung_Galaxy_Z_Flip_6.jpg'
+            ],
+            [
+                'id' => 204,
+                'name' => 'Galaxy S26',
+                'description' => 'Thiết kế phẳng nguyên khối đối xứng hoàn hảo, màn hình Dynamic AMOLED 2X rực rỡ.',
+                'variant' => '256GB',
+                'price' => 22990000,
+                'old_price' => null,
+                'badge' => null,
+                'badge_class' => null,
+                'image' => 'https://upload.wikimedia.org/wikipedia/commons/4/46/Samsung_Galaxy_S24_%28webtekno%29_008.png'
+            ]
+        ]
+    ],
+    'xiaomi' => [
+        'id' => 3,
+        'slug' => 'xiaomi',
+        'name' => 'Xiaomi',
+        'bar_color' => 'bg-[#FF6A00]',
+        'card_bg' => 'bg-[#fff8f3]',
+        'products' => [
+            [
+                'id' => 301,
+                'name' => 'Xiaomi 17 Ultra',
+                'description' => 'Kiệt tác quang học huyền thoại Leica, cảm biến 1-inch và hệ thống 4 camera chuyên nghiệp.',
+                'variant' => '512GB',
+                'price' => 26990000,
+                'old_price' => null,
+                'badge' => 'Leica Optics',
+                'badge_class' => 'bg-slate-900 text-white',
+                'image' => 'https://upload.wikimedia.org/wikipedia/commons/6/68/Xiaomi_13_Ultra.jpg'
+            ],
+            [
+                'id' => 302,
+                'name' => 'Xiaomi 17 Pro Max',
+                'description' => 'Cấu hình Snapdragon đầu bảng, công nghệ sạc siêu tốc HyperCharge 120W.',
+                'variant' => '256GB',
+                'price' => 24990000,
+                'old_price' => 26990000,
+                'badge' => '-7%',
+                'badge_class' => 'bg-red-600 text-white',
+                'image' => 'https://upload.wikimedia.org/wikipedia/commons/thumb/c/c5/23116PN5BC.jpg/800px-23116PN5BC.jpg'
+            ],
+            [
+                'id' => 303,
+                'name' => 'Xiaomi 17 Pro',
+                'description' => 'Màn hình 2K siêu sáng với viền mỏng kỷ lục và hệ điều hành Xiaomi HyperOS mượt mà.',
+                'variant' => '256GB',
+                'price' => 21990000,
+                'old_price' => null,
+                'badge' => null,
+                'badge_class' => null,
+                'image' => 'https://upload.wikimedia.org/wikipedia/commons/a/a9/Xiaomi_13_back.jpg'
+            ],
+            [
+                'id' => 304,
+                'name' => 'Xiaomi 17',
+                'description' => 'Thân máy nhỏ gọn cầm nắm đầm tay, camera tele 75mm chụp chân dung nghệ thuật.',
+                'variant' => '256GB',
+                'price' => 17990000,
+                'old_price' => 18990000,
+                'badge' => '-5%',
+                'badge_class' => 'bg-red-600 text-white',
+                'image' => 'https://upload.wikimedia.org/wikipedia/commons/2/22/Xiaomi_13_front.jpg'
+            ]
+        ]
+    ],
+    'oppo' => [
+        'id' => 4,
+        'slug' => 'oppo',
+        'name' => 'OPPO',
+        'bar_color' => 'bg-[#0B7A55]',
+        'card_bg' => 'bg-[#f2faf6]',
+        'products' => [
+            [
+                'id' => 401,
+                'name' => 'OPPO Find X9 Ultra',
+                'description' => 'Camera tiềm vọng kép đầu tiên cùng hệ màu Hasselblad tự nhiên chân thực.',
+                'variant' => '512GB',
+                'price' => 27990000,
+                'old_price' => null,
+                'badge' => 'Hasselblad',
+                'badge_class' => 'bg-slate-900 text-white',
+                'image' => 'https://upload.wikimedia.org/wikipedia/commons/b/b8/Oppo_Find_X9_Ultra.jpg'
+            ],
+            [
+                'id' => 402,
+                'name' => 'OPPO Find X9 Pro',
+                'description' => 'Mặt lưng cong mềm mại cao cấp, chip xử lý hình ảnh độc quyền MariSilicon X.',
+                'variant' => '256GB',
+                'price' => 22990000,
+                'old_price' => null,
+                'badge' => null,
+                'badge_class' => null,
+                'image' => 'https://upload.wikimedia.org/wikipedia/commons/f/f2/Oppo_Find_X9_Titanium_Grey.jpg'
+            ],
+            [
+                'id' => 403,
+                'name' => 'OPPO Find X9',
+                'description' => 'Màn hình 1.5K sắc nét, pin dung lượng cao và sạc nhanh SuperVOOC bảo vệ pin.',
+                'variant' => '256GB',
+                'price' => 19990000,
+                'old_price' => 21990000,
+                'badge' => '-9%',
+                'badge_class' => 'bg-red-600 text-white',
+                'image' => 'https://upload.wikimedia.org/wikipedia/commons/b/b2/Oppo_Find_X7_Ultra.jpg'
+            ],
+            [
+                'id' => 404,
+                'name' => 'OPPO Find N5',
+                'description' => 'Điện thoại màn gập tỷ lệ vàng không khe hở, trọng lượng siêu nhẹ và đa nhiệm trực quan.',
+                'variant' => '512GB',
+                'price' => 39990000,
+                'old_price' => 42990000,
+                'badge' => '-7%',
+                'badge_class' => 'bg-red-600 text-white',
+                'image' => 'https://upload.wikimedia.org/wikipedia/commons/7/70/OPPO_Find_N2.jpg'
+            ]
+        ]
+    ]
+];
+
+// Nếu CSDL MySQL có dữ liệu sản phẩm, đồng bộ trực tiếp từ các cột trong bảng products
+if ($db_connected && !empty($db_products)) {
+    $db_by_brand = [
+        'apple' => [],
+        'samsung' => [],
+        'xiaomi' => [],
+        'oppo' => []
+    ];
+    
+    foreach ($db_products as $row) {
+        $catId = (int)($row['category_id'] ?? 0);
+        $nameLower = strtolower($row['name'] ?? '');
+        $brandKey = null;
+        if ($catId === 1 || strpos($nameLower, 'iphone') !== false || strpos($nameLower, 'apple') !== false) {
+            $brandKey = 'apple';
+        } elseif ($catId === 2 || strpos($nameLower, 'galaxy') !== false || strpos($nameLower, 'samsung') !== false) {
+            $brandKey = 'samsung';
+        } elseif ($catId === 3 || strpos($nameLower, 'xiaomi') !== false || strpos($nameLower, 'redmi') !== false) {
+            $brandKey = 'xiaomi';
+        } elseif ($catId === 4 || strpos($nameLower, 'oppo') !== false || strpos($nameLower, 'find') !== false) {
+            $brandKey = 'oppo';
+        }
+        
+        if ($brandKey && !empty($row['image'])) {
+            $db_by_brand[$brandKey][] = [
+                'id' => (int)($row['id'] ?? 0),
+                'name' => $row['name'] ?? '',
+                'description' => $row['description'] ?? '',
+                'variant' => 'Chính Hãng Flagship',
+                'price' => (float)($row['price'] ?? 0),
+                'old_price' => !empty($row['old_price']) ? (float)$row['old_price'] : null,
+                'badge' => $row['badge'] ?? ($brandKey === 'apple' ? 'Apple Store' : 'Chính Hãng'),
+                'badge_class' => 'bg-slate-900 text-white',
+                'image' => $row['image'] ?? ''
+            ];
+        }
+    }
+    
+    // Nếu có sản phẩm trong DB cho hãng đó thì ưu tiên hiển thị từ CSDL
+    foreach ($db_by_brand as $bKey => $pList) {
+        if (!empty($pList)) {
+            $brands[$bKey]['products'] = $pList;
+        }
+    }
+}
+
+$cartCount = 0;
+?>
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>VLU FLAGSHIP STORE – Cửa Hàng Trải Nghiệm Công Nghệ Flagship Cao Cấp</title>
+  <meta name="description" content="VLU FLAGSHIP STORE – Hệ thống bán lẻ điện thoại Apple iPhone, Samsung, Xiaomi, OPPO chính hãng tiêu chuẩn Flagship.">
+
+  <!-- Font: Plus Jakarta Sans -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap&subset=vietnamese" rel="stylesheet">
+
+  <!-- Tailwind CSS qua CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: { sans: ['"Plus Jakarta Sans"', 'system-ui', 'sans-serif'] },
+          colors: {
+            ink: '#0B0F19',
+            brand: { DEFAULT: '#5B3DF5', dark: '#4326D6', soft: '#EFEBFF' }
+          }
+        }
+      }
+    }
+  </script>
+
+  <style>
+    html { scroll-behavior: smooth; }
+    .no-scrollbar { scrollbar-width: none; }
+    .no-scrollbar::-webkit-scrollbar { display: none; }
+
+    /* Nút yêu thích: trạng thái đã chọn */
+    [data-wish][aria-pressed="true"] { color: #DC2626; }
+    [data-wish][aria-pressed="true"] svg { fill: currentColor; }
+
+    /* Badge giỏ hàng nảy lên khi thêm sản phẩm */
+    @keyframes bump { 0% { transform: scale(1); } 40% { transform: scale(1.5); } 100% { transform: scale(1); } }
+    .bump { animation: bump .35s ease-out; }
+
+    /* Toast thông báo */
+    #toast { transition: opacity .25s ease, transform .25s ease; }
+    #toast.show { opacity: 1; transform: translate(-50%, 0); }
+
+    @media (prefers-reduced-motion: reduce) {
+      html { scroll-behavior: auto; }
+      * { transition-duration: .01ms !important; animation-duration: .01ms !important; }
+    }
+
+    /* === THẺ SẢN PHẨM (.product-card) CHUẨN APPLE STORE x SHOPIFY === */
+    .product-card {
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      border-radius: 24px; /* Bo góc 24px theo đúng yêu cầu */
+      background: #ffffff; /* Nền sáng tinh tế */
+      border: 1px solid rgba(226, 232, 240, 0.8);
+      padding: 1.25rem;
+      box-shadow: 0 4px 20px -2px rgba(0, 0, 0, 0.05); /* Hiệu ứng đổ bóng nhẹ */
+      transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    .product-card:hover {
+      transform: translateY(-6px);
+      border-color: rgba(91, 61, 245, 0.35);
+      box-shadow: 0 16px 32px -4px rgba(0, 0, 0, 0.1), 0 4px 12px -2px rgba(91, 61, 245, 0.08);
+    }
+
+    /* Khung ảnh sản phẩm tỷ lệ 680x528 chuẩn Apple Card */
+    .product-img-box {
+      aspect-ratio: 680 / 528; /* Tỷ lệ ảnh chuẩn 680x528 */
+      width: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      overflow: hidden;
+      border-radius: 18px;
+      padding: 0.75rem;
+      transition: background-color 0.3s ease;
+    }
+    .product-card:hover .product-img-box {
+      background-color: #f3f4f6;
+    }
+
+    /* Ảnh sản phẩm: hiển thị trực tiếp từ cột $row['image'], object-fit contain */
+    .product-img {
+      max-height: 100%;
+      max-width: 100%;
+      width: auto;
+      height: auto;
+      object-fit: contain;
+      filter: drop-shadow(0 6px 16px rgba(0, 0, 0, 0.06));
+      transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1), filter 0.5s ease;
+    }
+    .product-card:hover .product-img {
+      transform: scale(1.06);
+      filter: drop-shadow(0 14px 24px rgba(0, 0, 0, 0.12));
+    }
+
+    /* Khung banner hero trượt ngang */
+    .banner-img-wrap {
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 16rem;
+      padding: 1rem;
+    }
+    @media (min-width: 640px) { .banner-img-wrap { height: 20rem; } }
+    @media (min-width: 768px) { .banner-img-wrap { height: 24rem; } }
+    @media (min-width: 1024px) { .banner-img-wrap { height: 28rem; } }
+    
+    .banner-img {
+      position: relative;
+      z-index: 10;
+      max-height: 100%;
+      max-width: 100%;
+      width: auto;
+      height: auto;
+      object-fit: contain;
+      border-radius: 1rem;
+      filter: drop-shadow(0 20px 35px rgba(0, 0, 0, 0.45));
+      transition: transform 0.6s ease;
+    }
+    .banner-img:hover {
+      transform: scale(1.04);
+    }
+  </style>
+</head>
+
+<body class="bg-[#FBFBFE] font-sans text-ink antialiased">
+
+  <!-- Bộ icon dùng chung (SVG sprite) -->
+  <svg width="0" height="0" class="absolute" aria-hidden="true" focusable="false">
+    <symbol id="i-search" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></symbol>
+    <symbol id="i-bag" viewBox="0 0 24 24"><path d="M6 7h12l-1 13H7L6 7Z"/><path d="M9 7a3 3 0 0 1 6 0"/></symbol>
+    <symbol id="i-user" viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 3.6-7 8-7s8 3 8 7"/></symbol>
+    <symbol id="i-heart" viewBox="0 0 24 24"><path d="M12 20s-7-4.4-7-10a4 4 0 0 1 7-2.5A4 4 0 0 1 19 10c0 5.6-7 10-7 10Z"/></symbol>
+    <symbol id="i-left" viewBox="0 0 24 24"><path d="m15 5-7 7 7 7"/></symbol>
+    <symbol id="i-right" viewBox="0 0 24 24"><path d="m9 5 7 7-7 7"/></symbol>
+    <symbol id="i-plus" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></symbol>
+    <symbol id="i-bolt" viewBox="0 0 24 24"><path d="M13 2 4 14h7l-1 8 9-12h-7l1-8Z"/></symbol>
+  </svg>
+
+  <a href="#main" class="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-[100] focus:rounded-full focus:bg-ink focus:px-4 focus:py-2 focus:text-white">Bỏ qua đến nội dung chính</a>
+
+  <!-- ============================================================
+       [HEADER] Logo VLU FLAGSHIP STORE | Tìm kiếm | Giỏ hàng | Menu
+       ============================================================ -->
+  <header class="sticky top-0 z-40 border-b border-slate-200/80 bg-white/95 backdrop-blur-md">
+    <div class="mx-auto max-w-7xl px-4 sm:px-6">
+
+      <!-- Hàng trên: Logo sang trọng + Tìm kiếm + Hành động -->
+      <div class="flex h-16 items-center justify-between gap-3 sm:h-20 sm:gap-6">
+
+        <!-- LOGO THIẾT KẾ MỚI: VLU FLAGSHIP STORE (Sang trọng, công nghệ cao cấp) -->
+        <a href="index.php" class="group flex shrink-0 items-center gap-3 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-900 rounded-2xl" aria-label="VLU FLAGSHIP STORE Trang chủ">
+          <div class="relative flex h-11 w-11 sm:h-12 sm:w-12 items-center justify-center rounded-2xl bg-gradient-to-br from-slate-950 via-slate-900 to-black text-white shadow-md shadow-slate-950/20 ring-1 ring-white/15 transition-all duration-300 group-hover:scale-105 group-hover:shadow-lg group-hover:ring-amber-400/30">
+            <svg class="h-6 w-6 text-amber-400 transition-transform duration-300 group-hover:rotate-12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+              <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
+            </svg>
+            <span class="absolute -bottom-0.5 -right-0.5 flex h-3 w-3">
+              <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+              <span class="relative inline-flex rounded-full h-3 w-3 bg-emerald-500 ring-2 ring-white"></span>
+            </span>
+          </div>
+          <div class="flex flex-col leading-none">
+            <div class="flex items-center gap-2">
+              <span class="text-lg sm:text-xl font-black tracking-tight text-slate-950">VLU</span>
+              <span class="inline-flex items-center rounded-full bg-slate-900 px-2.5 py-0.5 text-[10px] font-extrabold uppercase tracking-widest text-amber-300 shadow-sm border border-amber-300/20">Flagship</span>
+            </div>
+            <span class="mt-1 text-[10px] font-bold uppercase tracking-[0.25em] text-slate-400">Store Premium</span>
+          </div>
+        </a>
+
+        <!-- THANH TÌM KIẾM -->
+        <form action="search.php" method="GET" role="search" class="relative hidden max-w-md flex-1 md:block">
+          <label for="q" class="sr-only">Tìm kiếm sản phẩm</label>
+          <input id="q" name="q" type="search" placeholder="Tìm iPhone 18, Galaxy S26, Xiaomi 17, OPPO..." autocomplete="off"
+                 class="h-11 w-full rounded-full border border-slate-200 bg-slate-50 pl-11 pr-4 text-sm font-medium text-ink placeholder:text-slate-400 transition focus:border-brand focus:bg-white focus:outline-none focus:ring-4 focus:ring-brand/15">
+          <svg class="pointer-events-none absolute left-4 top-1/2 h-5 w-5 -translate-y-1/2 text-slate-400" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><use href="#i-search"/></svg>
+        </form>
+
+        <!-- HÀNH ĐỘNG: Trạng thái CSDL + Giỏ hàng -->
+        <div class="flex items-center gap-1 sm:gap-2">
+          <?php if ($db_connected): ?>
+            <span class="hidden sm:inline-flex items-center gap-1.5 rounded-full bg-emerald-50 px-3 py-1 text-xs font-bold text-emerald-700 border border-emerald-200 shadow-sm">
+              <span class="h-2 w-2 rounded-full bg-emerald-500 animate-pulse"></span>
+              Đã nối MySQL
+            </span>
+          <?php endif; ?>
+
+          <a href="cart.php" class="relative grid h-11 w-11 place-items-center rounded-full text-slate-700 transition hover:bg-slate-100 hover:text-ink focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand" aria-label="Giỏ hàng, hiện có <?= $cartCount ?> sản phẩm">
+            <svg class="h-6 w-6" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><use href="#i-bag"/></svg>
+            <span id="cartCount" class="absolute right-1 top-1 grid h-5 min-w-5 place-items-center rounded-full bg-brand px-1 text-[11px] font-extrabold text-white"><?= $cartCount ?></span>
+          </a>
+        </div>
+
+      </div>
+
+      <!-- Hàng dưới: Menu danh mục các thương hiệu -->
+      <nav aria-label="Danh mục sản phẩm" class="-mx-4 overflow-x-auto px-4 pb-3 no-scrollbar sm:-mx-6 sm:px-6">
+        <ul class="flex min-w-max items-center gap-2">
+          <li><a href="#hero" class="inline-flex h-10 items-center rounded-full bg-slate-900 px-4 text-sm font-semibold text-white">Flagship</a></li>
+          <?php foreach ($brands as $brand): ?>
+            <li><a href="#<?= $brand['slug'] ?>" class="inline-flex h-10 items-center rounded-full px-4 text-sm font-semibold text-slate-700 transition hover:bg-brand-soft hover:text-brand"><?= htmlspecialchars($brand['name']) ?></a></li>
+          <?php endforeach; ?>
+        </ul>
+      </nav>
+
+    </div>
+  </header>
+
+  <!-- ============================================================
+       [MAIN CONTENT]
+       ============================================================ -->
+  <main id="main">
+
+    <!-- [BANNER HERO SLIDER TRƯỢT NGANG - BẮT ĐẦU] -->
+    <section id="hero" aria-roledescription="carousel" aria-label="Sản phẩm nổi bật" class="relative mx-auto max-w-7xl px-4 pt-6 sm:px-6 sm:pt-8">
+
+      <div id="heroViewport" class="relative overflow-hidden rounded-[2rem] shadow-2xl">
+        <div id="heroTrack" class="flex transition-transform duration-700 ease-[cubic-bezier(0.25,1,0.5,1)]">
+
+          <?php foreach ($banners as $i => $banner): ?>
+            <article class="slide <?= $banner['bg_class'] ?> text-white w-full shrink-0 grow-0 basis-full" role="group" aria-roledescription="slide" aria-label="<?= ($i + 1) ?> / <?= count($banners) ?>">
+              <div class="grid min-h-[34rem] items-center gap-4 px-6 pb-24 pt-10 sm:px-12 md:min-h-[30rem] md:grid-cols-2 md:gap-8 md:px-16 md:py-14 md:pb-20">
+
+                <div class="relative z-10">
+                  <span class="inline-flex items-center rounded-full bg-white/15 text-white px-3.5 py-1.5 text-xs font-bold uppercase tracking-wider"><?= htmlspecialchars($banner['eyebrow']) ?></span>
+                  <h2 class="mt-5 text-4xl font-extrabold leading-[1.05] tracking-tight sm:text-5xl lg:text-6xl"><?= htmlspecialchars($banner['title']) ?></h2>
+                  <p class="mt-4 max-w-md text-base font-medium leading-relaxed opacity-90 sm:text-lg"><?= htmlspecialchars($banner['text']) ?></p>
+                  <a href="<?= $banner['link'] ?>" class="mt-8 inline-flex h-12 items-center gap-2 rounded-full bg-white text-ink hover:bg-brand-soft px-7 text-sm font-bold transition hover:-translate-y-0.5 active:scale-95">
+                    <?= htmlspecialchars($banner['link_text']) ?>
+                    <svg class="h-4 w-4" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><use href="#i-right"/></svg>
+                  </a>
+                </div>
+
+                <div class="banner-img-wrap" aria-hidden="true">
+                  <div class="absolute inset-0 <?= $banner['glow'] ?> rounded-full blur-3xl transform scale-75 pointer-events-none"></div>
+                  <img src="<?= htmlspecialchars($banner['image']) ?>" alt="<?= htmlspecialchars($banner['title']) ?> Flagship Studio Shot" class="banner-img" loading="eager">
+                </div>
+
+              </div>
+            </article>
+          <?php endforeach; ?>
+
+        </div>
+
+        <!-- Điều khiển: chấm trang + nút trước/sau -->
+        <div class="pointer-events-none absolute inset-x-0 bottom-4 flex items-center justify-between px-4 sm:bottom-6 sm:px-8">
+          <div class="pointer-events-auto flex items-center rounded-full bg-white/90 px-2 shadow-sm" role="group" aria-label="Chọn banner">
+            <?php foreach ($banners as $i => $banner): ?>
+              <button type="button" data-dot class="grid h-11 w-7 place-items-center" aria-label="Đến banner <?= $i + 1 ?>" aria-current="<?= $i === 0 ? 'true' : 'false' ?>">
+                <span class="block h-2.5 rounded-full transition-all duration-300 <?= $i === 0 ? 'w-7 bg-ink' : 'w-2.5 bg-ink/30' ?>"></span>
+              </button>
+            <?php endforeach; ?>
+          </div>
+
+          <div class="pointer-events-auto flex gap-2">
+            <button type="button" id="heroPrev" class="grid h-11 w-11 place-items-center rounded-full bg-white/90 text-ink shadow-sm transition hover:bg-white active:scale-95" aria-label="Banner trước">
+              <svg class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><use href="#i-left"/></svg>
+            </button>
+            <button type="button" id="heroNext" class="grid h-11 w-11 place-items-center rounded-full bg-white/90 text-ink shadow-sm transition hover:bg-white active:scale-95" aria-label="Banner sau">
+              <svg class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><use href="#i-right"/></svg>
+            </button>
+          </div>
+        </div>
+
+      </div>
+    </section>
+    <!-- [BANNER HERO SLIDER TRƯỢT NGANG - KẾT THÚC] -->
+
+
+    <!-- ============================================================
+         [LƯỚI SẢN PHẨM THEO HÃNG]
+         ============================================================ -->
+    <div class="mx-auto max-w-7xl space-y-14 px-4 py-12 sm:space-y-20 sm:px-6 sm:py-16">
+
+      <?php foreach ($brands as $brand): ?>
+        <section id="<?= $brand['slug'] ?>" class="scroll-mt-40" aria-labelledby="<?= $brand['slug'] ?>-title">
+
+          <!-- Tiêu đề hãng -->
+          <div class="mb-6 flex items-end justify-between gap-4">
+            <div class="flex items-center gap-3">
+              <span class="h-8 w-2 rounded-full <?= $brand['bar_color'] ?>" aria-hidden="true"></span>
+              <h2 id="<?= $brand['slug'] ?>-title" class="text-2xl font-extrabold tracking-tight sm:text-3xl text-slate-900"><?= htmlspecialchars($brand['name']) ?></h2>
+              <?php if ($brand['slug'] === 'apple'): ?>
+                <span class="hidden sm:inline-flex items-center rounded-full bg-slate-100 border border-slate-200 px-3 py-1 text-xs font-semibold text-slate-700">3 Dòng Flagship Mới Nhất</span>
+              <?php endif; ?>
+            </div>
+            <a href="category.php?brand=<?= $brand['slug'] ?>" class="inline-flex h-11 items-center gap-1.5 rounded-full px-4 text-sm font-bold text-brand transition hover:bg-brand-soft">
+              Xem tất cả
+              <svg class="h-4 w-4" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><use href="#i-right"/></svg>
+            </a>
+          </div>
+
+          <!-- Lưới sản phẩm: Apple hiển thị 3 cột rộng rãi, các hãng khác 4 cột -->
+          <?php 
+            $gridColsClass = count($brand['products']) === 3 
+              ? 'grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5 lg:gap-6' 
+              : 'grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-5';
+          ?>
+          <div class="<?= $gridColsClass ?>">
+            <?php foreach ($brand['products'] as $p): ?>
+              <!-- Thẻ sản phẩm .product-card chuẩn Apple Store x Shopify: Bo góc 24px, nền sáng, bóng nhẹ -->
+              <article class="product-card group">
+
+                <!-- Khung ảnh tỷ lệ 680x528 chuẩn Apple Card -->
+                <div class="product-img-box <?= $brand['card_bg'] ?>">
+                  <?php if (!empty($p['badge'])): ?>
+                    <span class="absolute left-3.5 top-3.5 z-10 rounded-full <?= $p['badge_class'] ?? 'bg-slate-900 text-white' ?> px-3 py-1 text-xs font-bold shadow-sm">
+                      <?= htmlspecialchars($p['badge']) ?>
+                    </span>
+                  <?php endif; ?>
+
+                  <button type="button" data-wish aria-pressed="false" aria-label="Yêu thích <?= htmlspecialchars($p['name']) ?>" class="absolute right-3 top-3 z-10 grid h-10 w-10 place-items-center rounded-full bg-white/90 text-slate-500 shadow-sm backdrop-blur transition hover:text-red-600 active:scale-90">
+                    <svg class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><use href="#i-heart"/></svg>
+                  </button>
+
+                  <!-- Ảnh sản phẩm hiển thị trực tiếp từ cột $row['image'] -->
+                  <img src="<?= htmlspecialchars($p['image']) ?>" alt="<?= htmlspecialchars($p['name']) ?>" loading="lazy" class="product-img">
+                </div>
+
+                <!-- Thông tin sản phẩm -->
+                <div class="mt-4 flex flex-1 flex-col">
+                  <div class="flex items-center justify-between">
+                    <p class="text-xs font-bold uppercase tracking-wider text-slate-400"><?= htmlspecialchars($brand['name']) ?></p>
+                    <?php if (!empty($p['variant'])): ?>
+                      <span class="text-[11px] font-semibold text-slate-500 bg-slate-100 px-2 py-0.5 rounded-full"><?= htmlspecialchars($p['variant']) ?></span>
+                    <?php endif; ?>
+                  </div>
+
+                  <h3 class="mt-1.5 text-base sm:text-lg font-bold leading-snug text-slate-900 group-hover:text-brand transition">
+                    <a href="product.php?id=<?= $p['id'] ?>" class="after:absolute after:inset-0 after:z-0 after:rounded-[24px] focus-visible:outline-none focus-visible:after:ring-4 focus-visible:after:ring-brand/30">
+                      <?= htmlspecialchars($p['name']) ?>
+                    </a>
+                  </h3>
+
+                  <?php if (!empty($p['description'])): ?>
+                    <p class="mt-1.5 text-xs text-slate-500 line-clamp-2 leading-relaxed"><?= htmlspecialchars($p['description']) ?></p>
+                  <?php endif; ?>
+
+                  <!-- Giá + Nút giỏ hàng -->
+                  <div class="mt-auto flex items-end justify-between gap-2 pt-4">
+                    <div>
+                      <p class="text-base sm:text-lg font-extrabold text-brand"><?= number_format($p['price'], 0, ',', '.') ?>₫</p>
+                      <?php if (!empty($p['old_price']) && $p['old_price'] > $p['price']): ?>
+                        <p class="text-xs text-slate-400 line-through"><?= number_format($p['old_price'], 0, ',', '.') ?>₫</p>
+                      <?php endif; ?>
+                    </div>
+                    <button type="button" data-add data-id="<?= $p['id'] ?>" data-name="<?= htmlspecialchars($p['name']) ?>" aria-label="Thêm <?= htmlspecialchars($p['name']) ?> vào giỏ hàng" class="relative z-10 grid h-10 w-10 shrink-0 place-items-center rounded-full bg-slate-900 text-white shadow-sm transition hover:bg-brand hover:scale-105 active:scale-95">
+                      <svg class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><use href="#i-plus"/></svg>
+                    </button>
+                  </div>
+                </div>
+
+              </article>
+            <?php endforeach; ?>
+          </div>
+
+        </section>
+      <?php endforeach; ?>
+
+    </div>
+
+  </main>
+
+  <!-- ============================================================
+       [FOOTER] VLU FLAGSHIP STORE (Bản quyền & Dịch vụ chuẩn Flagship)
+       ============================================================ -->
+  <footer class="mt-20 border-t border-slate-200/80 bg-white">
+    <div class="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8">
+      <div class="grid grid-cols-1 md:grid-cols-4 gap-8 pb-12 border-b border-slate-100">
+        <!-- Cột 1: Thông tin thương hiệu -->
+        <div class="space-y-4 md:col-span-2">
+          <div class="flex items-center gap-3">
+            <div class="flex h-9 w-9 items-center justify-center rounded-xl bg-slate-950 text-white shadow-sm ring-1 ring-white/10">
+              <svg class="h-4 w-4 text-amber-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
+              </svg>
+            </div>
+            <span class="text-lg font-black tracking-tight text-slate-950">VLU FLAGSHIP STORE</span>
+          </div>
+          <p class="max-w-md text-sm text-slate-500 leading-relaxed">
+            Hệ thống cửa hàng ủy quyền trải nghiệm công nghệ cao cấp chính hãng Apple, Samsung, Xiaomi, OPPO. Cam kết chất lượng chuẩn Flagship, bảo hành 1 đổi 1 và dịch vụ hậu mãi vượt trội.
+          </p>
+          <div class="flex items-center gap-3 text-xs text-slate-500 pt-1">
+            <span class="inline-flex items-center gap-1.5 font-semibold text-emerald-600">
+              <span class="h-2 w-2 rounded-full bg-emerald-500"></span> Đạt chuẩn Flagship Authorized
+            </span>
+            <span>•</span>
+            <span>Hotline: 1800 6868</span>
+          </div>
+        </div>
+
+        <!-- Cột 2: Danh mục -->
+        <div>
+          <h4 class="text-xs font-bold uppercase tracking-wider text-slate-900 mb-4">Danh Mục Flagship</h4>
+          <ul class="space-y-2.5 text-sm text-slate-600">
+            <li><a href="#apple" class="hover:text-brand transition font-medium">Apple iPhone</a></li>
+            <li><a href="#samsung" class="hover:text-brand transition font-medium">Samsung Galaxy</a></li>
+            <li><a href="#xiaomi" class="hover:text-brand transition font-medium">Xiaomi Series</a></li>
+            <li><a href="#oppo" class="hover:text-brand transition font-medium">OPPO Find Series</a></li>
+          </ul>
+        </div>
+
+        <!-- Cột 3: Chính sách -->
+        <div>
+          <h4 class="text-xs font-bold uppercase tracking-wider text-slate-900 mb-4">Dịch Vụ & Hậu Mãi</h4>
+          <ul class="space-y-2.5 text-sm text-slate-600">
+            <li>Giao hàng hỏa tốc trong 2 giờ</li>
+            <li>Bảo hành chính hãng 12 tháng</li>
+            <li>Trả góp 0% lãi suất qua thẻ</li>
+            <li>Thu cũ đổi mới trợ giá tới 3 triệu</li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- Bản quyền -->
+      <div class="pt-8 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-slate-500">
+        <p>© <?= date('Y') ?> <strong class="font-bold text-slate-800">VLU FLAGSHIP STORE</strong>. Tất cả quyền được bảo lưu.</p>
+        <p class="text-slate-400">Trải nghiệm mua sắm công nghệ kết hợp chuẩn Apple Store & Shopify</p>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Toast thông báo -->
+  <div id="toast" role="status" aria-live="polite" class="pointer-events-none fixed bottom-6 left-1/2 z-50 -translate-x-1/2 translate-y-4 rounded-full bg-ink px-5 py-3 text-sm font-semibold text-white shadow-xl opacity-0"></div>
+
+  <!-- JavaScript cho Slider & Giỏ hàng -->
+  <script>
+    (function () {
+      'use strict';
+      var $ = function (s, el) { return (el || document).querySelector(s); };
+      var $$ = function (s, el) { return (el || document).querySelectorAll(s); };
+
+      /* ---------- HERO SLIDER TRƯỢT VÔ HẠN ---------- */
+      var viewport = $('#heroViewport');
+      var track    = $('#heroTrack');
+      var slides   = $$('.slide', track);
+      var dots     = $$('[data-dot]');
+      var n        = slides.length;
+      if (!viewport || !track || n === 0) return;
+
+      var firstClone = slides[0].cloneNode(true);
+      firstClone.setAttribute('aria-hidden', 'true');
+      firstClone.removeAttribute('role');
+      firstClone.removeAttribute('aria-roledescription');
+      firstClone.removeAttribute('aria-label');
+      track.appendChild(firstClone);
+
+      var index = 0;
+      var timer = null;
+      var INTERVAL = 5000;
+      var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      var startX = null;
+
+      function setX(animate) {
+        track.style.transitionProperty = animate ? 'transform' : 'none';
+        track.style.transform = 'translate3d(' + (-index * 100) + '%,0,0)';
+      }
+      function paint() {
+        var active = index >= n ? 0 : index;
+        dots.forEach(function (d, k) {
+          var on = k === active;
+          d.setAttribute('aria-current', on ? 'true' : 'false');
+          var bar = d.firstElementChild;
+          if (bar) {
+            bar.className = 'block h-2.5 rounded-full transition-all duration-300 ' +
+              (on ? 'w-7 bg-ink' : 'w-2.5 bg-ink/30');
+          }
+        });
+      }
+      function next() {
+        index += 1; setX(true); paint();
+      }
+      function prev() {
+        if (index === 0) { index = n; setX(false); track.getBoundingClientRect(); }
+        index -= 1; setX(true); paint();
+      }
+      track.addEventListener('transitionend', function (e) {
+        if (e.target === track && index >= n) { index = 0; setX(false); }
+      });
+
+      function play() { if (!reduce && !timer) timer = setInterval(next, INTERVAL); }
+      function stop() { clearInterval(timer); timer = null; }
+
+      $('#heroNext').addEventListener('click', function () { next(); });
+      $('#heroPrev').addEventListener('click', function () { prev(); });
+      dots.forEach(function (d, k) { d.addEventListener('click', function () { index = k; setX(true); paint(); }); });
+
+      viewport.addEventListener('mouseenter', stop);
+      viewport.addEventListener('mouseleave', play);
+      viewport.addEventListener('focusin', stop);
+      viewport.addEventListener('focusout', play);
+      document.addEventListener('visibilitychange', function () { document.hidden ? stop() : play(); });
+
+      viewport.addEventListener('touchstart', function (e) { startX = e.touches[0].clientX; stop(); }, { passive: true });
+      viewport.addEventListener('touchend', function (e) {
+        if (startX !== null) {
+          var dx = e.changedTouches[0].clientX - startX;
+          if (Math.abs(dx) > 50) { dx < 0 ? next() : prev(); }
+        }
+        startX = null; play();
+      }, { passive: true });
+
+      paint(); play();
+
+      /* ---------- GIỎ HÀNG + YÊU THÍCH ---------- */
+      var badge = $('#cartCount');
+      var toast = $('#toast');
+      var count = parseInt(badge.textContent, 10) || 0;
+      var toastTimer;
+
+      function showToast(msg) {
+        toast.textContent = msg;
+        toast.classList.add('show');
+        clearTimeout(toastTimer);
+        toastTimer = setTimeout(function () { toast.classList.remove('show'); }, 2200);
+      }
+
+      document.addEventListener('click', function (e) {
+        var add = e.target.closest('[data-add]');
+        if (add) {
+          count += 1;
+          badge.textContent = count;
+          badge.classList.remove('bump'); void badge.offsetWidth; badge.classList.add('bump');
+          showToast('Đã thêm "' + add.dataset.name + '" vào giỏ hàng');
+          return;
+        }
+        var wish = e.target.closest('[data-wish]');
+        if (wish) {
+          wish.setAttribute('aria-pressed', wish.getAttribute('aria-pressed') !== 'true');
+        }
+      });
+    })();
+  </script>
+</body>
+</html>

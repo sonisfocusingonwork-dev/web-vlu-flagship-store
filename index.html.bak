@@ -1,0 +1,1437 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Volt Mobile – Điện thoại Apple, Samsung, Xiaomi, OPPO chính hãng</title>
+  <meta name="description" content="Mua điện thoại Apple, Samsung, Xiaomi, OPPO chính hãng tại Volt Mobile.">
+
+  <!-- Font: Plus Jakarta Sans (hỗ trợ đầy đủ tiếng Việt) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap&subset=vietnamese" rel="stylesheet">
+
+  <!-- Tailwind CSS qua CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: { sans: ['"Plus Jakarta Sans"', 'system-ui', 'sans-serif'] },
+          colors: {
+            ink: '#14142B',
+            brand: { DEFAULT: '#5B3DF5', dark: '#4326D6', soft: '#EFEBFF' }
+          }
+        }
+      }
+    }
+  </script>
+
+  <style>
+    html { scroll-behavior: smooth; }
+    .no-scrollbar { scrollbar-width: none; }
+    .no-scrollbar::-webkit-scrollbar { display: none; }
+
+    /* Nút yêu thích: trạng thái đã chọn */
+    [data-wish][aria-pressed="true"] { color: #DC2626; }
+    [data-wish][aria-pressed="true"] svg { fill: currentColor; }
+
+    /* Badge giỏ hàng nảy lên khi thêm sản phẩm */
+    @keyframes bump { 0% { transform: scale(1); } 40% { transform: scale(1.5); } 100% { transform: scale(1); } }
+    .bump { animation: bump .35s ease-out; }
+
+    /* Toast thông báo */
+    #toast { transition: opacity .25s ease, transform .25s ease; }
+    #toast.show { opacity: 1; transform: translate(-50%, 0); }
+
+    @media (prefers-reduced-motion: reduce) {
+      html { scroll-behavior: auto; }
+      * { transition-duration: .01ms !important; animation-duration: .01ms !important; }
+    }
+  </style>
+</head>
+
+<!--
+  =====================================================================
+  HƯỚNG DẪN GẮN PHP (tóm tắt)
+  ---------------------------------------------------------------------
+  1) HEADER ........ khối tĩnh, chỉ thay số lượng giỏ hàng ($cartCount).
+  2) HERO SLIDER ... lặp 1 khối .slide cho mỗi banner trong $banners.
+                     (JS tự nhân bản slide đầu để lướt vô hạn, KHÔNG cần
+                      PHP in thêm slide nhân bản.)
+  3) LƯỚI SẢN PHẨM . lặp 1 <section> cho mỗi hãng trong $brands, bên trong
+                     lặp 1 <article> cho mỗi sản phẩm của hãng đó.
+                     (File mẫu này in sẵn 4 section Apple/Samsung/Xiaomi/OPPO
+                      – khi dùng PHP chỉ cần giữ lại 1 section làm khuôn.)
+  Dữ liệu trong file là DỮ LIỆU MẪU (tên máy, giá, ảnh minh họa bằng CSS).
+  Mỗi vị trí cần đổ dữ liệu đều có comment  PHP: ‹?= $... ?›  (dấu ‹ › chỉ để comment không bị PHP chạy; khi viết thật hãy dùng thẻ PHP chuẩn)
+  =====================================================================
+-->
+<body class="bg-[#FBFBFE] font-sans text-ink antialiased">
+
+  <!-- Bộ icon dùng chung (SVG sprite) – không phải sửa -->
+  <svg width="0" height="0" class="absolute" aria-hidden="true" focusable="false">
+    <symbol id="i-search" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></symbol>
+    <symbol id="i-bag" viewBox="0 0 24 24"><path d="M6 7h12l-1 13H7L6 7Z"/><path d="M9 7a3 3 0 0 1 6 0"/></symbol>
+    <symbol id="i-user" viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 3.6-7 8-7s8 3 8 7"/></symbol>
+    <symbol id="i-heart" viewBox="0 0 24 24"><path d="M12 20s-7-4.4-7-10a4 4 0 0 1 7-2.5A4 4 0 0 1 19 10c0 5.6-7 10-7 10Z"/></symbol>
+    <symbol id="i-left" viewBox="0 0 24 24"><path d="m15 5-7 7 7 7"/></symbol>
+    <symbol id="i-right" viewBox="0 0 24 24"><path d="m9 5 7 7-7 7"/></symbol>
+    <symbol id="i-plus" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></symbol>
+    <symbol id="i-bolt" viewBox="0 0 24 24"><path d="M13 2 4 14h7l-1 8 9-12h-7l1-8Z"/></symbol>
+  </svg>
+
+  <!-- Link bỏ qua điều hướng (hỗ trợ bàn phím) -->
+  <a href="#main" class="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-[100] focus:rounded-full focus:bg-ink focus:px-4 focus:py-2 focus:text-white">Bỏ qua đến nội dung chính</a>
+
+  <!-- ============================================================
+       [HEADER – BẮT ĐẦU]
+       Logo | Thanh tìm kiếm | Tài khoản + Giỏ hàng | Menu danh mục
+       ============================================================ -->
+  <header id="site-header" class="sticky top-0 z-50 border-b border-slate-200 bg-white/90 backdrop-blur">
+    <div class="mx-auto max-w-7xl px-4 sm:px-6">
+
+      <!-- [HEADER – HÀNG TRÊN BẮT ĐẦU]: logo, tìm kiếm, hành động -->
+      <div class="flex flex-wrap items-center gap-x-4 gap-y-3 py-3 md:flex-nowrap md:gap-8">
+
+        <!-- [LOGO – BẮT ĐẦU] -->
+        <a href="/" class="order-1 flex items-center gap-2 text-xl font-extrabold tracking-tight" aria-label="Volt Mobile – Trang chủ">
+          <span class="grid h-9 w-9 place-items-center rounded-xl bg-brand text-white">
+            <svg class="h-5 w-5" fill="currentColor" aria-hidden="true"><use href="#i-bolt"/></svg>
+          </span>
+          <span>Volt<span class="text-brand">Mobile</span></span>
+        </a>
+        <!-- [LOGO – KẾT THÚC] -->
+
+        <!-- [TÌM KIẾM – BẮT ĐẦU] PHP: action trỏ tới trang xử lý tìm kiếm, ví dụ search.php -->
+        <form action="search.php" method="get" role="search" class="order-3 w-full md:order-2 md:flex-1">
+          <label for="q" class="sr-only">Tìm kiếm sản phẩm</label>
+          <div class="relative mx-auto max-w-2xl">
+            <svg class="pointer-events-none absolute left-4 top-1/2 h-5 w-5 -translate-y-1/2 text-slate-500" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><use href="#i-search"/></svg>
+            <input id="q" name="q" type="search" placeholder="Tìm iPhone, Galaxy, Xiaomi, OPPO…" autocomplete="off"
+                   class="h-12 w-full rounded-full border border-slate-200 bg-slate-100 pl-12 pr-28 text-sm font-medium placeholder:text-slate-500 transition focus:border-brand focus:bg-white focus:outline-none focus:ring-4 focus:ring-brand/15">
+            <button type="submit" class="absolute right-1.5 top-1/2 h-9 -translate-y-1/2 rounded-full bg-brand px-5 text-sm font-bold text-white transition hover:bg-brand-dark">Tìm</button>
+          </div>
+        </form>
+        <!-- [TÌM KIẾM – KẾT THÚC] -->
+
+        <!-- [HÀNH ĐỘNG – BẮT ĐẦU]: tài khoản + giỏ hàng -->
+        <div class="order-2 ml-auto flex items-center gap-1 md:order-3 md:ml-0">
+          <a href="account.php" class="grid h-11 w-11 place-items-center rounded-full text-slate-700 transition hover:bg-brand-soft hover:text-brand" aria-label="Tài khoản">
+            <svg class="h-6 w-6" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><use href="#i-user"/></svg>
+          </a>
+          <a href="cart.php" class="relative grid h-11 w-11 place-items-center rounded-full text-slate-700 transition hover:bg-brand-soft hover:text-brand" aria-label="Giỏ hàng">
+            <svg class="h-6 w-6" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><use href="#i-bag"/></svg>
+            <!-- PHP: ‹?= (int)$cartCount ?› -->
+            <span id="cartCount" class="absolute right-0 top-0 grid h-5 min-w-5 place-items-center rounded-full bg-red-600 px-1 text-[11px] font-bold leading-none text-white">0</span>
+          </a>
+        </div>
+        <!-- [HÀNH ĐỘNG – KẾT THÚC] -->
+
+      </div>
+      <!-- [HEADER – HÀNG TRÊN KẾT THÚC] -->
+
+      <!-- [MENU DANH MỤC – BẮT ĐẦU]
+           PHP: foreach ($brands as $brand): ... <li> ... endforeach;  -->
+      <nav aria-label="Danh mục sản phẩm" class="-mx-4 overflow-x-auto px-4 pb-3 no-scrollbar sm:-mx-6 sm:px-6">
+        <ul class="flex min-w-max items-center gap-2">
+          <li><a href="#hero" class="inline-flex h-10 items-center rounded-full bg-ink px-4 text-sm font-semibold text-white">Flagship</a></li>
+          <!-- PHP LOOP BẮT ĐẦU: foreach ($brands as $brand): -->
+          <!-- PHP: href="#‹?= $brand['slug'] ?›" – ‹?= $brand['name'] ?› -->
+          <li><a href="#apple" class="inline-flex h-10 items-center rounded-full px-4 text-sm font-semibold text-slate-700 transition hover:bg-brand-soft hover:text-brand">Apple</a></li>
+          <!-- PHP: href="#‹?= $brand['slug'] ?›" – ‹?= $brand['name'] ?› -->
+          <li><a href="#samsung" class="inline-flex h-10 items-center rounded-full px-4 text-sm font-semibold text-slate-700 transition hover:bg-brand-soft hover:text-brand">Samsung</a></li>
+          <!-- PHP: href="#‹?= $brand['slug'] ?›" – ‹?= $brand['name'] ?› -->
+          <li><a href="#xiaomi" class="inline-flex h-10 items-center rounded-full px-4 text-sm font-semibold text-slate-700 transition hover:bg-brand-soft hover:text-brand">Xiaomi</a></li>
+          <!-- PHP: href="#‹?= $brand['slug'] ?›" – ‹?= $brand['name'] ?› -->
+          <li><a href="#oppo" class="inline-flex h-10 items-center rounded-full px-4 text-sm font-semibold text-slate-700 transition hover:bg-brand-soft hover:text-brand">OPPO</a></li>
+          <!-- PHP LOOP KẾT THÚC: endforeach; -->
+        </ul>
+      </nav>
+      <!-- [MENU DANH MỤC – KẾT THÚC] -->
+
+    </div>
+  </header>
+  <!-- [HEADER – KẾT THÚC] -->
+
+
+  <main id="main">
+
+    <!-- ============================================================
+         [BANNER HERO SLIDER – BẮT ĐẦU]
+         Tự động lướt từ PHẢI sang TRÁI, lặp vô hạn (xem JS cuối file)
+         ============================================================ -->
+    <section id="hero" class="mx-auto max-w-7xl px-4 pt-4 sm:px-6 sm:pt-6" aria-roledescription="carousel" aria-label="Sản phẩm flagship nổi bật">
+
+      <!-- [VIEWPORT – BẮT ĐẦU]: khung cắt phần tràn, bo góc mềm -->
+      <div id="heroViewport" class="relative overflow-hidden rounded-[1.75rem] sm:rounded-[2rem]">
+
+        <!-- [TRACK – BẮT ĐẦU]: dải ngang chứa các slide, JS dịch chuyển bằng translateX -->
+        <div id="heroTrack" class="flex will-change-transform">
+
+          <!-- PHP LOOP BẮT ĐẦU: foreach ($banners as $i => $banner):
+               Mỗi vòng lặp in ra 1 khối .slide bên dưới -->
+          <!-- [SLIDE 1 – BẮT ĐẦU] PHP: class màu nền = ‹?= $banner['bg_class'] ?› -->
+          <article class="slide bg-ink text-white w-full shrink-0 grow-0 basis-full" role="group" aria-roledescription="slide" aria-label="1 / 4">
+            <div class="grid min-h-[34rem] items-center gap-4 px-6 pb-24 pt-10 sm:px-12 md:min-h-[30rem] md:grid-cols-2 md:gap-8 md:px-16 md:py-14 md:pb-20">
+
+              <!-- [SLIDE – CỘT CHỮ BẮT ĐẦU] -->
+              <div class="relative z-10">
+                <!-- PHP: ‹?= $banner['eyebrow'] ?› -->
+                <span class="inline-flex items-center rounded-full bg-white/15 text-white px-3.5 py-1.5 text-xs font-bold uppercase tracking-wider">Apple · Flagship</span>
+                <!-- PHP: ‹?= $banner['title'] ?› -->
+                <h2 class="mt-5 text-4xl font-extrabold leading-[1.05] tracking-tight sm:text-5xl lg:text-6xl">iPhone 18 Pro Max</h2>
+                <!-- PHP: ‹?= $banner['text'] ?› -->
+                <p class="mt-4 max-w-md text-base font-medium leading-relaxed opacity-90 sm:text-lg">Dòng flagship cao cấp nhất của Apple, dành cho người dùng chuyên nghiệp.</p>
+                <!-- PHP: href="‹?= $banner['link'] ?›" -->
+                <a href="#apple" class="mt-8 inline-flex h-12 items-center gap-2 rounded-full bg-white text-ink hover:bg-brand-soft px-7 text-sm font-bold transition hover:-translate-y-0.5 active:scale-95">
+                  Xem Apple
+                  <svg class="h-4 w-4" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><use href="#i-right"/></svg>
+                </a>
+              </div>
+              <!-- [SLIDE – CỘT CHỮ KẾT THÚC] -->
+
+              <!-- [SLIDE – CỘT ẢNH BẮT ĐẦU] PHP: thay 2 điện thoại CSS bằng <img src="‹?= $banner['image'] ?›" alt=""> -->
+              <div class="relative flex h-64 items-center justify-center gap-0 sm:h-80 md:h-96" aria-hidden="true">
+                <div aria-hidden="true" class="relative aspect-[9/19] w-32 sm:w-40 md:w-48 rounded-[14%/6.6%] shadow-xl ring-1 ring-black/10 -rotate-6 translate-y-3 -mr-6" style="background-color: #E59A6B">
+            <div class="absolute left-[9%] top-[5%] grid aspect-square w-[46%] grid-cols-2 content-between gap-[10%] rounded-[28%] bg-black/25 p-[8%]">
+              <span class="aspect-square rounded-full bg-neutral-900 ring-2 ring-white/25"></span>
+              <span class="aspect-square rounded-full bg-neutral-900 ring-2 ring-white/25"></span>
+              <span class="aspect-square rounded-full bg-neutral-900 ring-2 ring-white/25"></span>
+            </div>
+          </div>
+                <div aria-hidden="true" class="relative aspect-[9/19] w-32 sm:w-40 md:w-48 rounded-[14%/6.6%] shadow-xl ring-1 ring-black/10 rotate-6 -translate-y-3" style="background-color: #3B4A63">
+            <div class="absolute left-[9%] top-[5%] grid aspect-square w-[46%] grid-cols-2 content-between gap-[10%] rounded-[28%] bg-black/25 p-[8%]">
+              <span class="aspect-square rounded-full bg-neutral-900 ring-2 ring-white/25"></span>
+              <span class="aspect-square rounded-full bg-neutral-900 ring-2 ring-white/25"></span>
+              <span class="aspect-square rounded-full bg-neutral-900 ring-2 ring-white/25"></span>
+            </div>
+          </div>
+              </div>
+              <!-- [SLIDE – CỘT ẢNH KẾT THÚC] -->
+
+            </div>
+          </article>
+          <!-- [SLIDE 1 – KẾT THÚC] -->
+
+          <!-- [SLIDE 2 – BẮT ĐẦU] PHP: class màu nền = ‹?= $banner['bg_class'] ?› -->
+          <article class="slide bg-[#1F4BFF] text-white w-full shrink-0 grow-0 basis-full" role="group" aria-roledescription="slide" aria-label="2 / 4">
+            <div class="grid min-h-[34rem] items-center gap-4 px-6 pb-24 pt-10 sm:px-12 md:min-h-[30rem] md:grid-cols-2 md:gap-8 md:px-16 md:py-14 md:pb-20">
+
+              <!-- [SLIDE – CỘT CHỮ BẮT ĐẦU] -->
+              <div class="relative z-10">
+                <!-- PHP: ‹?= $banner['eyebrow'] ?› -->
+                <span class="inline-flex items-center rounded-full bg-white/20 text-white px-3.5 py-1.5 text-xs font-bold uppercase tracking-wider">Samsung · Flagship</span>
+                <!-- PHP: ‹?= $banner['title'] ?› -->
+                <h2 class="mt-5 text-4xl font-extrabold leading-[1.05] tracking-tight sm:text-5xl lg:text-6xl">Galaxy S26 Ultra</h2>
+                <!-- PHP: ‹?= $banner['text'] ?› -->
+                <p class="mt-4 max-w-md text-base font-medium leading-relaxed opacity-90 sm:text-lg">Flagship Android với bút S Pen và camera zoom xa.</p>
+                <!-- PHP: href="‹?= $banner['link'] ?›" -->
+                <a href="#samsung" class="mt-8 inline-flex h-12 items-center gap-2 rounded-full bg-white text-ink hover:bg-brand-soft px-7 text-sm font-bold transition hover:-translate-y-0.5 active:scale-95">
+                  Xem Samsung
+                  <svg class="h-4 w-4" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><use href="#i-right"/></svg>
+                </a>
+              </div>
+              <!-- [SLIDE – CỘT CHỮ KẾT THÚC] -->
+
+              <!-- [SLIDE – CỘT ẢNH BẮT ĐẦU] PHP: thay 2 điện thoại CSS bằng <img src="‹?= $banner['image'] ?›" alt=""> -->
+              <div class="relative flex h-64 items-center justify-center gap-0 sm:h-80 md:h-96" aria-hidden="true">
+                <div aria-hidden="true" class="relative aspect-[9/19] w-32 sm:w-40 md:w-48 rounded-[14%/6.6%] shadow-xl ring-1 ring-black/10 -rotate-6 translate-y-3 -mr-6" style="background-color: #1B2A4A">
+            <div class="absolute left-[9%] top-[5%] grid aspect-square w-[46%] grid-cols-2 content-between gap-[10%] rounded-[28%] bg-black/25 p-[8%]">
+              <span class="aspect-square rounded-full bg-neutral-900 ring-2 ring-white/25"></span>
+              <span class="aspect-square rounded-full bg-neutral-900 ring-2 ring-white/25"></span>
+              <span class="aspect-square rounded-full bg-neutral-900 ring-2 ring-white/25"></span>
+            </div>
+          </div>
+                <div aria-hidden="true" class="relative aspect-[9/19] w-32 sm:w-40 md:w-48 rounded-[14%/6.6%] shadow-xl ring-1 ring-black/10 rotate-6 -translate-y-3" style="background-color: #9FB4D6">
+            <div class="absolute left-[9%] top-[5%] grid aspect-square w-[46%] grid-cols-2 content-between gap-[10%] rounded-[28%] bg-black/25 p-[8%]">
+              <span class="aspect-square rounded-full bg-neutral-900 ring-2 ring-white/25"></span>
+              <span class="aspect-square rounded-full bg-neutral-900 ring-2 ring-white/25"></span>
+              <span class="aspect-square rounded-full bg-neutral-900 ring-2 ring-white/25"></span>
+            </div>
+          </div>
+              </div>
+              <!-- [SLIDE – CỘT ẢNH KẾT THÚC] -->
+
+            </div>
+          </article>
+          <!-- [SLIDE 2 – KẾT THÚC] -->
+
+          <!-- [SLIDE 3 – BẮT ĐẦU] PHP: class màu nền = ‹?= $banner['bg_class'] ?› -->
+          <article class="slide bg-[#FF6A00] text-ink w-full shrink-0 grow-0 basis-full" role="group" aria-roledescription="slide" aria-label="3 / 4">
+            <div class="grid min-h-[34rem] items-center gap-4 px-6 pb-24 pt-10 sm:px-12 md:min-h-[30rem] md:grid-cols-2 md:gap-8 md:px-16 md:py-14 md:pb-20">
+
+              <!-- [SLIDE – CỘT CHỮ BẮT ĐẦU] -->
+              <div class="relative z-10">
+                <!-- PHP: ‹?= $banner['eyebrow'] ?› -->
+                <span class="inline-flex items-center rounded-full bg-ink/10 text-ink px-3.5 py-1.5 text-xs font-bold uppercase tracking-wider">Xiaomi · Flagship</span>
+                <!-- PHP: ‹?= $banner['title'] ?› -->
+                <h2 class="mt-5 text-4xl font-extrabold leading-[1.05] tracking-tight sm:text-5xl lg:text-6xl">Xiaomi 17 Ultra</h2>
+                <!-- PHP: ‹?= $banner['text'] ?› -->
+                <p class="mt-4 max-w-md text-base font-medium leading-relaxed opacity-90 sm:text-lg">Camera hợp tác Leica, dành cho người mê nhiếp ảnh di động.</p>
+                <!-- PHP: href="‹?= $banner['link'] ?›" -->
+                <a href="#xiaomi" class="mt-8 inline-flex h-12 items-center gap-2 rounded-full bg-ink text-white hover:bg-black px-7 text-sm font-bold transition hover:-translate-y-0.5 active:scale-95">
+                  Xem Xiaomi
+                  <svg class="h-4 w-4" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><use href="#i-right"/></svg>
+                </a>
+              </div>
+              <!-- [SLIDE – CỘT CHỮ KẾT THÚC] -->
+
+              <!-- [SLIDE – CỘT ẢNH BẮT ĐẦU] PHP: thay 2 điện thoại CSS bằng <img src="‹?= $banner['image'] ?›" alt=""> -->
+              <div class="relative flex h-64 items-center justify-center gap-0 sm:h-80 md:h-96" aria-hidden="true">
+                <div aria-hidden="true" class="relative aspect-[9/19] w-32 sm:w-40 md:w-48 rounded-[14%/6.6%] shadow-xl ring-1 ring-black/10 -rotate-6 translate-y-3 -mr-6" style="background-color: #14142B">
+            <div class="absolute left-[9%] top-[5%] grid aspect-square w-[46%] grid-cols-2 content-between gap-[10%] rounded-[28%] bg-black/25 p-[8%]">
+              <span class="aspect-square rounded-full bg-neutral-900 ring-2 ring-white/25"></span>
+              <span class="aspect-square rounded-full bg-neutral-900 ring-2 ring-white/25"></span>
+              <span class="aspect-square rounded-full bg-neutral-900 ring-2 ring-white/25"></span>
+            </div>
+          </div>
+                <div aria-hidden="true" class="relative aspect-[9/19] w-32 sm:w-40 md:w-48 rounded-[14%/6.6%] shadow-xl ring-1 ring-black/10 rotate-6 -translate-y-3" style="background-color: #F4F1EA">
+            <div class="absolute left-[9%] top-[5%] grid aspect-square w-[46%] grid-cols-2 content-between gap-[10%] rounded-[28%] bg-black/25 p-[8%]">
+              <span class="aspect-square rounded-full bg-neutral-900 ring-2 ring-white/25"></span>
+              <span class="aspect-square rounded-full bg-neutral-900 ring-2 ring-white/25"></span>
+              <span class="aspect-square rounded-full bg-neutral-900 ring-2 ring-white/25"></span>
+            </div>
+          </div>
+              </div>
+              <!-- [SLIDE – CỘT ẢNH KẾT THÚC] -->
+
+            </div>
+          </article>
+          <!-- [SLIDE 3 – KẾT THÚC] -->
+
+          <!-- [SLIDE 4 – BẮT ĐẦU] PHP: class màu nền = ‹?= $banner['bg_class'] ?› -->
+          <article class="slide bg-[#0B7A55] text-white w-full shrink-0 grow-0 basis-full" role="group" aria-roledescription="slide" aria-label="4 / 4">
+            <div class="grid min-h-[34rem] items-center gap-4 px-6 pb-24 pt-10 sm:px-12 md:min-h-[30rem] md:grid-cols-2 md:gap-8 md:px-16 md:py-14 md:pb-20">
+
+              <!-- [SLIDE – CỘT CHỮ BẮT ĐẦU] -->
+              <div class="relative z-10">
+                <!-- PHP: ‹?= $banner['eyebrow'] ?› -->
+                <span class="inline-flex items-center rounded-full bg-white/20 text-white px-3.5 py-1.5 text-xs font-bold uppercase tracking-wider">OPPO · Flagship</span>
+                <!-- PHP: ‹?= $banner['title'] ?› -->
+                <h2 class="mt-5 text-4xl font-extrabold leading-[1.05] tracking-tight sm:text-5xl lg:text-6xl">OPPO Find X9 Ultra</h2>
+                <!-- PHP: ‹?= $banner['text'] ?› -->
+                <p class="mt-4 max-w-md text-base font-medium leading-relaxed opacity-90 sm:text-lg">Flagship tập trung vào camera, hợp tác Hasselblad.</p>
+                <!-- PHP: href="‹?= $banner['link'] ?›" -->
+                <a href="#oppo" class="mt-8 inline-flex h-12 items-center gap-2 rounded-full bg-white text-ink hover:bg-brand-soft px-7 text-sm font-bold transition hover:-translate-y-0.5 active:scale-95">
+                  Xem OPPO
+                  <svg class="h-4 w-4" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><use href="#i-right"/></svg>
+                </a>
+              </div>
+              <!-- [SLIDE – CỘT CHỮ KẾT THÚC] -->
+
+              <!-- [SLIDE – CỘT ẢNH BẮT ĐẦU] PHP: thay 2 điện thoại CSS bằng <img src="‹?= $banner['image'] ?›" alt=""> -->
+              <div class="relative flex h-64 items-center justify-center gap-0 sm:h-80 md:h-96" aria-hidden="true">
+                <div aria-hidden="true" class="relative aspect-[9/19] w-32 sm:w-40 md:w-48 rounded-[14%/6.6%] shadow-xl ring-1 ring-black/10 -rotate-6 translate-y-3 -mr-6" style="background-color: #E9E4D8">
+            <div class="absolute left-[9%] top-[5%] grid aspect-square w-[46%] grid-cols-2 content-between gap-[10%] rounded-[28%] bg-black/25 p-[8%]">
+              <span class="aspect-square rounded-full bg-neutral-900 ring-2 ring-white/25"></span>
+              <span class="aspect-square rounded-full bg-neutral-900 ring-2 ring-white/25"></span>
+              <span class="aspect-square rounded-full bg-neutral-900 ring-2 ring-white/25"></span>
+            </div>
+          </div>
+                <div aria-hidden="true" class="relative aspect-[9/19] w-32 sm:w-40 md:w-48 rounded-[14%/6.6%] shadow-xl ring-1 ring-black/10 rotate-6 -translate-y-3" style="background-color: #2B3B35">
+            <div class="absolute left-[9%] top-[5%] grid aspect-square w-[46%] grid-cols-2 content-between gap-[10%] rounded-[28%] bg-black/25 p-[8%]">
+              <span class="aspect-square rounded-full bg-neutral-900 ring-2 ring-white/25"></span>
+              <span class="aspect-square rounded-full bg-neutral-900 ring-2 ring-white/25"></span>
+              <span class="aspect-square rounded-full bg-neutral-900 ring-2 ring-white/25"></span>
+            </div>
+          </div>
+              </div>
+              <!-- [SLIDE – CỘT ẢNH KẾT THÚC] -->
+
+            </div>
+          </article>
+          <!-- [SLIDE 4 – KẾT THÚC] -->
+          <!-- PHP LOOP KẾT THÚC: endforeach; -->
+
+        </div>
+        <!-- [TRACK – KẾT THÚC] -->
+
+        <!-- [ĐIỀU KHIỂN – BẮT ĐẦU]: chấm trang + nút trước/sau -->
+        <div class="pointer-events-none absolute inset-x-0 bottom-4 flex items-center justify-between px-4 sm:bottom-6 sm:px-8">
+
+          <!-- Chấm trang. PHP: lặp theo số lượng $banners -->
+          <div class="pointer-events-auto flex items-center rounded-full bg-white/90 px-2 shadow-sm" role="group" aria-label="Chọn banner">
+            <button type="button" data-dot class="grid h-11 w-7 place-items-center" aria-label="Đến banner 1" aria-current="true">
+              <span class="block h-2.5 rounded-full transition-all duration-300 w-7 bg-ink"></span>
+            </button>
+            <button type="button" data-dot class="grid h-11 w-7 place-items-center" aria-label="Đến banner 2" aria-current="false">
+              <span class="block h-2.5 rounded-full transition-all duration-300 w-2.5 bg-ink/30"></span>
+            </button>
+            <button type="button" data-dot class="grid h-11 w-7 place-items-center" aria-label="Đến banner 3" aria-current="false">
+              <span class="block h-2.5 rounded-full transition-all duration-300 w-2.5 bg-ink/30"></span>
+            </button>
+            <button type="button" data-dot class="grid h-11 w-7 place-items-center" aria-label="Đến banner 4" aria-current="false">
+              <span class="block h-2.5 rounded-full transition-all duration-300 w-2.5 bg-ink/30"></span>
+            </button>
+          </div>
+
+          <!-- Nút trước / sau -->
+          <div class="pointer-events-auto flex gap-2">
+            <button type="button" id="heroPrev" class="grid h-11 w-11 place-items-center rounded-full bg-white/90 text-ink shadow-sm transition hover:bg-white active:scale-95" aria-label="Banner trước">
+              <svg class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><use href="#i-left"/></svg>
+            </button>
+            <button type="button" id="heroNext" class="grid h-11 w-11 place-items-center rounded-full bg-white/90 text-ink shadow-sm transition hover:bg-white active:scale-95" aria-label="Banner sau">
+              <svg class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><use href="#i-right"/></svg>
+            </button>
+          </div>
+
+        </div>
+        <!-- [ĐIỀU KHIỂN – KẾT THÚC] -->
+
+      </div>
+      <!-- [VIEWPORT – KẾT THÚC] -->
+
+    </section>
+    <!-- [BANNER HERO SLIDER – KẾT THÚC] -->
+
+
+    <!-- ============================================================
+         [LƯỚI SẢN PHẨM THEO HÃNG – BẮT ĐẦU]
+         PHP LOOP NGOÀI: foreach ($brands as $brand):  → 1 <section> / hãng
+         PHP LOOP TRONG: foreach ($brand['products'] as $p): → 1 <article> / sản phẩm
+         Bản mẫu in sẵn 4 hãng; khi dùng PHP chỉ giữ 1 section làm khuôn.
+         ============================================================ -->
+    <div class="mx-auto max-w-7xl space-y-14 px-4 py-12 sm:space-y-20 sm:px-6 sm:py-16">
+      <!-- ========== [KHỐI HÃNG APPLE – BẮT ĐẦU] (lần lặp #1 của $brands) ========== -->
+      <section id="apple" class="scroll-mt-40" aria-labelledby="apple-title">
+
+        <!-- [TIÊU ĐỀ HÃNG – BẮT ĐẦU] -->
+        <div class="mb-6 flex items-end justify-between gap-4">
+          <div class="flex items-center gap-3">
+            <span class="h-8 w-2 rounded-full bg-slate-900" aria-hidden="true"></span>
+            <!-- PHP: ‹?= $brand['name'] ?› / id="‹?= $brand['slug'] ?›" -->
+            <h2 id="apple-title" class="text-2xl font-extrabold tracking-tight sm:text-3xl">Apple</h2>
+          </div>
+          <!-- PHP: href="category.php?brand=‹?= $brand['slug'] ?›" -->
+          <a href="category.php?brand=apple" class="inline-flex h-11 items-center gap-1.5 rounded-full px-4 text-sm font-bold text-brand transition hover:bg-brand-soft">
+            Xem tất cả
+            <svg class="h-4 w-4" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><use href="#i-right"/></svg>
+          </a>
+        </div>
+        <!-- [TIÊU ĐỀ HÃNG – KẾT THÚC] -->
+
+        <!-- [LƯỚI SẢN PHẨM – BẮT ĐẦU]: 2 cột (mobile) → 4 cột (desktop) -->
+        <div class="grid grid-cols-2 gap-3 sm:gap-5 lg:grid-cols-4">
+
+          <!-- PHP LOOP BẮT ĐẦU: foreach ($brand['products'] as $p): -->
+          <!-- [THẺ SẢN PHẨM – BẮT ĐẦU] PHP: vòng lặp $p (id = ‹?= $p['id'] ?›) -->
+          <article class="group relative flex flex-col rounded-3xl border border-slate-200 bg-white p-3 transition duration-300 hover:-translate-y-1.5 hover:border-brand/40 hover:shadow-xl hover:shadow-brand/10 sm:p-4">
+
+            <!-- [KHUNG ẢNH – BẮT ĐẦU] PHP: thay phone CSS bằng <img src="‹?= $p['image'] ?›" alt="‹?= $p['name'] ?›"> -->
+            <div class="relative grid aspect-[4/5] place-items-center overflow-hidden rounded-2xl bg-slate-100">
+              <!-- PHP: hiển thị badge nếu $p['old_price'] > $p['price'] -->
+              <span class="absolute left-3 top-3 z-10 rounded-full bg-red-600 px-2.5 py-1 text-xs font-bold text-white">-5%</span>
+              <button type="button" data-wish aria-pressed="false" aria-label="Yêu thích iPhone 18 Pro Max" class="absolute right-2 top-2 z-10 grid h-11 w-11 place-items-center rounded-full bg-white/90 text-slate-500 transition hover:text-red-600">
+                <svg class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><use href="#i-heart"/></svg>
+              </button>
+              <div aria-hidden="true" class="relative aspect-[9/19] w-[38%] rounded-[14%/6.6%] shadow-xl ring-1 ring-black/10 transition duration-500 ease-out group-hover:-translate-y-1 group-hover:rotate-[-4deg] group-hover:scale-110" style="background-color: #E59A6B">
+            <div class="absolute left-[9%] top-[5%] grid aspect-square w-[46%] grid-cols-2 content-between gap-[10%] rounded-[28%] bg-black/25 p-[8%]">
+              <span class="aspect-square rounded-full bg-neutral-900 ring-2 ring-white/25"></span>
+              <span class="aspect-square rounded-full bg-neutral-900 ring-2 ring-white/25"></span>
+              <span class="aspect-square rounded-full bg-neutral-900 ring-2 ring-white/25"></span>
+            </div>
+          </div>
+            </div>
+            <!-- [KHUNG ẢNH – KẾT THÚC] -->
+
+            <!-- [THÔNG TIN – BẮT ĐẦU] -->
+            <div class="mt-4 flex flex-1 flex-col">
+              <!-- PHP: ‹?= $brand['name'] ?› -->
+              <p class="text-xs font-semibold uppercase tracking-wider text-slate-500">Apple</p>
+              <h3 class="mt-1 text-base font-bold leading-snug sm:text-lg">
+                <!-- PHP: href="product.php?id=‹?= $p['id'] ?›" – thẻ a phủ toàn bộ card (after:absolute) -->
+                <a href="product.php?id=101" class="after:absolute after:inset-0 after:z-0 after:rounded-3xl focus-visible:outline-none focus-visible:after:ring-4 focus-visible:after:ring-brand/30">iPhone 18 Pro Max</a>
+              </h3>
+              <!-- PHP: ‹?= $p['variant'] ?› -->
+              <p class="mt-0.5 text-sm text-slate-600">256GB</p>
+
+              <!-- [GIÁ + NÚT THÊM GIỎ – BẮT ĐẦU] -->
+              <div class="mt-auto flex items-end justify-between gap-2 pt-4">
+                <div>
+                  <!-- PHP: ‹?= number_format($p['price'], 0, ',', '.') ?›₫ -->
+                  <p class="text-base font-extrabold text-brand sm:text-lg">37.990.000₫</p>
+                  <!-- PHP: chỉ in nếu có giá cũ -->
+                  <p class="text-xs text-slate-500 line-through">39.990.000₫</p>
+                </div>
+                <button type="button" data-add data-id="101" data-name="iPhone 18 Pro Max" aria-label="Thêm iPhone 18 Pro Max vào giỏ hàng" class="relative z-10 grid h-11 w-11 shrink-0 place-items-center rounded-full bg-brand text-white transition hover:bg-brand-dark active:scale-90">
+                  <svg class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><use href="#i-plus"/></svg>
+                </button>
+              </div>
+              <!-- [GIÁ + NÚT THÊM GIỎ – KẾT THÚC] -->
+            </div>
+            <!-- [THÔNG TIN – KẾT THÚC] -->
+
+          </article>
+          <!-- [THẺ SẢN PHẨM – KẾT THÚC] -->
+
+          <!-- [THẺ SẢN PHẨM – BẮT ĐẦU] PHP: vòng lặp $p (id = ‹?= $p['id'] ?›) -->
+          <article class="group relative flex flex-col rounded-3xl border border-slate-200 bg-white p-3 transition duration-300 hover:-translate-y-1.5 hover:border-brand/40 hover:shadow-xl hover:shadow-brand/10 sm:p-4">
+
+            <!-- [KHUNG ẢNH – BẮT ĐẦU] PHP: thay phone CSS bằng <img src="‹?= $p['image'] ?›" alt="‹?= $p['name'] ?›"> -->
+            <div class="relative grid aspect-[4/5] place-items-center overflow-hidden rounded-2xl bg-slate-100">
+              <!-- PHP: hiển thị badge nếu $p['old_price'] > $p['price'] -->
+              <span class="absolute left-3 top-3 z-10 rounded-full bg-ink px-2.5 py-1 text-xs font-bold text-white">Mới</span>
+              <button type="button" data-wish aria-pressed="false" aria-label="Yêu thích iPhone 18 Pro" class="absolute right-2 top-2 z-10 grid h-11 w-11 place-items-center rounded-full bg-white/90 text-slate-500 transition hover:text-red-600">
+                <svg class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><use href="#i-heart"/></svg>
+              </button>
+              <div aria-hidden="true" class="relative aspect-[9/19] w-[38%] rounded-[14%/6.6%] shadow-xl ring-1 ring-black/10 transition duration-500 ease-out group-hover:-translate-y-1 group-hover:rotate-[-4deg] group-hover:scale-110" style="background-color: #3B4A63">
+            <div class="absolute left-[9%] top-[5%] grid aspect-square w-[46%] grid-cols-2 content-between gap-[10%] rounded-[28%] bg-black/25 p-[8%]">
+              <span class="aspect-square rounded-full bg-neutral-900 ring-2 ring-white/25"></span>
+              <span class="aspect-square rounded-full bg-neutral-900 ring-2 ring-white/25"></span>
+              <span class="aspect-square rounded-full bg-neutral-900 ring-2 ring-white/25"></span>
+            </div>
+          </div>
+            </div>
+            <!-- [KHUNG ẢNH – KẾT THÚC] -->
+
+            <!-- [THÔNG TIN – BẮT ĐẦU] -->
+            <div class="mt-4 flex flex-1 flex-col">
+              <!-- PHP: ‹?= $brand['name'] ?› -->
+              <p class="text-xs font-semibold uppercase tracking-wider text-slate-500">Apple</p>
+              <h3 class="mt-1 text-base font-bold leading-snug sm:text-lg">
+                <!-- PHP: href="product.php?id=‹?= $p['id'] ?›" – thẻ a phủ toàn bộ card (after:absolute) -->
+                <a href="product.php?id=102" class="after:absolute after:inset-0 after:z-0 after:rounded-3xl focus-visible:outline-none focus-visible:after:ring-4 focus-visible:after:ring-brand/30">iPhone 18 Pro</a>
+              </h3>
+              <!-- PHP: ‹?= $p['variant'] ?› -->
+              <p class="mt-0.5 text-sm text-slate-600">256GB</p>
+
+              <!-- [GIÁ + NÚT THÊM GIỎ – BẮT ĐẦU] -->
+              <div class="mt-auto flex items-end justify-between gap-2 pt-4">
+                <div>
+                  <!-- PHP: ‹?= number_format($p['price'], 0, ',', '.') ?›₫ -->
+                  <p class="text-base font-extrabold text-brand sm:text-lg">34.990.000₫</p>
+        
+                </div>
+                <button type="button" data-add data-id="102" data-name="iPhone 18 Pro" aria-label="Thêm iPhone 18 Pro vào giỏ hàng" class="relative z-10 grid h-11 w-11 shrink-0 place-items-center rounded-full bg-brand text-white transition hover:bg-brand-dark active:scale-90">
+                  <svg class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><use href="#i-plus"/></svg>
+                </button>
+              </div>
+              <!-- [GIÁ + NÚT THÊM GIỎ – KẾT THÚC] -->
+            </div>
+            <!-- [THÔNG TIN – KẾT THÚC] -->
+
+          </article>
+          <!-- [THẺ SẢN PHẨM – KẾT THÚC] -->
+
+          <!-- [THẺ SẢN PHẨM – BẮT ĐẦU] PHP: vòng lặp $p (id = ‹?= $p['id'] ?›) -->
+          <article class="group relative flex flex-col rounded-3xl border border-slate-200 bg-white p-3 transition duration-300 hover:-translate-y-1.5 hover:border-brand/40 hover:shadow-xl hover:shadow-brand/10 sm:p-4">
+
+            <!-- [KHUNG ẢNH – BẮT ĐẦU] PHP: thay phone CSS bằng <img src="‹?= $p['image'] ?›" alt="‹?= $p['name'] ?›"> -->
+            <div class="relative grid aspect-[4/5] place-items-center overflow-hidden rounded-2xl bg-slate-100">
+              <!-- PHP: hiển thị badge nếu $p['old_price'] > $p['price'] -->
+              <span class="absolute left-3 top-3 z-10 rounded-full bg-red-600 px-2.5 py-1 text-xs font-bold text-white">-6%</span>
+              <button type="button" data-wish aria-pressed="false" aria-label="Yêu thích iPhone Air" class="absolute right-2 top-2 z-10 grid h-11 w-11 place-items-center rounded-full bg-white/90 text-slate-500 transition hover:text-red-600">
+                <svg class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><use href="#i-heart"/></svg>
+              </button>
+              <div aria-hidden="true" class="relative aspect-[9/19] w-[38%] rounded-[14%/6.6%] shadow-xl ring-1 ring-black/10 transition duration-500 ease-out group-hover:-translate-y-1 group-hover:rotate-[-4deg] group-hover:scale-110" style="background-color: #D9DEE6">
+            <div class="absolute left-[9%] top-[5%] grid aspect-square w-[46%] grid-cols-2 content-between gap-[10%] rounded-[28%] bg-black/25 p-[8%]">
+              <span class="aspect-square rounded-full bg-neutral-900 ring-2 ring-white/25"></span>
+              <span class="aspect-square rounded-full bg-neutral-900 ring-2 ring-white/25"></span>
+              <span class="aspect-square rounded-full bg-neutral-900 ring-2 ring-white/25"></span>
+            </div>
+          </div>
+            </div>
+            <!-- [KHUNG ẢNH – KẾT THÚC] -->
+
+            <!-- [THÔNG TIN – BẮT ĐẦU] -->
+            <div class="mt-4 flex flex-1 flex-col">
+              <!-- PHP: ‹?= $brand['name'] ?› -->
+              <p class="text-xs font-semibold uppercase tracking-wider text-slate-500">Apple</p>
+              <h3 class="mt-1 text-base font-bold leading-snug sm:text-lg">
+                <!-- PHP: href="product.php?id=‹?= $p['id'] ?›" – thẻ a phủ toàn bộ card (after:absolute) -->
+                <a href="product.php?id=103" class="after:absolute after:inset-0 after:z-0 after:rounded-3xl focus-visible:outline-none focus-visible:after:ring-4 focus-visible:after:ring-brand/30">iPhone Air</a>
+              </h3>
+              <!-- PHP: ‹?= $p['variant'] ?› -->
+              <p class="mt-0.5 text-sm text-slate-600">256GB</p>
+
+              <!-- [GIÁ + NÚT THÊM GIỎ – BẮT ĐẦU] -->
+              <div class="mt-auto flex items-end justify-between gap-2 pt-4">
+                <div>
+                  <!-- PHP: ‹?= number_format($p['price'], 0, ',', '.') ?›₫ -->
+                  <p class="text-base font-extrabold text-brand sm:text-lg">31.990.000₫</p>
+                  <!-- PHP: chỉ in nếu có giá cũ -->
+                  <p class="text-xs text-slate-500 line-through">33.990.000₫</p>
+                </div>
+                <button type="button" data-add data-id="103" data-name="iPhone Air" aria-label="Thêm iPhone Air vào giỏ hàng" class="relative z-10 grid h-11 w-11 shrink-0 place-items-center rounded-full bg-brand text-white transition hover:bg-brand-dark active:scale-90">
+                  <svg class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><use href="#i-plus"/></svg>
+                </button>
+              </div>
+              <!-- [GIÁ + NÚT THÊM GIỎ – KẾT THÚC] -->
+            </div>
+            <!-- [THÔNG TIN – KẾT THÚC] -->
+
+          </article>
+          <!-- [THẺ SẢN PHẨM – KẾT THÚC] -->
+
+          <!-- [THẺ SẢN PHẨM – BẮT ĐẦU] PHP: vòng lặp $p (id = ‹?= $p['id'] ?›) -->
+          <article class="group relative flex flex-col rounded-3xl border border-slate-200 bg-white p-3 transition duration-300 hover:-translate-y-1.5 hover:border-brand/40 hover:shadow-xl hover:shadow-brand/10 sm:p-4">
+
+            <!-- [KHUNG ẢNH – BẮT ĐẦU] PHP: thay phone CSS bằng <img src="‹?= $p['image'] ?›" alt="‹?= $p['name'] ?›"> -->
+            <div class="relative grid aspect-[4/5] place-items-center overflow-hidden rounded-2xl bg-slate-100">
+              <!-- PHP: hiển thị badge nếu $p['old_price'] > $p['price'] -->
+    
+              <button type="button" data-wish aria-pressed="false" aria-label="Yêu thích iPhone 17" class="absolute right-2 top-2 z-10 grid h-11 w-11 place-items-center rounded-full bg-white/90 text-slate-500 transition hover:text-red-600">
+                <svg class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><use href="#i-heart"/></svg>
+              </button>
+              <div aria-hidden="true" class="relative aspect-[9/19] w-[38%] rounded-[14%/6.6%] shadow-xl ring-1 ring-black/10 transition duration-500 ease-out group-hover:-translate-y-1 group-hover:rotate-[-4deg] group-hover:scale-110" style="background-color: #9DB7A8">
+            <div class="absolute left-[9%] top-[5%] grid aspect-square w-[46%] grid-cols-2 content-between gap-[10%] rounded-[28%] bg-black/25 p-[8%]">
+              <span class="aspect-square rounded-full bg-neutral-900 ring-2 ring-white/25"></span>
+              <span class="aspect-square rounded-full bg-neutral-900 ring-2 ring-white/25"></span>
+              <span class="aspect-square rounded-full bg-neutral-900 ring-2 ring-white/25"></span>
+            </div>
+          </div>
+            </div>
+            <!-- [KHUNG ẢNH – KẾT THÚC] -->
+
+            <!-- [THÔNG TIN – BẮT ĐẦU] -->
+            <div class="mt-4 flex flex-1 flex-col">
+              <!-- PHP: ‹?= $brand['name'] ?› -->
+              <p class="text-xs font-semibold uppercase tracking-wider text-slate-500">Apple</p>
+              <h3 class="mt-1 text-base font-bold leading-snug sm:text-lg">
+                <!-- PHP: href="product.php?id=‹?= $p['id'] ?›" – thẻ a phủ toàn bộ card (after:absolute) -->
+                <a href="product.php?id=104" class="after:absolute after:inset-0 after:z-0 after:rounded-3xl focus-visible:outline-none focus-visible:after:ring-4 focus-visible:after:ring-brand/30">iPhone 17</a>
+              </h3>
+              <!-- PHP: ‹?= $p['variant'] ?› -->
+              <p class="mt-0.5 text-sm text-slate-600">256GB</p>
+
+              <!-- [GIÁ + NÚT THÊM GIỎ – BẮT ĐẦU] -->
+              <div class="mt-auto flex items-end justify-between gap-2 pt-4">
+                <div>
+                  <!-- PHP: ‹?= number_format($p['price'], 0, ',', '.') ?›₫ -->
+                  <p class="text-base font-extrabold text-brand sm:text-lg">24.990.000₫</p>
+        
+                </div>
+                <button type="button" data-add data-id="104" data-name="iPhone 17" aria-label="Thêm iPhone 17 vào giỏ hàng" class="relative z-10 grid h-11 w-11 shrink-0 place-items-center rounded-full bg-brand text-white transition hover:bg-brand-dark active:scale-90">
+                  <svg class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><use href="#i-plus"/></svg>
+                </button>
+              </div>
+              <!-- [GIÁ + NÚT THÊM GIỎ – KẾT THÚC] -->
+            </div>
+            <!-- [THÔNG TIN – KẾT THÚC] -->
+
+          </article>
+          <!-- [THẺ SẢN PHẨM – KẾT THÚC] -->
+          <!-- PHP LOOP KẾT THÚC: endforeach; -->
+
+        </div>
+        <!-- [LƯỚI SẢN PHẨM – KẾT THÚC] -->
+
+      </section>
+      <!-- ========== [KHỐI HÃNG APPLE – KẾT THÚC] ========== -->
+
+      <!-- ========== [KHỐI HÃNG SAMSUNG – BẮT ĐẦU] (lần lặp #2 của $brands) ========== -->
+      <section id="samsung" class="scroll-mt-40" aria-labelledby="samsung-title">
+
+        <!-- [TIÊU ĐỀ HÃNG – BẮT ĐẦU] -->
+        <div class="mb-6 flex items-end justify-between gap-4">
+          <div class="flex items-center gap-3">
+            <span class="h-8 w-2 rounded-full bg-[#1F4BFF]" aria-hidden="true"></span>
+            <!-- PHP: ‹?= $brand['name'] ?› / id="‹?= $brand['slug'] ?›" -->
+            <h2 id="samsung-title" class="text-2xl font-extrabold tracking-tight sm:text-3xl">Samsung</h2>
+          </div>
+          <!-- PHP: href="category.php?brand=‹?= $brand['slug'] ?›" -->
+          <a href="category.php?brand=samsung" class="inline-flex h-11 items-center gap-1.5 rounded-full px-4 text-sm font-bold text-brand transition hover:bg-brand-soft">
+            Xem tất cả
+            <svg class="h-4 w-4" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><use href="#i-right"/></svg>
+          </a>
+        </div>
+        <!-- [TIÊU ĐỀ HÃNG – KẾT THÚC] -->
+
+        <!-- [LƯỚI SẢN PHẨM – BẮT ĐẦU]: 2 cột (mobile) → 4 cột (desktop) -->
+        <div class="grid grid-cols-2 gap-3 sm:gap-5 lg:grid-cols-4">
+
+          <!-- PHP LOOP BẮT ĐẦU: foreach ($brand['products'] as $p): -->
+          <!-- [THẺ SẢN PHẨM – BẮT ĐẦU] PHP: vòng lặp $p (id = ‹?= $p['id'] ?›) -->
+          <article class="group relative flex flex-col rounded-3xl border border-slate-200 bg-white p-3 transition duration-300 hover:-translate-y-1.5 hover:border-brand/40 hover:shadow-xl hover:shadow-brand/10 sm:p-4">
+
+            <!-- [KHUNG ẢNH – BẮT ĐẦU] PHP: thay phone CSS bằng <img src="‹?= $p['image'] ?›" alt="‹?= $p['name'] ?›"> -->
+            <div class="relative grid aspect-[4/5] place-items-center overflow-hidden rounded-2xl bg-blue-50">
+              <!-- PHP: hiển thị badge nếu $p['old_price'] > $p['price'] -->
+              <span class="absolute left-3 top-3 z-10 rounded-full bg-ink px-2.5 py-1 text-xs font-bold text-white">Mới</span>
+              <button type="button" data-wish aria-pressed="false" aria-label="Yêu thích Galaxy S26 Ultra" class="absolute right-2 top-2 z-10 grid h-11 w-11 place-items-center rounded-full bg-white/90 text-slate-500 transition hover:text-red-600">
+                <svg class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><use href="#i-heart"/></svg>
+              </button>
+              <div aria-hidden="true" class="relative aspect-[9/19] w-[38%] rounded-[14%/6.6%] shadow-xl ring-1 ring-black/10 transition duration-500 ease-out group-hover:-translate-y-1 group-hover:rotate-[-4deg] group-hover:scale-110" style="background-color: #1B2A4A">
+            <div class="absolute left-[9%] top-[5%] grid aspect-square w-[46%] grid-cols-2 content-between gap-[10%] rounded-[28%] bg-black/25 p-[8%]">
+              <span class="aspect-square rounded-full bg-neutral-900 ring-2 ring-white/25"></span>
+              <span class="aspect-square rounded-full bg-neutral-900 ring-2 ring-white/25"></span>
+              <span class="aspect-square rounded-full bg-neutral-900 ring-2 ring-white/25"></span>
+            </div>
+          </div>
+            </div>
+            <!-- [KHUNG ẢNH – KẾT THÚC] -->
+
+            <!-- [THÔNG TIN – BẮT ĐẦU] -->
+            <div class="mt-4 flex flex-1 flex-col">
+              <!-- PHP: ‹?= $brand['name'] ?› -->
+              <p class="text-xs font-semibold uppercase tracking-wider text-slate-500">Samsung</p>
+              <h3 class="mt-1 text-base font-bold leading-snug sm:text-lg">
+                <!-- PHP: href="product.php?id=‹?= $p['id'] ?›" – thẻ a phủ toàn bộ card (after:absolute) -->
+                <a href="product.php?id=201" class="after:absolute after:inset-0 after:z-0 after:rounded-3xl focus-visible:outline-none focus-visible:after:ring-4 focus-visible:after:ring-brand/30">Galaxy S26 Ultra</a>
+              </h3>
+              <!-- PHP: ‹?= $p['variant'] ?› -->
+              <p class="mt-0.5 text-sm text-slate-600">256GB</p>
+
+              <!-- [GIÁ + NÚT THÊM GIỎ – BẮT ĐẦU] -->
+              <div class="mt-auto flex items-end justify-between gap-2 pt-4">
+                <div>
+                  <!-- PHP: ‹?= number_format($p['price'], 0, ',', '.') ?›₫ -->
+                  <p class="text-base font-extrabold text-brand sm:text-lg">33.990.000₫</p>
+        
+                </div>
+                <button type="button" data-add data-id="201" data-name="Galaxy S26 Ultra" aria-label="Thêm Galaxy S26 Ultra vào giỏ hàng" class="relative z-10 grid h-11 w-11 shrink-0 place-items-center rounded-full bg-brand text-white transition hover:bg-brand-dark active:scale-90">
+                  <svg class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><use href="#i-plus"/></svg>
+                </button>
+              </div>
+              <!-- [GIÁ + NÚT THÊM GIỎ – KẾT THÚC] -->
+            </div>
+            <!-- [THÔNG TIN – KẾT THÚC] -->
+
+          </article>
+          <!-- [THẺ SẢN PHẨM – KẾT THÚC] -->
+
+          <!-- [THẺ SẢN PHẨM – BẮT ĐẦU] PHP: vòng lặp $p (id = ‹?= $p['id'] ?›) -->
+          <article class="group relative flex flex-col rounded-3xl border border-slate-200 bg-white p-3 transition duration-300 hover:-translate-y-1.5 hover:border-brand/40 hover:shadow-xl hover:shadow-brand/10 sm:p-4">
+
+            <!-- [KHUNG ẢNH – BẮT ĐẦU] PHP: thay phone CSS bằng <img src="‹?= $p['image'] ?›" alt="‹?= $p['name'] ?›"> -->
+            <div class="relative grid aspect-[4/5] place-items-center overflow-hidden rounded-2xl bg-blue-50">
+              <!-- PHP: hiển thị badge nếu $p['old_price'] > $p['price'] -->
+              <span class="absolute left-3 top-3 z-10 rounded-full bg-ink px-2.5 py-1 text-xs font-bold text-white">Mới</span>
+              <button type="button" data-wish aria-pressed="false" aria-label="Yêu thích Galaxy Z Fold8" class="absolute right-2 top-2 z-10 grid h-11 w-11 place-items-center rounded-full bg-white/90 text-slate-500 transition hover:text-red-600">
+                <svg class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><use href="#i-heart"/></svg>
+              </button>
+              <div aria-hidden="true" class="relative aspect-[9/19] w-[38%] rounded-[14%/6.6%] shadow-xl ring-1 ring-black/10 transition duration-500 ease-out group-hover:-translate-y-1 group-hover:rotate-[-4deg] group-hover:scale-110" style="background-color: #6B7A99">
+            <div class="absolute left-[9%] top-[5%] grid aspect-square w-[46%] grid-cols-2 content-between gap-[10%] rounded-[28%] bg-black/25 p-[8%]">
+              <span class="aspect-square rounded-full bg-neutral-900 ring-2 ring-white/25"></span>
+              <span class="aspect-square rounded-full bg-neutral-900 ring-2 ring-white/25"></span>
+              <span class="aspect-square rounded-full bg-neutral-900 ring-2 ring-white/25"></span>
+            </div>
+          </div>
+            </div>
+            <!-- [KHUNG ẢNH – KẾT THÚC] -->
+
+            <!-- [THÔNG TIN – BẮT ĐẦU] -->
+            <div class="mt-4 flex flex-1 flex-col">
+              <!-- PHP: ‹?= $brand['name'] ?› -->
+              <p class="text-xs font-semibold uppercase tracking-wider text-slate-500">Samsung</p>
+              <h3 class="mt-1 text-base font-bold leading-snug sm:text-lg">
+                <!-- PHP: href="product.php?id=‹?= $p['id'] ?›" – thẻ a phủ toàn bộ card (after:absolute) -->
+                <a href="product.php?id=202" class="after:absolute after:inset-0 after:z-0 after:rounded-3xl focus-visible:outline-none focus-visible:after:ring-4 focus-visible:after:ring-brand/30">Galaxy Z Fold8</a>
+              </h3>
+              <!-- PHP: ‹?= $p['variant'] ?› -->
+              <p class="mt-0.5 text-sm text-slate-600">512GB</p>
+
+              <!-- [GIÁ + NÚT THÊM GIỎ – BẮT ĐẦU] -->
+              <div class="mt-auto flex items-end justify-between gap-2 pt-4">
+                <div>
+                  <!-- PHP: ‹?= number_format($p['price'], 0, ',', '.') ?›₫ -->
+                  <p class="text-base font-extrabold text-brand sm:text-lg">44.990.000₫</p>
+        
+                </div>
+                <button type="button" data-add data-id="202" data-name="Galaxy Z Fold8" aria-label="Thêm Galaxy Z Fold8 vào giỏ hàng" class="relative z-10 grid h-11 w-11 shrink-0 place-items-center rounded-full bg-brand text-white transition hover:bg-brand-dark active:scale-90">
+                  <svg class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><use href="#i-plus"/></svg>
+                </button>
+              </div>
+              <!-- [GIÁ + NÚT THÊM GIỎ – KẾT THÚC] -->
+            </div>
+            <!-- [THÔNG TIN – KẾT THÚC] -->
+
+          </article>
+          <!-- [THẺ SẢN PHẨM – KẾT THÚC] -->
+
+          <!-- [THẺ SẢN PHẨM – BẮT ĐẦU] PHP: vòng lặp $p (id = ‹?= $p['id'] ?›) -->
+          <article class="group relative flex flex-col rounded-3xl border border-slate-200 bg-white p-3 transition duration-300 hover:-translate-y-1.5 hover:border-brand/40 hover:shadow-xl hover:shadow-brand/10 sm:p-4">
+
+            <!-- [KHUNG ẢNH – BẮT ĐẦU] PHP: thay phone CSS bằng <img src="‹?= $p['image'] ?›" alt="‹?= $p['name'] ?›"> -->
+            <div class="relative grid aspect-[4/5] place-items-center overflow-hidden rounded-2xl bg-blue-50">
+              <!-- PHP: hiển thị badge nếu $p['old_price'] > $p['price'] -->
+              <span class="absolute left-3 top-3 z-10 rounded-full bg-red-600 px-2.5 py-1 text-xs font-bold text-white">-10%</span>
+              <button type="button" data-wish aria-pressed="false" aria-label="Yêu thích Galaxy Z Flip8" class="absolute right-2 top-2 z-10 grid h-11 w-11 place-items-center rounded-full bg-white/90 text-slate-500 transition hover:text-red-600">
+                <svg class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><use href="#i-heart"/></svg>
+              </button>
+              <div aria-hidden="true" class="relative aspect-[9/19] w-[38%] rounded-[14%/6.6%] shadow-xl ring-1 ring-black/10 transition duration-500 ease-out group-hover:-translate-y-1 group-hover:rotate-[-4deg] group-hover:scale-110" style="background-color: #8FB3E8">
+            <div class="absolute left-[9%] top-[5%] grid aspect-square w-[46%] grid-cols-2 content-between gap-[10%] rounded-[28%] bg-black/25 p-[8%]">
+              <span class="aspect-square rounded-full bg-neutral-900 ring-2 ring-white/25"></span>
+              <span class="aspect-square rounded-full bg-neutral-900 ring-2 ring-white/25"></span>
+              <span class="aspect-square rounded-full bg-neutral-900 ring-2 ring-white/25"></span>
+            </div>
+          </div>
+            </div>
+            <!-- [KHUNG ẢNH – KẾT THÚC] -->
+
+            <!-- [THÔNG TIN – BẮT ĐẦU] -->
+            <div class="mt-4 flex flex-1 flex-col">
+              <!-- PHP: ‹?= $brand['name'] ?› -->
+              <p class="text-xs font-semibold uppercase tracking-wider text-slate-500">Samsung</p>
+              <h3 class="mt-1 text-base font-bold leading-snug sm:text-lg">
+                <!-- PHP: href="product.php?id=‹?= $p['id'] ?›" – thẻ a phủ toàn bộ card (after:absolute) -->
+                <a href="product.php?id=203" class="after:absolute after:inset-0 after:z-0 after:rounded-3xl focus-visible:outline-none focus-visible:after:ring-4 focus-visible:after:ring-brand/30">Galaxy Z Flip8</a>
+              </h3>
+              <!-- PHP: ‹?= $p['variant'] ?› -->
+              <p class="mt-0.5 text-sm text-slate-600">256GB</p>
+
+              <!-- [GIÁ + NÚT THÊM GIỎ – BẮT ĐẦU] -->
+              <div class="mt-auto flex items-end justify-between gap-2 pt-4">
+                <div>
+                  <!-- PHP: ‹?= number_format($p['price'], 0, ',', '.') ?›₫ -->
+                  <p class="text-base font-extrabold text-brand sm:text-lg">25.990.000₫</p>
+                  <!-- PHP: chỉ in nếu có giá cũ -->
+                  <p class="text-xs text-slate-500 line-through">28.990.000₫</p>
+                </div>
+                <button type="button" data-add data-id="203" data-name="Galaxy Z Flip8" aria-label="Thêm Galaxy Z Flip8 vào giỏ hàng" class="relative z-10 grid h-11 w-11 shrink-0 place-items-center rounded-full bg-brand text-white transition hover:bg-brand-dark active:scale-90">
+                  <svg class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><use href="#i-plus"/></svg>
+                </button>
+              </div>
+              <!-- [GIÁ + NÚT THÊM GIỎ – KẾT THÚC] -->
+            </div>
+            <!-- [THÔNG TIN – KẾT THÚC] -->
+
+          </article>
+          <!-- [THẺ SẢN PHẨM – KẾT THÚC] -->
+
+          <!-- [THẺ SẢN PHẨM – BẮT ĐẦU] PHP: vòng lặp $p (id = ‹?= $p['id'] ?›) -->
+          <article class="group relative flex flex-col rounded-3xl border border-slate-200 bg-white p-3 transition duration-300 hover:-translate-y-1.5 hover:border-brand/40 hover:shadow-xl hover:shadow-brand/10 sm:p-4">
+
+            <!-- [KHUNG ẢNH – BẮT ĐẦU] PHP: thay phone CSS bằng <img src="‹?= $p['image'] ?›" alt="‹?= $p['name'] ?›"> -->
+            <div class="relative grid aspect-[4/5] place-items-center overflow-hidden rounded-2xl bg-blue-50">
+              <!-- PHP: hiển thị badge nếu $p['old_price'] > $p['price'] -->
+    
+              <button type="button" data-wish aria-pressed="false" aria-label="Yêu thích Galaxy S26" class="absolute right-2 top-2 z-10 grid h-11 w-11 place-items-center rounded-full bg-white/90 text-slate-500 transition hover:text-red-600">
+                <svg class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><use href="#i-heart"/></svg>
+              </button>
+              <div aria-hidden="true" class="relative aspect-[9/19] w-[38%] rounded-[14%/6.6%] shadow-xl ring-1 ring-black/10 transition duration-500 ease-out group-hover:-translate-y-1 group-hover:rotate-[-4deg] group-hover:scale-110" style="background-color: #C9D4E3">
+            <div class="absolute left-[9%] top-[5%] grid aspect-square w-[46%] grid-cols-2 content-between gap-[10%] rounded-[28%] bg-black/25 p-[8%]">
+              <span class="aspect-square rounded-full bg-neutral-900 ring-2 ring-white/25"></span>
+              <span class="aspect-square rounded-full bg-neutral-900 ring-2 ring-white/25"></span>
+              <span class="aspect-square rounded-full bg-neutral-900 ring-2 ring-white/25"></span>
+            </div>
+          </div>
+            </div>
+            <!-- [KHUNG ẢNH – KẾT THÚC] -->
+
+            <!-- [THÔNG TIN – BẮT ĐẦU] -->
+            <div class="mt-4 flex flex-1 flex-col">
+              <!-- PHP: ‹?= $brand['name'] ?› -->
+              <p class="text-xs font-semibold uppercase tracking-wider text-slate-500">Samsung</p>
+              <h3 class="mt-1 text-base font-bold leading-snug sm:text-lg">
+                <!-- PHP: href="product.php?id=‹?= $p['id'] ?›" – thẻ a phủ toàn bộ card (after:absolute) -->
+                <a href="product.php?id=204" class="after:absolute after:inset-0 after:z-0 after:rounded-3xl focus-visible:outline-none focus-visible:after:ring-4 focus-visible:after:ring-brand/30">Galaxy S26</a>
+              </h3>
+              <!-- PHP: ‹?= $p['variant'] ?› -->
+              <p class="mt-0.5 text-sm text-slate-600">256GB</p>
+
+              <!-- [GIÁ + NÚT THÊM GIỎ – BẮT ĐẦU] -->
+              <div class="mt-auto flex items-end justify-between gap-2 pt-4">
+                <div>
+                  <!-- PHP: ‹?= number_format($p['price'], 0, ',', '.') ?›₫ -->
+                  <p class="text-base font-extrabold text-brand sm:text-lg">22.990.000₫</p>
+        
+                </div>
+                <button type="button" data-add data-id="204" data-name="Galaxy S26" aria-label="Thêm Galaxy S26 vào giỏ hàng" class="relative z-10 grid h-11 w-11 shrink-0 place-items-center rounded-full bg-brand text-white transition hover:bg-brand-dark active:scale-90">
+                  <svg class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><use href="#i-plus"/></svg>
+                </button>
+              </div>
+              <!-- [GIÁ + NÚT THÊM GIỎ – KẾT THÚC] -->
+            </div>
+            <!-- [THÔNG TIN – KẾT THÚC] -->
+
+          </article>
+          <!-- [THẺ SẢN PHẨM – KẾT THÚC] -->
+          <!-- PHP LOOP KẾT THÚC: endforeach; -->
+
+        </div>
+        <!-- [LƯỚI SẢN PHẨM – KẾT THÚC] -->
+
+      </section>
+      <!-- ========== [KHỐI HÃNG SAMSUNG – KẾT THÚC] ========== -->
+
+      <!-- ========== [KHỐI HÃNG XIAOMI – BẮT ĐẦU] (lần lặp #3 của $brands) ========== -->
+      <section id="xiaomi" class="scroll-mt-40" aria-labelledby="xiaomi-title">
+
+        <!-- [TIÊU ĐỀ HÃNG – BẮT ĐẦU] -->
+        <div class="mb-6 flex items-end justify-between gap-4">
+          <div class="flex items-center gap-3">
+            <span class="h-8 w-2 rounded-full bg-[#FF6A00]" aria-hidden="true"></span>
+            <!-- PHP: ‹?= $brand['name'] ?› / id="‹?= $brand['slug'] ?›" -->
+            <h2 id="xiaomi-title" class="text-2xl font-extrabold tracking-tight sm:text-3xl">Xiaomi</h2>
+          </div>
+          <!-- PHP: href="category.php?brand=‹?= $brand['slug'] ?›" -->
+          <a href="category.php?brand=xiaomi" class="inline-flex h-11 items-center gap-1.5 rounded-full px-4 text-sm font-bold text-brand transition hover:bg-brand-soft">
+            Xem tất cả
+            <svg class="h-4 w-4" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><use href="#i-right"/></svg>
+          </a>
+        </div>
+        <!-- [TIÊU ĐỀ HÃNG – KẾT THÚC] -->
+
+        <!-- [LƯỚI SẢN PHẨM – BẮT ĐẦU]: 2 cột (mobile) → 4 cột (desktop) -->
+        <div class="grid grid-cols-2 gap-3 sm:gap-5 lg:grid-cols-4">
+
+          <!-- PHP LOOP BẮT ĐẦU: foreach ($brand['products'] as $p): -->
+          <!-- [THẺ SẢN PHẨM – BẮT ĐẦU] PHP: vòng lặp $p (id = ‹?= $p['id'] ?›) -->
+          <article class="group relative flex flex-col rounded-3xl border border-slate-200 bg-white p-3 transition duration-300 hover:-translate-y-1.5 hover:border-brand/40 hover:shadow-xl hover:shadow-brand/10 sm:p-4">
+
+            <!-- [KHUNG ẢNH – BẮT ĐẦU] PHP: thay phone CSS bằng <img src="‹?= $p['image'] ?›" alt="‹?= $p['name'] ?›"> -->
+            <div class="relative grid aspect-[4/5] place-items-center overflow-hidden rounded-2xl bg-orange-50">
+              <!-- PHP: hiển thị badge nếu $p['old_price'] > $p['price'] -->
+              <span class="absolute left-3 top-3 z-10 rounded-full bg-ink px-2.5 py-1 text-xs font-bold text-white">Mới</span>
+              <button type="button" data-wish aria-pressed="false" aria-label="Yêu thích Xiaomi 17 Ultra" class="absolute right-2 top-2 z-10 grid h-11 w-11 place-items-center rounded-full bg-white/90 text-slate-500 transition hover:text-red-600">
+                <svg class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><use href="#i-heart"/></svg>
+              </button>
+              <div aria-hidden="true" class="relative aspect-[9/19] w-[38%] rounded-[14%/6.6%] shadow-xl ring-1 ring-black/10 transition duration-500 ease-out group-hover:-translate-y-1 group-hover:rotate-[-4deg] group-hover:scale-110" style="background-color: #14142B">
+            <div class="absolute left-[9%] top-[5%] grid aspect-square w-[46%] grid-cols-2 content-between gap-[10%] rounded-[28%] bg-black/25 p-[8%]">
+              <span class="aspect-square rounded-full bg-neutral-900 ring-2 ring-white/25"></span>
+              <span class="aspect-square rounded-full bg-neutral-900 ring-2 ring-white/25"></span>
+              <span class="aspect-square rounded-full bg-neutral-900 ring-2 ring-white/25"></span>
+            </div>
+          </div>
+            </div>
+            <!-- [KHUNG ẢNH – KẾT THÚC] -->
+
+            <!-- [THÔNG TIN – BẮT ĐẦU] -->
+            <div class="mt-4 flex flex-1 flex-col">
+              <!-- PHP: ‹?= $brand['name'] ?› -->
+              <p class="text-xs font-semibold uppercase tracking-wider text-slate-500">Xiaomi</p>
+              <h3 class="mt-1 text-base font-bold leading-snug sm:text-lg">
+                <!-- PHP: href="product.php?id=‹?= $p['id'] ?›" – thẻ a phủ toàn bộ card (after:absolute) -->
+                <a href="product.php?id=301" class="after:absolute after:inset-0 after:z-0 after:rounded-3xl focus-visible:outline-none focus-visible:after:ring-4 focus-visible:after:ring-brand/30">Xiaomi 17 Ultra</a>
+              </h3>
+              <!-- PHP: ‹?= $p['variant'] ?› -->
+              <p class="mt-0.5 text-sm text-slate-600">512GB</p>
+
+              <!-- [GIÁ + NÚT THÊM GIỎ – BẮT ĐẦU] -->
+              <div class="mt-auto flex items-end justify-between gap-2 pt-4">
+                <div>
+                  <!-- PHP: ‹?= number_format($p['price'], 0, ',', '.') ?›₫ -->
+                  <p class="text-base font-extrabold text-brand sm:text-lg">26.990.000₫</p>
+        
+                </div>
+                <button type="button" data-add data-id="301" data-name="Xiaomi 17 Ultra" aria-label="Thêm Xiaomi 17 Ultra vào giỏ hàng" class="relative z-10 grid h-11 w-11 shrink-0 place-items-center rounded-full bg-brand text-white transition hover:bg-brand-dark active:scale-90">
+                  <svg class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><use href="#i-plus"/></svg>
+                </button>
+              </div>
+              <!-- [GIÁ + NÚT THÊM GIỎ – KẾT THÚC] -->
+            </div>
+            <!-- [THÔNG TIN – KẾT THÚC] -->
+
+          </article>
+          <!-- [THẺ SẢN PHẨM – KẾT THÚC] -->
+
+          <!-- [THẺ SẢN PHẨM – BẮT ĐẦU] PHP: vòng lặp $p (id = ‹?= $p['id'] ?›) -->
+          <article class="group relative flex flex-col rounded-3xl border border-slate-200 bg-white p-3 transition duration-300 hover:-translate-y-1.5 hover:border-brand/40 hover:shadow-xl hover:shadow-brand/10 sm:p-4">
+
+            <!-- [KHUNG ẢNH – BẮT ĐẦU] PHP: thay phone CSS bằng <img src="‹?= $p['image'] ?›" alt="‹?= $p['name'] ?›"> -->
+            <div class="relative grid aspect-[4/5] place-items-center overflow-hidden rounded-2xl bg-orange-50">
+              <!-- PHP: hiển thị badge nếu $p['old_price'] > $p['price'] -->
+              <span class="absolute left-3 top-3 z-10 rounded-full bg-red-600 px-2.5 py-1 text-xs font-bold text-white">-7%</span>
+              <button type="button" data-wish aria-pressed="false" aria-label="Yêu thích Xiaomi 17 Pro Max" class="absolute right-2 top-2 z-10 grid h-11 w-11 place-items-center rounded-full bg-white/90 text-slate-500 transition hover:text-red-600">
+                <svg class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><use href="#i-heart"/></svg>
+              </button>
+              <div aria-hidden="true" class="relative aspect-[9/19] w-[38%] rounded-[14%/6.6%] shadow-xl ring-1 ring-black/10 transition duration-500 ease-out group-hover:-translate-y-1 group-hover:rotate-[-4deg] group-hover:scale-110" style="background-color: #7FA58D">
+            <div class="absolute left-[9%] top-[5%] grid aspect-square w-[46%] grid-cols-2 content-between gap-[10%] rounded-[28%] bg-black/25 p-[8%]">
+              <span class="aspect-square rounded-full bg-neutral-900 ring-2 ring-white/25"></span>
+              <span class="aspect-square rounded-full bg-neutral-900 ring-2 ring-white/25"></span>
+              <span class="aspect-square rounded-full bg-neutral-900 ring-2 ring-white/25"></span>
+            </div>
+          </div>
+            </div>
+            <!-- [KHUNG ẢNH – KẾT THÚC] -->
+
+            <!-- [THÔNG TIN – BẮT ĐẦU] -->
+            <div class="mt-4 flex flex-1 flex-col">
+              <!-- PHP: ‹?= $brand['name'] ?› -->
+              <p class="text-xs font-semibold uppercase tracking-wider text-slate-500">Xiaomi</p>
+              <h3 class="mt-1 text-base font-bold leading-snug sm:text-lg">
+                <!-- PHP: href="product.php?id=‹?= $p['id'] ?›" – thẻ a phủ toàn bộ card (after:absolute) -->
+                <a href="product.php?id=302" class="after:absolute after:inset-0 after:z-0 after:rounded-3xl focus-visible:outline-none focus-visible:after:ring-4 focus-visible:after:ring-brand/30">Xiaomi 17 Pro Max</a>
+              </h3>
+              <!-- PHP: ‹?= $p['variant'] ?› -->
+              <p class="mt-0.5 text-sm text-slate-600">512GB</p>
+
+              <!-- [GIÁ + NÚT THÊM GIỎ – BẮT ĐẦU] -->
+              <div class="mt-auto flex items-end justify-between gap-2 pt-4">
+                <div>
+                  <!-- PHP: ‹?= number_format($p['price'], 0, ',', '.') ?›₫ -->
+                  <p class="text-base font-extrabold text-brand sm:text-lg">24.990.000₫</p>
+                  <!-- PHP: chỉ in nếu có giá cũ -->
+                  <p class="text-xs text-slate-500 line-through">26.990.000₫</p>
+                </div>
+                <button type="button" data-add data-id="302" data-name="Xiaomi 17 Pro Max" aria-label="Thêm Xiaomi 17 Pro Max vào giỏ hàng" class="relative z-10 grid h-11 w-11 shrink-0 place-items-center rounded-full bg-brand text-white transition hover:bg-brand-dark active:scale-90">
+                  <svg class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><use href="#i-plus"/></svg>
+                </button>
+              </div>
+              <!-- [GIÁ + NÚT THÊM GIỎ – KẾT THÚC] -->
+            </div>
+            <!-- [THÔNG TIN – KẾT THÚC] -->
+
+          </article>
+          <!-- [THẺ SẢN PHẨM – KẾT THÚC] -->
+
+          <!-- [THẺ SẢN PHẨM – BẮT ĐẦU] PHP: vòng lặp $p (id = ‹?= $p['id'] ?›) -->
+          <article class="group relative flex flex-col rounded-3xl border border-slate-200 bg-white p-3 transition duration-300 hover:-translate-y-1.5 hover:border-brand/40 hover:shadow-xl hover:shadow-brand/10 sm:p-4">
+
+            <!-- [KHUNG ẢNH – BẮT ĐẦU] PHP: thay phone CSS bằng <img src="‹?= $p['image'] ?›" alt="‹?= $p['name'] ?›"> -->
+            <div class="relative grid aspect-[4/5] place-items-center overflow-hidden rounded-2xl bg-orange-50">
+              <!-- PHP: hiển thị badge nếu $p['old_price'] > $p['price'] -->
+    
+              <button type="button" data-wish aria-pressed="false" aria-label="Yêu thích Xiaomi 17 Pro" class="absolute right-2 top-2 z-10 grid h-11 w-11 place-items-center rounded-full bg-white/90 text-slate-500 transition hover:text-red-600">
+                <svg class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><use href="#i-heart"/></svg>
+              </button>
+              <div aria-hidden="true" class="relative aspect-[9/19] w-[38%] rounded-[14%/6.6%] shadow-xl ring-1 ring-black/10 transition duration-500 ease-out group-hover:-translate-y-1 group-hover:rotate-[-4deg] group-hover:scale-110" style="background-color: #7C6BD6">
+            <div class="absolute left-[9%] top-[5%] grid aspect-square w-[46%] grid-cols-2 content-between gap-[10%] rounded-[28%] bg-black/25 p-[8%]">
+              <span class="aspect-square rounded-full bg-neutral-900 ring-2 ring-white/25"></span>
+              <span class="aspect-square rounded-full bg-neutral-900 ring-2 ring-white/25"></span>
+              <span class="aspect-square rounded-full bg-neutral-900 ring-2 ring-white/25"></span>
+            </div>
+          </div>
+            </div>
+            <!-- [KHUNG ẢNH – KẾT THÚC] -->
+
+            <!-- [THÔNG TIN – BẮT ĐẦU] -->
+            <div class="mt-4 flex flex-1 flex-col">
+              <!-- PHP: ‹?= $brand['name'] ?› -->
+              <p class="text-xs font-semibold uppercase tracking-wider text-slate-500">Xiaomi</p>
+              <h3 class="mt-1 text-base font-bold leading-snug sm:text-lg">
+                <!-- PHP: href="product.php?id=‹?= $p['id'] ?›" – thẻ a phủ toàn bộ card (after:absolute) -->
+                <a href="product.php?id=303" class="after:absolute after:inset-0 after:z-0 after:rounded-3xl focus-visible:outline-none focus-visible:after:ring-4 focus-visible:after:ring-brand/30">Xiaomi 17 Pro</a>
+              </h3>
+              <!-- PHP: ‹?= $p['variant'] ?› -->
+              <p class="mt-0.5 text-sm text-slate-600">256GB</p>
+
+              <!-- [GIÁ + NÚT THÊM GIỎ – BẮT ĐẦU] -->
+              <div class="mt-auto flex items-end justify-between gap-2 pt-4">
+                <div>
+                  <!-- PHP: ‹?= number_format($p['price'], 0, ',', '.') ?›₫ -->
+                  <p class="text-base font-extrabold text-brand sm:text-lg">21.990.000₫</p>
+        
+                </div>
+                <button type="button" data-add data-id="303" data-name="Xiaomi 17 Pro" aria-label="Thêm Xiaomi 17 Pro vào giỏ hàng" class="relative z-10 grid h-11 w-11 shrink-0 place-items-center rounded-full bg-brand text-white transition hover:bg-brand-dark active:scale-90">
+                  <svg class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><use href="#i-plus"/></svg>
+                </button>
+              </div>
+              <!-- [GIÁ + NÚT THÊM GIỎ – KẾT THÚC] -->
+            </div>
+            <!-- [THÔNG TIN – KẾT THÚC] -->
+
+          </article>
+          <!-- [THẺ SẢN PHẨM – KẾT THÚC] -->
+
+          <!-- [THẺ SẢN PHẨM – BẮT ĐẦU] PHP: vòng lặp $p (id = ‹?= $p['id'] ?›) -->
+          <article class="group relative flex flex-col rounded-3xl border border-slate-200 bg-white p-3 transition duration-300 hover:-translate-y-1.5 hover:border-brand/40 hover:shadow-xl hover:shadow-brand/10 sm:p-4">
+
+            <!-- [KHUNG ẢNH – BẮT ĐẦU] PHP: thay phone CSS bằng <img src="‹?= $p['image'] ?›" alt="‹?= $p['name'] ?›"> -->
+            <div class="relative grid aspect-[4/5] place-items-center overflow-hidden rounded-2xl bg-orange-50">
+              <!-- PHP: hiển thị badge nếu $p['old_price'] > $p['price'] -->
+              <span class="absolute left-3 top-3 z-10 rounded-full bg-red-600 px-2.5 py-1 text-xs font-bold text-white">-5%</span>
+              <button type="button" data-wish aria-pressed="false" aria-label="Yêu thích Xiaomi 17" class="absolute right-2 top-2 z-10 grid h-11 w-11 place-items-center rounded-full bg-white/90 text-slate-500 transition hover:text-red-600">
+                <svg class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><use href="#i-heart"/></svg>
+              </button>
+              <div aria-hidden="true" class="relative aspect-[9/19] w-[38%] rounded-[14%/6.6%] shadow-xl ring-1 ring-black/10 transition duration-500 ease-out group-hover:-translate-y-1 group-hover:rotate-[-4deg] group-hover:scale-110" style="background-color: #F2D24B">
+            <div class="absolute left-[9%] top-[5%] grid aspect-square w-[46%] grid-cols-2 content-between gap-[10%] rounded-[28%] bg-black/25 p-[8%]">
+              <span class="aspect-square rounded-full bg-neutral-900 ring-2 ring-white/25"></span>
+              <span class="aspect-square rounded-full bg-neutral-900 ring-2 ring-white/25"></span>
+              <span class="aspect-square rounded-full bg-neutral-900 ring-2 ring-white/25"></span>
+            </div>
+          </div>
+            </div>
+            <!-- [KHUNG ẢNH – KẾT THÚC] -->
+
+            <!-- [THÔNG TIN – BẮT ĐẦU] -->
+            <div class="mt-4 flex flex-1 flex-col">
+              <!-- PHP: ‹?= $brand['name'] ?› -->
+              <p class="text-xs font-semibold uppercase tracking-wider text-slate-500">Xiaomi</p>
+              <h3 class="mt-1 text-base font-bold leading-snug sm:text-lg">
+                <!-- PHP: href="product.php?id=‹?= $p['id'] ?›" – thẻ a phủ toàn bộ card (after:absolute) -->
+                <a href="product.php?id=304" class="after:absolute after:inset-0 after:z-0 after:rounded-3xl focus-visible:outline-none focus-visible:after:ring-4 focus-visible:after:ring-brand/30">Xiaomi 17</a>
+              </h3>
+              <!-- PHP: ‹?= $p['variant'] ?› -->
+              <p class="mt-0.5 text-sm text-slate-600">256GB</p>
+
+              <!-- [GIÁ + NÚT THÊM GIỎ – BẮT ĐẦU] -->
+              <div class="mt-auto flex items-end justify-between gap-2 pt-4">
+                <div>
+                  <!-- PHP: ‹?= number_format($p['price'], 0, ',', '.') ?›₫ -->
+                  <p class="text-base font-extrabold text-brand sm:text-lg">17.990.000₫</p>
+                  <!-- PHP: chỉ in nếu có giá cũ -->
+                  <p class="text-xs text-slate-500 line-through">18.990.000₫</p>
+                </div>
+                <button type="button" data-add data-id="304" data-name="Xiaomi 17" aria-label="Thêm Xiaomi 17 vào giỏ hàng" class="relative z-10 grid h-11 w-11 shrink-0 place-items-center rounded-full bg-brand text-white transition hover:bg-brand-dark active:scale-90">
+                  <svg class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><use href="#i-plus"/></svg>
+                </button>
+              </div>
+              <!-- [GIÁ + NÚT THÊM GIỎ – KẾT THÚC] -->
+            </div>
+            <!-- [THÔNG TIN – KẾT THÚC] -->
+
+          </article>
+          <!-- [THẺ SẢN PHẨM – KẾT THÚC] -->
+          <!-- PHP LOOP KẾT THÚC: endforeach; -->
+
+        </div>
+        <!-- [LƯỚI SẢN PHẨM – KẾT THÚC] -->
+
+      </section>
+      <!-- ========== [KHỐI HÃNG XIAOMI – KẾT THÚC] ========== -->
+
+      <!-- ========== [KHỐI HÃNG OPPO – BẮT ĐẦU] (lần lặp #4 của $brands) ========== -->
+      <section id="oppo" class="scroll-mt-40" aria-labelledby="oppo-title">
+
+        <!-- [TIÊU ĐỀ HÃNG – BẮT ĐẦU] -->
+        <div class="mb-6 flex items-end justify-between gap-4">
+          <div class="flex items-center gap-3">
+            <span class="h-8 w-2 rounded-full bg-[#0B7A55]" aria-hidden="true"></span>
+            <!-- PHP: ‹?= $brand['name'] ?› / id="‹?= $brand['slug'] ?›" -->
+            <h2 id="oppo-title" class="text-2xl font-extrabold tracking-tight sm:text-3xl">OPPO</h2>
+          </div>
+          <!-- PHP: href="category.php?brand=‹?= $brand['slug'] ?›" -->
+          <a href="category.php?brand=oppo" class="inline-flex h-11 items-center gap-1.5 rounded-full px-4 text-sm font-bold text-brand transition hover:bg-brand-soft">
+            Xem tất cả
+            <svg class="h-4 w-4" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><use href="#i-right"/></svg>
+          </a>
+        </div>
+        <!-- [TIÊU ĐỀ HÃNG – KẾT THÚC] -->
+
+        <!-- [LƯỚI SẢN PHẨM – BẮT ĐẦU]: 2 cột (mobile) → 4 cột (desktop) -->
+        <div class="grid grid-cols-2 gap-3 sm:gap-5 lg:grid-cols-4">
+
+          <!-- PHP LOOP BẮT ĐẦU: foreach ($brand['products'] as $p): -->
+          <!-- [THẺ SẢN PHẨM – BẮT ĐẦU] PHP: vòng lặp $p (id = ‹?= $p['id'] ?›) -->
+          <article class="group relative flex flex-col rounded-3xl border border-slate-200 bg-white p-3 transition duration-300 hover:-translate-y-1.5 hover:border-brand/40 hover:shadow-xl hover:shadow-brand/10 sm:p-4">
+
+            <!-- [KHUNG ẢNH – BẮT ĐẦU] PHP: thay phone CSS bằng <img src="‹?= $p['image'] ?›" alt="‹?= $p['name'] ?›"> -->
+            <div class="relative grid aspect-[4/5] place-items-center overflow-hidden rounded-2xl bg-emerald-50">
+              <!-- PHP: hiển thị badge nếu $p['old_price'] > $p['price'] -->
+              <span class="absolute left-3 top-3 z-10 rounded-full bg-ink px-2.5 py-1 text-xs font-bold text-white">Mới</span>
+              <button type="button" data-wish aria-pressed="false" aria-label="Yêu thích OPPO Find X9 Ultra" class="absolute right-2 top-2 z-10 grid h-11 w-11 place-items-center rounded-full bg-white/90 text-slate-500 transition hover:text-red-600">
+                <svg class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><use href="#i-heart"/></svg>
+              </button>
+              <div aria-hidden="true" class="relative aspect-[9/19] w-[38%] rounded-[14%/6.6%] shadow-xl ring-1 ring-black/10 transition duration-500 ease-out group-hover:-translate-y-1 group-hover:rotate-[-4deg] group-hover:scale-110" style="background-color: #E9E4D8">
+            <div class="absolute left-[9%] top-[5%] grid aspect-square w-[46%] grid-cols-2 content-between gap-[10%] rounded-[28%] bg-black/25 p-[8%]">
+              <span class="aspect-square rounded-full bg-neutral-900 ring-2 ring-white/25"></span>
+              <span class="aspect-square rounded-full bg-neutral-900 ring-2 ring-white/25"></span>
+              <span class="aspect-square rounded-full bg-neutral-900 ring-2 ring-white/25"></span>
+            </div>
+          </div>
+            </div>
+            <!-- [KHUNG ẢNH – KẾT THÚC] -->
+
+            <!-- [THÔNG TIN – BẮT ĐẦU] -->
+            <div class="mt-4 flex flex-1 flex-col">
+              <!-- PHP: ‹?= $brand['name'] ?› -->
+              <p class="text-xs font-semibold uppercase tracking-wider text-slate-500">OPPO</p>
+              <h3 class="mt-1 text-base font-bold leading-snug sm:text-lg">
+                <!-- PHP: href="product.php?id=‹?= $p['id'] ?›" – thẻ a phủ toàn bộ card (after:absolute) -->
+                <a href="product.php?id=401" class="after:absolute after:inset-0 after:z-0 after:rounded-3xl focus-visible:outline-none focus-visible:after:ring-4 focus-visible:after:ring-brand/30">OPPO Find X9 Ultra</a>
+              </h3>
+              <!-- PHP: ‹?= $p['variant'] ?› -->
+              <p class="mt-0.5 text-sm text-slate-600">512GB</p>
+
+              <!-- [GIÁ + NÚT THÊM GIỎ – BẮT ĐẦU] -->
+              <div class="mt-auto flex items-end justify-between gap-2 pt-4">
+                <div>
+                  <!-- PHP: ‹?= number_format($p['price'], 0, ',', '.') ?›₫ -->
+                  <p class="text-base font-extrabold text-brand sm:text-lg">29.990.000₫</p>
+        
+                </div>
+                <button type="button" data-add data-id="401" data-name="OPPO Find X9 Ultra" aria-label="Thêm OPPO Find X9 Ultra vào giỏ hàng" class="relative z-10 grid h-11 w-11 shrink-0 place-items-center rounded-full bg-brand text-white transition hover:bg-brand-dark active:scale-90">
+                  <svg class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><use href="#i-plus"/></svg>
+                </button>
+              </div>
+              <!-- [GIÁ + NÚT THÊM GIỎ – KẾT THÚC] -->
+            </div>
+            <!-- [THÔNG TIN – KẾT THÚC] -->
+
+          </article>
+          <!-- [THẺ SẢN PHẨM – KẾT THÚC] -->
+
+          <!-- [THẺ SẢN PHẨM – BẮT ĐẦU] PHP: vòng lặp $p (id = ‹?= $p['id'] ?›) -->
+          <article class="group relative flex flex-col rounded-3xl border border-slate-200 bg-white p-3 transition duration-300 hover:-translate-y-1.5 hover:border-brand/40 hover:shadow-xl hover:shadow-brand/10 sm:p-4">
+
+            <!-- [KHUNG ẢNH – BẮT ĐẦU] PHP: thay phone CSS bằng <img src="‹?= $p['image'] ?›" alt="‹?= $p['name'] ?›"> -->
+            <div class="relative grid aspect-[4/5] place-items-center overflow-hidden rounded-2xl bg-emerald-50">
+              <!-- PHP: hiển thị badge nếu $p['old_price'] > $p['price'] -->
+    
+              <button type="button" data-wish aria-pressed="false" aria-label="Yêu thích OPPO Find X9 Pro" class="absolute right-2 top-2 z-10 grid h-11 w-11 place-items-center rounded-full bg-white/90 text-slate-500 transition hover:text-red-600">
+                <svg class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><use href="#i-heart"/></svg>
+              </button>
+              <div aria-hidden="true" class="relative aspect-[9/19] w-[38%] rounded-[14%/6.6%] shadow-xl ring-1 ring-black/10 transition duration-500 ease-out group-hover:-translate-y-1 group-hover:rotate-[-4deg] group-hover:scale-110" style="background-color: #2B3B35">
+            <div class="absolute left-[9%] top-[5%] grid aspect-square w-[46%] grid-cols-2 content-between gap-[10%] rounded-[28%] bg-black/25 p-[8%]">
+              <span class="aspect-square rounded-full bg-neutral-900 ring-2 ring-white/25"></span>
+              <span class="aspect-square rounded-full bg-neutral-900 ring-2 ring-white/25"></span>
+              <span class="aspect-square rounded-full bg-neutral-900 ring-2 ring-white/25"></span>
+            </div>
+          </div>
+            </div>
+            <!-- [KHUNG ẢNH – KẾT THÚC] -->
+
+            <!-- [THÔNG TIN – BẮT ĐẦU] -->
+            <div class="mt-4 flex flex-1 flex-col">
+              <!-- PHP: ‹?= $brand['name'] ?› -->
+              <p class="text-xs font-semibold uppercase tracking-wider text-slate-500">OPPO</p>
+              <h3 class="mt-1 text-base font-bold leading-snug sm:text-lg">
+                <!-- PHP: href="product.php?id=‹?= $p['id'] ?›" – thẻ a phủ toàn bộ card (after:absolute) -->
+                <a href="product.php?id=402" class="after:absolute after:inset-0 after:z-0 after:rounded-3xl focus-visible:outline-none focus-visible:after:ring-4 focus-visible:after:ring-brand/30">OPPO Find X9 Pro</a>
+              </h3>
+              <!-- PHP: ‹?= $p['variant'] ?› -->
+              <p class="mt-0.5 text-sm text-slate-600">512GB</p>
+
+              <!-- [GIÁ + NÚT THÊM GIỎ – BẮT ĐẦU] -->
+              <div class="mt-auto flex items-end justify-between gap-2 pt-4">
+                <div>
+                  <!-- PHP: ‹?= number_format($p['price'], 0, ',', '.') ?›₫ -->
+                  <p class="text-base font-extrabold text-brand sm:text-lg">24.990.000₫</p>
+        
+                </div>
+                <button type="button" data-add data-id="402" data-name="OPPO Find X9 Pro" aria-label="Thêm OPPO Find X9 Pro vào giỏ hàng" class="relative z-10 grid h-11 w-11 shrink-0 place-items-center rounded-full bg-brand text-white transition hover:bg-brand-dark active:scale-90">
+                  <svg class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><use href="#i-plus"/></svg>
+                </button>
+              </div>
+              <!-- [GIÁ + NÚT THÊM GIỎ – KẾT THÚC] -->
+            </div>
+            <!-- [THÔNG TIN – KẾT THÚC] -->
+
+          </article>
+          <!-- [THẺ SẢN PHẨM – KẾT THÚC] -->
+
+          <!-- [THẺ SẢN PHẨM – BẮT ĐẦU] PHP: vòng lặp $p (id = ‹?= $p['id'] ?›) -->
+          <article class="group relative flex flex-col rounded-3xl border border-slate-200 bg-white p-3 transition duration-300 hover:-translate-y-1.5 hover:border-brand/40 hover:shadow-xl hover:shadow-brand/10 sm:p-4">
+
+            <!-- [KHUNG ẢNH – BẮT ĐẦU] PHP: thay phone CSS bằng <img src="‹?= $p['image'] ?›" alt="‹?= $p['name'] ?›"> -->
+            <div class="relative grid aspect-[4/5] place-items-center overflow-hidden rounded-2xl bg-emerald-50">
+              <!-- PHP: hiển thị badge nếu $p['old_price'] > $p['price'] -->
+              <span class="absolute left-3 top-3 z-10 rounded-full bg-red-600 px-2.5 py-1 text-xs font-bold text-white">-9%</span>
+              <button type="button" data-wish aria-pressed="false" aria-label="Yêu thích OPPO Find X9" class="absolute right-2 top-2 z-10 grid h-11 w-11 place-items-center rounded-full bg-white/90 text-slate-500 transition hover:text-red-600">
+                <svg class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><use href="#i-heart"/></svg>
+              </button>
+              <div aria-hidden="true" class="relative aspect-[9/19] w-[38%] rounded-[14%/6.6%] shadow-xl ring-1 ring-black/10 transition duration-500 ease-out group-hover:-translate-y-1 group-hover:rotate-[-4deg] group-hover:scale-110" style="background-color: #B9A6E8">
+            <div class="absolute left-[9%] top-[5%] grid aspect-square w-[46%] grid-cols-2 content-between gap-[10%] rounded-[28%] bg-black/25 p-[8%]">
+              <span class="aspect-square rounded-full bg-neutral-900 ring-2 ring-white/25"></span>
+              <span class="aspect-square rounded-full bg-neutral-900 ring-2 ring-white/25"></span>
+              <span class="aspect-square rounded-full bg-neutral-900 ring-2 ring-white/25"></span>
+            </div>
+          </div>
+            </div>
+            <!-- [KHUNG ẢNH – KẾT THÚC] -->
+
+            <!-- [THÔNG TIN – BẮT ĐẦU] -->
+            <div class="mt-4 flex flex-1 flex-col">
+              <!-- PHP: ‹?= $brand['name'] ?› -->
+              <p class="text-xs font-semibold uppercase tracking-wider text-slate-500">OPPO</p>
+              <h3 class="mt-1 text-base font-bold leading-snug sm:text-lg">
+                <!-- PHP: href="product.php?id=‹?= $p['id'] ?›" – thẻ a phủ toàn bộ card (after:absolute) -->
+                <a href="product.php?id=403" class="after:absolute after:inset-0 after:z-0 after:rounded-3xl focus-visible:outline-none focus-visible:after:ring-4 focus-visible:after:ring-brand/30">OPPO Find X9</a>
+              </h3>
+              <!-- PHP: ‹?= $p['variant'] ?› -->
+              <p class="mt-0.5 text-sm text-slate-600">256GB</p>
+
+              <!-- [GIÁ + NÚT THÊM GIỎ – BẮT ĐẦU] -->
+              <div class="mt-auto flex items-end justify-between gap-2 pt-4">
+                <div>
+                  <!-- PHP: ‹?= number_format($p['price'], 0, ',', '.') ?›₫ -->
+                  <p class="text-base font-extrabold text-brand sm:text-lg">19.990.000₫</p>
+                  <!-- PHP: chỉ in nếu có giá cũ -->
+                  <p class="text-xs text-slate-500 line-through">21.990.000₫</p>
+                </div>
+                <button type="button" data-add data-id="403" data-name="OPPO Find X9" aria-label="Thêm OPPO Find X9 vào giỏ hàng" class="relative z-10 grid h-11 w-11 shrink-0 place-items-center rounded-full bg-brand text-white transition hover:bg-brand-dark active:scale-90">
+                  <svg class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><use href="#i-plus"/></svg>
+                </button>
+              </div>
+              <!-- [GIÁ + NÚT THÊM GIỎ – KẾT THÚC] -->
+            </div>
+            <!-- [THÔNG TIN – KẾT THÚC] -->
+
+          </article>
+          <!-- [THẺ SẢN PHẨM – KẾT THÚC] -->
+
+          <!-- [THẺ SẢN PHẨM – BẮT ĐẦU] PHP: vòng lặp $p (id = ‹?= $p['id'] ?›) -->
+          <article class="group relative flex flex-col rounded-3xl border border-slate-200 bg-white p-3 transition duration-300 hover:-translate-y-1.5 hover:border-brand/40 hover:shadow-xl hover:shadow-brand/10 sm:p-4">
+
+            <!-- [KHUNG ẢNH – BẮT ĐẦU] PHP: thay phone CSS bằng <img src="‹?= $p['image'] ?›" alt="‹?= $p['name'] ?›"> -->
+            <div class="relative grid aspect-[4/5] place-items-center overflow-hidden rounded-2xl bg-emerald-50">
+              <!-- PHP: hiển thị badge nếu $p['old_price'] > $p['price'] -->
+              <span class="absolute left-3 top-3 z-10 rounded-full bg-red-600 px-2.5 py-1 text-xs font-bold text-white">-7%</span>
+              <button type="button" data-wish aria-pressed="false" aria-label="Yêu thích OPPO Find N5" class="absolute right-2 top-2 z-10 grid h-11 w-11 place-items-center rounded-full bg-white/90 text-slate-500 transition hover:text-red-600">
+                <svg class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><use href="#i-heart"/></svg>
+              </button>
+              <div aria-hidden="true" class="relative aspect-[9/19] w-[38%] rounded-[14%/6.6%] shadow-xl ring-1 ring-black/10 transition duration-500 ease-out group-hover:-translate-y-1 group-hover:rotate-[-4deg] group-hover:scale-110" style="background-color: #7FC6B5">
+            <div class="absolute left-[9%] top-[5%] grid aspect-square w-[46%] grid-cols-2 content-between gap-[10%] rounded-[28%] bg-black/25 p-[8%]">
+              <span class="aspect-square rounded-full bg-neutral-900 ring-2 ring-white/25"></span>
+              <span class="aspect-square rounded-full bg-neutral-900 ring-2 ring-white/25"></span>
+              <span class="aspect-square rounded-full bg-neutral-900 ring-2 ring-white/25"></span>
+            </div>
+          </div>
+            </div>
+            <!-- [KHUNG ẢNH – KẾT THÚC] -->
+
+            <!-- [THÔNG TIN – BẮT ĐẦU] -->
+            <div class="mt-4 flex flex-1 flex-col">
+              <!-- PHP: ‹?= $brand['name'] ?› -->
+              <p class="text-xs font-semibold uppercase tracking-wider text-slate-500">OPPO</p>
+              <h3 class="mt-1 text-base font-bold leading-snug sm:text-lg">
+                <!-- PHP: href="product.php?id=‹?= $p['id'] ?›" – thẻ a phủ toàn bộ card (after:absolute) -->
+                <a href="product.php?id=404" class="after:absolute after:inset-0 after:z-0 after:rounded-3xl focus-visible:outline-none focus-visible:after:ring-4 focus-visible:after:ring-brand/30">OPPO Find N5</a>
+              </h3>
+              <!-- PHP: ‹?= $p['variant'] ?› -->
+              <p class="mt-0.5 text-sm text-slate-600">512GB</p>
+
+              <!-- [GIÁ + NÚT THÊM GIỎ – BẮT ĐẦU] -->
+              <div class="mt-auto flex items-end justify-between gap-2 pt-4">
+                <div>
+                  <!-- PHP: ‹?= number_format($p['price'], 0, ',', '.') ?›₫ -->
+                  <p class="text-base font-extrabold text-brand sm:text-lg">39.990.000₫</p>
+                  <!-- PHP: chỉ in nếu có giá cũ -->
+                  <p class="text-xs text-slate-500 line-through">42.990.000₫</p>
+                </div>
+                <button type="button" data-add data-id="404" data-name="OPPO Find N5" aria-label="Thêm OPPO Find N5 vào giỏ hàng" class="relative z-10 grid h-11 w-11 shrink-0 place-items-center rounded-full bg-brand text-white transition hover:bg-brand-dark active:scale-90">
+                  <svg class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><use href="#i-plus"/></svg>
+                </button>
+              </div>
+              <!-- [GIÁ + NÚT THÊM GIỎ – KẾT THÚC] -->
+            </div>
+            <!-- [THÔNG TIN – KẾT THÚC] -->
+
+          </article>
+          <!-- [THẺ SẢN PHẨM – KẾT THÚC] -->
+          <!-- PHP LOOP KẾT THÚC: endforeach; -->
+
+        </div>
+        <!-- [LƯỚI SẢN PHẨM – KẾT THÚC] -->
+
+      </section>
+      <!-- ========== [KHỐI HÃNG OPPO – KẾT THÚC] ========== -->
+    </div>
+    <!-- [LƯỚI SẢN PHẨM THEO HÃNG – KẾT THÚC] -->
+
+  </main>
+
+
+  <!-- ============================================================
+       [FOOTER – BẮT ĐẦU]
+       ============================================================ -->
+  <footer class="border-t border-slate-200 bg-white">
+    <div class="mx-auto flex max-w-7xl flex-col items-start justify-between gap-6 px-4 py-10 sm:flex-row sm:items-center sm:px-6">
+      <a href="/" class="flex items-center gap-2 text-lg font-extrabold tracking-tight" aria-label="Volt Mobile – Trang chủ">
+        <span class="grid h-8 w-8 place-items-center rounded-lg bg-brand text-white">
+          <svg class="h-4 w-4" fill="currentColor" aria-hidden="true"><use href="#i-bolt"/></svg>
+        </span>
+        <span>Volt<span class="text-brand">Mobile</span></span>
+      </a>
+      <ul class="flex flex-wrap gap-x-6 gap-y-2 text-sm font-semibold text-slate-600">
+        <li><a href="#apple" class="transition hover:text-brand">Apple</a></li>
+        <li><a href="#samsung" class="transition hover:text-brand">Samsung</a></li>
+        <li><a href="#xiaomi" class="transition hover:text-brand">Xiaomi</a></li>
+        <li><a href="#oppo" class="transition hover:text-brand">OPPO</a></li>
+      </ul>
+      <p class="text-sm text-slate-500">© 2026 Volt Mobile</p>
+    </div>
+  </footer>
+  <!-- [FOOTER – KẾT THÚC] -->
+
+  <!-- Toast thông báo khi thêm vào giỏ -->
+  <div id="toast" role="status" aria-live="polite" class="pointer-events-none fixed bottom-6 left-1/2 z-[60] max-w-[calc(100vw-2rem)] -translate-x-1/2 translate-y-4 rounded-full bg-ink px-5 py-3 text-sm font-semibold text-white opacity-0 shadow-xl"></div>
+
+
+  <script>
+    (function () {
+      'use strict';
+      var $ = function (s, c) { return (c || document).querySelector(s); };
+      var $$ = function (s, c) { return Array.prototype.slice.call((c || document).querySelectorAll(s)); };
+
+      /* ---------- HERO SLIDER: tự lướt phải → trái, lặp vô hạn ---------- */
+      var viewport = $('#heroViewport');
+      var track = $('#heroTrack');
+      var slides = $$('.slide', track);
+      var dots = $$('[data-dot]');
+      var n = slides.length;
+      var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      var INTERVAL = 4500;
+      var index = 0, timer = null, startX = null;
+
+      // Nhân bản slide đầu và đặt cuối dải để vòng lặp liền mạch
+      var clone = slides[0].cloneNode(true);
+      clone.setAttribute('aria-hidden', 'true');
+      $$('a, button', clone).forEach(function (el) { el.tabIndex = -1; });
+      track.appendChild(clone);
+
+      function setX(animate) {
+        track.style.transition = (animate && !reduce) ? 'transform 800ms cubic-bezier(.65,0,.35,1)' : 'none';
+        track.style.transform = 'translateX(' + (-index * 100) + '%)';
+      }
+      function paint() {
+        var active = index % n;
+        dots.forEach(function (d, k) {
+          var on = k === active;
+          d.setAttribute('aria-current', on ? 'true' : 'false');
+          d.firstElementChild.className = 'block h-2.5 rounded-full transition-all duration-300 ' + (on ? 'w-7 bg-ink' : 'w-2.5 bg-ink/30');
+        });
+      }
+      function next() {
+        if (reduce) { index = (index + 1) % n; setX(false); paint(); return; }
+        index += 1; setX(true); paint();
+      }
+      function prev() {
+        if (index === 0) { index = n; setX(false); track.getBoundingClientRect(); } // nhảy tới bản nhân bản, rồi lùi lại
+        index -= 1; setX(true); paint();
+      }
+      // Khi trượt tới bản nhân bản (= slide đầu) → reset về 0 không hiệu ứng
+      track.addEventListener('transitionend', function (e) {
+        if (e.target === track && index >= n) { index = 0; setX(false); }
+      });
+
+      function play() { if (!reduce && !timer) timer = setInterval(next, INTERVAL); }
+      function stop() { clearInterval(timer); timer = null; }
+
+      $('#heroNext').addEventListener('click', function () { next(); });
+      $('#heroPrev').addEventListener('click', function () { prev(); });
+      dots.forEach(function (d, k) { d.addEventListener('click', function () { index = k; setX(true); paint(); }); });
+
+      viewport.addEventListener('mouseenter', stop);
+      viewport.addEventListener('mouseleave', play);
+      viewport.addEventListener('focusin', stop);
+      viewport.addEventListener('focusout', play);
+      document.addEventListener('visibilitychange', function () { document.hidden ? stop() : play(); });
+
+      // Vuốt trên điện thoại
+      viewport.addEventListener('touchstart', function (e) { startX = e.touches[0].clientX; stop(); }, { passive: true });
+      viewport.addEventListener('touchend', function (e) {
+        if (startX !== null) {
+          var dx = e.changedTouches[0].clientX - startX;
+          if (Math.abs(dx) > 50) { dx < 0 ? next() : prev(); }
+        }
+        startX = null; play();
+      }, { passive: true });
+
+      paint(); play();
+
+      /* ---------- GIỎ HÀNG + YÊU THÍCH ---------- */
+      var badge = $('#cartCount');
+      var toast = $('#toast');
+      var count = parseInt(badge.textContent, 10) || 0;
+      var toastTimer;
+
+      function showToast(msg) {
+        toast.textContent = msg;
+        toast.classList.add('show');
+        clearTimeout(toastTimer);
+        toastTimer = setTimeout(function () { toast.classList.remove('show'); }, 2200);
+      }
+
+      document.addEventListener('click', function (e) {
+        var add = e.target.closest('[data-add]');
+        if (add) {
+          // PHP: tại đây gọi fetch('add_to_cart.php', {method:'POST', body: ...}) với add.dataset.id
+          count += 1;
+          badge.textContent = count;
+          badge.classList.remove('bump'); void badge.offsetWidth; badge.classList.add('bump');
+          showToast('Đã thêm "' + add.dataset.name + '" vào giỏ hàng');
+          return;
+        }
+        var wish = e.target.closest('[data-wish]');
+        if (wish) {
+          wish.setAttribute('aria-pressed', wish.getAttribute('aria-pressed') !== 'true');
+        }
+      });
+    })();
+  </script>
+</body>
+</html>
