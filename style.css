@@ -1,0 +1,5 @@
+/**
+ * VLU FLAGSHIP STORE – Root Stylesheet Forwarder
+ * Nguồn stylesheet chính được quản lý tại: frontend/assets/css/style.css
+ */
+@import url('frontend/assets/css/style.css');
