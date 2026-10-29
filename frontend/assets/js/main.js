@@ -4,6 +4,7 @@
  * - Hero Banner Carousel trượt vô hạn
  * - Mobile Drawer Accordion
  * - Giỏ hàng, nút yêu thích & Toast thông báo Dynamic Island
+ * - Global Product Link Binding
  */
 (function () {
   'use strict';
@@ -242,4 +243,20 @@
       wish.setAttribute('aria-pressed', wish.getAttribute('aria-pressed') !== 'true');
     }
   });
+
+  /* ---------- 5. GLOBAL LINK BINDING CHO SẢN PHẨM ---------- */
+  document.addEventListener('DOMContentLoaded', function () {
+    $$('.product-card').forEach(function (card) {
+      var link = $('h3 a', card);
+      if (link) {
+        var currentHref = link.getAttribute('href') || '';
+        if (currentHref === '' || currentHref === '#' || currentHref.indexOf('product.php') !== -1) {
+          var name = (link.textContent || '').trim();
+          var slug = name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
+          link.setAttribute('href', 'product-detail.html?id=' + encodeURIComponent(slug) + '&name=' + encodeURIComponent(name));
+        }
+      }
+    });
+  });
+
 })();

@@ -1,4 +1,5 @@
 <?php
+require_once dirname(__DIR__, 2) . '/backend/lib/product_links.php';
 /**
  * VLU FLAGSHIP STORE – Header Component
  * Chuẩn UI/UX Apple 2026: Tối giản, sang trọng, hiệu ứng kính mờ (glassmorphism).
@@ -630,7 +631,7 @@ $navMegaCategories = [
                                 <ul class="space-y-0.5">
                                   <?php foreach ($sec['items'] as $item): ?>
                                     <li>
-                                      <a href="search.php?q=<?= rawurlencode($item) ?>" class="mega-item-link" title="<?= e($item) ?>">
+                                      <a href="<?= vlu_product_url($item, $slug) ?>" class="mega-item-link" title="<?= e($item) ?>">
                                         <?= e($item) ?>
                                       </a>
                                     </li>
@@ -643,7 +644,7 @@ $navMegaCategories = [
                           <ul class="space-y-0.5">
                             <?php foreach ($grp['items'] as $item): ?>
                               <li>
-                                <a href="search.php?q=<?= rawurlencode($item) ?>" class="mega-item-link" title="<?= e($item) ?>">
+                                <a href="<?= vlu_product_url($item, $slug) ?>" class="mega-item-link" title="<?= e($item) ?>">
                                   <?= e($item) ?>
                                 </a>
                               </li>
@@ -715,7 +716,7 @@ $navMegaCategories = [
                       <p class="text-[10px] font-bold text-slate-400 uppercase mt-1.5"><?= e($sec['title']) ?></p>
                       <div class="mt-0.5 space-y-0.5">
                         <?php foreach ($sec['items'] as $it): ?>
-                          <a href="search.php?q=<?= rawurlencode($it) ?>" class="block py-0.5 text-xs font-semibold text-slate-700 hover:text-brand">
+                          <a href="<?= vlu_product_url($it, $slug) ?>" class="block py-0.5 text-xs font-semibold text-slate-700 hover:text-brand">
                             <?= e($it) ?>
                           </a>
                         <?php endforeach; ?>
@@ -724,7 +725,7 @@ $navMegaCategories = [
                   <?php else: ?>
                     <div class="mt-1 space-y-0.5">
                       <?php foreach ($grp['items'] as $it): ?>
-                        <a href="search.php?q=<?= rawurlencode($it) ?>" class="block py-0.5 text-xs font-semibold text-slate-700 hover:text-brand">
+                        <a href="<?= vlu_product_url($it, $slug) ?>" class="block py-0.5 text-xs font-semibold text-slate-700 hover:text-brand">
                           <?= e($it) ?>
                         </a>
                       <?php endforeach; ?>

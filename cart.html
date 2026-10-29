@@ -67,24 +67,24 @@
           </span>
         </div>
 
-        <!-- Mục sản phẩm iPhone 18 Pro Max -->
+        <!-- Mục sản phẩm động -->
         <div class="flex flex-col sm:flex-row items-start sm:items-center gap-4 py-3">
           <div class="h-24 w-24 sm:h-28 sm:w-28 rounded-2xl bg-slate-50 border border-slate-200/80 p-2 flex items-center justify-center shrink-0">
-            <img src="SanPham/SanPham/Iphone/Ip%2018%20pro%20max/%C4%90%E1%BB%8F%20Burgundy.png" alt="iPhone 18 Pro Max" class="max-h-full max-w-full object-contain">
+            <img id="cartItemImg" src="SanPham/SanPham/Iphone/Ip%2018%20pro%20max/%C4%90%E1%BB%8F%20Burgundy.png" alt="Sản phẩm" class="max-h-full max-w-full object-contain">
           </div>
           
           <div class="flex-1 space-y-1">
             <div class="flex items-start justify-between gap-2">
-              <h3 class="text-base font-bold text-slate-950">iPhone 18 Pro Max</h3>
+              <h3 id="cartItemTitle" class="text-base font-bold text-slate-950">iPhone 18 Pro Max</h3>
               <button type="button" class="text-slate-400 hover:text-red-500 transition" aria-label="Xóa sản phẩm">
                 <svg class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
               </button>
             </div>
-            <p class="text-xs text-slate-500 font-medium">Màu sắc: <strong class="text-slate-800">Đỏ Burgundy</strong> | Dung lượng: <strong class="text-slate-800">256GB</strong></p>
+            <p id="cartItemDetails" class="text-xs text-slate-500 font-medium">Màu sắc: <strong class="text-slate-800">Đỏ Burgundy</strong> | Phiên bản: <strong class="text-slate-800">256GB</strong></p>
             <p class="text-xs text-emerald-600 font-semibold">Tình trạng: Còn hàng (Sẵn sàng giao)</p>
             <div class="pt-2 flex items-center justify-between sm:justify-start sm:gap-6">
-              <span class="text-lg font-black text-brand">34.990.000₫</span>
-              <span class="text-xs text-slate-400 line-through">36.990.000₫</span>
+              <span id="cartItemPrice" class="text-lg font-black text-brand">34.990.000₫</span>
+              <span id="cartItemOldPrice" class="text-xs text-slate-400 line-through">36.990.000₫</span>
             </div>
           </div>
         </div>
@@ -92,9 +92,9 @@
         <div class="pt-4 border-t border-slate-100 flex flex-wrap items-center justify-between gap-3 text-xs text-slate-500">
           <div class="flex items-center gap-2">
             <svg class="h-4 w-4 text-emerald-600" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg>
-            <span>Bảo hành chính hãng 24 tháng VN/A</span>
+            <span>Bảo hành chính hãng toàn quốc VN/A</span>
           </div>
-          <a href="product-detail.html" class="font-bold text-brand hover:underline">Thay đổi cấu hình / màu</a>
+          <a id="cartChangeLink" href="product-detail.html" class="font-bold text-brand hover:underline">Thay đổi cấu hình / màu</a>
         </div>
 
       </div>
@@ -106,11 +106,11 @@
         <div class="space-y-3 text-sm text-slate-600">
           <div class="flex justify-between">
             <span>Tạm tính</span>
-            <span class="font-bold text-slate-900">34.990.000₫</span>
+            <span id="cartSubtotal" class="font-bold text-slate-900">34.990.000₫</span>
           </div>
           <div class="flex justify-between">
             <span>Giảm giá trực tiếp</span>
-            <span class="font-bold text-emerald-600">-2.000.000₫</span>
+            <span id="cartDiscount" class="font-bold text-emerald-600">-2.000.000₫</span>
           </div>
           <div class="flex justify-between">
             <span>Phí vận chuyển</span>
@@ -119,13 +119,13 @@
           <div class="pt-3 border-t border-slate-200/80 flex justify-between items-baseline">
             <span class="text-base font-bold text-slate-900">Tổng thanh toán</span>
             <div class="text-right">
-              <span class="text-2xl font-black text-brand tracking-tight">34.990.000₫</span>
+              <span id="cartTotal" class="text-2xl font-black text-brand tracking-tight">34.990.000₫</span>
               <p class="text-[11px] text-slate-400 font-medium">(Đã bao gồm VAT 10%)</p>
             </div>
           </div>
         </div>
 
-        <button type="button" onclick="alert('Cảm ơn bạn! Đơn hàng thử nghiệm của bạn đã được tiếp nhận tại VLU FLAGSHIP STORE.')" class="w-full h-13 py-3.5 rounded-full bg-brand text-white font-extrabold text-center hover:bg-brand-dark transition-all duration-200 shadow-lg shadow-brand/25 active:scale-98 flex items-center justify-center gap-2 text-base">
+        <button type="button" onclick="alert('Cảm ơn bạn! Đơn hàng của bạn đã được tiếp nhận thành công tại VLU FLAGSHIP STORE.')" class="w-full h-13 py-3.5 rounded-full bg-brand text-white font-extrabold text-center hover:bg-brand-dark transition-all duration-200 shadow-lg shadow-brand/25 active:scale-98 flex items-center justify-center gap-2 text-base">
           <span>Tiến hành đặt hàng</span>
           <svg class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3"/></svg>
         </button>
@@ -142,6 +142,61 @@
   <footer class="mt-auto border-t border-slate-200/80 bg-white py-6 text-center text-xs text-slate-500">
     <p>© 2026 VLU FLAGSHIP STORE – Hệ thống bán lẻ thiết bị công nghệ chính hãng.</p>
   </footer>
+
+  <script>
+    (function () {
+      function formatVND(n) {
+        return Number(n).toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.') + '₫';
+      }
+
+      try {
+        var saved = localStorage.getItem('vlu_cart_item');
+        if (saved) {
+          var item = JSON.parse(saved);
+          if (item && item.name) {
+            var imgEl = document.getElementById('cartItemImg');
+            var titleEl = document.getElementById('cartItemTitle');
+            var detailsEl = document.getElementById('cartItemDetails');
+            var priceEl = document.getElementById('cartItemPrice');
+            var oldPriceEl = document.getElementById('cartItemOldPrice');
+            var subtotalEl = document.getElementById('cartSubtotal');
+            var totalEl = document.getElementById('cartTotal');
+            var discountEl = document.getElementById('cartDiscount');
+            var changeLink = document.getElementById('cartChangeLink');
+
+            if (imgEl && item.image) imgEl.src = item.image;
+            if (titleEl) titleEl.textContent = item.name;
+            if (detailsEl) {
+              detailsEl.innerHTML = 'Màu sắc: <strong class="text-slate-800">' + (item.color || 'Mặc định') + '</strong> | Phiên bản: <strong class="text-slate-800">' + (item.variant || 'Tiêu chuẩn') + '</strong>';
+            }
+            if (priceEl && item.price) priceEl.textContent = formatVND(item.price);
+            if (subtotalEl && item.price) subtotalEl.textContent = formatVND(item.price);
+            if (totalEl && item.price) totalEl.textContent = formatVND(item.price);
+
+            if (item.oldPrice && item.oldPrice > item.price) {
+              if (oldPriceEl) {
+                oldPriceEl.textContent = formatVND(item.oldPrice);
+                oldPriceEl.classList.remove('hidden');
+              }
+              if (discountEl) {
+                var diff = item.oldPrice - item.price;
+                discountEl.textContent = '-' + formatVND(diff);
+              }
+            } else {
+              if (oldPriceEl) oldPriceEl.classList.add('hidden');
+              if (discountEl) discountEl.textContent = '0₫';
+            }
+
+            if (changeLink) {
+              changeLink.href = 'product-detail.html?id=' + encodeURIComponent(item.id || '') + '&name=' + encodeURIComponent(item.name);
+            }
+          }
+        }
+      } catch (e) {
+        console.warn('Lỗi đọc giỏ hàng:', e);
+      }
+    })();
+  </script>
 
 </body>
 </html>

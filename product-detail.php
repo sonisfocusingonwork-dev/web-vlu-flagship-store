@@ -66,11 +66,11 @@ $cartCount = 0;
         <ol class="flex items-center gap-1.5 flex-wrap">
           <li><a href="index.php" class="hover:text-brand transition">Trang chủ</a></li>
           <li class="text-slate-300">/</li>
-          <li><a href="category.php?cat=dien-thoai" class="hover:text-brand transition">Điện thoại</a></li>
+          <li><a id="pdBreadcrumbCat" href="category.php?cat=dien-thoai" class="hover:text-brand transition">Điện thoại</a></li>
           <li class="text-slate-300">/</li>
-          <li><a href="search.php?q=Apple" class="hover:text-brand transition">Apple iPhone</a></li>
+          <li><a id="pdBreadcrumbBrand" href="search.php?q=Apple" class="hover:text-brand transition">Apple iPhone</a></li>
           <li class="text-slate-300">/</li>
-          <li class="text-slate-900 font-bold" aria-current="page">iPhone 18 Pro Max</li>
+          <li id="pdBreadcrumbName" class="text-slate-900 font-bold" aria-current="page">iPhone 18 Pro Max</li>
         </ol>
       </nav>
     </div>
@@ -89,7 +89,7 @@ $cartCount = 0;
           <!-- Khung ảnh lớn sắc nét phong cách Apple Studio -->
           <div class="gallery-viewer group relative p-6 sm:p-10">
             <!-- Huy hiệu nổi bật góc ảnh -->
-            <div class="absolute left-4 top-4 z-10 flex flex-col gap-2">
+            <div id="pdBadges" class="absolute left-4 top-4 z-10 flex flex-col gap-2">
               <span class="inline-flex items-center gap-1.5 rounded-full bg-slate-900/85 px-3 py-1 text-xs font-bold text-white backdrop-blur-md shadow-sm">
                 <span class="h-1.5 w-1.5 rounded-full bg-brand"></span>
                 Titanium Cấp 5
@@ -180,13 +180,11 @@ $cartCount = 0;
           <!-- 1. Tiêu đề, Hãng & Đánh giá -->
           <div>
             <div class="flex items-center gap-2 mb-1.5">
-              <span class="text-xs font-black uppercase tracking-[0.2em] text-brand">Apple · Flagship 2026</span>
+              <span id="pdEyebrow" class="text-xs font-black uppercase tracking-[0.2em] text-brand">Apple · Flagship 2026</span>
               <span class="inline-block h-1 w-1 rounded-full bg-slate-300"></span>
               <span class="text-xs font-bold text-slate-500">Chính hãng VN/A</span>
             </div>
-            <h1 class="text-2xl sm:text-3xl lg:text-4xl font-extrabold text-slate-950 tracking-tight leading-tight">
-              iPhone 18 Pro Max
-            </h1>
+            <h1 id="pdName" class="text-2xl sm:text-3xl lg:text-4xl font-extrabold text-slate-950 tracking-tight leading-tight">iPhone 18 Pro Max</h1>
 
             <div class="flex items-center gap-3 mt-3 flex-wrap">
               <!-- Rating Stars -->
@@ -226,7 +224,7 @@ $cartCount = 0;
                 -5%
               </span>
             </div>
-            <p class="mt-2 text-xs font-medium text-slate-600 flex items-center gap-1.5">
+            <p id="pdInstallment" class="mt-2 text-xs font-medium text-slate-600 flex items-center gap-1.5">
               <svg class="h-4 w-4 text-emerald-600" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
               Trả góp 0% lãi suất – Chỉ từ <strong>2.915.000₫/tháng</strong> (Kỳ hạn 12 tháng)
             </p>
@@ -239,7 +237,7 @@ $cartCount = 0;
                 Màu sắc: <strong id="selectedColorName" class="text-slate-900 font-extrabold text-sm ml-1">Đỏ Burgundy</strong>
               </span>
             </div>
-            <div class="flex items-center gap-3.5" role="radiogroup" aria-label="Chọn màu sắc sản phẩm">
+            <div id="colorSwatches" class="flex items-center gap-3.5" role="radiogroup" aria-label="Chọn màu sắc sản phẩm">
               
               <!-- Màu 1: Đỏ Burgundy -->
               <button type="button" class="color-swatch-btn active"
@@ -298,10 +296,10 @@ $cartCount = 0;
           <div class="space-y-3">
             <div class="flex items-center justify-between">
               <span class="text-xs font-bold uppercase tracking-wider text-slate-500">
-                Dung lượng lưu trữ: <strong id="selectedStorageName" class="text-slate-900 font-extrabold text-sm ml-1">256GB</strong>
+                <span id="variantLabel">Dung lượng lưu trữ</span>: <strong id="selectedVariantName" class="text-slate-900 font-extrabold text-sm ml-1">256GB</strong>
               </span>
             </div>
-            <div class="grid grid-cols-3 gap-3" role="radiogroup" aria-label="Chọn dung lượng bộ nhớ">
+            <div id="variantGrid" class="grid grid-cols-3 gap-3" role="radiogroup" aria-label="Chọn phiên bản">
               
               <!-- Bản 256GB -->
               <button type="button" class="storage-btn active"
@@ -345,7 +343,7 @@ $cartCount = 0;
               <svg class="h-4 w-4" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 8v13m0-13V6a2 2 0 112 2h-2zm0 0V5.5A2.5 2.5 0 109.5 8H12zm-7 4h14M5 12a2 2 0 110-4h14a2 2 0 110 4M5 12v7a2 2 0 002 2h10a2 2 0 002-2v-7"/></svg>
               Ưu đãi đặc quyền tại VLU FLAGSHIP STORE
             </p>
-            <ul class="text-xs text-slate-700 space-y-1.5 font-medium">
+            <ul id="pdPerks" class="text-xs text-slate-700 space-y-1.5 font-medium">
               <li class="flex items-start gap-2">
                 <span class="text-brand font-bold">•</span>
                 <span>Thu cũ trợ giá lên tới <strong>5.000.000₫</strong> khi lên đời iPhone 18 Pro Max</span>
@@ -434,7 +432,7 @@ $cartCount = 0;
       </div>
 
       <!-- Lưới Bento Grid 8 khối cấu hình -->
-      <div class="spec-bento-grid mb-8">
+      <div id="pdBento" class="spec-bento-grid mb-8">
         
         <!-- Khối 1: Màn hình -->
         <div class="spec-bento-card">
@@ -502,10 +500,10 @@ $cartCount = 0;
       <div class="rounded-3xl border border-slate-200/80 bg-white overflow-hidden shadow-sm">
         <div class="px-6 py-4 bg-slate-50/80 border-b border-slate-200/80 flex items-center justify-between">
           <h3 class="text-sm font-extrabold text-slate-900 uppercase tracking-wider">Thông số kỹ thuật đầy đủ</h3>
-          <span class="text-xs text-slate-500 font-medium">Mã sản phẩm: A3294 (VN/A)</span>
+          <span id="pdSku" class="text-xs text-slate-500 font-medium">Mã sản phẩm: A3294 (VN/A)</span>
         </div>
 
-        <div class="divide-y divide-slate-100 text-sm">
+        <div id="pdSpecTable" class="divide-y divide-slate-100 text-sm">
           
           <div class="spec-table-row">
             <span class="font-bold text-slate-900 w-1/3">Công nghệ màn hình</span>
@@ -593,7 +591,7 @@ $cartCount = 0;
         <div>
           <h4 class="mb-4 text-xs font-bold uppercase tracking-wider text-slate-900">Danh mục chính</h4>
           <ul class="grid grid-cols-2 gap-x-4 gap-y-2.5 text-sm text-slate-600 md:grid-cols-1">
-            <li><a href="category.php?cat=dien-thoai" class="font-medium transition hover:text-brand">Điện thoại</a></li>
+            <li><a id="pdBreadcrumbCat" href="category.php?cat=dien-thoai" class="hover:text-brand transition">Điện thoại</a></li>
             <li><a href="category.php?cat=laptop" class="font-medium transition hover:text-brand">Laptop</a></li>
             <li><a href="category.php?cat=ipad" class="font-medium transition hover:text-brand">iPad</a></li>
             <li><a href="category.php?cat=tai-nghe" class="font-medium transition hover:text-brand">Tai nghe</a></li>
@@ -622,161 +620,12 @@ $cartCount = 0;
 
   <!-- Toast thông báo Dynamic Island -->
   <div id="toast" role="status" aria-live="polite" class="pointer-events-none fixed bottom-6 left-1/2 z-50 -translate-x-1/2 translate-y-4 rounded-full bg-ink px-5 py-3 text-sm font-semibold text-white opacity-0 shadow-xl"></div>
-
   <!-- Client Script chung cho Header Mega-Menu & Drawer -->
   <script src="frontend/assets/js/main.js"></script>
 
-  <!-- ============================================================
-       JAVASCRIPT TƯƠNG TÁC CHI TIẾT SẢN PHẨM:
-       1. Đổi màu sắc: Viền sáng swatch, cập nhật tên màu & đổi ảnh lớn
-       2. Đổi dung lượng: Tự động tính toán và cập nhật giá bán & giá cũ
-       3. Chuyển ảnh qua thumbnails
-       4. Thêm vào giỏ hàng: Nảy số giỏ hàng & Toast thông báo
-       ============================================================ -->
-  <script>
-    (function () {
-      'use strict';
-
-      // 1. Dữ liệu bảng giá theo dung lượng
-      var capacityData = {
-        '256GB': { price: 34990000, oldPrice: 36990000, discount: '-5%' },
-        '512GB': { price: 38990000, oldPrice: 40990000, discount: '-5%' },
-        '1TB':   { price: 44990000, oldPrice: 46990000, discount: '-4%' }
-      };
-
-      var currentCapacity = '256GB';
-      var currentColor = 'Đỏ Burgundy';
-
-      function formatVND(n) {
-        return n.toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.') + '₫';
-      }
-
-      // Các phần tử DOM
-      var priceEl = document.getElementById('productPrice');
-      var oldPriceEl = document.getElementById('oldPrice');
-      var discountEl = document.getElementById('discountBadge');
-      var selectedColorLabel = document.getElementById('selectedColorName');
-      var selectedStorageLabel = document.getElementById('selectedStorageName');
-      var imageColorLabel = document.getElementById('imageColorLabel');
-      var mainImg = document.getElementById('mainProductImg');
-      var addToCartBtn = document.getElementById('addToCartBtn');
-      var toast = document.getElementById('toast');
-      var toastTimer = null;
-
-      function showToast(msg) {
-        if (!toast) return;
-        toast.textContent = msg;
-        toast.classList.add('show');
-        clearTimeout(toastTimer);
-        toastTimer = setTimeout(function () {
-          toast.classList.remove('show');
-        }, 2400);
-      }
-
-      // CẬP NHẬT GIÁ TIỀN KHI CHỌN DUNG LƯỢNG
-      var storageButtons = document.querySelectorAll('.storage-btn');
-      storageButtons.forEach(function (btn) {
-        btn.addEventListener('click', function () {
-          storageButtons.forEach(function (b) {
-            b.classList.remove('active');
-            b.setAttribute('aria-checked', 'false');
-          });
-          btn.classList.add('active');
-          btn.setAttribute('aria-checked', 'true');
-
-          var cap = btn.dataset.capacity;
-          currentCapacity = cap;
-          if (selectedStorageLabel) selectedStorageLabel.textContent = cap;
-
-          var data = capacityData[cap] || {
-            price: parseInt(btn.dataset.price, 10),
-            oldPrice: parseInt(btn.dataset.oldPrice, 10),
-            discount: btn.dataset.discount
-          };
-
-          // Hiệu ứng chuyển số giá tiền mượt mà
-          if (priceEl) {
-            priceEl.style.opacity = '0.3';
-            priceEl.style.transform = 'translateY(-4px)';
-            setTimeout(function () {
-              priceEl.textContent = formatVND(data.price);
-              if (oldPriceEl) oldPriceEl.textContent = formatVND(data.oldPrice);
-              if (discountEl) discountEl.textContent = data.discount;
-              priceEl.style.opacity = '1';
-              priceEl.style.transform = 'translateY(0)';
-            }, 120);
-          }
-        });
-      });
-
-      // CẬP NHẬT ẢNH & TÊN MÀU KHI BẤM NÚT MÀU SẮC (SWATCH)
-      var colorButtons = document.querySelectorAll('.color-swatch-btn');
-      var thumbButtons = document.querySelectorAll('.thumb-btn');
-
-      function changeColor(colorName, colorImg, colorKey) {
-        currentColor = colorName;
-        if (selectedColorLabel) selectedColorLabel.textContent = colorName;
-        if (imageColorLabel) imageColorLabel.textContent = colorName;
-
-        // Đổi ảnh lớn mượt mà
-        if (mainImg && colorImg) {
-          mainImg.style.opacity = '0.3';
-          mainImg.style.transform = 'scale(0.96)';
-          setTimeout(function () {
-            mainImg.src = colorImg;
-            mainImg.alt = 'iPhone 18 Pro Max - ' + colorName;
-            mainImg.style.opacity = '1';
-            mainImg.style.transform = 'scale(1)';
-          }, 150);
-        }
-
-        // Đồng bộ trạng thái viền sáng nút màu
-        colorButtons.forEach(function (b) {
-          var isActive = (b.dataset.colorKey === colorKey) || (b.dataset.colorName === colorName);
-          b.classList.toggle('active', isActive);
-          b.setAttribute('aria-checked', isActive ? 'true' : 'false');
-        });
-
-        // Đồng bộ trạng thái thumbnail
-        thumbButtons.forEach(function (t) {
-          var isActive = (t.dataset.colorKey === colorKey) || (t.dataset.colorName === colorName);
-          t.classList.toggle('active', isActive);
-        });
-      }
-
-      colorButtons.forEach(function (btn) {
-        btn.addEventListener('click', function () {
-          changeColor(btn.dataset.colorName, btn.dataset.img, btn.dataset.colorKey);
-        });
-      });
-
-      // BẤM THUMBNAIL ĐỂ CHUYỂN ẢNH
-      thumbButtons.forEach(function (thumb) {
-        thumb.addEventListener('click', function () {
-          var src = thumb.dataset.src;
-          var name = thumb.dataset.colorName;
-          var key = thumb.dataset.colorKey;
-          changeColor(name, src, key);
-        });
-      });
-
-      // NÚT THÊM VÀO GIỎ HÀNG
-      if (addToCartBtn) {
-        addToCartBtn.addEventListener('click', function () {
-          var cartBadge = document.getElementById('cartCount');
-          if (cartBadge) {
-            var currentCount = parseInt(cartBadge.textContent, 10) || 0;
-            cartBadge.textContent = currentCount + 1;
-            cartBadge.classList.remove('bump');
-            void cartBadge.offsetWidth;
-            cartBadge.classList.add('bump');
-          }
-          showToast('Đã thêm iPhone 18 Pro Max (' + currentColor + ' - ' + currentCapacity + ') vào giỏ hàng!');
-        });
-      }
-
-    })();
-  </script>
-
+  <!-- Dữ liệu catalog và image manifest cho Dynamic Product Detail -->
+  <script src="frontend/assets/js/image-manifest.js"></script>
+  <script src="frontend/assets/js/products-data.js"></script>
+  <script src="frontend/assets/js/product-detail.js"></script>
 </body>
 </html>

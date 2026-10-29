@@ -4,7 +4,8 @@
  * Header (logo + tìm kiếm + menu dropdown) | Hero banner full-width | Sản phẩm mới ra mắt | Footer
  */
 
-require_once __DIR__ . '/backend/config/db.php'; // Backend Database Configuration
+require_once __DIR__ . '/backend/config/db.php';
+require_once __DIR__ . '/backend/lib/product_links.php'; // Backend Database Configuration
 
 function e($value): string
 {
@@ -151,29 +152,29 @@ $banners = [
    Mặc định dùng ảnh trong thư mục SanPham; nếu CSDL có dữ liệu thì ưu tiên CSDL
    ------------------------------------------------------------------ */
 $defaultProducts = [
-    ['id' => 101, 'brand' => 'Apple', 'name' => 'iPhone 18 Pro & iPhone 18 Pro Max', 'price' => 34990000, 'old_price' => 36990000,
+    ['id' => 101, 'slug' => 'iphone-18-pro-max', 'brand' => 'Apple', 'name' => 'iPhone 18 Pro & iPhone 18 Pro Max', 'price' => 34990000, 'old_price' => 36990000,
      'description' => 'Đỉnh cao công nghệ Titanium, chip A20 Pro siêu mạnh mẽ.', 'folder' => 'Iphone/Ip 18 pro max', 'prefer' => 'Đỏ Burgundy'],
-    ['id' => 102, 'brand' => 'Apple', 'name' => 'iPhone Air', 'price' => 26990000, 'old_price' => 28990000,
+    ['id' => 102, 'slug' => 'iphone-air', 'brand' => 'Apple', 'name' => 'iPhone Air', 'price' => 26990000, 'old_price' => 28990000,
      'description' => 'Thiết kế siêu mỏng nhẹ đột phá, hiệu năng vượt trội.', 'folder' => 'Iphone/Ip Air', 'prefer' => 'Xanh da trời'],
-    ['id' => 103, 'brand' => 'Apple', 'name' => 'iPhone 17', 'price' => 22990000, 'old_price' => null,
+    ['id' => 103, 'slug' => 'iphone-17', 'brand' => 'Apple', 'name' => 'iPhone 17', 'price' => 22990000, 'old_price' => null,
      'description' => 'Màu sắc trẻ trung, camera kép nâng cấp toàn diện.', 'folder' => 'Iphone/Ip 17', 'prefer' => 'Tím Oải Hương'],
-    ['id' => 201, 'brand' => 'Samsung', 'name' => 'Galaxy S26 Ultra', 'price' => 31990000, 'old_price' => null,
+    ['id' => 201, 'slug' => 'galaxy-s26-ultra', 'brand' => 'Samsung', 'name' => 'Galaxy S26 Ultra', 'price' => 31990000, 'old_price' => null,
      'description' => 'Galaxy AI, bút S Pen tích hợp và camera 200MP.', 'folder' => 'Samsung/SS S26 Ultra', 'prefer' => 'Cobalt Violet'],
-    ['id' => 202, 'brand' => 'Samsung', 'name' => 'Galaxy Z Fold8', 'price' => 44990000, 'old_price' => null,
+    ['id' => 202, 'slug' => 'galaxy-z-fold8', 'brand' => 'Samsung', 'name' => 'Galaxy Z Fold8', 'price' => 44990000, 'old_price' => null,
      'description' => 'Màn hình gập lớn như tablet, bản lề siêu mỏng.', 'folder' => 'Samsung/SS Galaxy Z Fold8', 'prefer' => 'Graphite'],
-    ['id' => 203, 'brand' => 'Samsung', 'name' => 'Galaxy Z Flip8', 'price' => 25990000, 'old_price' => 28990000,
+    ['id' => 203, 'slug' => 'galaxy-z-flip8', 'brand' => 'Samsung', 'name' => 'Galaxy Z Flip8', 'price' => 25990000, 'old_price' => 28990000,
      'description' => 'Gập vỏ sò nhỏ gọn, màn hình phụ Flex Window đa năng.', 'folder' => 'Samsung/SS Galaxy Flip8', 'prefer' => 'Mint'],
-    ['id' => 204, 'brand' => 'Samsung', 'name' => 'Galaxy S26', 'price' => 22990000, 'old_price' => null,
+    ['id' => 204, 'slug' => 'galaxy-s26', 'brand' => 'Samsung', 'name' => 'Galaxy S26', 'price' => 22990000, 'old_price' => null,
      'description' => 'Thiết kế phẳng nguyên khối, màn hình Dynamic AMOLED 2X.', 'folder' => 'Samsung/SS Galaxy S26', 'prefer' => 'Sky Blue'],
-    ['id' => 301, 'brand' => 'Xiaomi', 'name' => 'Xiaomi 17 Ultra', 'price' => 26990000, 'old_price' => null,
+    ['id' => 301, 'slug' => 'xiaomi-17-ultra', 'brand' => 'Xiaomi', 'name' => 'Xiaomi 17 Ultra', 'price' => 26990000, 'old_price' => null,
      'description' => 'Ống kính Leica, cảm biến 1-inch chuyên nghiệp.', 'folder' => 'Xiaomi/Xiaomi 17 ultra', 'prefer' => 'Xanh Lá'],
-    ['id' => 302, 'brand' => 'Xiaomi', 'name' => 'Xiaomi 17 Pro Max', 'price' => 24990000, 'old_price' => 26990000,
+    ['id' => 302, 'slug' => 'xiaomi-17-pro-max', 'brand' => 'Xiaomi', 'name' => 'Xiaomi 17 Pro Max', 'price' => 24990000, 'old_price' => 26990000,
      'description' => 'Snapdragon đầu bảng, sạc siêu tốc HyperCharge.', 'folder' => 'Xiaomi/Xiaomi 17 pro max', 'prefer' => 'Tím'],
-    ['id' => 401, 'brand' => 'OPPO', 'name' => 'OPPO Find X9 Ultra', 'price' => 27990000, 'old_price' => null,
+    ['id' => 401, 'slug' => 'oppo-find-x9-ultra', 'brand' => 'OPPO', 'name' => 'OPPO Find X9 Ultra', 'price' => 27990000, 'old_price' => null,
      'description' => 'Camera tiềm vọng kép, hệ màu Hasselblad chân thực.', 'folder' => 'Oppo/OPPO Find X9 Ultra', 'prefer' => 'Cam'],
-    ['id' => 402, 'brand' => 'OPPO', 'name' => 'OPPO Find X9 Pro', 'price' => 22990000, 'old_price' => null,
+    ['id' => 402, 'slug' => 'oppo-find-x9-pro', 'brand' => 'OPPO', 'name' => 'OPPO Find X9 Pro', 'price' => 22990000, 'old_price' => null,
      'description' => 'Thiết kế cao cấp, chip xử lý hình ảnh độc quyền.', 'folder' => 'Oppo/OPPO Find X9 Pro', 'prefer' => 'Trắng'],
-    ['id' => 404, 'brand' => 'OPPO', 'name' => 'OPPO Find N5', 'price' => 39990000, 'old_price' => 42990000,
+    ['id' => 404, 'slug' => 'oppo-find-n5', 'brand' => 'OPPO', 'name' => 'OPPO Find N5', 'price' => 39990000, 'old_price' => 42990000,
      'description' => 'Màn gập không nếp gấp, siêu mỏng nhẹ.', 'folder' => 'Oppo/OPPO Find N5', 'prefer' => 'Đen'],
 ];
 
@@ -811,7 +812,7 @@ $cartCount = 0;
                 <?php endif; ?>
               </div>
               <h3 class="mt-1 text-sm font-bold leading-snug text-slate-900 transition group-hover:text-brand sm:text-base">
-                <a href="product-detail.html?id=<?= (int)$p['id'] ?>" class="after:absolute after:inset-0 after:z-0 after:rounded-[24px] focus-visible:outline-none focus-visible:after:ring-4 focus-visible:after:ring-brand/30"><?= e($p['name']) ?></a>
+                <a href="<?= vlu_product_url($p['name'], $p['brand'] ?? '', $p['slug'] ?? (string)$p['id']) ?>" class="after:absolute after:inset-0 after:z-0 after:rounded-[24px] focus-visible:outline-none focus-visible:after:ring-4 focus-visible:after:ring-brand/30"><?= e($p['name']) ?></a>
               </h3>
               <?php if (!empty($p['description'])): ?>
                 <p class="mt-1 line-clamp-2 text-xs leading-relaxed text-slate-500"><?= e($p['description']) ?></p>

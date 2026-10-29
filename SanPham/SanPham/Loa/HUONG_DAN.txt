@@ -1,0 +1,12 @@
+HƯỚNG DẪN THÊM ẢNH CHO DANH MỤC: Loa
+====================================================
+
+1. Bạn chỉ cần thả các file ảnh (.png, .webp, .jpg) vào thư mục tương ứng với dòng máy.
+2. Đặt tên file theo tên màu sắc của sản phẩm, ví dụ:
+   - Den.png
+   - Trang.png
+   - Bac.png
+   - Xam Khong Gian.webp
+   - Vang Sa Mac.jpg
+3. Hệ thống sẽ TỰ ĐỘNG nhận diện tên file thành tùy chọn màu sắc hiển thị trên trang Chi tiết sản phẩm!
+4. Nếu chưa có ảnh trong thư mục này, hệ thống sẽ tự động dùng ảnh biểu tượng chuẩn Retina chất lượng cao.
