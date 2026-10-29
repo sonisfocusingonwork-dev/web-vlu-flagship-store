@@ -1,7 +1,7 @@
 <?php
 /**
  * VLU FLAGSHIP STORE – HTML Renderer
- * Render file tĩnh (index.html, product-detail.html, cart.html, checkout.html)
+ * Render toàn bộ các file tĩnh (index, product-detail, cart, checkout, login, register)
  * Giữ nguyên 100% chuẩn mã hóa UTF-8 nhị phân, không qua pipeline giải mã sai của PowerShell.
  */
 
@@ -24,6 +24,14 @@ $pages = [
     'checkout.php' => [
         'dest' => 'checkout.html',
         'keywords' => ['Thanh toán', 'Thông tin giao hàng', 'VietQR', 'Hoàn tất đặt hàng']
+    ],
+    'login.php' => [
+        'dest' => 'login.html',
+        'keywords' => ['Đăng nhập tài khoản', 'Email hoặc Tên đăng nhập', 'Mật khẩu', 'Ghi nhớ đăng nhập']
+    ],
+    'register.php' => [
+        'dest' => 'register.html',
+        'keywords' => ['Tạo tài khoản mới', 'Họ và tên', 'Số điện thoại', 'Xác nhận lại mật khẩu']
     ]
 ];
 
@@ -31,7 +39,7 @@ foreach ($pages as $src => $info) {
     $cmd = '"' . PHP_BINARY . '" "' . $root . '/' . $src . '"';
     $output = shell_exec($cmd);
     $dest = $info['dest'];
-    if ($output !== null && strlen($output) > 1000) {
+    if ($output !== null && strlen($output) > 500) {
         file_put_contents($root . '/' . $dest, $output);
         echo "✓ {$dest}: " . strlen($output) . " bytes [UTF-8 Chuẩn]\n";
         

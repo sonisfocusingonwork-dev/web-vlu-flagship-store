@@ -66,8 +66,57 @@
         </div>
       </form>
 
-      <!-- 3. Giỏ hàng & Nút mở menu di động -->
+      <!-- 3. Tài khoản, Giỏ hàng & Nút mở menu di động -->
       <div class="flex items-center gap-2">
+        
+        <!-- Nút Tài khoản / Đăng nhập (Auth Container) -->
+        <div id="headerAuthContainer" class="relative">
+          <!-- Trạng thái chưa đăng nhập -->
+          <a href="login.html" id="headerLoginBtn" class="flex items-center gap-1.5 h-10 px-3 rounded-full text-slate-700 transition hover:bg-slate-100/80 active:scale-95 text-xs font-bold" aria-label="Đăng nhập tài khoản">
+            <svg class="h-4.5 w-4.5 text-slate-600" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0A17.933 17.933 0 0112 21.75c-2.676 0-5.216-.584-7.499-1.632z"/>
+            </svg>
+            <span class="hidden sm:inline">Đăng nhập</span>
+          </a>
+
+          <!-- Trạng thái đã đăng nhập (Dropdown Menu) -->
+          <div id="headerUserDropdown" class="hidden relative">
+            <button type="button" id="headerUserBtn" class="flex items-center gap-2 h-10 px-3 rounded-full bg-slate-100/80 hover:bg-slate-200/80 text-slate-900 transition active:scale-95 text-xs font-bold" aria-expanded="false" aria-haspopup="true">
+              <span class="grid h-6 w-6 place-items-center rounded-full bg-brand text-[10px] font-black text-white" id="headerUserAvatar">V</span>
+              <span id="headerUserName" class="max-w-[100px] truncate">Người dùng</span>
+              <svg class="h-3.5 w-3.5 text-slate-500" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="m19.5 8.25-7.5 7.5-7.5-7.5"/></svg>
+            </button>
+
+            <!-- Dropdown Menu Box -->
+            <div id="headerUserMenu" class="hidden absolute right-0 mt-2 w-56 rounded-2xl border border-slate-200/80 bg-white/95 backdrop-blur-xl p-2 shadow-xl ring-1 ring-black/5 z-50">
+              <div class="px-3 py-2 border-b border-slate-100">
+                <p id="menuUserFullName" class="text-xs font-bold text-slate-900 truncate">Họ và tên</p>
+                <div class="flex items-center gap-1.5 mt-0.5">
+                  <span id="menuUserRoleBadge" class="rounded-full bg-slate-100 px-2 py-0.5 text-[10px] font-extrabold text-slate-600">Khách hàng</span>
+                  <span id="menuUserEmail" class="text-[11px] text-slate-400 truncate"></span>
+                </div>
+              </div>
+              <div class="py-1">
+                <a href="#" id="menuAdminBtn" class="hidden flex items-center gap-2 rounded-xl px-3 py-2 text-xs font-bold text-brand hover:bg-brand-soft transition">
+                  <svg class="h-4 w-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M10.5 6h9.75M10.5 6a1.5 1.5 0 11-3 0m3 0a1.5 1.5 0 10-3 0M3.75 6H7.5m3 12h9.75m-9.75 0a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m-3.75 0H7.5m9-6h3.75m-3.75 0a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m-9.75 0h9.75"/></svg>
+                  <span>Trang quản trị (Admin)</span>
+                </a>
+                <a href="cart.html" class="flex items-center gap-2 rounded-xl px-3 py-2 text-xs font-medium text-slate-700 hover:bg-slate-100 transition">
+                  <svg class="h-4 w-4 text-slate-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 10.5V6a3.75 3.75 0 10-7.5 0v4.5m11.356-1.993l1.263 12c.07.665-.45 1.243-1.119 1.243H4.25a1.125 1.125 0 01-1.12-1.243l1.264-12A1.125 1.125 0 015.513 7.5h12.974c.576 0 1.059.435 1.119.993z"/></svg>
+                  <span>Đơn hàng của tôi</span>
+                </a>
+              </div>
+              <div class="pt-1 border-t border-slate-100">
+                <button type="button" id="headerLogoutBtn" class="w-full flex items-center gap-2 rounded-xl px-3 py-2 text-xs font-bold text-red-600 hover:bg-red-50 transition">
+                  <svg class="h-4 w-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 9V5.25A2.25 2.25 0 0013.5 3h-6a2.25 2.25 0 00-2.25 2.25v13.5A2.25 2.25 0 007.5 21h6a2.25 2.25 0 002.25-2.25V15M12 9l-3 3m0 0l3 3m-3-3h12.75"/></svg>
+                  <span>Đăng xuất</span>
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Nút Giỏ hàng -->
         <a href="cart.html" class="relative grid h-10 w-10 place-items-center rounded-full text-slate-700 transition hover:bg-slate-100/80 active:scale-95" aria-label="Giỏ hàng, hiện có 0 sản phẩm">
           <svg class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
             <path d="M6 7h12l-1 13H7L6 7Z"/><path d="M9 7a3 3 0 0 1 6 0"/>
@@ -2871,6 +2920,27 @@
   <div id="mobileDrawer" class="mobile-drawer" role="dialog" aria-modal="true" aria-label="Menu danh mục di động">
     <div class="mobile-drawer-inner p-4 space-y-3">
       
+      <!-- Khung Tài khoản Mobile -->
+      <div class="pb-2 border-b border-slate-200/80">
+        <!-- Khi chưa đăng nhập -->
+        <a href="login.html" id="mobileLoginBtn" class="flex items-center justify-center gap-2 w-full py-2.5 rounded-2xl bg-brand text-white font-extrabold text-xs shadow-md shadow-brand/20 active:scale-98">
+          <svg class="h-4 w-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0A17.933 17.933 0 0112 21.75c-2.676 0-5.216-.584-7.499-1.632z"/></svg>
+          <span>Đăng nhập / Đăng ký</span>
+        </a>
+
+        <!-- Khi đã đăng nhập -->
+        <div id="mobileUserBox" class="hidden flex items-center justify-between p-2.5 rounded-2xl bg-white border border-slate-200/80">
+          <div class="flex items-center gap-2.5 min-w-0">
+            <span id="mobileUserAvatar" class="grid h-8 w-8 shrink-0 place-items-center rounded-full bg-brand text-xs font-black text-white">V</span>
+            <div class="min-w-0">
+              <p id="mobileUserName" class="text-xs font-bold text-slate-900 truncate">Người dùng</p>
+              <p id="mobileUserRole" class="text-[10px] font-bold text-emerald-600">Khách hàng VLU</p>
+            </div>
+          </div>
+          <button type="button" id="mobileLogoutBtn" class="text-xs font-bold text-red-500 hover:text-red-700 px-2 py-1">Đăng xuất</button>
+        </div>
+      </div>
+
       <!-- Ô tìm kiếm mobile -->
       <form action="search.php" method="GET" class="relative">
         <svg class="pointer-events-none absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
@@ -4172,6 +4242,8 @@
 <div id="megaScrim" class="mega-scrim" aria-hidden="true"></div>
 <!-- Central Cart Engine 2026 -->
 <script src="frontend/assets/js/cart-engine.js"></script>
+<!-- Central Auth Engine 2026 -->
+<script src="frontend/assets/js/auth-engine.js"></script>
 
   <!-- ============================================================
        [MAIN] BỐ CỤC 2 CỘT CHUẨN APPLE STORE

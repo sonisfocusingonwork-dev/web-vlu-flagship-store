@@ -1,0 +1,233 @@
+<?php
+/**
+ * VLU FLAGSHIP STORE – Trang Đăng Ký 2026 (register.php)
+ * Thiết kế chuẩn Apple ID Glassmorphism 2026, thanh đo độ mạnh mật khẩu, kiểm tra thời gian thực
+ */
+
+require_once __DIR__ . '/backend/lib/product_links.php';
+
+function e($value): string
+{
+    return htmlspecialchars((string)$value, ENT_QUOTES, 'UTF-8');
+}
+?>
+<!DOCTYPE html>
+<html lang="vi" class="h-full">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Đăng ký tài khoản – VLU FLAGSHIP STORE</title>
+  <meta name="description" content="Tạo tài khoản thành viên VLU FLAGSHIP STORE để nhận ưu đãi tân sinh viên, bảo hành chính hãng và theo dõi đơn hàng tiện lợi.">
+  <link rel="icon" type="image/png" href="image_2c97c5.png">
+
+  <!-- Font chữ Plus Jakarta Sans -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            brand: { DEFAULT: '#C8102E', dark: '#9B0D23', soft: '#FDF2F4' },
+            ink: '#0B0F19'
+          },
+          fontFamily: {
+            sans: ['"Plus Jakarta Sans"', 'system-ui', '-apple-system', 'sans-serif']
+          }
+        }
+      }
+    }
+  </script>
+
+  <!-- Stylesheet Hệ thống Glassmorphic 2026 -->
+  <link rel="stylesheet" href="style.css">
+  <style>
+    /* Nền Ambient Mesh Gradient phong cách Apple Event 2026 */
+    .ambient-bg {
+      background: radial-gradient(circle at 15% 20%, rgba(200, 16, 46, 0.08) 0%, transparent 45%),
+                  radial-gradient(circle at 85% 80%, rgba(99, 102, 241, 0.08) 0%, transparent 45%),
+                  radial-gradient(circle at 50% 50%, rgba(248, 249, 252, 1) 0%, #F1F4F9 100%);
+    }
+    .glass-auth-card {
+      background: rgba(255, 255, 255, 0.88);
+      backdrop-filter: blur(28px) saturate(190%);
+      -webkit-backdrop-filter: blur(28px) saturate(190%);
+      border: 1px solid rgba(255, 255, 255, 0.9);
+      box-shadow: 0 25px 60px -15px rgba(15, 23, 42, 0.08), 0 0 0 1px rgba(226, 232, 240, 0.6);
+    }
+  </style>
+</head>
+<body class="ambient-bg font-sans text-ink antialiased min-h-screen flex flex-col justify-between selection:bg-brand selection:text-white relative overflow-x-hidden">
+
+  <!-- Đốm sáng chuyển sắc Ambient Orbs -->
+  <div class="pointer-events-none absolute -top-32 -left-32 h-96 w-96 rounded-full bg-brand/10 blur-3xl" aria-hidden="true"></div>
+  <div class="pointer-events-none absolute -bottom-32 -right-32 h-96 w-96 rounded-full bg-indigo-500/10 blur-3xl" aria-hidden="true"></div>
+
+  <!-- Header Đỉnh: Nút Điều hướng quay về Trang chủ -->
+  <header class="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-5 flex items-center justify-between relative z-20">
+    <a href="index.html" class="site-logo inline-flex items-center gap-2.5 transition active:scale-95" aria-label="VLU FLAGSHIP STORE – Về trang chủ">
+      <img src="frontend/assets/images/logo.png" onerror="this.onerror=null;this.src='image_2c97c5.png';" alt="VLU FLAGSHIP STORE" class="h-9 w-auto">
+      <span class="text-sm sm:text-base font-extrabold tracking-tight text-slate-900 hidden sm:inline">VLU FLAGSHIP STORE</span>
+    </a>
+    <a href="index.html" class="inline-flex items-center gap-1.5 rounded-full bg-white/80 border border-slate-200/80 px-4 py-2 text-xs font-bold text-slate-700 hover:text-brand hover:border-brand/30 hover:bg-white transition-all shadow-sm active:scale-95">
+      <svg class="h-3.5 w-3.5" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M10.5 19.5L3 12m0 0l7.5-7.5M3 12h18"/></svg>
+      <span>Trang chủ</span>
+    </a>
+  </header>
+
+  <!-- Khung Giữa: Glassmorphism Card (Apple ID Style) -->
+  <main class="flex-1 flex items-center justify-center px-4 py-6 sm:py-10 relative z-10 w-full">
+    <div class="glass-auth-card w-full max-w-lg rounded-3xl p-7 sm:p-9 space-y-6">
+      
+      <!-- Logo thương hiệu & Tiêu đề Form -->
+      <div class="text-center space-y-1.5">
+        <div class="mx-auto grid h-14 w-14 place-items-center rounded-2xl bg-brand/10 text-brand mb-2 shadow-inner">
+          <svg class="h-7 w-7" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M19 7.5v3m0 0v3m0-3h3m-3 0h-3m-2.25-4.125a3.375 3.375 0 11-6.75 0 3.375 3.375 0 016.75 0zM4 19.235v-.11a6.375 6.375 0 0112.75 0v.109A12.318 12.318 0 0110.374 21c-2.331 0-4.512-.645-6.374-1.765z"/>
+          </svg>
+        </div>
+        <h1 class="text-2xl font-black text-slate-950 tracking-tight">Tạo tài khoản mới</h1>
+        <p class="text-xs text-slate-500 font-medium">Gia nhập hệ sinh thái VLU Flagship để nhận voucher 500K &amp; bảo hành VIP</p>
+      </div>
+
+      <!-- Khung báo lỗi (nếu có) -->
+      <div id="registerErrorMsg" class="hidden rounded-xl bg-red-50 border border-red-200 p-3 text-xs font-semibold text-red-600 text-center animate-fade-in"></div>
+
+      <!-- Form Đăng ký (chuẩn bảng users: fullname, phone, email, password, confirm_password) -->
+      <form id="registerForm" method="POST" action="register.php" class="space-y-4">
+        
+        <!-- Hàng 1: Họ và tên -->
+        <div>
+          <label for="regFullname" class="block text-xs font-bold text-slate-700 mb-1">
+            Họ và tên <span class="text-red-500">*</span>
+          </label>
+          <div class="relative">
+            <span class="pointer-events-none absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400">
+              <svg class="h-4 w-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0A17.933 17.933 0 0112 21.75c-2.676 0-5.216-.584-7.499-1.632z"/></svg>
+            </span>
+            <input type="text" id="regFullname" name="fullname" required autocomplete="name" placeholder="Ví dụ: Nguyễn Văn An" class="w-full rounded-2xl border border-slate-200 bg-white/90 pl-10 pr-4 py-2.5 text-sm font-medium text-slate-900 placeholder:text-slate-400 focus:bg-white focus:border-brand focus:outline-none focus:ring-4 focus:ring-brand/10 transition-all">
+          </div>
+        </div>
+
+        <!-- Hàng 2: Grid 2 Cột: Số điện thoại & Email -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
+          <!-- Số điện thoại -->
+          <div>
+            <label for="regPhone" class="block text-xs font-bold text-slate-700 mb-1">
+              Số điện thoại <span class="text-red-500">*</span>
+            </label>
+            <div class="relative">
+              <span class="pointer-events-none absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400">
+                <svg class="h-4 w-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M2.25 6.75c0 8.284 6.716 15 15 15h2.25a2.25 2.25 0 002.25-2.25v-1.372c0-.516-.351-.966-.852-1.091l-4.423-1.106c-.44-.11-.902.055-1.173.417l-.97 1.293c-.282.376-.769.542-1.21.38a12.035 12.035 0 01-7.143-7.143c-.162-.441.004-.928.38-1.21l1.293-.97c.363-.271.527-.734.417-1.173L6.963 3.102a1.125 1.125 0 00-1.091-.852H4.5A2.25 2.25 0 002.25 4.5v2.25z"/></svg>
+              </span>
+              <input type="tel" id="regPhone" name="phone" required autocomplete="tel" pattern="(03|05|07|08|09)[0-9]{8}" maxlength="10" placeholder="0912345678" class="w-full rounded-2xl border border-slate-200 bg-white/90 pl-10 pr-3.5 py-2.5 text-sm font-medium text-slate-900 placeholder:text-slate-400 focus:bg-white focus:border-brand focus:outline-none focus:ring-4 focus:ring-brand/10 transition-all">
+            </div>
+          </div>
+
+          <!-- Email -->
+          <div>
+            <label for="regEmail" class="block text-xs font-bold text-slate-700 mb-1">
+              Email <span class="text-red-500">*</span>
+            </label>
+            <div class="relative">
+              <span class="pointer-events-none absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400">
+                <svg class="h-4 w-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M16.5 12a4.5 4.5 0 11-9 0 4.5 4.5 0 019 0zm0 0c0 1.657 1.007 3 2.25 3S21 13.657 21 12a9 9 0 10-2.636 6.364M16.5 12V8.25"/></svg>
+              </span>
+              <input type="email" id="regEmail" name="email" required autocomplete="email" placeholder="ten@vlu.edu.vn" class="w-full rounded-2xl border border-slate-200 bg-white/90 pl-10 pr-3.5 py-2.5 text-sm font-medium text-slate-900 placeholder:text-slate-400 focus:bg-white focus:border-brand focus:outline-none focus:ring-4 focus:ring-brand/10 transition-all">
+            </div>
+          </div>
+        </div>
+
+        <!-- Hàng 3: Mật khẩu (kèm Thanh đo độ mạnh thời gian thực) -->
+        <div>
+          <label for="regPassword" class="block text-xs font-bold text-slate-700 mb-1">
+            Mật khẩu <span class="text-red-500">*</span>
+          </label>
+          <div class="relative">
+            <span class="pointer-events-none absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400">
+              <svg class="h-4 w-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M16.5 10.5V6.75a4.5 4.5 0 10-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 002.25-2.25v-6.75a2.25 2.25 0 00-2.25-2.25H6.75a2.25 2.25 0 00-2.25 2.25v6.75a2.25 2.25 0 002.25 2.25z"/></svg>
+            </span>
+            <input type="password" id="regPassword" name="password" required autocomplete="new-password" placeholder="Tối thiểu 6 ký tự" class="w-full rounded-2xl border border-slate-200 bg-white/90 pl-10 pr-10 py-2.5 text-sm font-medium text-slate-900 placeholder:text-slate-400 focus:bg-white focus:border-brand focus:outline-none focus:ring-4 focus:ring-brand/10 transition-all">
+            <button type="button" id="regTogglePasswordBtn" class="absolute right-3.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-700 transition p-1" aria-label="Xem mật khẩu">
+              <svg class="h-4 w-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M2.036 12.322a1.012 1.012 0 010-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178z"/><path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+            </button>
+          </div>
+          
+          <!-- Thanh đo độ mạnh mật khẩu (Password Strength Meter) -->
+          <div class="mt-2 space-y-1">
+            <div class="flex items-center gap-1.5" id="strengthBarContainer">
+              <div id="strengthBar1" class="h-1.5 flex-1 rounded-full bg-slate-200 transition-colors duration-300"></div>
+              <div id="strengthBar2" class="h-1.5 flex-1 rounded-full bg-slate-200 transition-colors duration-300"></div>
+              <div id="strengthBar3" class="h-1.5 flex-1 rounded-full bg-slate-200 transition-colors duration-300"></div>
+            </div>
+            <div class="flex justify-between items-center text-[11px] text-slate-400">
+              <span>Độ mạnh: <strong id="strengthText" class="text-slate-500 font-bold">Chưa nhập</strong></span>
+              <span>Gợi ý: Dùng chữ hoa, số &amp; ký tự đặc biệt</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Hàng 4: Xác nhận mật khẩu (Kiểm tra khớp thời gian thực) -->
+        <div>
+          <label for="regConfirmPassword" class="block text-xs font-bold text-slate-700 mb-1">
+            Xác nhận lại mật khẩu <span class="text-red-500">*</span>
+          </label>
+          <div class="relative">
+            <span class="pointer-events-none absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400">
+              <svg class="h-4 w-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+            </span>
+            <input type="password" id="regConfirmPassword" name="confirm_password" required autocomplete="new-password" placeholder="Nhập lại chính xác mật khẩu" class="w-full rounded-2xl border border-slate-200 bg-white/90 pl-10 pr-10 py-2.5 text-sm font-medium text-slate-900 placeholder:text-slate-400 focus:bg-white focus:outline-none transition-all">
+            <button type="button" id="regToggleConfirmBtn" class="absolute right-3.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-700 transition p-1" aria-label="Xem mật khẩu xác nhận">
+              <svg class="h-4 w-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M2.036 12.322a1.012 1.012 0 010-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178z"/><path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+            </button>
+          </div>
+          <!-- Phản hồi kiểm tra khớp mật khẩu -->
+          <p id="confirmFeedback" class="hidden text-[11px]"></p>
+        </div>
+
+        <!-- Điều khoản dịch vụ -->
+        <div class="pt-1">
+          <label class="flex items-start gap-2.5 cursor-pointer select-none text-xs text-slate-600">
+            <input type="checkbox" id="regTerms" name="terms" required checked class="mt-0.5 rounded border-slate-300 text-brand focus:ring-brand accent-brand">
+            <span>Tôi đồng ý với <a href="#" class="font-bold text-slate-900 underline">Điều khoản dịch vụ</a> và <a href="#" class="font-bold text-slate-900 underline">Chính sách bảo mật</a> của VLU Flagship Store.</span>
+          </label>
+        </div>
+
+        <!-- Nút Submit Đăng ký -->
+        <button type="submit" id="btnRegisterSubmit" class="w-full h-12 rounded-full bg-brand text-white font-extrabold text-sm hover:bg-brand-dark transition-all duration-200 shadow-lg shadow-brand/25 active:scale-98 flex items-center justify-center gap-2 mt-2">
+          <span>Đăng ký tài khoản</span>
+          <svg class="h-4 w-4" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3"/></svg>
+        </button>
+
+      </form>
+
+      <!-- Điều hướng sang trang Đăng nhập -->
+      <div class="text-center pt-2 border-t border-slate-100">
+        <p class="text-xs text-slate-500 font-medium">
+          Đã có tài khoản VLU Flagship?
+          <a href="login.html" class="font-extrabold text-brand hover:underline ml-1">Đăng nhập</a>
+        </p>
+      </div>
+
+    </div>
+  </main>
+
+  <!-- Footer Tối giản -->
+  <footer class="w-full max-w-7xl mx-auto px-4 py-5 text-center text-xs text-slate-400 relative z-20">
+    <p>© <?= date('Y') ?> <strong class="text-slate-600 font-bold">VLU FLAGSHIP STORE</strong>. Bảo vệ bởi Apple Ecosystem Security.</p>
+  </footer>
+
+  <!-- Toast thông báo -->
+  <div id="toast" role="status" aria-live="polite" class="pointer-events-none fixed bottom-6 left-1/2 z-50 -translate-x-1/2 translate-y-4 rounded-full bg-ink px-5 py-3 text-sm font-semibold text-white opacity-0 shadow-xl"></div>
+
+  <!-- Scripts -->
+  <script src="frontend/assets/js/cart-engine.js"></script>
+  <script src="frontend/assets/js/auth-engine.js"></script>
+  <script src="frontend/assets/js/register-page.js"></script>
+
+</body>
+</html>
