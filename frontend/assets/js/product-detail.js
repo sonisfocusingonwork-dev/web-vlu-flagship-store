@@ -594,32 +594,50 @@
     // Click Nút Thêm Vào Giỏ Hàng
     var addBtn = e.target.closest('#addToCartBtn');
     if (addBtn) {
-      var cartBadge = document.getElementById('cartCount');
-      if (cartBadge) {
-        var count = parseInt(cartBadge.textContent, 10) || 0;
-        cartBadge.textContent = count + 1;
-        cartBadge.classList.remove('bump');
-        void cartBadge.offsetWidth;
-        cartBadge.classList.add('bump');
+      var cartItem = {
+        id: product.id,
+        name: product.name,
+        color: currentColor,
+        variant: currentVariant,
+        price: currentPrice,
+        oldPrice: product.oldPrice ? (product.oldPrice + (currentPrice - product.basePrice)) : null,
+        image: currentImg || (product.colors && product.colors[0] && product.colors[0].img) || '',
+        quantity: 1
+      };
+      if (window.VLU_CART) {
+        window.VLU_CART.addItem(cartItem);
+        window.VLU_CART.updateBadge(true);
+        window.VLU_CART.showToast('Đã thêm "' + product.name + ' (' + currentColor + ' - ' + currentVariant + ')" vào giỏ hàng!');
+      } else {
+        var cartBadge = document.getElementById('cartCount');
+        if (cartBadge) {
+          var count = parseInt(cartBadge.textContent, 10) || 0;
+          cartBadge.textContent = count + 1;
+        }
+        showToast('Đã thêm "' + product.name + ' (' + currentColor + ' - ' + currentVariant + ')" vào giỏ hàng!');
       }
-      showToast('Đã thêm "' + product.name + ' (' + currentColor + ' - ' + currentVariant + ')" vào giỏ hàng!');
       return;
     }
 
-    // Click Nút Mua Ngay -> Lưu vào localStorage để cart.html hiển thị đúng sản phẩm
+    // Click Nút Mua Ngay -> Lưu vào giỏ hàng và chuyển hướng thẳng sang cart.html
     var buyBtn = e.target.closest('#buyNowBtn');
     if (buyBtn) {
       try {
-        var cartItem = {
+        var buyItem = {
           id: product.id,
           name: product.name,
           color: currentColor,
           variant: currentVariant,
           price: currentPrice,
           oldPrice: product.oldPrice ? (product.oldPrice + (currentPrice - product.basePrice)) : null,
-          image: currentImg || (product.colors && product.colors[0] && product.colors[0].img) || ''
+          image: currentImg || (product.colors && product.colors[0] && product.colors[0].img) || '',
+          quantity: 1
         };
-        localStorage.setItem('vlu_cart_item', JSON.stringify(cartItem));
+        if (window.VLU_CART) {
+          window.VLU_CART.addItem(buyItem);
+        } else {
+          localStorage.setItem('vlu_cart_item', JSON.stringify(buyItem));
+        }
       } catch (err) {
         console.warn('Không thể lưu giỏ hàng vào localStorage:', err);
       }

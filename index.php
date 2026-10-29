@@ -825,7 +825,7 @@ $cartCount = 0;
                     <p class="text-xs text-slate-400 line-through"><?= number_format($p['old_price'], 0, ',', '.') ?>₫</p>
                   <?php endif; ?>
                 </div>
-                <button type="button" data-add data-id="<?= (int)$p['id'] ?>" data-name="<?= e($p['name']) ?>" aria-label="Thêm <?= e($p['name']) ?> vào giỏ hàng" class="relative z-10 grid h-10 w-10 shrink-0 place-items-center rounded-full bg-slate-900 text-white shadow-sm transition hover:bg-brand active:scale-95">
+                <button type="button" data-add data-id="<?= (int)$p['id'] ?>" data-name="<?= e($p['name']) ?>" data-price="<?= (int)$p['price'] ?>" aria-label="Thêm <?= e($p['name']) ?> vào giỏ hàng" class="relative z-10 grid h-10 w-10 shrink-0 place-items-center rounded-full bg-slate-900 text-white shadow-sm transition hover:bg-brand active:scale-95">
                   <svg class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><use href="#i-plus"/></svg>
                 </button>
               </div>
@@ -840,44 +840,7 @@ $cartCount = 0;
   <!-- ============================================================
        [FOOTER] VLU FLAGSHIP STORE
        ============================================================ -->
-  <footer class="mt-8 border-t border-slate-200/80 bg-white">
-    <div class="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8">
-      <div class="grid grid-cols-1 gap-8 border-b border-slate-100 pb-12 md:grid-cols-4">
-        <div class="space-y-4 md:col-span-2">
-          <a href="index.php" class="site-logo" aria-label="VLU FLAGSHIP STORE – Trang chủ">
-            <img src="frontend/assets/images/logo.png" onerror="this.onerror=null;this.src='image_2c97c5.png';" alt="VLU FLAGSHIP STORE" width="241" height="171">
-          </a>
-          <p class="text-lg font-black tracking-tight text-slate-950">VLU FLAGSHIP STORE</p>
-          <p class="max-w-md text-sm leading-relaxed text-slate-500">
-            Hệ thống cửa hàng công nghệ chính hãng: điện thoại, laptop, iPad, tai nghe, loa, phụ kiện, camera và đồng hồ điện tử. Bảo hành chính hãng, đổi trả minh bạch.
-          </p>
-        </div>
-
-        <div>
-          <h4 class="mb-4 text-xs font-bold uppercase tracking-wider text-slate-900">Danh mục</h4>
-          <ul class="grid grid-cols-2 gap-x-4 gap-y-2.5 text-sm text-slate-600 md:grid-cols-1">
-            <?php foreach ($menu as $cat): ?>
-              <li><a href="category.php?cat=<?= e($cat['slug']) ?>" class="font-medium transition hover:text-brand"><?= e($cat['name']) ?></a></li>
-            <?php endforeach; ?>
-          </ul>
-        </div>
-
-        <div>
-          <h4 class="mb-4 text-xs font-bold uppercase tracking-wider text-slate-900">Dịch vụ &amp; Hậu mãi</h4>
-          <ul class="space-y-2.5 text-sm text-slate-600">
-            <li>Giao hàng nhanh trong 2 giờ</li>
-            <li>Bảo hành chính hãng 12 tháng</li>
-            <li>Trả góp 0% lãi suất</li>
-            <li>Thu cũ đổi mới trợ giá</li>
-          </ul>
-        </div>
-      </div>
-
-      <div class="flex flex-col items-center justify-between gap-4 pt-8 text-xs text-slate-500 sm:flex-row">
-        <p>© <?= date('Y') ?> <strong class="font-bold text-slate-800">VLU FLAGSHIP STORE</strong>. Tất cả quyền được bảo lưu.</p>
-      </div>
-    </div>
-  </footer>
+  <?php include __DIR__ . '/frontend/components/footer.php'; ?>
 
   <!-- Toast thông báo -->
   <div id="toast" role="status" aria-live="polite" class="pointer-events-none fixed bottom-6 left-1/2 z-50 -translate-x-1/2 translate-y-4 rounded-full bg-ink px-5 py-3 text-sm font-semibold text-white opacity-0 shadow-xl"></div>

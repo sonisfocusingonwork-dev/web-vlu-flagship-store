@@ -567,7 +567,7 @@ $navMegaCategories = [
 
       <!-- 3. Giỏ hàng & Nút mở menu di động -->
       <div class="flex items-center gap-2">
-        <a href="cart.php" class="relative grid h-10 w-10 place-items-center rounded-full text-slate-700 transition hover:bg-slate-100/80 active:scale-95" aria-label="Giỏ hàng, hiện có <?= $cartCount ?> sản phẩm">
+        <a href="cart.html" class="relative grid h-10 w-10 place-items-center rounded-full text-slate-700 transition hover:bg-slate-100/80 active:scale-95" aria-label="Giỏ hàng, hiện có <?= $cartCount ?> sản phẩm">
           <svg class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
             <path d="M6 7h12l-1 13H7L6 7Z"/><path d="M9 7a3 3 0 0 1 6 0"/>
           </svg>
@@ -744,3 +744,5 @@ $navMegaCategories = [
 
 <!-- Lớp phủ mờ nền trang (Scrim Blur) NẰM SAU HEADER (z-index 40 < header 50) -->
 <div id="megaScrim" class="mega-scrim" aria-hidden="true"></div>
+<!-- Central Cart Engine 2026 -->
+<script src="frontend/assets/js/cart-engine.js"></script>

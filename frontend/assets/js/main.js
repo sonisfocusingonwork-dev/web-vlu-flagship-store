@@ -220,6 +220,10 @@
   var toastTimer;
 
   function showToast(msg) {
+    if (window.VLU_CART && typeof window.VLU_CART.showToast === 'function') {
+      window.VLU_CART.showToast(msg);
+      return;
+    }
     if (!toast) return;
     toast.textContent = msg;
     toast.classList.add('show');
@@ -230,12 +234,39 @@
   document.addEventListener('click', function (e) {
     var add = e.target.closest('[data-add]');
     if (add) {
-      count += 1;
-      if (badge) {
-        badge.textContent = count;
-        badge.classList.remove('bump'); void badge.offsetWidth; badge.classList.add('bump');
+      var card = add.closest('.product-card');
+      var name = add.dataset.name || (card && $('h3 a', card) ? $('h3 a', card).textContent.trim() : 'Sản phẩm');
+      var id = add.dataset.id || name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
+      var price = parseInt(add.dataset.price, 10);
+      if (!price && card) {
+        var priceEl = $('.text-brand', card);
+        if (priceEl) {
+          price = parseInt(priceEl.textContent.replace(/[^0-9]/g, ''), 10) || 0;
+        }
       }
-      showToast('Đã thêm "' + add.dataset.name + '" vào giỏ hàng');
+      var imgEl = card ? $('img', card) : null;
+      var image = imgEl ? (imgEl.getAttribute('src') || '') : '';
+
+      if (window.VLU_CART) {
+        window.VLU_CART.addItem({
+          id: id,
+          name: name,
+          price: price || 0,
+          image: image,
+          color: 'Mặc định',
+          variant: 'Tiêu chuẩn',
+          quantity: 1
+        });
+        window.VLU_CART.updateBadge(true);
+        window.VLU_CART.showToast('Đã thêm "' + name + '" vào giỏ hàng!');
+      } else {
+        count += 1;
+        if (badge) {
+          badge.textContent = count;
+          badge.classList.remove('bump'); void badge.offsetWidth; badge.classList.add('bump');
+        }
+        showToast('Đã thêm "' + name + '" vào giỏ hàng');
+      }
       return;
     }
     var wish = e.target.closest('[data-wish]');
