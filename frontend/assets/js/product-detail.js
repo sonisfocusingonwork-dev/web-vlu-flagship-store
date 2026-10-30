@@ -311,10 +311,11 @@
     // 5.5 Hình ảnh lớn mặc định
     var mainImg = document.getElementById('mainProductImg');
     var imageColorLabel = document.getElementById('imageColorLabel');
-    var defaultImgUrl = (p.colors && p.colors[0] && p.colors[0].img) || 'frontend/assets/images/placeholders/phone.svg';
+    var defaultImgUrl = (p.colors && p.colors[0] && (p.colors[0].image || p.colors[0].img)) || 'frontend/assets/images/placeholders/phone.svg';
     var defaultColorName = (p.colors && p.colors[0] && p.colors[0].name) || 'Mặc định';
 
     if (mainImg) {
+      mainImg.style.transition = 'opacity 0.22s ease-in-out, transform 0.22s ease-in-out';
       mainImg.src = defaultImgUrl;
       mainImg.alt = p.name + ' - ' + defaultColorName;
     }
@@ -325,13 +326,14 @@
     if (thumbStrip) {
       var thumbsHtml = '';
       (p.colors || []).forEach(function (c, idx) {
+        var cImg = c.image || c.img;
         thumbsHtml += '<button type="button" class="thumb-btn' + (idx === 0 ? ' active' : '') + '"'
-          + ' data-src="' + c.img + '"'
+          + ' data-src="' + cImg + '"'
           + ' data-color-name="' + c.name + '"'
           + ' data-color-key="' + c.key + '"'
           + ' aria-label="Xem ảnh ' + c.name + '">'
-          + '<img src="' + c.img + '" alt="' + c.name + '">'
-          + '</button>';
+          + '<img src="' + (c.image || c.img) + '" alt="' + c.name + '">'
+          + '</button>'
       });
       (p.extraImages || []).forEach(function (extra) {
         thumbsHtml += '<button type="button" class="thumb-btn"'
@@ -356,7 +358,7 @@
         swatchesHtml += '<button type="button" class="color-swatch-btn' + (idx === 0 ? ' active' : '') + '"'
           + ' data-color-key="' + c.key + '"'
           + ' data-color-name="' + c.name + '"'
-          + ' data-img="' + c.img + '"'
+          + ' data-img="' + (c.image || c.img) + '"'
           + ' style="background-color: ' + c.hex + ';"'
           + ' title="' + c.name + '"'
           + ' aria-label="Chọn màu ' + c.name + '"'
@@ -510,7 +512,8 @@
     if (imageColorLabel) imageColorLabel.textContent = colorName;
 
     if (mainImg && colorImg) {
-      mainImg.style.opacity = '0.3';
+      mainImg.style.transition = 'opacity 0.22s ease-in-out, transform 0.22s ease-in-out';
+      mainImg.style.opacity = '0.2';
       mainImg.style.transform = 'scale(0.96)';
       setTimeout(function () {
         mainImg.src = colorImg;
