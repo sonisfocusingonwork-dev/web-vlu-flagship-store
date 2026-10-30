@@ -46,11 +46,11 @@
     {
       id: 'iphone-18-pro-max',
       name: 'iPhone 18 Pro Max',
-      color: 'Titan Sa Mạc',
+      color: 'Đỏ Burgundy',
       variant: '256GB',
       price: 34990000,
       oldPrice: 36990000,
-      image: 'SanPham/SanPham/Iphone/Ip 18 pro max/Vàng Sa Mạc.png',
+      image: 'SanPham/SanPham/Iphone/Ip 18 pro max/Đỏ Burgundy.png',
       quantity: 1
     },
     {
@@ -60,7 +60,7 @@
       variant: 'Chống ồn ANC',
       price: 5790000,
       oldPrice: 6190000,
-      image: 'frontend/assets/images/placeholders/tai-nghe.svg',
+      image: 'SanPham/SanPham/Tai nghe/AirPods Pro 2/Tiêu Chuẩn.svg',
       quantity: 1
     }
   ];

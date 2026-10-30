@@ -33,7 +33,7 @@
       name: 'iPhone 18 Pro & iPhone 18 Pro Max',
       price: 34990000,
       old_price: 36990000,
-      image: 'SanPham/SanPham/Iphone/Ip 18 pro max/Vàng Sa Mạc.png',
+      image: 'SanPham/SanPham/Iphone/Ip 18 pro max/Đỏ Burgundy.png',
       description: 'Đỉnh cao công nghệ Titanium, chip A20 Pro siêu mạnh mẽ, camera tiềm vọng 10x.',
       status: 'active',
       stock: 45
@@ -57,7 +57,7 @@
       name: 'iPhone 17',
       price: 22990000,
       old_price: 24990000,
-      image: 'SanPham/SanPham/Iphone/Ip 17/Hồng.png',
+      image: 'SanPham/SanPham/Iphone/Ip 17/Trắng.png',
       description: 'Màu sắc trẻ trung năng động, camera kép 48MP nâng cấp toàn diện, Dynamic Island.',
       status: 'active',
       stock: 35
@@ -69,7 +69,7 @@
       name: 'Galaxy S26 Ultra',
       price: 31990000,
       old_price: 33990000,
-      image: 'frontend/assets/images/placeholders/dien-thoai.svg',
+      image: 'SanPham/SanPham/Samsung/SS S26 Ultra/Trắng.webp',
       description: 'Flagship Android đỉnh cao với Galaxy AI thông minh, bút S Pen tích hợp và camera 200MP.',
       status: 'active',
       stock: 28
@@ -81,7 +81,7 @@
       name: 'Galaxy Z Fold8',
       price: 44990000,
       old_price: 47990000,
-      image: 'frontend/assets/images/placeholders/dien-thoai.svg',
+      image: 'SanPham/SanPham/Samsung/SS Galaxy Z Fold8/Cream.webp',
       description: 'Thiết kế gập mở màn hình lớn như tablet, bản lề flex siêu mỏng không nếp gấp.',
       status: 'active',
       stock: 15
@@ -93,7 +93,7 @@
       name: 'Xiaomi 17 Ultra',
       price: 26990000,
       old_price: 28990000,
-      image: 'frontend/assets/images/placeholders/dien-thoai.svg',
+      image: 'SanPham/SanPham/Xiaomi/Xiaomi 17 ultra/Trắng.webp',
       description: 'Kiệt tác quang học huyền thoại Leica, cảm biến 1-inch và hệ thống 4 camera chuyên nghiệp.',
       status: 'active',
       stock: 20
@@ -105,7 +105,7 @@
       name: 'OPPO Find X9 Ultra',
       price: 27990000,
       old_price: 29990000,
-      image: 'frontend/assets/images/placeholders/dien-thoai.svg',
+      image: 'SanPham/SanPham/Oppo/OPPO Find X9 Ultra/Cam.png',
       description: 'Camera tiềm vọng kép đầu tiên cùng hệ màu Hasselblad tự nhiên chân thực.',
       status: 'active',
       stock: 18
@@ -153,7 +153,7 @@
       name: 'AirPods Pro 2 (USB-C)',
       price: 5790000,
       old_price: 6190000,
-      image: 'frontend/assets/images/placeholders/tai-nghe.svg',
+      image: 'SanPham/SanPham/Tai nghe/AirPods Pro 2/Tiêu Chuẩn.svg',
       description: 'Chống ồn chủ động ANC gấp 2 lần, âm thanh thích ứng và cổng sạc USB-C tiện dụng.',
       status: 'active',
       stock: 80
@@ -215,7 +215,7 @@
           variant: '256GB',
           price: 34990000,
           quantity: 1,
-          image: 'SanPham/SanPham/Iphone/Ip 18 pro max/Vàng Sa Mạc.png'
+          image: 'SanPham/SanPham/Iphone/Ip 18 pro max/Đỏ Burgundy.png'
         }
       ],
       subtotal: 34990000,

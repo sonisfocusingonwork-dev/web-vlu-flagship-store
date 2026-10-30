@@ -5,37 +5,67 @@ window.VLU_IMAGE_MANIFEST = [
         "path": "Dong ho/Apple Watch SE",
         "top": "dong-ho",
         "slug": "apple-watch-se",
-        "images": []
+        "images": [
+            {
+                "url": "SanPham/SanPham/Dong%20ho/Apple%20Watch%20SE/Ti%C3%AAu%20Chu%E1%BA%A9n.svg",
+                "color": "Tiêu Chuẩn"
+            }
+        ]
     },
     {
         "path": "Dong ho/Apple Watch Series 10",
         "top": "dong-ho",
         "slug": "apple-watch-series-10",
-        "images": []
+        "images": [
+            {
+                "url": "SanPham/SanPham/Dong%20ho/Apple%20Watch%20Series%2010/Ti%C3%AAu%20Chu%E1%BA%A9n.svg",
+                "color": "Tiêu Chuẩn"
+            }
+        ]
     },
     {
         "path": "Dong ho/Apple Watch Ultra 3",
         "top": "dong-ho",
         "slug": "apple-watch-ultra-3",
-        "images": []
+        "images": [
+            {
+                "url": "SanPham/SanPham/Dong%20ho/Apple%20Watch%20Ultra%203/Ti%C3%AAu%20Chu%E1%BA%A9n.svg",
+                "color": "Tiêu Chuẩn"
+            }
+        ]
     },
     {
         "path": "Dong ho/Galaxy Watch 7",
         "top": "dong-ho",
         "slug": "galaxy-watch-7",
-        "images": []
+        "images": [
+            {
+                "url": "SanPham/SanPham/Dong%20ho/Galaxy%20Watch%207/Ti%C3%AAu%20Chu%E1%BA%A9n.svg",
+                "color": "Tiêu Chuẩn"
+            }
+        ]
     },
     {
         "path": "Dong ho/Galaxy Watch Ultra",
         "top": "dong-ho",
         "slug": "galaxy-watch-ultra",
-        "images": []
+        "images": [
+            {
+                "url": "SanPham/SanPham/Dong%20ho/Galaxy%20Watch%20Ultra/Ti%C3%AAu%20Chu%E1%BA%A9n.svg",
+                "color": "Tiêu Chuẩn"
+            }
+        ]
     },
     {
         "path": "Dong ho/Xiaomi Watch S3",
         "top": "dong-ho",
         "slug": "xiaomi-watch-s3",
-        "images": []
+        "images": [
+            {
+                "url": "SanPham/SanPham/Dong%20ho/Xiaomi%20Watch%20S3/Ti%C3%AAu%20Chu%E1%BA%A9n.svg",
+                "color": "Tiêu Chuẩn"
+            }
+        ]
     },
     {
         "path": "Iphone/Ip 17",
@@ -114,97 +144,177 @@ window.VLU_IMAGE_MANIFEST = [
         "path": "Laptop/ASUS ROG Strix",
         "top": "laptop",
         "slug": "asus-rog-strix",
-        "images": []
+        "images": [
+            {
+                "url": "SanPham/SanPham/Laptop/ASUS%20ROG%20Strix/Ti%C3%AAu%20Chu%E1%BA%A9n.svg",
+                "color": "Tiêu Chuẩn"
+            }
+        ]
     },
     {
         "path": "Laptop/ASUS Vivobook",
         "top": "laptop",
         "slug": "asus-vivobook",
-        "images": []
+        "images": [
+            {
+                "url": "SanPham/SanPham/Laptop/ASUS%20Vivobook/Ti%C3%AAu%20Chu%E1%BA%A9n.svg",
+                "color": "Tiêu Chuẩn"
+            }
+        ]
     },
     {
         "path": "Laptop/Dell XPS",
         "top": "laptop",
         "slug": "dell-xps",
-        "images": []
+        "images": [
+            {
+                "url": "SanPham/SanPham/Laptop/Dell%20XPS/Ti%C3%AAu%20Chu%E1%BA%A9n.svg",
+                "color": "Tiêu Chuẩn"
+            }
+        ]
     },
     {
         "path": "Laptop/HP Pavilion",
         "top": "laptop",
         "slug": "hp-pavilion",
-        "images": []
+        "images": [
+            {
+                "url": "SanPham/SanPham/Laptop/HP%20Pavilion/Ti%C3%AAu%20Chu%E1%BA%A9n.svg",
+                "color": "Tiêu Chuẩn"
+            }
+        ]
     },
     {
         "path": "Laptop/Lenovo Legion",
         "top": "laptop",
         "slug": "lenovo-legion",
-        "images": []
+        "images": [
+            {
+                "url": "SanPham/SanPham/Laptop/Lenovo%20Legion/Ti%C3%AAu%20Chu%E1%BA%A9n.svg",
+                "color": "Tiêu Chuẩn"
+            }
+        ]
     },
     {
         "path": "Laptop/Lenovo ThinkPad",
         "top": "laptop",
         "slug": "lenovo-thinkpad",
-        "images": []
+        "images": [
+            {
+                "url": "SanPham/SanPham/Laptop/Lenovo%20ThinkPad/Ti%C3%AAu%20Chu%E1%BA%A9n.svg",
+                "color": "Tiêu Chuẩn"
+            }
+        ]
     },
     {
         "path": "Laptop/MSI Raider",
         "top": "laptop",
         "slug": "msi-raider",
-        "images": []
+        "images": [
+            {
+                "url": "SanPham/SanPham/Laptop/MSI%20Raider/Ti%C3%AAu%20Chu%E1%BA%A9n.svg",
+                "color": "Tiêu Chuẩn"
+            }
+        ]
     },
     {
         "path": "Laptop/MacBook Air",
         "top": "laptop",
         "slug": "macbook-air",
-        "images": []
+        "images": [
+            {
+                "url": "SanPham/SanPham/Laptop/MacBook%20Air/Ti%C3%AAu%20Chu%E1%BA%A9n.svg",
+                "color": "Tiêu Chuẩn"
+            }
+        ]
     },
     {
         "path": "Laptop/MacBook Pro",
         "top": "laptop",
         "slug": "macbook-pro",
-        "images": []
+        "images": [
+            {
+                "url": "SanPham/SanPham/Laptop/MacBook%20Pro/Ti%C3%AAu%20Chu%E1%BA%A9n.svg",
+                "color": "Tiêu Chuẩn"
+            }
+        ]
     },
     {
         "path": "Loa/Bose SoundLink Flex",
         "top": "loa",
         "slug": "bose-soundlink-flex",
-        "images": []
+        "images": [
+            {
+                "url": "SanPham/SanPham/Loa/Bose%20SoundLink%20Flex/Ti%C3%AAu%20Chu%E1%BA%A9n.svg",
+                "color": "Tiêu Chuẩn"
+            }
+        ]
     },
     {
         "path": "Loa/Harman Kardon Onyx Studio 8",
         "top": "loa",
         "slug": "harman-kardon-onyx-studio-8",
-        "images": []
+        "images": [
+            {
+                "url": "SanPham/SanPham/Loa/Harman%20Kardon%20Onyx%20Studio%208/Ti%C3%AAu%20Chu%E1%BA%A9n.svg",
+                "color": "Tiêu Chuẩn"
+            }
+        ]
     },
     {
         "path": "Loa/JBL Charge 5",
         "top": "loa",
         "slug": "jbl-charge-5",
-        "images": []
+        "images": [
+            {
+                "url": "SanPham/SanPham/Loa/JBL%20Charge%205/Ti%C3%AAu%20Chu%E1%BA%A9n.svg",
+                "color": "Tiêu Chuẩn"
+            }
+        ]
     },
     {
         "path": "Loa/JBL Flip 6",
         "top": "loa",
         "slug": "jbl-flip-6",
-        "images": []
+        "images": [
+            {
+                "url": "SanPham/SanPham/Loa/JBL%20Flip%206/Ti%C3%AAu%20Chu%E1%BA%A9n.svg",
+                "color": "Tiêu Chuẩn"
+            }
+        ]
     },
     {
         "path": "Loa/Marshall Emberton II",
         "top": "loa",
         "slug": "marshall-emberton-ii",
-        "images": []
+        "images": [
+            {
+                "url": "SanPham/SanPham/Loa/Marshall%20Emberton%20II/Ti%C3%AAu%20Chu%E1%BA%A9n.svg",
+                "color": "Tiêu Chuẩn"
+            }
+        ]
     },
     {
         "path": "Loa/Marshall Stanmore III",
         "top": "loa",
         "slug": "marshall-stanmore-iii",
-        "images": []
+        "images": [
+            {
+                "url": "SanPham/SanPham/Loa/Marshall%20Stanmore%20III/Ti%C3%AAu%20Chu%E1%BA%A9n.svg",
+                "color": "Tiêu Chuẩn"
+            }
+        ]
     },
     {
         "path": "Loa/Sony ULT Field 7",
         "top": "loa",
         "slug": "sony-ult-field-7",
-        "images": []
+        "images": [
+            {
+                "url": "SanPham/SanPham/Loa/Sony%20ULT%20Field%207/Ti%C3%AAu%20Chu%E1%BA%A9n.svg",
+                "color": "Tiêu Chuẩn"
+            }
+        ]
     },
     {
         "path": "Oppo/OPPO Find N5",
@@ -274,31 +384,56 @@ window.VLU_IMAGE_MANIFEST = [
         "path": "Phu kien/Apple Pencil Pro",
         "top": "phu-kien",
         "slug": "apple-pencil-pro",
-        "images": []
+        "images": [
+            {
+                "url": "SanPham/SanPham/Phu%20kien/Apple%20Pencil%20Pro/Ti%C3%AAu%20Chu%E1%BA%A9n.svg",
+                "color": "Tiêu Chuẩn"
+            }
+        ]
     },
     {
         "path": "Phu kien/Cap sac USB-C 100W",
         "top": "phu-kien",
         "slug": "cap-sac-usb-c-100w",
-        "images": []
+        "images": [
+            {
+                "url": "SanPham/SanPham/Phu%20kien/Cap%20sac%20USB-C%20100W/Ti%C3%AAu%20Chu%E1%BA%A9n.svg",
+                "color": "Tiêu Chuẩn"
+            }
+        ]
     },
     {
         "path": "Phu kien/Cu sac GaN 35W Dual USB-C",
         "top": "phu-kien",
         "slug": "cu-sac-gan-35w-dual-usb-c",
-        "images": []
+        "images": [
+            {
+                "url": "SanPham/SanPham/Phu%20kien/Cu%20sac%20GaN%2035W%20Dual%20USB-C/Ti%C3%AAu%20Chu%E1%BA%A9n.svg",
+                "color": "Tiêu Chuẩn"
+            }
+        ]
     },
     {
         "path": "Phu kien/Op lung MagSafe cao cap",
         "top": "phu-kien",
         "slug": "op-lung-magsafe-cao-cap",
-        "images": []
+        "images": [
+            {
+                "url": "SanPham/SanPham/Phu%20kien/Op%20lung%20MagSafe%20cao%20cap/Ti%C3%AAu%20Chu%E1%BA%A9n.svg",
+                "color": "Tiêu Chuẩn"
+            }
+        ]
     },
     {
         "path": "Phu kien/Pin du phong 20000mAh",
         "top": "phu-kien",
         "slug": "pin-du-phong-20000mah",
-        "images": []
+        "images": [
+            {
+                "url": "SanPham/SanPham/Phu%20kien/Pin%20du%20phong%2020000mAh/Ti%C3%AAu%20Chu%E1%BA%A9n.svg",
+                "color": "Tiêu Chuẩn"
+            }
+        ]
     },
     {
         "path": "Samsung/SS Galaxy Flip8",
@@ -412,49 +547,89 @@ window.VLU_IMAGE_MANIFEST = [
         "path": "Tai nghe/AirPods 4",
         "top": "tai-nghe",
         "slug": "airpods-4",
-        "images": []
+        "images": [
+            {
+                "url": "SanPham/SanPham/Tai%20nghe/AirPods%204/Ti%C3%AAu%20Chu%E1%BA%A9n.svg",
+                "color": "Tiêu Chuẩn"
+            }
+        ]
     },
     {
         "path": "Tai nghe/AirPods Max",
         "top": "tai-nghe",
         "slug": "airpods-max",
-        "images": []
+        "images": [
+            {
+                "url": "SanPham/SanPham/Tai%20nghe/AirPods%20Max/Ti%C3%AAu%20Chu%E1%BA%A9n.svg",
+                "color": "Tiêu Chuẩn"
+            }
+        ]
     },
     {
         "path": "Tai nghe/AirPods Pro 2",
         "top": "tai-nghe",
         "slug": "airpods-pro-2",
-        "images": []
+        "images": [
+            {
+                "url": "SanPham/SanPham/Tai%20nghe/AirPods%20Pro%202/Ti%C3%AAu%20Chu%E1%BA%A9n.svg",
+                "color": "Tiêu Chuẩn"
+            }
+        ]
     },
     {
         "path": "Tai nghe/Bose QuietComfort Ultra",
         "top": "tai-nghe",
         "slug": "bose-quietcomfort-ultra",
-        "images": []
+        "images": [
+            {
+                "url": "SanPham/SanPham/Tai%20nghe/Bose%20QuietComfort%20Ultra/Ti%C3%AAu%20Chu%E1%BA%A9n.svg",
+                "color": "Tiêu Chuẩn"
+            }
+        ]
     },
     {
         "path": "Tai nghe/Galaxy Buds3 Pro",
         "top": "tai-nghe",
         "slug": "galaxy-buds3-pro",
-        "images": []
+        "images": [
+            {
+                "url": "SanPham/SanPham/Tai%20nghe/Galaxy%20Buds3%20Pro/Ti%C3%AAu%20Chu%E1%BA%A9n.svg",
+                "color": "Tiêu Chuẩn"
+            }
+        ]
     },
     {
         "path": "Tai nghe/Marshall Major V",
         "top": "tai-nghe",
         "slug": "marshall-major-v",
-        "images": []
+        "images": [
+            {
+                "url": "SanPham/SanPham/Tai%20nghe/Marshall%20Major%20V/Ti%C3%AAu%20Chu%E1%BA%A9n.svg",
+                "color": "Tiêu Chuẩn"
+            }
+        ]
     },
     {
         "path": "Tai nghe/Sony WF-1000XM5",
         "top": "tai-nghe",
         "slug": "sony-wf-1000xm5",
-        "images": []
+        "images": [
+            {
+                "url": "SanPham/SanPham/Tai%20nghe/Sony%20WF-1000XM5/Ti%C3%AAu%20Chu%E1%BA%A9n.svg",
+                "color": "Tiêu Chuẩn"
+            }
+        ]
     },
     {
         "path": "Tai nghe/Sony WH-1000XM5",
         "top": "tai-nghe",
         "slug": "sony-wh-1000xm5",
-        "images": []
+        "images": [
+            {
+                "url": "SanPham/SanPham/Tai%20nghe/Sony%20WH-1000XM5/Ti%C3%AAu%20Chu%E1%BA%A9n.svg",
+                "color": "Tiêu Chuẩn"
+            }
+        ]
     },
     {
         "path": "Xiaomi/Xiaomi 17",
@@ -536,42 +711,77 @@ window.VLU_IMAGE_MANIFEST = [
         "path": "iPad/Huawei MatePad",
         "top": "ipad",
         "slug": "huawei-matepad",
-        "images": []
+        "images": [
+            {
+                "url": "SanPham/SanPham/iPad/Huawei%20MatePad/Ti%C3%AAu%20Chu%E1%BA%A9n.svg",
+                "color": "Tiêu Chuẩn"
+            }
+        ]
     },
     {
         "path": "iPad/Samsung Galaxy Tab S",
         "top": "ipad",
         "slug": "samsung-galaxy-tab-s",
-        "images": []
+        "images": [
+            {
+                "url": "SanPham/SanPham/iPad/Samsung%20Galaxy%20Tab%20S/Ti%C3%AAu%20Chu%E1%BA%A9n.svg",
+                "color": "Tiêu Chuẩn"
+            }
+        ]
     },
     {
         "path": "iPad/Xiaomi Pad Pro",
         "top": "ipad",
         "slug": "xiaomi-pad-pro",
-        "images": []
+        "images": [
+            {
+                "url": "SanPham/SanPham/iPad/Xiaomi%20Pad%20Pro/Ti%C3%AAu%20Chu%E1%BA%A9n.svg",
+                "color": "Tiêu Chuẩn"
+            }
+        ]
     },
     {
         "path": "iPad/iPad Air",
         "top": "ipad",
         "slug": "ipad-air",
-        "images": []
+        "images": [
+            {
+                "url": "SanPham/SanPham/iPad/iPad%20Air/Ti%C3%AAu%20Chu%E1%BA%A9n.svg",
+                "color": "Tiêu Chuẩn"
+            }
+        ]
     },
     {
         "path": "iPad/iPad Gen",
         "top": "ipad",
         "slug": "ipad-gen",
-        "images": []
+        "images": [
+            {
+                "url": "SanPham/SanPham/iPad/iPad%20Gen/Ti%C3%AAu%20Chu%E1%BA%A9n.svg",
+                "color": "Tiêu Chuẩn"
+            }
+        ]
     },
     {
         "path": "iPad/iPad Pro",
         "top": "ipad",
         "slug": "ipad-pro",
-        "images": []
+        "images": [
+            {
+                "url": "SanPham/SanPham/iPad/iPad%20Pro/Ti%C3%AAu%20Chu%E1%BA%A9n.svg",
+                "color": "Tiêu Chuẩn"
+            }
+        ]
     },
     {
         "path": "iPad/iPad mini",
         "top": "ipad",
         "slug": "ipad-mini",
-        "images": []
+        "images": [
+            {
+                "url": "SanPham/SanPham/iPad/iPad%20mini/Ti%C3%AAu%20Chu%E1%BA%A9n.svg",
+                "color": "Tiêu Chuẩn"
+            }
+        ]
     }
 ];

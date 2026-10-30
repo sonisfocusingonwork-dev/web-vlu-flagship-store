@@ -136,7 +136,7 @@
       basePrice: 26990000,
       oldPrice: 28990000,
       colors: [
-        { name: 'Xanh Da Trời', key: 'blue', hex: '#A8C5DA', img: 'SanPham/SanPham/Iphone/Ip%20Air/Xanh%20da%20tr%E1%BB%8Fi.png' },
+        { name: 'Xanh Da Trời', key: 'blue', hex: '#A8C5DA', img: 'SanPham/SanPham/Iphone/Ip%20Air/Xanh%20da%20tr%E1%BB%9Di.png' },
         { name: 'Trắng Mây', key: 'white', hex: '#EAEAEA', img: 'SanPham/SanPham/Iphone/Ip%20Air/Tr%E1%BA%AFng%20M%C3%A2y.png' },
         { name: 'Vàng Nhạt', key: 'yellow', hex: '#F7E7B4', img: 'SanPham/SanPham/Iphone/Ip%20Air/V%C3%A0ng%20Nh%E1%BA%A1t.png' },
         { name: 'Đen Không Gian', key: 'black', hex: '#1D1D1F', img: 'SanPham/SanPham/Iphone/Ip%20Air/%C4%90en%20Kh%C3%B4ng%20Gian.png' }
@@ -239,7 +239,7 @@
         { name: 'Cobalt Violet', key: 'violet', hex: '#4E4362', img: 'SanPham/SanPham/Samsung/SS%20S26%20Ultra/Cobalt%20Violet.webp' },
         { name: 'Silver Shadow', key: 'silver', hex: '#D8D9DD', img: 'SanPham/SanPham/Samsung/SS%20S26%20Ultra/Silver%20Shadow.webp' },
         { name: 'Pink Gold', key: 'pink', hex: '#DEB3AD', img: 'SanPham/SanPham/Samsung/SS%20S26%20Ultra/Pink%20Gold.webp' },
-        { name: 'Xanh Da Trời', key: 'blue', hex: '#A8C5DA', img: 'SanPham/SanPham/Samsung/SS%20S26%20Ultra/Xanh%20da%20tr%E1%BB%8Fi.webp' },
+        { name: 'Xanh Da Trời', key: 'blue', hex: '#A8C5DA', img: 'SanPham/SanPham/Samsung/SS%20S26%20Ultra/Xanh%20da%20tr%E1%BB%9Di.webp' },
         { name: 'Đen Phantom', key: 'black', hex: '#252527', img: 'SanPham/SanPham/Samsung/SS%20S26%20Ultra/%C4%90en.webp' }
       ],
       extraImages: [
