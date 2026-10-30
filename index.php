@@ -16,12 +16,29 @@ function e($value): string
    Ảnh sản phẩm cục bộ: SanPham/SanPham/<Hãng>/<Dòng máy>/<Màu>.png|webp
    Đọc trực tiếp tên file trong thư mục để URL luôn khớp (kể cả tên tiếng Việt có dấu)
    ------------------------------------------------------------------ */
-const PRODUCT_IMG_DIR = 'SanPham/SanPham';
+const PRODUCT_IMG_DIR = 'SanPham';
 
 function product_images(string $folder): array
 {
-    $dir = __DIR__ . '/' . PRODUCT_IMG_DIR . '/' . $folder;
-    if (!is_dir($dir)) {
+    $candidates = [
+        __DIR__ . '/' . PRODUCT_IMG_DIR . '/' . $folder,
+        __DIR__ . '/' . PRODUCT_IMG_DIR . '/Dien thoai/' . $folder,
+        __DIR__ . '/' . PRODUCT_IMG_DIR . '/Dien thoai/Apple iPhone/' . $folder,
+        __DIR__ . '/' . PRODUCT_IMG_DIR . '/Dien thoai/Samsung Galaxy/' . $folder,
+        __DIR__ . '/' . PRODUCT_IMG_DIR . '/Dien thoai/Xiaomi/' . $folder,
+        __DIR__ . '/' . PRODUCT_IMG_DIR . '/Dien thoai/OPPO/' . $folder,
+        __DIR__ . '/' . PRODUCT_IMG_DIR . '/Dien thoai/Redmi/' . $folder,
+    ];
+    $dir = null;
+    $foundRel = '';
+    foreach ($candidates as $cand) {
+        if (is_dir($cand)) {
+            $dir = $cand;
+            $foundRel = str_replace([__DIR__ . '/', '\\'], ['', '/'], $cand);
+            break;
+        }
+    }
+    if (!$dir) {
         return [];
     }
     $files = array_values(array_filter(scandir($dir), function ($f) {
@@ -29,7 +46,7 @@ function product_images(string $folder): array
     }));
     sort($files, SORT_NATURAL | SORT_FLAG_CASE);
 
-    $base = implode('/', array_map('rawurlencode', explode('/', PRODUCT_IMG_DIR . '/' . $folder)));
+    $base = implode('/', array_map('rawurlencode', explode('/', $foundRel)));
     return array_map(function ($f) use ($base) {
         return ['url' => $base . '/' . rawurlencode($f), 'color' => pathinfo($f, PATHINFO_FILENAME)];
     }, $files);
@@ -153,29 +170,29 @@ $banners = [
    ------------------------------------------------------------------ */
 $defaultProducts = [
     ['id' => 101, 'slug' => 'iphone-18-pro-max', 'brand' => 'Apple', 'name' => 'iPhone 18 Pro & iPhone 18 Pro Max', 'price' => 34990000, 'old_price' => 36990000,
-     'description' => 'Đỉnh cao công nghệ Titanium, chip A20 Pro siêu mạnh mẽ.', 'folder' => 'Iphone/Ip 18 pro max', 'prefer' => 'Đỏ Burgundy'],
+     'description' => 'Đỉnh cao công nghệ Titanium, chip A20 Pro siêu mạnh mẽ.', 'folder' => 'Dien thoai/iPhone 18 Pro Max', 'prefer' => 'Titan Sa Mạc'],
     ['id' => 102, 'slug' => 'iphone-air', 'brand' => 'Apple', 'name' => 'iPhone Air', 'price' => 26990000, 'old_price' => 28990000,
-     'description' => 'Thiết kế siêu mỏng nhẹ đột phá, hiệu năng vượt trội.', 'folder' => 'Iphone/Ip Air', 'prefer' => 'Xanh da trời'],
+     'description' => 'Thiết kế siêu mỏng nhẹ đột phá, hiệu năng vượt trội.', 'folder' => 'Dien thoai/iPhone Air', 'prefer' => 'Vàng Nhạt'],
     ['id' => 103, 'slug' => 'iphone-17', 'brand' => 'Apple', 'name' => 'iPhone 17', 'price' => 22990000, 'old_price' => null,
-     'description' => 'Màu sắc trẻ trung, camera kép nâng cấp toàn diện.', 'folder' => 'Iphone/Ip 17', 'prefer' => 'Tím Oải Hương'],
+     'description' => 'Màu sắc trẻ trung, camera kép nâng cấp toàn diện.', 'folder' => 'Dien thoai/iPhone 17', 'prefer' => 'Tím Oải Hương'],
     ['id' => 201, 'slug' => 'galaxy-s26-ultra', 'brand' => 'Samsung', 'name' => 'Galaxy S26 Ultra', 'price' => 31990000, 'old_price' => null,
-     'description' => 'Galaxy AI, bút S Pen tích hợp và camera 200MP.', 'folder' => 'Samsung/SS S26 Ultra', 'prefer' => 'Cobalt Violet'],
+     'description' => 'Galaxy AI, bút S Pen tích hợp và camera 200MP.', 'folder' => 'Dien thoai/Galaxy S26 Ultra', 'prefer' => 'Titan Đen'],
     ['id' => 202, 'slug' => 'galaxy-z-fold8', 'brand' => 'Samsung', 'name' => 'Galaxy Z Fold8', 'price' => 44990000, 'old_price' => null,
-     'description' => 'Màn hình gập lớn như tablet, bản lề siêu mỏng.', 'folder' => 'Samsung/SS Galaxy Z Fold8', 'prefer' => 'Graphite'],
+     'description' => 'Màn hình gập lớn như tablet, bản lề siêu mỏng.', 'folder' => 'Dien thoai/Galaxy Z Fold8', 'prefer' => 'Xám Titan'],
     ['id' => 203, 'slug' => 'galaxy-z-flip8', 'brand' => 'Samsung', 'name' => 'Galaxy Z Flip8', 'price' => 25990000, 'old_price' => 28990000,
-     'description' => 'Gập vỏ sò nhỏ gọn, màn hình phụ Flex Window đa năng.', 'folder' => 'Samsung/SS Galaxy Flip8', 'prefer' => 'Mint'],
+     'description' => 'Gập vỏ sò nhỏ gọn, màn hình phụ Flex Window đa năng.', 'folder' => 'Dien thoai/Galaxy Z Flip8', 'prefer' => 'Xanh Mint'],
     ['id' => 204, 'slug' => 'galaxy-s26', 'brand' => 'Samsung', 'name' => 'Galaxy S26', 'price' => 22990000, 'old_price' => null,
-     'description' => 'Thiết kế phẳng nguyên khối, màn hình Dynamic AMOLED 2X.', 'folder' => 'Samsung/SS Galaxy S26', 'prefer' => 'Sky Blue'],
-    ['id' => 301, 'slug' => 'xiaomi-17-ultra', 'brand' => 'Xiaomi', 'name' => 'Xiaomi 17 Ultra', 'price' => 26990000, 'old_price' => null,
-     'description' => 'Ống kính Leica, cảm biến 1-inch chuyên nghiệp.', 'folder' => 'Xiaomi/Xiaomi 17 ultra', 'prefer' => 'Xanh Lá'],
-    ['id' => 302, 'slug' => 'xiaomi-17-pro-max', 'brand' => 'Xiaomi', 'name' => 'Xiaomi 17 Pro Max', 'price' => 24990000, 'old_price' => 26990000,
-     'description' => 'Snapdragon đầu bảng, sạc siêu tốc HyperCharge.', 'folder' => 'Xiaomi/Xiaomi 17 pro max', 'prefer' => 'Tím'],
-    ['id' => 401, 'slug' => 'oppo-find-x9-ultra', 'brand' => 'OPPO', 'name' => 'OPPO Find X9 Ultra', 'price' => 27990000, 'old_price' => null,
-     'description' => 'Camera tiềm vọng kép, hệ màu Hasselblad chân thực.', 'folder' => 'Oppo/OPPO Find X9 Ultra', 'prefer' => 'Cam'],
-    ['id' => 402, 'slug' => 'oppo-find-x9-pro', 'brand' => 'OPPO', 'name' => 'OPPO Find X9 Pro', 'price' => 22990000, 'old_price' => null,
-     'description' => 'Thiết kế cao cấp, chip xử lý hình ảnh độc quyền.', 'folder' => 'Oppo/OPPO Find X9 Pro', 'prefer' => 'Trắng'],
-    ['id' => 404, 'slug' => 'oppo-find-n5', 'brand' => 'OPPO', 'name' => 'OPPO Find N5', 'price' => 39990000, 'old_price' => 42990000,
-     'description' => 'Màn gập không nếp gấp, siêu mỏng nhẹ.', 'folder' => 'Oppo/OPPO Find N5', 'prefer' => 'Đen'],
+     'description' => 'Thiết kế phẳng nguyên khối, màn hình Dynamic AMOLED 2X.', 'folder' => 'Dien thoai/Galaxy S26', 'prefer' => 'Đen Onyx'],
+    ['id' => 301, 'slug' => 'xiaomi-15-ultra', 'brand' => 'Xiaomi', 'name' => 'Xiaomi 15 Ultra', 'price' => 26990000, 'old_price' => null,
+     'description' => 'Ống kính Leica, cảm biến 1-inch chuyên nghiệp.', 'folder' => 'Dien thoai/Xiaomi 15 Ultra', 'prefer' => 'Đen'],
+    ['id' => 302, 'slug' => 'xiaomi-15-pro', 'brand' => 'Xiaomi', 'name' => 'Xiaomi 15 Pro', 'price' => 24990000, 'old_price' => 26990000,
+     'description' => 'Snapdragon đầu bảng, sạc siêu tốc HyperCharge.', 'folder' => 'Dien thoai/Xiaomi 15 Pro', 'prefer' => 'Xám Titan'],
+    ['id' => 401, 'slug' => 'find-x9-ultra', 'brand' => 'OPPO', 'name' => 'OPPO Find X9 Ultra', 'price' => 27990000, 'old_price' => null,
+     'description' => 'Camera tiềm vọng kép, hệ màu Hasselblad chân thực.', 'folder' => 'Dien thoai/Find X9 Ultra', 'prefer' => 'Cam Sa Mạc'],
+    ['id' => 402, 'slug' => 'find-x9-pro', 'brand' => 'OPPO', 'name' => 'OPPO Find X9 Pro', 'price' => 22990000, 'old_price' => null,
+     'description' => 'Thiết kế cao cấp, chip xử lý hình ảnh độc quyền.', 'folder' => 'Dien thoai/Find X9 Pro', 'prefer' => 'Trắng Ánh Trăng'],
+    ['id' => 404, 'slug' => 'find-n5', 'brand' => 'OPPO', 'name' => 'OPPO Find N5', 'price' => 39990000, 'old_price' => 42990000,
+     'description' => 'Màn gập không nếp gấp, siêu mỏng nhẹ.', 'folder' => 'Dien thoai/Find N5', 'prefer' => 'Than Chì Titan'],
 ];
 
 $defaultsById = [];
@@ -846,6 +863,7 @@ $cartCount = 0;
   <div id="toast" role="status" aria-live="polite" class="pointer-events-none fixed bottom-6 left-1/2 z-50 -translate-x-1/2 translate-y-4 rounded-full bg-ink px-5 py-3 text-sm font-semibold text-white opacity-0 shadow-xl"></div>
 
   <!-- Client JavaScript chính (Menu Mega, Carousel, Drawer, Cart, Toast) -->
+  <script src="frontend/assets/js/products-data.js"></script>
   <script src="frontend/assets/js/main.js"></script>
 </body>
 </html>

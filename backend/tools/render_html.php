@@ -1,7 +1,7 @@
 <?php
 /**
  * VLU FLAGSHIP STORE – HTML Renderer
- * Render toàn bộ các file tĩnh (index, product-detail, cart, checkout, login, register, admin)
+ * Render toàn bộ các file tĩnh (index, product-detail, cart, checkout, login, register, admin, category)
  * Giữ nguyên 100% chuẩn mã hóa UTF-8 nhị phân, không qua pipeline giải mã sai của PowerShell.
  */
 
@@ -36,6 +36,10 @@ $pages = [
     'admin.php' => [
         'dest' => 'admin.html',
         'keywords' => ['Bảng điều khiển Quản trị', 'Tổng quan hệ thống', 'Quản lý Sản phẩm', 'Quản lý Đơn hàng', 'Quản lý Danh mục']
+    ],
+    'category.php' => [
+        'dest' => 'category.html',
+        'keywords' => ['VLU', 'Trang chủ', 'Chi tiết']
     ]
 ];
 
@@ -59,6 +63,8 @@ foreach ($pages as $src => $info) {
             echo "  -> ĐẠT 100% CHUẨN TIẾNG VIỆT UTF-8!\n";
         }
     } else {
-        echo "✗ Lỗi khi render {$dest}\n";
+        echo "✗ Thất bại khi biên dịch {$src}!\n";
     }
 }
+
+echo "\nHoàn tất render toàn bộ các trang HTML tĩnh!\n";
