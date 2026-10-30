@@ -216,6 +216,47 @@
         if (successPaymentMethod) successPaymentMethod.textContent = selectedMethodLabel;
         if (successTotalAmount) successTotalAmount.textContent = finalTotal;
 
+        // Tự động lưu đơn hàng vào vlu_orders để Admin quản lý ngay lập tức
+        try {
+          var newOrderRecord = {
+            id: currentOrderId,
+            customer_name: fullname,
+            customer_phone: phone,
+            customer_email: email || '',
+            customer_address: fullAddress,
+            customer_notes: notes || '',
+            payment_method: selectedMethodLabel,
+            payment_key: selectedMethod,
+            items: cart.map(function (it) {
+              return {
+                id: it.id,
+                name: it.name,
+                color: it.color || 'Mặc định',
+                variant: it.variant || 'Tiêu chuẩn',
+                price: it.price || 0,
+                quantity: it.quantity || 1,
+                image: it.image || 'frontend/assets/images/logo.png'
+              };
+            }),
+            subtotal: engine.getSubtotal(),
+            discount: engine.getDiscount(),
+            total: engine.getTotal(),
+            status: 'pending',
+            created_at: new Date().toISOString()
+          };
+
+          var ordersList = [];
+          var rawOrders = localStorage.getItem('vlu_orders');
+          if (rawOrders) {
+            ordersList = JSON.parse(rawOrders);
+            if (!Array.isArray(ordersList)) ordersList = [];
+          }
+          ordersList.unshift(newOrderRecord);
+          localStorage.setItem('vlu_orders', JSON.stringify(ordersList));
+        } catch (err) {
+          console.warn('Lỗi lưu đơn hàng vào vlu_orders:', err);
+        }
+
         // Xóa giỏ hàng và cập nhật badge
         engine.clearCart();
 

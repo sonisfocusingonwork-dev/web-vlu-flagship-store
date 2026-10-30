@@ -148,6 +148,7 @@
       var mobileUserName = document.getElementById('mobileUserName');
       var mobileUserRole = document.getElementById('mobileUserRole');
       var mobileUserAvatar = document.getElementById('mobileUserAvatar');
+      var mobileAdminBtn = document.getElementById('mobileAdminBtn');
 
       if (user) {
         // Đã đăng nhập: ẩn nút Đăng nhập, hiện nút User Dropdown
@@ -169,12 +170,14 @@
             menuRoleBadge.className = 'rounded-full bg-brand/10 text-brand px-2 py-0.5 text-[10px] font-black uppercase tracking-wider';
           }
           if (menuAdminBtn) menuAdminBtn.classList.remove('hidden');
+          if (mobileAdminBtn) mobileAdminBtn.classList.remove('hidden');
         } else {
           if (menuRoleBadge) {
             menuRoleBadge.textContent = 'Khách hàng thân thiết';
             menuRoleBadge.className = 'rounded-full bg-emerald-50 text-emerald-700 px-2 py-0.5 text-[10px] font-extrabold';
           }
           if (menuAdminBtn) menuAdminBtn.classList.add('hidden');
+          if (mobileAdminBtn) mobileAdminBtn.classList.add('hidden');
         }
 
         // Cập nhật Mobile Drawer

@@ -1,0 +1,811 @@
+<?php
+/**
+ * VLU FLAGSHIP STORE – Trang Quản Trị Hệ Thống 2026 (admin.php)
+ * Bố cục 2 phần Glassmorphism Admin UI (Sidebar + Main Content)
+ * Quản lý Sản phẩm (CRUD), Quản lý Danh mục (CRUD), Duyệt Đơn hàng (Orders & Status), Phân quyền Admin
+ */
+
+require_once __DIR__ . '/backend/lib/product_links.php';
+
+function e($value): string
+{
+    return htmlspecialchars((string)$value, ENT_QUOTES, 'UTF-8');
+}
+?>
+<!DOCTYPE html>
+<html lang="vi" class="h-full">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Bảng điều khiển Quản trị – VLU FLAGSHIP STORE</title>
+  <meta name="description" content="Trang quản trị toàn diện hệ thống cửa hàng công nghệ VLU FLAGSHIP STORE 2026. Quản lý sản phẩm, đơn hàng, danh mục và doanh thu.">
+  <link rel="icon" type="image/png" href="image_2c97c5.png">
+
+  <!-- Font chữ Plus Jakarta Sans -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            brand: { DEFAULT: '#C8102E', dark: '#9B0D23', soft: '#FDF2F4' },
+            ink: '#0B0F19'
+          },
+          fontFamily: {
+            sans: ['"Plus Jakarta Sans"', 'system-ui', '-apple-system', 'sans-serif']
+          }
+        }
+      }
+    }
+  </script>
+
+  <!-- Stylesheet Hệ thống Glassmorphic 2026 -->
+  <link rel="stylesheet" href="style.css">
+  <style>
+    .glass-sidebar {
+      background: rgba(255, 255, 255, 0.88);
+      backdrop-filter: blur(24px) saturate(190%);
+      -webkit-backdrop-filter: blur(24px) saturate(190%);
+    }
+    .glass-card {
+      background: rgba(255, 255, 255, 0.92);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border: 1px solid rgba(226, 232, 240, 0.8);
+    }
+    .custom-scrollbar::-webkit-scrollbar {
+      width: 6px;
+      height: 6px;
+    }
+    .custom-scrollbar::-webkit-scrollbar-track {
+      background: transparent;
+    }
+    .custom-scrollbar::-webkit-scrollbar-thumb {
+      background: rgba(203, 213, 225, 0.8);
+      border-radius: 9999px;
+    }
+    .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+      background: rgba(148, 163, 184, 1);
+    }
+  </style>
+</head>
+<body class="bg-[#F8F9FC] font-sans text-ink antialiased min-h-screen flex flex-col selection:bg-brand selection:text-white">
+
+  <!-- ============================================================
+       0. KHUNG BẢO VỆ PHÂN QUYỀN (ACCESS DENIED GATE)
+       Hiện ra khi người dùng chưa đăng nhập hoặc role !== 1
+       ============================================================ -->
+  <div id="accessDeniedGate" class="hidden fixed inset-0 z-50 flex items-center justify-center bg-slate-950/70 backdrop-blur-md p-4 animate-fade-in">
+    <div class="relative w-full max-w-md rounded-3xl bg-white border border-slate-200/80 p-8 shadow-2xl text-center space-y-5 animate-scale-up">
+      <div class="mx-auto grid h-16 w-16 place-items-center rounded-2xl bg-brand/10 text-brand">
+        <svg class="h-8 w-8" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m0-10.036A11.959 11.959 0 013.598 6 11.99 11.99 0 003 9.75c0 5.592 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.57-.598-3.75h-.152c-3.196 0-6.1-1.25-8.25-3.286zm0 13.036h.008v.008H12v-.008z"/>
+        </svg>
+      </div>
+
+      <div class="space-y-1.5">
+        <span class="inline-block rounded-full bg-red-100 text-red-700 px-3 py-1 text-xs font-bold">Khu vực bảo mật</span>
+        <h3 class="text-xl font-black text-slate-950 tracking-tight">Quyền truy cập bị từ chối</h3>
+        <p class="text-xs text-slate-500 leading-relaxed">
+          Trang này chỉ dành riêng cho tài khoản <strong>Quản trị viên (Admin - role = 1)</strong>. Bạn cần đăng nhập quyền Admin để truy cập toàn bộ hệ thống quản lý.
+        </p>
+      </div>
+
+      <!-- Cụm nút hành động -->
+      <div class="space-y-2.5 pt-2">
+        <button type="button" id="btnQuickAdminLogin" class="w-full py-3 rounded-full bg-brand text-white font-extrabold text-xs shadow-lg shadow-brand/25 hover:bg-brand-dark transition active:scale-95 flex items-center justify-center gap-1.5">
+          <svg class="h-4 w-4" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0A17.933 17.933 0 0112 21.75c-2.676 0-5.216-.584-7.499-1.632z"/></svg>
+          <span>Đăng nhập nhanh quyền Admin (Demo)</span>
+        </button>
+
+        <a href="login.html" class="block w-full py-2.5 rounded-full border border-slate-200 bg-white text-slate-700 font-bold text-xs hover:bg-slate-50 transition active:scale-95 text-center">
+          Đăng nhập bằng tài khoản khác
+        </a>
+
+        <a href="index.html" class="block text-center text-xs font-semibold text-slate-400 hover:text-brand transition pt-1">
+          ← Quay về Trang chủ mua sắm
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============================================================
+       BỐ CỤC CHÍNH (ADMIN LAYOUT: SIDEBAR + MAIN CONTENT)
+       ============================================================ -->
+  <div id="adminLayout" class="flex-1 flex flex-col lg:flex-row min-h-screen">
+    
+    <!-- ============================================================
+         1. SIDEBAR ĐIỀU HƯỚNG BÊN TRÁI (LEFT SIDEBAR)
+         ============================================================ -->
+    <aside class="glass-sidebar w-full lg:w-72 shrink-0 border-r border-slate-200/80 flex flex-col justify-between p-5 lg:sticky lg:top-0 lg:h-screen z-30">
+      
+      <div class="space-y-6">
+        <!-- Logo & Nhãn thương hiệu Admin -->
+        <div class="flex items-center justify-between pb-4 border-b border-slate-200/80">
+          <a href="index.html" class="site-logo inline-flex items-center gap-2.5" title="Xem cửa hàng VLU">
+            <img src="frontend/assets/images/logo.png" onerror="this.onerror=null;this.src='image_2c97c5.png';" alt="VLU FLAGSHIP STORE" class="h-9 w-auto">
+            <div>
+              <span class="block text-sm font-black tracking-tight text-slate-900 leading-none">VLU FLAGSHIP</span>
+              <span class="text-[10px] font-extrabold text-brand uppercase tracking-wider">ADMIN PORTAL 2026</span>
+            </div>
+          </a>
+          <span class="h-2 w-2 rounded-full bg-emerald-500 animate-pulse" title="Hệ thống trực tuyến"></span>
+        </div>
+
+        <!-- Thẻ hồ sơ Admin hiện tại -->
+        <div class="rounded-2xl bg-white border border-slate-200/80 p-3 flex items-center gap-3 shadow-sm">
+          <div id="sidebarAdminAvatar" class="grid h-10 w-10 shrink-0 place-items-center rounded-xl bg-brand text-white font-black text-sm shadow-md shadow-brand/20">
+            A
+          </div>
+          <div class="min-w-0 flex-1">
+            <h4 id="sidebarAdminName" class="text-xs font-bold text-slate-900 truncate">Quản Trị Viên VLU</h4>
+            <p id="sidebarAdminEmail" class="text-[10px] text-slate-400 font-mono truncate">admin@vlu.edu.vn</p>
+            <span class="inline-block mt-0.5 rounded-full bg-brand/10 text-brand px-2 py-0.2 text-[9px] font-black uppercase tracking-wider">Master Admin</span>
+          </div>
+        </div>
+
+        <!-- Danh sách Tabs điều hướng -->
+        <nav class="space-y-1.5" aria-label="Menu quản trị">
+          <button type="button" data-tab-target="dashboard" class="w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl text-xs font-bold bg-brand text-white shadow-md shadow-brand/20 transition-all duration-150">
+            <span class="flex items-center gap-2.5">
+              <svg class="h-4.5 w-4.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6A2.25 2.25 0 016 3.75h2.25A2.25 2.25 0 0110.5 6v2.25a2.25 2.25 0 01-2.25 2.25H6a2.25 2.25 0 01-2.25-2.25V6zM3.75 15.75A2.25 2.25 0 016 13.5h2.25a2.25 2.25 0 012.25 2.25V18a2.25 2.25 0 01-2.25 2.25H6A2.25 2.25 0 013.75 18v-2.25zM13.5 6a2.25 2.25 0 012.25-2.25H18A2.25 2.25 0 0120.25 6v2.25A2.25 2.25 0 0118 10.5h-2.25a2.25 2.25 0 01-2.25-2.25V6zM13.5 15.75a2.25 2.25 0 012.25-2.25H18a2.25 2.25 0 012.25 2.25V18A2.25 2.25 0 0118 20.25h-2.25A2.25 2.25 0 0113.5 18v-2.25z"/></svg>
+              <span>Tổng quan (Dashboard)</span>
+            </span>
+          </button>
+
+          <button type="button" data-tab-target="products" class="w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl text-xs font-bold text-slate-600 hover:bg-slate-100 transition-all duration-150">
+            <span class="flex items-center gap-2.5">
+              <svg class="h-4.5 w-4.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M21 7.5l-9-5.25L3 7.5m18 0l-9 5.25m9-5.25v9l-9 5.25M3 7.5l9 5.25M3 7.5v9l9 5.25m0-9v9"/></svg>
+              <span>Quản lý Sản phẩm</span>
+            </span>
+            <span class="rounded-full bg-slate-100 px-2 py-0.5 text-[10px] text-slate-500 font-bold" id="sidebarProdCount">--</span>
+          </button>
+
+          <button type="button" data-tab-target="categories" class="w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl text-xs font-bold text-slate-600 hover:bg-slate-100 transition-all duration-150">
+            <span class="flex items-center gap-2.5">
+              <svg class="h-4.5 w-4.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9.568 3H5.25A2.25 2.25 0 003 5.25v4.318c0 .597.237 1.17.659 1.591l9.581 9.581c.699.699 1.78.872 2.607.33a18.095 18.095 0 005.223-5.223c.542-.827.369-1.908-.33-2.607L11.16 3.66A2.25 2.25 0 009.568 3z"/><path stroke-linecap="round" stroke-linejoin="round" d="M6 6h.008v.008H6V6z"/></svg>
+              <span>Quản lý Danh mục</span>
+            </span>
+          </button>
+
+          <button type="button" data-tab-target="orders" class="w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl text-xs font-bold text-slate-600 hover:bg-slate-100 transition-all duration-150">
+            <span class="flex items-center gap-2.5">
+              <svg class="h-4.5 w-4.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 10.5V6a3.75 3.75 0 10-7.5 0v4.5m11.356-1.993l1.263 12c.07.665-.45 1.243-1.119 1.243H4.25a1.125 1.125 0 01-1.12-1.243l1.264-12A1.125 1.125 0 015.513 7.5h12.974c.576 0 1.059.435 1.119.993z"/></svg>
+              <span>Quản lý Đơn hàng</span>
+            </span>
+            <span id="sidebarOrderPendingBadge" class="hidden rounded-full bg-amber-500 text-white px-2 py-0.5 text-[10px] font-black animate-pulse">0</span>
+          </button>
+
+          <button type="button" data-tab-target="users" class="w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl text-xs font-bold text-slate-600 hover:bg-slate-100 transition-all duration-150">
+            <span class="flex items-center gap-2.5">
+              <svg class="h-4.5 w-4.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15 19.128a9.38 9.38 0 002.625.372 9.337 9.337 0 004.121-.952 4.125 4.125 0 00-7.533-2.493M15 19.128v-.003c0-1.113-.285-2.16-.786-3.07M15 19.128v.106A12.318 12.318 0 018.624 21c-2.331 0-4.512-.645-6.374-1.766l-.001-.109a6.375 6.375 0 0111.964-3.07M12 6.375a3.375 3.375 0 11-6.75 0 3.375 3.375 0 016.75 0zm8.25 2.25a2.625 2.625 0 11-5.25 0 2.625 2.625 0 015.25 0z"/></svg>
+              <span>Quản lý Tài khoản</span>
+            </span>
+          </button>
+        </nav>
+      </div>
+
+      <!-- Đáy Sidebar: Xem cửa hàng & Đăng xuất -->
+      <div class="pt-4 border-t border-slate-200/80 space-y-2 mt-6">
+        <a href="index.html" class="flex items-center gap-2.5 px-3 py-2 rounded-xl text-xs font-bold text-slate-600 hover:text-brand hover:bg-slate-50 transition">
+          <svg class="h-4 w-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 21a9.004 9.004 0 008.716-6.747M12 21a9.004 9.004 0 01-8.716-6.747M12 21c2.485 0 4.5-4.03 4.5-9S14.485 3 12 3m0 18c-2.485 0-4.5-4.03-4.5-9S9.515 3 12 3m0 0a8.997 8.997 0 017.843 4.582M12 3a8.997 8.997 0 00-7.843 4.582m15.686 0A11.953 11.953 0 0112 10.5c-2.998 0-5.74-1.1-7.843-2.918m15.686 0A8.959 8.959 0 0121 12c0 .778-.099 1.533-.284 2.253m0 0A17.919 17.919 0 0112 16.5c-3.162 0-6.133-.815-8.716-2.247m0 0A9.015 9.015 0 013 12c0-.778.099-1.533.284-2.253"/></svg>
+          <span>Xem trang chủ cửa hàng</span>
+        </a>
+
+        <button type="button" id="adminLogoutBtn" class="w-full flex items-center gap-2.5 px-3 py-2 rounded-xl text-xs font-bold text-red-600 hover:bg-red-50 transition">
+          <svg class="h-4 w-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 9V5.25A2.25 2.25 0 0013.5 3h-6a2.25 2.25 0 00-2.25 2.25v13.5A2.25 2.25 0 007.5 21h6a2.25 2.25 0 002.25-2.25V15M12 9l-3 3m0 0l3 3m-3-3h12.75"/></svg>
+          <span>Đăng xuất Admin</span>
+        </button>
+
+        <p class="text-[10px] text-slate-400 text-center pt-2">VLU Flagship Store v2.6</p>
+      </div>
+
+    </aside>
+
+    <!-- ============================================================
+         2. KHUNG NỘI DUNG CHÍNH (RIGHT MAIN CONTENT)
+         ============================================================ -->
+    <main class="flex-1 flex flex-col min-w-0 overflow-y-auto custom-scrollbar">
+      
+      <!-- Topbar Header -->
+      <header class="sticky top-0 z-20 border-b border-slate-200/80 bg-white/90 backdrop-blur-md px-6 py-4 flex flex-wrap items-center justify-between gap-4">
+        <div>
+          <nav aria-label="Breadcrumb" class="text-[11px] font-semibold text-slate-400 mb-0.5">
+            <span>Admin</span> / <span id="topbarBreadcrumb" class="text-slate-700">Tổng quan hệ thống</span>
+          </nav>
+          <h1 id="topbarPageTitle" class="text-xl sm:text-2xl font-black text-slate-950 tracking-tight">Tổng quan hệ thống (Dashboard)</h1>
+        </div>
+
+        <div class="flex items-center gap-3">
+          <button type="button" id="btnTopAddProduct" class="hidden sm:inline-flex items-center gap-1.5 rounded-full bg-brand px-4 py-2 text-xs font-bold text-white shadow-md shadow-brand/20 hover:bg-brand-dark transition active:scale-95">
+            <svg class="h-4 w-4" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15"/></svg>
+            <span>Thêm sản phẩm</span>
+          </button>
+
+          <div class="flex items-center gap-2 border-l border-slate-200 pl-3">
+            <span class="text-xs font-bold text-slate-700 hidden md:inline" id="topAdminName">Quản Trị Viên</span>
+            <div class="h-8 w-8 rounded-full bg-slate-900 text-white grid place-items-center text-xs font-black shadow-sm">
+              AD
+            </div>
+          </div>
+        </div>
+      </header>
+
+      <!-- Vùng hiển thị các Tab Panel -->
+      <div class="p-6 sm:p-8 space-y-8 flex-1">
+
+        <!-- ============================================================
+             TAB 1: TỔNG QUAN (DASHBOARD)
+             ============================================================ -->
+        <div id="tabPanel-dashboard" class="admin-tab-panel space-y-6">
+          
+          <!-- 4 Thẻ Thống kê nhanh (Stat Cards) -->
+          <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
+            
+            <!-- Thẻ 1: Tổng doanh thu -->
+            <div class="glass-card rounded-3xl p-5 shadow-sm space-y-3">
+              <div class="flex items-center justify-between">
+                <span class="text-xs font-bold text-slate-500">Tổng doanh thu</span>
+                <span class="grid h-9 w-9 place-items-center rounded-2xl bg-emerald-50 text-emerald-600">
+                  <svg class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 6v12m-3-2.818l.879.659c1.171.879 3.07.879 4.242 0 1.172-.879 1.172-2.303 0-3.182C13.536 12.219 12.768 12 12 12c-.725 0-1.45-.22-2.003-.659-1.106-.879-1.106-2.303 0-3.182s2.9-.879 4.006 0l.415.33M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                </span>
+              </div>
+              <div>
+                <h3 id="statTotalRevenue" class="text-2xl font-black text-slate-950 tracking-tight">0₫</h3>
+                <p class="text-[11px] font-semibold text-emerald-600 flex items-center gap-1 mt-1">
+                  <span>↑ +18.5%</span> <span class="text-slate-400 font-normal">so với tháng trước</span>
+                </p>
+              </div>
+            </div>
+
+            <!-- Thẻ 2: Tổng đơn hàng -->
+            <div class="glass-card rounded-3xl p-5 shadow-sm space-y-3">
+              <div class="flex items-center justify-between">
+                <span class="text-xs font-bold text-slate-500">Tổng đơn hàng</span>
+                <span class="grid h-9 w-9 place-items-center rounded-2xl bg-blue-50 text-blue-600">
+                  <svg class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 10.5V6a3.75 3.75 0 10-7.5 0v4.5m11.356-1.993l1.263 12c.07.665-.45 1.243-1.119 1.243H4.25a1.125 1.125 0 01-1.12-1.243l1.264-12A1.125 1.125 0 015.513 7.5h12.974c.576 0 1.059.435 1.119.993z"/></svg>
+                </span>
+              </div>
+              <div>
+                <h3 id="statTotalOrders" class="text-2xl font-black text-slate-950 tracking-tight">0 đơn</h3>
+                <p id="statPendingOrders" class="text-[11px] font-semibold text-amber-600 mt-1">0 đơn chờ xử lý</p>
+              </div>
+            </div>
+
+            <!-- Thẻ 3: Tổng sản phẩm -->
+            <div class="glass-card rounded-3xl p-5 shadow-sm space-y-3">
+              <div class="flex items-center justify-between">
+                <span class="text-xs font-bold text-slate-500">Sản phẩm kích hoạt</span>
+                <span class="grid h-9 w-9 place-items-center rounded-2xl bg-purple-50 text-purple-600">
+                  <svg class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M21 7.5l-9-5.25L3 7.5m18 0l-9 5.25m9-5.25v9l-9 5.25M3 7.5l9 5.25M3 7.5v9l9 5.25m0-9v9"/></svg>
+                </span>
+              </div>
+              <div>
+                <h3 id="statTotalProducts" class="text-2xl font-black text-slate-950 tracking-tight">0 thiết bị</h3>
+                <p class="text-[11px] font-semibold text-purple-600 mt-1">Đầy đủ 7 danh mục</p>
+              </div>
+            </div>
+
+            <!-- Thẻ 4: Tổng tài khoản -->
+            <div class="glass-card rounded-3xl p-5 shadow-sm space-y-3">
+              <div class="flex items-center justify-between">
+                <span class="text-xs font-bold text-slate-500">Khách hàng thành viên</span>
+                <span class="grid h-9 w-9 place-items-center rounded-2xl bg-brand/10 text-brand">
+                  <svg class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15 19.128a9.38 9.38 0 002.625.372 9.337 9.337 0 004.121-.952 4.125 4.125 0 00-7.533-2.493M15 19.128v-.003c0-1.113-.285-2.16-.786-3.07M15 19.128v.106A12.318 12.318 0 018.624 21c-2.331 0-4.512-.645-6.374-1.766l-.001-.109a6.375 6.375 0 0111.964-3.07M12 6.375a3.375 3.375 0 11-6.75 0 3.375 3.375 0 016.75 0zm8.25 2.25a2.625 2.625 0 11-5.25 0 2.625 2.625 0 015.25 0z"/></svg>
+                </span>
+              </div>
+              <div>
+                <h3 id="statTotalUsers" class="text-2xl font-black text-slate-950 tracking-tight">0 tài khoản</h3>
+                <p class="text-[11px] font-semibold text-brand mt-1">98% Tỉ lệ quay lại</p>
+              </div>
+            </div>
+
+          </div>
+
+          <!-- Bảng Đơn Hàng Mới Nhất & Biểu đồ Cơ Cấu Hãng -->
+          <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+            
+            <!-- Đơn hàng gần đây (lg:col-span-8) -->
+            <div class="lg:col-span-8 glass-card rounded-3xl p-6 shadow-sm space-y-4">
+              <div class="flex items-center justify-between pb-3 border-b border-slate-100">
+                <div>
+                  <h3 class="text-base font-extrabold text-slate-950">Đơn hàng mới nhất</h3>
+                  <p class="text-xs text-slate-400">Tự động cập nhật tức thì từ trang thanh toán checkout.html</p>
+                </div>
+                <button type="button" data-tab-target="orders" class="text-xs font-bold text-brand hover:underline">
+                  Xem tất cả đơn →
+                </button>
+              </div>
+
+              <div class="overflow-x-auto">
+                <table class="w-full text-left text-xs">
+                  <thead class="text-slate-400 font-bold uppercase tracking-wider border-b border-slate-100 text-[10px]">
+                    <tr>
+                      <th class="py-2.5 px-4">Mã đơn</th>
+                      <th class="py-2.5 px-4">Khách hàng</th>
+                      <th class="py-2.5 px-4">Tổng tiền</th>
+                      <th class="py-2.5 px-4">Trạng thái</th>
+                      <th class="py-2.5 px-4 text-right">Chi tiết</th>
+                    </tr>
+                  </thead>
+                  <tbody id="dashboardRecentOrdersBody">
+                    <!-- Rendered by JS -->
+                  </tbody>
+                </table>
+              </div>
+            </div>
+
+            <!-- Cơ cấu sản phẩm theo Hãng (lg:col-span-4) -->
+            <div class="lg:col-span-4 glass-card rounded-3xl p-6 shadow-sm space-y-4">
+              <div class="pb-3 border-b border-slate-100">
+                <h3 class="text-base font-extrabold text-slate-950">Phân bố Danh mục</h3>
+                <p class="text-xs text-slate-400">Tỷ trọng sản phẩm theo hãng</p>
+              </div>
+
+              <div id="brandBreakdownContainer" class="space-y-3">
+                <!-- Rendered by JS -->
+              </div>
+            </div>
+
+          </div>
+
+        </div>
+
+        <!-- ============================================================
+             TAB 2: QUẢN LÝ SẢN PHẨM (PRODUCTS CRUD)
+             ============================================================ -->
+        <div id="tabPanel-products" class="admin-tab-panel hidden space-y-6">
+          
+          <!-- Thanh công cụ: Tìm kiếm, lọc danh mục & Nút thêm -->
+          <div class="glass-card rounded-3xl p-5 shadow-sm flex flex-col md:flex-row items-center justify-between gap-4">
+            
+            <div class="flex-1 w-full flex flex-col sm:flex-row items-center gap-3">
+              <!-- Ô tìm kiếm sản phẩm -->
+              <div class="relative w-full sm:w-80">
+                <svg class="pointer-events-none absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+                <input type="text" id="productSearchInput" placeholder="Tìm theo tên máy, mã sản phẩm..." class="w-full rounded-2xl border border-slate-200 bg-white/90 pl-10 pr-4 py-2 text-xs font-semibold text-slate-900 placeholder:text-slate-400 focus:outline-none focus:border-brand focus:ring-2 focus:ring-brand/10 transition">
+              </div>
+
+              <!-- Bộ lọc Danh mục -->
+              <select id="productCategoryFilter" class="w-full sm:w-56 rounded-2xl border border-slate-200 bg-white/90 px-3.5 py-2 text-xs font-bold text-slate-700 focus:outline-none focus:border-brand transition">
+                <option value="all">Tất cả danh mục</option>
+              </select>
+            </div>
+
+            <!-- Cụm nút hành động -->
+            <div class="flex items-center gap-2.5 w-full md:w-auto justify-end">
+              <button type="button" id="btnResetProducts" class="rounded-2xl border border-slate-200 bg-white px-3.5 py-2 text-xs font-bold text-slate-600 hover:bg-slate-50 transition active:scale-95" title="Khôi phục catalog gốc">
+                Khôi phục gốc
+              </button>
+              <button type="button" id="btnOpenAddProduct" class="rounded-2xl bg-brand px-4 py-2 text-xs font-black text-white hover:bg-brand-dark transition active:scale-95 shadow-md shadow-brand/20 flex items-center gap-1.5">
+                <svg class="h-4 w-4" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15"/></svg>
+                <span>+ Thêm sản phẩm</span>
+              </button>
+            </div>
+
+          </div>
+
+          <!-- Bảng danh sách sản phẩm -->
+          <div class="glass-card rounded-3xl shadow-sm overflow-hidden">
+            <div class="p-5 border-b border-slate-100 flex items-center justify-between">
+              <h3 class="text-base font-extrabold text-slate-950">Danh sách thiết bị công nghệ</h3>
+              <span id="productsCountBadge" class="rounded-full bg-slate-100 px-3 py-1 text-xs font-bold text-slate-700">0 sản phẩm</span>
+            </div>
+
+            <div class="overflow-x-auto">
+              <table class="w-full text-left text-xs">
+                <thead class="bg-slate-50/80 text-slate-400 font-bold uppercase tracking-wider border-b border-slate-200/80 text-[10px]">
+                  <tr>
+                    <th class="py-3 px-4">Mã</th>
+                    <th class="py-3 px-4">Ảnh</th>
+                    <th class="py-3 px-4">Tên sản phẩm</th>
+                    <th class="py-3 px-4">Danh mục</th>
+                    <th class="py-3 px-4">Giá bán</th>
+                    <th class="py-3 px-4">Kho hàng</th>
+                    <th class="py-3 px-4 text-right">Thao tác</th>
+                  </tr>
+                </thead>
+                <tbody id="productsTableBody">
+                  <!-- Rendered by JS -->
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- ============================================================
+             TAB 3: QUẢN LÝ DANH MỤC (CATEGORIES CRUD)
+             ============================================================ -->
+        <div id="tabPanel-categories" class="admin-tab-panel hidden space-y-6">
+          
+          <div class="glass-card rounded-3xl p-5 shadow-sm flex items-center justify-between gap-4">
+            <div>
+              <h3 class="text-base font-extrabold text-slate-950">Danh mục hãng &amp; phân loại</h3>
+              <p class="text-xs text-slate-400">Quản lý danh sách các hãng sản xuất trên hệ thống</p>
+            </div>
+            <button type="button" id="btnOpenAddCategory" class="rounded-2xl bg-brand px-4 py-2 text-xs font-black text-white hover:bg-brand-dark transition active:scale-95 shadow-md shadow-brand/20 flex items-center gap-1.5">
+              <svg class="h-4 w-4" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15"/></svg>
+              <span>+ Thêm danh mục</span>
+            </button>
+          </div>
+
+          <div class="glass-card rounded-3xl shadow-sm overflow-hidden">
+            <div class="p-5 border-b border-slate-100 flex items-center justify-between">
+              <h4 class="text-sm font-extrabold text-slate-900">Danh sách danh mục</h4>
+              <span id="categoriesCountBadge" class="rounded-full bg-slate-100 px-3 py-1 text-xs font-bold text-slate-700">0 danh mục</span>
+            </div>
+
+            <div class="overflow-x-auto">
+              <table class="w-full text-left text-xs">
+                <thead class="bg-slate-50/80 text-slate-400 font-bold uppercase tracking-wider border-b border-slate-200/80 text-[10px]">
+                  <tr>
+                    <th class="py-3 px-4">ID</th>
+                    <th class="py-3 px-4">Tên Hãng</th>
+                    <th class="py-3 px-4">Mô tả</th>
+                    <th class="py-3 px-4">Sản phẩm liên kết</th>
+                    <th class="py-3 px-4 text-right">Thao tác</th>
+                  </tr>
+                </thead>
+                <tbody id="categoriesTableBody">
+                  <!-- Rendered by JS -->
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- ============================================================
+             TAB 4: QUẢN LÝ ĐƠN HÀNG (ORDERS & STATUS TRANSITION)
+             ============================================================ -->
+        <div id="tabPanel-orders" class="admin-tab-panel hidden space-y-6">
+          
+          <!-- Thanh lọc trạng thái đơn hàng -->
+          <div class="glass-card rounded-3xl p-5 shadow-sm flex flex-col md:flex-row items-center justify-between gap-4">
+            
+            <div class="flex flex-wrap items-center gap-2">
+              <button type="button" data-order-filter="all" class="rounded-xl bg-brand text-white px-3.5 py-1.5 text-xs font-bold transition shadow-sm">
+                Tất cả đơn
+              </button>
+              <button type="button" data-order-filter="pending" class="rounded-xl bg-white border border-slate-200 text-slate-600 px-3.5 py-1.5 text-xs font-bold hover:bg-slate-50 transition">
+                Chờ xử lý
+              </button>
+              <button type="button" data-order-filter="shipping" class="rounded-xl bg-white border border-slate-200 text-slate-600 px-3.5 py-1.5 text-xs font-bold hover:bg-slate-50 transition">
+                Đang giao
+              </button>
+              <button type="button" data-order-filter="completed" class="rounded-xl bg-white border border-slate-200 text-slate-600 px-3.5 py-1.5 text-xs font-bold hover:bg-slate-50 transition">
+                Hoàn thành
+              </button>
+              <button type="button" data-order-filter="cancelled" class="rounded-xl bg-white border border-slate-200 text-slate-600 px-3.5 py-1.5 text-xs font-bold hover:bg-slate-50 transition">
+                Đã hủy
+              </button>
+            </div>
+
+            <!-- Ô tìm kiếm đơn -->
+            <div class="relative w-full md:w-72">
+              <svg class="pointer-events-none absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+              <input type="text" id="orderSearchInput" placeholder="Tìm mã đơn, tên, SĐT..." class="w-full rounded-2xl border border-slate-200 bg-white/90 pl-10 pr-4 py-2 text-xs font-semibold text-slate-900 placeholder:text-slate-400 focus:outline-none focus:border-brand transition">
+            </div>
+
+          </div>
+
+          <!-- Bảng đơn hàng -->
+          <div class="glass-card rounded-3xl shadow-sm overflow-hidden">
+            <div class="p-5 border-b border-slate-100 flex items-center justify-between">
+              <h3 class="text-base font-extrabold text-slate-950">Danh sách đơn hàng khách đặt</h3>
+              <span id="ordersCountBadge" class="rounded-full bg-slate-100 px-3 py-1 text-xs font-bold text-slate-700">0 đơn hàng</span>
+            </div>
+
+            <div class="overflow-x-auto">
+              <table class="w-full text-left text-xs">
+                <thead class="bg-slate-50/80 text-slate-400 font-bold uppercase tracking-wider border-b border-slate-200/80 text-[10px]">
+                  <tr>
+                    <th class="py-3 px-4">Mã đơn</th>
+                    <th class="py-3 px-4">Thời gian</th>
+                    <th class="py-3 px-4">Khách hàng</th>
+                    <th class="py-3 px-4">Địa chỉ giao hàng</th>
+                    <th class="py-3 px-4">Thanh toán</th>
+                    <th class="py-3 px-4">Tổng tiền</th>
+                    <th class="py-3 px-4">Cập nhật trạng thái</th>
+                    <th class="py-3 px-4 text-right">Chi tiết</th>
+                  </tr>
+                </thead>
+                <tbody id="ordersTableBody">
+                  <!-- Rendered by JS -->
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- ============================================================
+             TAB 5: QUẢN LÝ TÀI KHOẢN (USERS)
+             ============================================================ -->
+        <div id="tabPanel-users" class="admin-tab-panel hidden space-y-6">
+          
+          <div class="glass-card rounded-3xl p-5 shadow-sm flex items-center justify-between gap-4">
+            <div>
+              <h3 class="text-base font-extrabold text-slate-950">Tài khoản thành viên &amp; Phân quyền</h3>
+              <p class="text-xs text-slate-400">Danh sách người dùng đăng ký trên hệ thống VLU Flagship</p>
+            </div>
+            <span id="usersCountBadge" class="rounded-full bg-slate-100 px-3 py-1 text-xs font-bold text-slate-700">0 thành viên</span>
+          </div>
+
+          <div class="glass-card rounded-3xl shadow-sm overflow-hidden">
+            <div class="overflow-x-auto">
+              <table class="w-full text-left text-xs">
+                <thead class="bg-slate-50/80 text-slate-400 font-bold uppercase tracking-wider border-b border-slate-200/80 text-[10px]">
+                  <tr>
+                    <th class="py-3 px-4">ID</th>
+                    <th class="py-3 px-4">Họ và tên / Email</th>
+                    <th class="py-3 px-4">Số điện thoại</th>
+                    <th class="py-3 px-4">Vai trò (Role)</th>
+                    <th class="py-3 px-4">Ngày đăng ký</th>
+                    <th class="py-3 px-4">Trạng thái</th>
+                  </tr>
+                </thead>
+                <tbody id="usersTableBody">
+                  <!-- Rendered by JS -->
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+
+    </main>
+
+  </div>
+
+  <!-- ============================================================
+       MODAL 1: THÊM & CẬP NHẬT SẢN PHẨM (productModal)
+       Thuộc tính name="..." khớp chuẩn bảng products (name, category_id, price, image, description)
+       ============================================================ -->
+  <div id="productModal" class="admin-modal modal-backdrop hidden fixed inset-0 z-50 items-center justify-center bg-slate-950/60 backdrop-blur-md p-4 animate-fade-in">
+    <div class="relative w-full max-w-xl rounded-3xl bg-white border border-slate-200 p-6 sm:p-7 shadow-2xl max-h-[90vh] overflow-y-auto custom-scrollbar">
+      
+      <div class="flex items-center justify-between pb-4 border-b border-slate-100">
+        <h3 id="productModalTitle" class="text-lg font-black text-slate-950 tracking-tight">Thêm sản phẩm mới</h3>
+        <button type="button" data-close-modal class="text-slate-400 hover:text-slate-700 p-1 text-lg font-bold">✕</button>
+      </div>
+
+      <form id="productForm" class="space-y-4 pt-4">
+        
+        <!-- Tên sản phẩm (name) -->
+        <div>
+          <label for="prodModalName" class="block text-xs font-bold text-slate-700 mb-1">
+            Tên sản phẩm <span class="text-red-500">*</span>
+          </label>
+          <input type="text" id="prodModalName" name="name" required placeholder="Ví dụ: iPhone 18 Pro Max" class="w-full rounded-xl border border-slate-200 bg-slate-50/50 px-3.5 py-2.5 text-xs font-semibold text-slate-900 focus:bg-white focus:border-brand focus:outline-none transition">
+        </div>
+
+        <!-- Hàng 2 Cột: Danh mục (category_id) & Số lượng kho -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
+          <div>
+            <label for="prodModalCategory" class="block text-xs font-bold text-slate-700 mb-1">
+              Danh mục hãng (category_id) <span class="text-red-500">*</span>
+            </label>
+            <select id="prodModalCategory" name="category_id" required class="w-full rounded-xl border border-slate-200 bg-slate-50/50 px-3.5 py-2.5 text-xs font-semibold text-slate-900 focus:bg-white focus:border-brand focus:outline-none transition">
+              <!-- Rendered by JS -->
+            </select>
+          </div>
+          <div>
+            <label for="prodModalStock" class="block text-xs font-bold text-slate-700 mb-1">Số lượng trong kho</label>
+            <input type="number" id="prodModalStock" name="stock" value="50" min="0" class="w-full rounded-xl border border-slate-200 bg-slate-50/50 px-3.5 py-2.5 text-xs font-semibold text-slate-900 focus:bg-white focus:border-brand focus:outline-none transition">
+          </div>
+        </div>
+
+        <!-- Hàng 2 Cột: Giá bán (price) & Giá niêm yết (old_price) -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
+          <div>
+            <label for="prodModalPrice" class="block text-xs font-bold text-slate-700 mb-1">
+              Giá bán thực tế (VNĐ) <span class="text-red-500">*</span>
+            </label>
+            <input type="number" id="prodModalPrice" name="price" required placeholder="34990000" class="w-full rounded-xl border border-slate-200 bg-slate-50/50 px-3.5 py-2.5 text-xs font-semibold text-slate-900 focus:bg-white focus:border-brand focus:outline-none transition">
+          </div>
+          <div>
+            <label for="prodModalOldPrice" class="block text-xs font-bold text-slate-700 mb-1">Giá gốc niêm yết (VNĐ)</label>
+            <input type="number" id="prodModalOldPrice" name="old_price" placeholder="36990000" class="w-full rounded-xl border border-slate-200 bg-slate-50/50 px-3.5 py-2.5 text-xs font-semibold text-slate-900 focus:bg-white focus:border-brand focus:outline-none transition">
+          </div>
+        </div>
+
+        <!-- Ảnh sản phẩm (image) & Khung xem trước -->
+        <div>
+          <label for="prodModalImage" class="block text-xs font-bold text-slate-700 mb-1">Đường dẫn hình ảnh (image)</label>
+          <div class="flex items-center gap-3">
+            <input type="text" id="prodModalImage" name="image" placeholder="URL ảnh hoặc SanPham/SanPham/..." class="flex-1 rounded-xl border border-slate-200 bg-slate-50/50 px-3.5 py-2.5 text-xs font-semibold text-slate-900 focus:bg-white focus:border-brand focus:outline-none transition">
+            <div class="h-12 w-12 shrink-0 rounded-xl bg-slate-100 border border-slate-200 p-1 flex items-center justify-center overflow-hidden">
+              <img id="prodModalImagePreview" src="frontend/assets/images/logo.png" alt="Preview" class="max-h-full max-w-full object-contain">
+            </div>
+          </div>
+        </div>
+
+        <!-- Mô tả sản phẩm (description) -->
+        <div>
+          <label for="prodModalDesc" class="block text-xs font-bold text-slate-700 mb-1">Mô tả thông số kỹ thuật (description)</label>
+          <textarea id="prodModalDesc" name="description" rows="3" placeholder="Đỉnh cao công nghệ Titanium, chip A20 Pro..." class="w-full rounded-xl border border-slate-200 bg-slate-50/50 px-3.5 py-2.5 text-xs font-semibold text-slate-900 focus:bg-white focus:border-brand focus:outline-none transition resize-none"></textarea>
+        </div>
+
+        <!-- Nút hành động -->
+        <div class="flex items-center justify-end gap-3 pt-3 border-t border-slate-100">
+          <button type="button" data-close-modal class="rounded-full px-5 py-2.5 text-xs font-bold text-slate-600 hover:bg-slate-100 transition">
+            Hủy bỏ
+          </button>
+          <button type="submit" class="rounded-full bg-brand px-6 py-2.5 text-xs font-extrabold text-white shadow-md shadow-brand/20 hover:bg-brand-dark transition active:scale-95">
+            Lưu sản phẩm
+          </button>
+        </div>
+
+      </form>
+
+    </div>
+  </div>
+
+  <!-- ============================================================
+       MODAL 2: THÊM & SỬA DANH MỤC (categoryModal)
+       ============================================================ -->
+  <div id="categoryModal" class="admin-modal modal-backdrop hidden fixed inset-0 z-50 items-center justify-center bg-slate-950/60 backdrop-blur-md p-4 animate-fade-in">
+    <div class="relative w-full max-w-md rounded-3xl bg-white border border-slate-200 p-6 sm:p-7 shadow-2xl">
+      
+      <div class="flex items-center justify-between pb-3 border-b border-slate-100">
+        <h3 id="categoryModalTitle" class="text-base font-black text-slate-950 tracking-tight">Thêm danh mục mới</h3>
+        <button type="button" data-close-modal class="text-slate-400 hover:text-slate-700 text-lg font-bold">✕</button>
+      </div>
+
+      <form id="categoryForm" class="space-y-4 pt-4">
+        <div>
+          <label for="catModalName" class="block text-xs font-bold text-slate-700 mb-1">
+            Tên Hãng / Danh mục <span class="text-red-500">*</span>
+          </label>
+          <input type="text" id="catModalName" name="name" required placeholder="Ví dụ: Google Pixel, Marshall..." class="w-full rounded-xl border border-slate-200 bg-slate-50/50 px-3.5 py-2.5 text-xs font-semibold text-slate-900 focus:bg-white focus:border-brand focus:outline-none transition">
+        </div>
+
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label for="catModalSlug" class="block text-xs font-bold text-slate-700 mb-1">Slug đường dẫn</label>
+            <input type="text" id="catModalSlug" name="slug" placeholder="google-pixel" class="w-full rounded-xl border border-slate-200 bg-slate-50/50 px-3.5 py-2.5 text-xs font-semibold text-slate-900 focus:bg-white focus:border-brand focus:outline-none transition">
+          </div>
+          <div>
+            <label for="catModalIcon" class="block text-xs font-bold text-slate-700 mb-1">Biểu tượng (Icon/Emoji)</label>
+            <input type="text" id="catModalIcon" name="icon" placeholder="📱" class="w-full rounded-xl border border-slate-200 bg-slate-50/50 px-3.5 py-2.5 text-xs font-semibold text-slate-900 focus:bg-white focus:border-brand focus:outline-none transition">
+          </div>
+        </div>
+
+        <div>
+          <label for="catModalDesc" class="block text-xs font-bold text-slate-700 mb-1">Mô tả ngắn</label>
+          <input type="text" id="catModalDesc" name="description" placeholder="Mô tả các dòng sản phẩm thuộc danh mục..." class="w-full rounded-xl border border-slate-200 bg-slate-50/50 px-3.5 py-2.5 text-xs font-semibold text-slate-900 focus:bg-white focus:border-brand focus:outline-none transition">
+        </div>
+
+        <div class="flex items-center justify-end gap-3 pt-3 border-t border-slate-100">
+          <button type="button" data-close-modal class="rounded-full px-4 py-2 text-xs font-bold text-slate-600 hover:bg-slate-100 transition">Hủy</button>
+          <button type="submit" class="rounded-full bg-brand px-5 py-2 text-xs font-extrabold text-white shadow-md shadow-brand/20 hover:bg-brand-dark transition active:scale-95">Lưu danh mục</button>
+        </div>
+      </form>
+
+    </div>
+  </div>
+
+  <!-- ============================================================
+       MODAL 3: XEM CHI TIẾT ĐƠN HÀNG (orderDetailModal)
+       ============================================================ -->
+  <div id="orderDetailModal" class="admin-modal modal-backdrop hidden fixed inset-0 z-50 items-center justify-center bg-slate-950/60 backdrop-blur-md p-4 animate-fade-in">
+    <div class="relative w-full max-w-2xl rounded-3xl bg-white border border-slate-200 p-6 sm:p-7 shadow-2xl max-h-[90vh] overflow-y-auto custom-scrollbar space-y-5">
+      
+      <div class="flex items-center justify-between pb-3 border-b border-slate-100">
+        <div>
+          <span class="text-[10px] font-extrabold uppercase tracking-wider text-slate-400">CHI TIẾT ĐƠN HÀNG</span>
+          <h3 id="detailModalOrderId" class="text-xl font-black text-brand tracking-tight">#VLU-2026-00000</h3>
+        </div>
+        <button type="button" data-close-modal class="text-slate-400 hover:text-slate-700 text-lg font-bold">✕</button>
+      </div>
+
+      <!-- Thông tin người nhận -->
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs bg-slate-50 p-4 rounded-2xl border border-slate-100">
+        <div>
+          <span class="text-slate-400">Khách hàng:</span>
+          <strong id="detailModalName" class="block text-slate-900 font-bold">--</strong>
+        </div>
+        <div>
+          <span class="text-slate-400">Số điện thoại:</span>
+          <strong id="detailModalPhone" class="block text-slate-900 font-mono font-bold">--</strong>
+        </div>
+        <div>
+          <span class="text-slate-400">Email:</span>
+          <span id="detailModalEmail" class="block text-slate-700">--</span>
+        </div>
+        <div>
+          <span class="text-slate-400">Ngày đặt:</span>
+          <span id="detailModalDate" class="block text-slate-700 font-mono">--</span>
+        </div>
+        <div class="sm:col-span-2">
+          <span class="text-slate-400">Địa chỉ giao hàng:</span>
+          <strong id="detailModalAddress" class="block text-slate-900">--</strong>
+        </div>
+        <div class="sm:col-span-2">
+          <span class="text-slate-400">Ghi chú giao hàng:</span>
+          <span id="detailModalNotes" class="block text-slate-600 italic">--</span>
+        </div>
+        <div class="sm:col-span-2">
+          <span class="text-slate-400">Phương thức thanh toán:</span>
+          <strong id="detailModalPayment" class="block text-slate-900">--</strong>
+        </div>
+      </div>
+
+      <!-- Bảng danh sách mặt hàng đã đặt -->
+      <div>
+        <h4 class="text-xs font-extrabold uppercase tracking-wider text-slate-700 mb-2">Sản phẩm trong đơn</h4>
+        <div class="overflow-x-auto rounded-2xl border border-slate-200/80">
+          <table class="w-full text-left text-xs">
+            <thead class="bg-slate-50 text-slate-400 font-bold uppercase text-[10px]">
+              <tr>
+                <th class="py-2 px-3">Sản phẩm</th>
+                <th class="py-2 px-3 text-center">SL</th>
+                <th class="py-2 px-3 text-right">Đơn giá</th>
+                <th class="py-2 px-3 text-right">Thành tiền</th>
+              </tr>
+            </thead>
+            <tbody id="detailModalItemsBody">
+              <!-- Rendered by JS -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Tổng tiền đơn hàng -->
+      <div class="space-y-1.5 text-xs text-slate-600 bg-white p-3 rounded-2xl border border-slate-100">
+        <div class="flex justify-between">
+          <span>Tạm tính:</span>
+          <span id="detailModalSubtotal" class="font-bold text-slate-900">0₫</span>
+        </div>
+        <div class="flex justify-between text-emerald-600 font-semibold">
+          <span>Giảm giá Voucher:</span>
+          <span id="detailModalDiscount">-0₫</span>
+        </div>
+        <div class="flex justify-between">
+          <span>Phí vận chuyển:</span>
+          <span class="font-bold text-emerald-600">Miễn phí</span>
+        </div>
+        <div class="pt-2 border-t border-slate-200/80 flex justify-between items-baseline">
+          <span class="text-sm font-bold text-slate-900">Tổng thanh toán:</span>
+          <span id="detailModalTotal" class="text-xl font-black text-brand tracking-tight">0₫</span>
+        </div>
+      </div>
+
+      <!-- Khung Cập nhật Trạng thái đơn -->
+      <div class="p-4 rounded-2xl bg-amber-50/60 border border-amber-200/80 flex flex-wrap items-center justify-between gap-3">
+        <div class="flex items-center gap-2">
+          <span class="text-xs font-bold text-slate-800">Trạng thái đơn:</span>
+          <select id="modalOrderStatusSelect" class="rounded-xl border border-slate-300 bg-white px-3 py-1.5 text-xs font-bold text-slate-900 focus:outline-none focus:border-brand">
+            <option value="pending">Chờ xử lý</option>
+            <option value="shipping">Đang giao</option>
+            <option value="completed">Hoàn thành</option>
+            <option value="cancelled">Đã hủy</option>
+          </select>
+        </div>
+        <button type="button" id="btnSaveOrderStatus" class="rounded-full bg-slate-900 text-white px-4 py-1.5 text-xs font-bold hover:bg-slate-800 transition active:scale-95">
+          Lưu trạng thái
+        </button>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Toast thông báo -->
+  <div id="toast" role="status" aria-live="polite" class="pointer-events-none fixed bottom-6 left-1/2 z-50 -translate-x-1/2 translate-y-4 rounded-full bg-ink px-5 py-3 text-sm font-semibold text-white opacity-0 shadow-xl"></div>
+
+  <!-- Scripts -->
+  <script src="frontend/assets/js/auth-engine.js"></script>
+  <script src="frontend/assets/js/admin-engine.js"></script>
+  <script src="frontend/assets/js/admin-page.js"></script>
+
+</body>
+</html>

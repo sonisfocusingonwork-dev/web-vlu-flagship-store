@@ -551,7 +551,7 @@
                 </div>
               </div>
               <div class="py-1">
-                <a href="#" id="menuAdminBtn" class="hidden flex items-center gap-2 rounded-xl px-3 py-2 text-xs font-bold text-brand hover:bg-brand-soft transition">
+                <a href="admin.html" id="menuAdminBtn" class="hidden flex items-center gap-2 rounded-xl px-3 py-2 text-xs font-bold text-brand hover:bg-brand-soft transition">
                   <svg class="h-4 w-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M10.5 6h9.75M10.5 6a1.5 1.5 0 11-3 0m3 0a1.5 1.5 0 10-3 0M3.75 6H7.5m3 12h9.75m-9.75 0a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m-3.75 0H7.5m9-6h3.75m-3.75 0a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m-9.75 0h9.75"/></svg>
                   <span>Trang quản trị (Admin)</span>
                 </a>
@@ -3383,15 +3383,21 @@
         </a>
 
         <!-- Khi đã đăng nhập -->
-        <div id="mobileUserBox" class="hidden flex items-center justify-between p-2.5 rounded-2xl bg-white border border-slate-200/80">
-          <div class="flex items-center gap-2.5 min-w-0">
-            <span id="mobileUserAvatar" class="grid h-8 w-8 shrink-0 place-items-center rounded-full bg-brand text-xs font-black text-white">V</span>
-            <div class="min-w-0">
-              <p id="mobileUserName" class="text-xs font-bold text-slate-900 truncate">Người dùng</p>
-              <p id="mobileUserRole" class="text-[10px] font-bold text-emerald-600">Khách hàng VLU</p>
+        <div id="mobileUserBox" class="hidden p-2.5 rounded-2xl bg-white border border-slate-200/80 space-y-2">
+          <div class="flex items-center justify-between">
+            <div class="flex items-center gap-2.5 min-w-0">
+              <span id="mobileUserAvatar" class="grid h-8 w-8 shrink-0 place-items-center rounded-full bg-brand text-xs font-black text-white">V</span>
+              <div class="min-w-0">
+                <p id="mobileUserName" class="text-xs font-bold text-slate-900 truncate">Người dùng</p>
+                <p id="mobileUserRole" class="text-[10px] font-bold text-emerald-600">Khách hàng VLU</p>
+              </div>
             </div>
+            <button type="button" id="mobileLogoutBtn" class="text-xs font-bold text-red-500 hover:text-red-700 px-2 py-1">Đăng xuất</button>
           </div>
-          <button type="button" id="mobileLogoutBtn" class="text-xs font-bold text-red-500 hover:text-red-700 px-2 py-1">Đăng xuất</button>
+          <a href="admin.html" id="mobileAdminBtn" class="hidden flex items-center justify-center gap-1.5 w-full py-1.5 rounded-xl bg-brand/10 text-brand font-bold text-xs hover:bg-brand-soft transition">
+            <svg class="h-3.5 w-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M10.5 6h9.75M10.5 6a1.5 1.5 0 11-3 0m3 0a1.5 1.5 0 10-3 0M3.75 6H7.5m3 12h9.75m-9.75 0a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m-3.75 0H7.5m9-6h3.75m-3.75 0a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m-9.75 0h9.75"/></svg>
+            <span>Trang quản trị (Admin)</span>
+          </a>
         </div>
       </div>
 

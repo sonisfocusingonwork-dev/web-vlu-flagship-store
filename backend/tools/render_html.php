@@ -1,7 +1,7 @@
 <?php
 /**
  * VLU FLAGSHIP STORE – HTML Renderer
- * Render toàn bộ các file tĩnh (index, product-detail, cart, checkout, login, register)
+ * Render toàn bộ các file tĩnh (index, product-detail, cart, checkout, login, register, admin)
  * Giữ nguyên 100% chuẩn mã hóa UTF-8 nhị phân, không qua pipeline giải mã sai của PowerShell.
  */
 
@@ -32,6 +32,10 @@ $pages = [
     'register.php' => [
         'dest' => 'register.html',
         'keywords' => ['Tạo tài khoản mới', 'Họ và tên', 'Số điện thoại', 'Xác nhận lại mật khẩu']
+    ],
+    'admin.php' => [
+        'dest' => 'admin.html',
+        'keywords' => ['Bảng điều khiển Quản trị', 'Tổng quan hệ thống', 'Quản lý Sản phẩm', 'Quản lý Đơn hàng', 'Quản lý Danh mục']
     ]
 ];
 
