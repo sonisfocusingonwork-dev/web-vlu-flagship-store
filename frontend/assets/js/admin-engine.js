@@ -357,7 +357,7 @@
         };
         localStorage.setItem('vlu_user', JSON.stringify(adminUser));
       }
-      this.initDashboard();
+      // this.initDashboard();
     },
 
     /* ==========================================================================

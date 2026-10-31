@@ -288,7 +288,10 @@
     var searchInput = document.getElementById('productSearchInput');
     var catFilter = document.getElementById('productCategoryFilter');
 
-    if (countBadge) countBadge.textContent = products.length + ' sản phẩm';
+    if (countBadge) {
+      document.getElementById('sidebarProdCount').innerText = products.length;
+      countBadge.textContent = products.length + ' sản phẩm';
+    }
 
     // Cập nhật bộ chọn Category trong Filter & Modal
     populateCategorySelects();

@@ -55,27 +55,27 @@ CREATE TABLE `products` (
 -- Dữ liệu bảng `products`
 INSERT INTO `products` (`id`, `category_id`, `name`, `price`, `description`, `image`) VALUES
 -- Apple
-(101, 1, 'iPhone 18 Pro & iPhone 18 Pro Max', 34990000.00, 'Đỉnh cao công nghệ Titanium, chip A20 Pro siêu mạnh mẽ.', 'SanPham/SanPham/Iphone/Ip 18 pro max/Đỏ Burgundy.png'),
-(102, 1, 'iPhone Air', 26990000.00, 'Thiết kế siêu mỏng nhẹ đột phá, hiệu năng vượt trội.', 'SanPham/SanPham/Iphone/Ip Air/Trắng Mây.png'),
-(103, 1, 'iPhone 17', 22990000.00, 'Màu sắc trẻ trung, camera kép nâng cấp toàn diện.', 'SanPham/SanPham/Iphone/Ip 17/Trắng.png'),
+(101, 1, 'iPhone 18 Pro & iPhone 18 Pro Max', 34990000.00, 'Đỉnh cao công nghệ Titanium, chip A20 Pro siêu mạnh mẽ.', 'SanPham/Dien thoai/Apple iPhone/iPhone 18 pro max/Titan Đen.webp'),
+(102, 1, 'iPhone Air', 26990000.00, 'Thiết kế siêu mỏng nhẹ đột phá, hiệu năng vượt trội.', 'SanPham/Dien thoai/Apple iPhone/iPhone Air/Trắng Mây.webp'),
+(103, 1, 'iPhone 17', 22990000.00, 'Màu sắc trẻ trung, camera kép nâng cấp toàn diện.', 'SanPham/Dien thoai/Apple iPhone/iPhone 17/Trắng.webp'),
 
 -- Samsung
-(201, 2, 'Galaxy S26 Ultra', 31990000.00, 'Flagship Android đỉnh cao với Galaxy AI thông minh, bút S Pen tích hợp và camera 200MP.', 'SanPham/SanPham/Samsung/SS S26 Ultra/Trắng.webp'),
-(202, 2, 'Galaxy Z Fold8', 44990000.00, 'Thiết kế gập mở màn hình lớn như tablet, bản lề flex siêu mỏng không nếp gấp.', 'SanPham/SanPham/Samsung/SS Galaxy Z Fold8/Cream.webp'),
-(203, 2, 'Galaxy Z Flip8', 25990000.00, 'Gập vỏ sò nhỏ gọn bỏ túi, màn hình phụ Flex Window đa năng và chụp selfie rảnh tay.', 'SanPham/SanPham/Samsung/SS Galaxy Flip8/Mint.webp'),
-(204, 2, 'Galaxy S26', 22990000.00, 'Thiết kế phẳng nguyên khối đối xứng hoàn hảo, màn hình Dynamic AMOLED 2X rực rỡ.', 'SanPham/SanPham/Samsung/SS Galaxy S26/White.webp'),
+(201, 2, 'Galaxy S26 Ultra', 31990000.00, 'Flagship Android đỉnh cao với Galaxy AI thông minh, bút S Pen tích hợp và camera 200MP.', 'SanPham/Dien thoai/Samsung Galaxy/Galaxy S26 Ultra/Trắng Titan.webp'),
+(202, 2, 'Galaxy Z Fold8', 44990000.00, 'Thiết kế gập mở màn hình lớn như tablet, bản lề flex siêu mỏng không nếp gấp.', 'SanPham/Dien thoai/Samsung Galaxy/Galaxy Z Fold8/Cream.webp'),
+(203, 2, 'Galaxy Z Flip8', 25990000.00, 'Gập vỏ sò nhỏ gọn bỏ túi, màn hình phụ Flex Window đa năng và chụp selfie rảnh tay.', 'SanPham/Dien thoai/Samsung Galaxy/Galaxy Z Flip8/Mint.webp'),
+(204, 2, 'Galaxy S26', 22990000.00, 'Thiết kế phẳng nguyên khối đối xứng hoàn hảo, màn hình Dynamic AMOLED 2X rực rỡ.', 'SanPham/Dien thoai/Samsung Galaxy/Galaxy S26/White.webp'),
 
 -- Xiaomi
-(301, 3, 'Xiaomi 17 Ultra', 26990000.00, 'Kiệt tác quang học huyền thoại Leica, cảm biến 1-inch và hệ thống 4 camera chuyên nghiệp.', 'SanPham/SanPham/Xiaomi/Xiaomi 17 ultra/Trắng.webp'),
-(302, 3, 'Xiaomi 17 Pro Max', 24990000.00, 'Cấu hình Snapdragon đầu bảng, công nghệ sạc siêu tốc HyperCharge 120W.', 'SanPham/SanPham/Xiaomi/Xiaomi 17 pro max/Trắng.webp'),
-(303, 3, 'Xiaomi 17 Pro', 21990000.00, 'Màn hình 2K siêu sáng với viền mỏng kỷ lục và hệ điều hành Xiaomi HyperOS mượt mà.', 'SanPham/SanPham/Xiaomi/Xiaomi 17 pro/Tím.webp'),
-(304, 3, 'Xiaomi 17', 17990000.00, 'Thân máy nhỏ gọn cầm nắm đầm tay, camera tele 75mm chụp chân dung nghệ thuật.', 'SanPham/SanPham/Xiaomi/Xiaomi 17/Cam.webp'),
+(301, 3, 'Xiaomi 15 Ultra', 26990000.00, 'Kiệt tác quang học huyền thoại Leica, cảm biến 1-inch và hệ thống 4 camera chuyên nghiệp.', 'SanPham/Dien thoai/Xiaomi/Xiaomi 15 ultra/Trắng Gốm.webp'),
+(302, 3, 'Xiaomi 14 Pro', 24990000.00, 'Cấu hình Snapdragon đầu bảng, công nghệ sạc siêu tốc HyperCharge 120W.', 'SanPham/Dien thoai/Xiaomi/Xiaomi 14/Trắng Mây.webp'),
+(303, 3, 'Xiaomi 15 Pro', 21990000.00, 'Màn hình 2K siêu sáng với viền mỏng kỷ lục và hệ điều hành Xiaomi HyperOS mượt mà.', 'SanPham/Dien thoai/Xiaomi/Xiaomi 15 pro/Xasm Đá.webp'),
+(304, 3, 'Xiaomi 15', 17990000.00, 'Thân máy nhỏ gọn cầm nắm đầm tay, camera tele 75mm chụp chân dung nghệ thuật.', 'SanPham/Dien thoai/Xiaomi/Xiaomi 15/Xanh Mạ.webp'),
 
 -- OPPO
-(401, 4, 'OPPO Find X9 Ultra', 27990000.00, 'Camera tiềm vọng kép đầu tiên cùng hệ màu Hasselblad tự nhiên chân thực.', 'SanPham/SanPham/Oppo/OPPO Find X9 Ultra/Cam.png'),
-(402, 4, 'OPPO Find X9 Pro', 22990000.00, 'Mặt lưng cong mềm mại cao cấp, chip xử lý hình ảnh độc quyền MariSilicon X.', 'SanPham/SanPham/Oppo/OPPO Find X9 Pro/Trắng.png'),
-(403, 4, 'OPPO Find X9', 19990000.00, 'Màn hình 1.5K sắc nét, pin dung lượng cao và sạc nhanh SuperVOOC bảo vệ pin.', 'SanPham/SanPham/Oppo/OPPO Find X9/Xám.png'),
-(404, 4, 'OPPO Find N5', 39990000.00, 'Điện thoại màn gập tỷ lệ vàng không khe hở, trọng lượng siêu nhẹ và đa nhiệm trực quan.', 'SanPham/SanPham/Oppo/OPPO Find N5/Trắng.png');
+(401, 4, 'OPPO Find X9 Ultra', 27990000.00, 'Camera tiềm vọng kép đầu tiên cùng hệ màu Hasselblad tự nhiên chân thực.', 'SanPham/Dien thoai/OPPO/Find X9 Ultra/Cam Sa Mạc.webp'),
+(402, 4, 'OPPO Find X9 Pro', 22990000.00, 'Mặt lưng cong mềm mại cao cấp, chip xử lý hình ảnh độc quyền MariSilicon X.', 'SanPham/Dien thoai/OPPO/Find X9 Pro/Trắng Ánh Trăng.webp'),
+(403, 4, 'OPPO Find X8', 19990000.00, 'Màn hình 1.5K sắc nét, pin dung lượng cao và sạc nhanh SuperVOOC bảo vệ pin.', 'SanPham/Dien thoai/OPPO/Find X8/Xanh Gió Biển.webp'),
+(404, 4, 'OPPO Find N5', 39990000.00, 'Điện thoại màn gập tỷ lệ vàng không khe hở, trọng lượng siêu nhẹ và đa nhiệm trực quan.', 'SanPham/Dien thoai/OPPO/Find N5/Vàng Satin.webp');
 
 -- --------------------------------------------------------
 -- Cấu trúc bảng `users` (Tài khoản người dùng / quản trị)

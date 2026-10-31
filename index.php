@@ -13,7 +13,7 @@ function e($value): string
 }
 
 /* ------------------------------------------------------------------
-   Ảnh sản phẩm cục bộ: SanPham/SanPham/<Hãng>/<Dòng máy>/<Màu>.png|webp
+   Ảnh sản phẩm cục bộ: SanPham/<Hãng>/<Dòng máy>/<Màu>.png|webp
    Đọc trực tiếp tên file trong thư mục để URL luôn khớp (kể cả tên tiếng Việt có dấu)
    ------------------------------------------------------------------ */
 const PRODUCT_IMG_DIR = 'SanPham';

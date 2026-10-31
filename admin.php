@@ -72,6 +72,9 @@ function e($value): string
     .custom-scrollbar::-webkit-scrollbar-thumb:hover {
       background: rgba(148, 163, 184, 1);
     }
+    .text-xs {
+      font-size: 10px
+    }
   </style>
 </head>
 <body class="bg-[#F8F9FC] font-sans text-ink antialiased min-h-screen flex flex-col selection:bg-brand selection:text-white">
@@ -92,7 +95,7 @@ function e($value): string
         <span class="inline-block rounded-full bg-red-100 text-red-700 px-3 py-1 text-xs font-bold">Khu vực bảo mật</span>
         <h3 class="text-xl font-black text-slate-950 tracking-tight">Quyền truy cập bị từ chối</h3>
         <p class="text-xs text-slate-500 leading-relaxed">
-          Trang này chỉ dành riêng cho tài khoản <strong>Quản trị viên (Admin - role = 1)</strong>. Bạn cần đăng nhập quyền Admin để truy cập toàn bộ hệ thống quản lý.
+          Trang này chỉ dành riêng cho tài khoản <strong>Quản trị viên (Admin)</strong>. Bạn cần đăng nhập quyền Admin để truy cập toàn bộ hệ thống quản lý.
         </p>
       </div>
 
@@ -384,7 +387,7 @@ function e($value): string
               </button>
               <button type="button" id="btnOpenAddProduct" class="rounded-2xl bg-brand px-4 py-2 text-xs font-black text-white hover:bg-brand-dark transition active:scale-95 shadow-md shadow-brand/20 flex items-center gap-1.5">
                 <svg class="h-4 w-4" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15"/></svg>
-                <span>+ Thêm sản phẩm</span>
+                <span>Thêm sản phẩm</span>
               </button>
             </div>
 
@@ -431,7 +434,7 @@ function e($value): string
             </div>
             <button type="button" id="btnOpenAddCategory" class="rounded-2xl bg-brand px-4 py-2 text-xs font-black text-white hover:bg-brand-dark transition active:scale-95 shadow-md shadow-brand/20 flex items-center gap-1.5">
               <svg class="h-4 w-4" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15"/></svg>
-              <span>+ Thêm danh mục</span>
+              <span>Thêm danh mục</span>
             </button>
           </div>
 
