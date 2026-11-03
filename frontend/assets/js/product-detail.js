@@ -600,6 +600,7 @@
       var cartItem = {
         id: product.id,
         name: product.name,
+        category: product.category || rawCat,
         color: currentColor,
         variant: currentVariant,
         price: currentPrice,
@@ -629,6 +630,7 @@
         var buyItem = {
           id: product.id,
           name: product.name,
+          category: product.category || rawCat,
           color: currentColor,
           variant: currentVariant,
           price: currentPrice,
@@ -638,8 +640,6 @@
         };
         if (window.VLU_CART) {
           window.VLU_CART.addItem(buyItem);
-        } else {
-          localStorage.setItem('vlu_cart_item', JSON.stringify(buyItem));
         }
       } catch (err) {
         console.warn('Không thể lưu giỏ hàng vào localStorage:', err);

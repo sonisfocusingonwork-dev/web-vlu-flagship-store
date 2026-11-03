@@ -5,9 +5,30 @@
 (function (window, document) {
   'use strict';
 
-  var STORAGE_KEY = 'vlu_cart';
-  var SEEDED_KEY = 'vlu_cart_seeded';
-  var VOUCHER_KEY = 'vlu_cart_voucher';
+  var AUTH_STORAGE_KEY = 'vlu_user';
+  var LEGACY_STORAGE_KEY = 'vlu_cart';
+
+  function getCurrentUser() {
+    try {
+      var raw = localStorage.getItem(AUTH_STORAGE_KEY);
+      var user = raw ? JSON.parse(raw) : null;
+      return user && typeof user === 'object' ? user : null;
+    } catch (e) {
+      return null;
+    }
+  }
+
+  function getCurrentUserId() {
+    var user = getCurrentUser();
+    var identity = user && (user.username || user.email || user.id);
+    if (!identity) return 'guest';
+    return String(identity).trim().toLowerCase().replace(/[^a-z0-9._@-]+/g, '_') || 'guest';
+  }
+
+  function getStorageKey(prefix) {
+    var userId = getCurrentUserId();
+    return userId === 'guest' ? prefix + '_guest' : prefix + '_' + userId;
+  }
 
   // Danh mục voucher hợp lệ của hệ thống
   var PROMO_CODES = {
@@ -41,55 +62,23 @@
     }
   };
 
-  // 2 Sản phẩm flagship mẫu dùng để nạp ban đầu cho người dùng dễ kiểm thử
-  var SAMPLE_SEED_ITEMS = [
-    {
-      id: 'iphone-18-pro-max',
-      name: 'iPhone 18 Pro Max',
-      color: 'Đỏ Burgundy',
-      variant: '256GB',
-      price: 34990000,
-      oldPrice: 36990000,
-      image: 'SanPham/SanPham/Iphone/Ip 18 pro max/Đỏ Burgundy.png',
-      quantity: 1
-    },
-    {
-      id: 'airpods-pro-2',
-      name: 'AirPods Pro 2 (USB-C)',
-      color: 'Trắng',
-      variant: 'Chống ồn ANC',
-      price: 5790000,
-      oldPrice: 6190000,
-      image: 'SanPham/SanPham/Tai nghe/AirPods Pro 2/Tiêu Chuẩn.svg',
-      quantity: 1
-    }
-  ];
-
   var CartEngine = {
-    /**
-     * Lấy danh sách sản phẩm trong giỏ hàng.
-     * Tự động nạp sẵn 2 sản phẩm mẫu ở lần mở web đầu tiên nếu giỏ đang trống.
-     */
+    getCurrentUserId: getCurrentUserId,
+
+    getCartStorageKey: function () {
+      return getStorageKey('vlu_cart');
+    },
+
+    getVoucherStorageKey: function () {
+      return getStorageKey('vlu_cart_voucher');
+    },
+
     getCart: function () {
       try {
-        var raw = localStorage.getItem(STORAGE_KEY);
-        var seeded = localStorage.getItem(SEEDED_KEY);
-
-        if (!raw) {
-          if (!seeded) {
-            // Lần đầu mở: nạp sản phẩm mẫu để khách dễ kiểm thử giao diện
-            this.saveCart(SAMPLE_SEED_ITEMS);
-            localStorage.setItem(SEEDED_KEY, 'true');
-            return SAMPLE_SEED_ITEMS.slice();
-          }
-          return [];
-        }
-
+        var raw = localStorage.getItem(this.getCartStorageKey());
+        if (!raw) return [];
         var items = JSON.parse(raw);
-        if (!Array.isArray(items)) {
-          return [];
-        }
-        return items;
+        return Array.isArray(items) ? items : [];
       } catch (e) {
         console.warn('[CartEngine] Lỗi đọc giỏ hàng:', e);
         return [];
@@ -102,7 +91,7 @@
     saveCart: function (items) {
       try {
         if (!Array.isArray(items)) items = [];
-        localStorage.setItem(STORAGE_KEY, JSON.stringify(items));
+        localStorage.setItem(this.getCartStorageKey(), JSON.stringify(items));
         this.updateBadge();
         this.emitUpdate();
       } catch (e) {
@@ -125,6 +114,7 @@
       var price = parseInt(item.price, 10) || 0;
       var oldPrice = item.oldPrice ? parseInt(item.oldPrice, 10) : null;
       var image = item.image || 'frontend/assets/images/logo.png';
+      var category = item.category || '';
 
       var found = false;
       for (var i = 0; i < cart.length; i++) {
@@ -134,6 +124,7 @@
           if (price > 0) it.price = price;
           if (oldPrice) it.oldPrice = oldPrice;
           if (image) it.image = image;
+          if (category) it.category = category;
           found = true;
           break;
         }
@@ -143,6 +134,7 @@
         cart.push({
           id: id,
           name: item.name,
+          category: category,
           color: color,
           variant: variant,
           price: price,
@@ -152,8 +144,6 @@
         });
       }
 
-      // Đánh dấu đã tương tác giỏ hàng
-      localStorage.setItem(SEEDED_KEY, 'true');
       this.saveCart(cart);
       return true;
     },
@@ -192,9 +182,8 @@
      * Xóa sạch toàn bộ giỏ hàng và voucher
      */
     clearCart: function () {
-      localStorage.removeItem(STORAGE_KEY);
-      localStorage.removeItem(VOUCHER_KEY);
-      localStorage.setItem(SEEDED_KEY, 'true'); // Tránh tự động seed lại sau khi khách chủ động xóa/đặt hàng
+      localStorage.removeItem(this.getCartStorageKey());
+      localStorage.removeItem(this.getVoucherStorageKey());
       this.updateBadge();
       this.emitUpdate();
     },
@@ -230,7 +219,7 @@
      */
     getVoucher: function () {
       try {
-        var raw = localStorage.getItem(VOUCHER_KEY);
+        var raw = localStorage.getItem(this.getVoucherStorageKey());
         if (!raw) return null;
         return JSON.parse(raw);
       } catch (e) {
@@ -273,7 +262,7 @@
       };
 
       try {
-        localStorage.setItem(VOUCHER_KEY, JSON.stringify(voucherData));
+        localStorage.setItem(this.getVoucherStorageKey(), JSON.stringify(voucherData));
       } catch (e) {}
 
       this.emitUpdate();
@@ -288,7 +277,7 @@
      * Gỡ bỏ voucher hiện tại
      */
     removeVoucher: function () {
-      localStorage.removeItem(VOUCHER_KEY);
+      localStorage.removeItem(this.getVoucherStorageKey());
       this.emitUpdate();
     },
 
@@ -335,6 +324,8 @@
           b.classList.add('bump');
         }
       });
+      var cartLink = document.querySelector('#site-header a[href="cart.html"]');
+      if (cartLink) cartLink.setAttribute('aria-label', 'Giỏ hàng, hiện có ' + count + ' sản phẩm');
     },
 
     /**
@@ -391,12 +382,20 @@
 
   // Khởi động cập nhật badge và lắng nghe thay đổi giữa các tab
   function initEngine() {
+    try {
+      localStorage.removeItem(LEGACY_STORAGE_KEY);
+      localStorage.removeItem('vlu_cart_seeded');
+    } catch (e) {}
     CartEngine.updateBadge();
     window.addEventListener('storage', function (e) {
-      if (e.key === STORAGE_KEY || e.key === VOUCHER_KEY) {
+      if (e.key === CartEngine.getCartStorageKey() || e.key === CartEngine.getVoucherStorageKey() || e.key === AUTH_STORAGE_KEY) {
         CartEngine.updateBadge();
         CartEngine.emitUpdate();
       }
+    });
+    window.addEventListener('vlu:auth-updated', function () {
+      CartEngine.updateBadge();
+      CartEngine.emitUpdate();
     });
   }
 

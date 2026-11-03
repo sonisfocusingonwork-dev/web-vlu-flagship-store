@@ -237,6 +237,17 @@
       var card = add.closest('.product-card');
       var name = add.dataset.name || (card && $('h3 a', card) ? $('h3 a', card).textContent.trim() : 'Sản phẩm');
       var id = add.dataset.id || name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
+      var detailLink = card ? $('h3 a', card) : null;
+      var category = '';
+      if (detailLink) {
+        try {
+          var productUrl = new URL(detailLink.href, window.location.href);
+          id = productUrl.searchParams.get('id') || id;
+          category = productUrl.searchParams.get('cat') || '';
+        } catch (err) {}
+      }
+      var product = window.VLU_FIND_PRODUCT ? window.VLU_FIND_PRODUCT(id) : null;
+      if (product && product.name) name = product.name;
       var price = parseInt(add.dataset.price, 10);
       if (!price && card) {
         var priceEl = $('.text-brand', card);
@@ -245,16 +256,21 @@
         }
       }
       var imgEl = card ? $('img', card) : null;
-      var image = imgEl ? (imgEl.getAttribute('src') || '') : '';
+      var selectedColor = product && product.colors && product.colors[0] ? product.colors[0] : null;
+      var selectedVariant = product && product.variants && product.variants[0] ? product.variants[0] : null;
+      var variantDelta = selectedVariant ? (parseInt(selectedVariant.delta, 10) || 0) : 0;
+      var image = selectedColor ? (selectedColor.image || selectedColor.img || '') : (imgEl ? (imgEl.getAttribute('src') || '') : '');
 
       if (window.VLU_CART) {
         window.VLU_CART.addItem({
           id: id,
           name: name,
-          price: price || 0,
+          category: product ? product.category : category,
+          price: price || (product ? (parseInt(product.basePrice, 10) || 0) + variantDelta : 0),
+          oldPrice: product && product.oldPrice ? (parseInt(product.oldPrice, 10) || 0) + variantDelta : null,
           image: image,
-          color: 'Mặc định',
-          variant: 'Tiêu chuẩn',
+          color: selectedColor ? selectedColor.name : 'Mặc định',
+          variant: selectedVariant ? selectedVariant.label : 'Tiêu chuẩn',
           quantity: 1
         });
         window.VLU_CART.updateBadge(true);

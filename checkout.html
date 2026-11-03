@@ -4310,10 +4310,25 @@
                 <input type="email" id="checkoutEmail" name="email" placeholder="example@email.com" class="w-full rounded-xl border border-slate-200 bg-slate-50/50 px-3.5 py-2.5 text-sm font-medium text-slate-900 placeholder:text-slate-400 focus:bg-white focus:border-brand focus:outline-none focus:ring-2 focus:ring-brand/20 transition">
               </div>
 
+              <fieldset class="sm:col-span-2 space-y-3">
+                <legend class="block text-xs font-bold text-slate-700 mb-2">Phương thức nhận hàng</legend>
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                  <label class="flex items-start gap-3 rounded-xl border-2 border-brand bg-brand-soft/20 p-3.5 cursor-pointer transition has-[:checked]:border-brand has-[:checked]:bg-brand-soft/20">
+                    <input type="radio" name="shipping_method" value="delivery" checked class="mt-1 h-4 w-4 accent-brand">
+                    <span><strong class="block text-sm text-slate-900">Giao hàng tận nơi</strong><span class="text-xs text-slate-500">Nhận tại địa chỉ của bạn</span></span>
+                  </label>
+                  <label class="flex items-start gap-3 rounded-xl border-2 border-slate-200 bg-white p-3.5 cursor-pointer transition has-[:checked]:border-brand has-[:checked]:bg-brand-soft/20">
+                    <input type="radio" name="shipping_method" value="pickup" class="mt-1 h-4 w-4 accent-brand">
+                    <span><strong class="block text-sm text-slate-900">Nhận hàng tại cửa hàng</strong><span class="text-xs text-slate-500">Chọn chi nhánh thuận tiện</span></span>
+                  </label>
+                </div>
+              </fieldset>
+
               <!-- Tỉnh / Thành phố -->
+              <div id="deliveryAddressFields" class="sm:col-span-2 grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div>
                 <label for="checkoutCity" class="block text-xs font-bold text-slate-700 mb-1">Tỉnh / Thành phố</label>
-                <select id="checkoutCity" class="w-full rounded-xl border border-slate-200 bg-slate-50/50 px-3.5 py-2.5 text-sm font-medium text-slate-900 focus:bg-white focus:border-brand focus:outline-none focus:ring-2 focus:ring-brand/20 transition">
+                <select id="checkoutCity" name="city" required class="w-full rounded-xl border border-slate-200 bg-slate-50/50 px-3.5 py-2.5 text-sm font-medium text-slate-900 focus:bg-white focus:border-brand focus:outline-none focus:ring-2 focus:ring-brand/20 transition">
                   <option value="Hồ Chí Minh" selected>TP. Hồ Chí Minh</option>
                   <option value="Hà Nội">Hà Nội</option>
                   <option value="Đà Nẵng">Đà Nẵng</option>
@@ -4328,7 +4343,7 @@
               <!-- Quận / Huyện -->
               <div>
                 <label for="checkoutDistrict" class="block text-xs font-bold text-slate-700 mb-1">Quận / Huyện</label>
-                <input type="text" id="checkoutDistrict" placeholder="Ví dụ: Quận 1, Quận Bình Thạnh..." class="w-full rounded-xl border border-slate-200 bg-slate-50/50 px-3.5 py-2.5 text-sm font-medium text-slate-900 placeholder:text-slate-400 focus:bg-white focus:border-brand focus:outline-none focus:ring-2 focus:ring-brand/20 transition">
+                <input type="text" id="checkoutDistrict" name="district" required placeholder="Ví dụ: Quận 1, Quận Bình Thạnh..." class="w-full rounded-xl border border-slate-200 bg-slate-50/50 px-3.5 py-2.5 text-sm font-medium text-slate-900 placeholder:text-slate-400 focus:bg-white focus:border-brand focus:outline-none focus:ring-2 focus:ring-brand/20 transition">
               </div>
 
               <!-- Địa chỉ cụ thể -->
@@ -4338,6 +4353,33 @@
                 </label>
                 <input type="text" id="checkoutAddress" name="address" required placeholder="Ví dụ: Số 69/68 Đặng Thùy Trâm, Phường 13" class="w-full rounded-xl border border-slate-200 bg-slate-50/50 px-3.5 py-2.5 text-sm font-medium text-slate-900 placeholder:text-slate-400 focus:bg-white focus:border-brand focus:outline-none focus:ring-2 focus:ring-brand/20 transition">
               </div>
+              </div>
+
+              <fieldset id="storePickupFields" class="hidden sm:col-span-2 space-y-2.5">
+                <legend class="block text-xs font-bold text-slate-700 mb-2">Chọn chi nhánh nhận hàng</legend>
+                <div class="space-y-2">
+                  <label class="flex items-start gap-3 rounded-xl border-2 border-slate-200 bg-white p-3.5 cursor-pointer transition has-[:checked]:border-brand has-[:checked]:bg-brand-soft/20">
+                    <input type="radio" name="store_location" value="Bình Thạnh" required disabled class="mt-1 h-4 w-4 accent-brand">
+                    <span class="flex-1"><strong class="block text-sm text-slate-900">VLU Flagship Store Cơ sở chính (Bình Thạnh)</strong><span class="block text-xs text-slate-500">69/68 Đặng Thùy Trâm, P.13, Q. Bình Thạnh, TP.HCM</span><span class="mt-1 inline-block text-[11px] font-bold text-emerald-600">Còn hàng sẵn</span></span>
+                  </label>
+                  <label class="flex items-start gap-3 rounded-xl border-2 border-slate-200 bg-white p-3.5 cursor-pointer transition has-[:checked]:border-brand has-[:checked]:bg-brand-soft/20">
+                    <input type="radio" name="store_location" value="Quận 1" required disabled class="mt-1 h-4 w-4 accent-brand">
+                    <span class="flex-1"><strong class="block text-sm text-slate-900">VLU Flagship Store Quận 1</strong><span class="block text-xs text-slate-500">45 Nguyễn Khắc Nhu, P. Cô Giang, Quận 1, TP.HCM</span><span class="mt-1 inline-block text-[11px] font-bold text-emerald-600">Còn hàng sẵn</span></span>
+                  </label>
+                  <label class="flex items-start gap-3 rounded-xl border-2 border-slate-200 bg-white p-3.5 cursor-pointer transition has-[:checked]:border-brand has-[:checked]:bg-brand-soft/20">
+                    <input type="radio" name="store_location" value="Phú Nhuận" required disabled class="mt-1 h-4 w-4 accent-brand">
+                    <span class="flex-1"><strong class="block text-sm text-slate-900">VLU Flagship Store Phú Nhuận</strong><span class="block text-xs text-slate-500">233A Phan Văn Trị, P.11, Q. Phú Nhuận, TP.HCM</span><span class="mt-1 inline-block text-[11px] font-bold text-emerald-600">Còn hàng sẵn</span></span>
+                  </label>
+                  <label class="flex items-start gap-3 rounded-xl border-2 border-slate-200 bg-white p-3.5 cursor-pointer transition has-[:checked]:border-brand has-[:checked]:bg-brand-soft/20">
+                    <input type="radio" name="store_location" value="Quận 7" required disabled class="mt-1 h-4 w-4 accent-brand">
+                    <span class="flex-1"><strong class="block text-sm text-slate-900">VLU Flagship Store Quận 7 (Crescent Mall)</strong><span class="block text-xs text-slate-500">101 Tôn Dật Tiên, P. Tân Phú, Quận 7, TP.HCM</span><span class="mt-1 inline-block text-[11px] font-bold text-emerald-600">Còn hàng sẵn</span></span>
+                  </label>
+                  <label class="flex items-start gap-3 rounded-xl border-2 border-slate-200 bg-white p-3.5 cursor-pointer transition has-[:checked]:border-brand has-[:checked]:bg-brand-soft/20">
+                    <input type="radio" name="store_location" value="Hà Nội" required disabled class="mt-1 h-4 w-4 accent-brand">
+                    <span class="flex-1"><strong class="block text-sm text-slate-900">VLU Flagship Store Hà Nội</strong><span class="block text-xs text-slate-500">191 Bà Triệu, Q. Hai Bà Trưng, Hà Nội</span><span class="mt-1 inline-block text-[11px] font-bold text-emerald-600">Còn hàng sẵn</span></span>
+                  </label>
+                </div>
+              </fieldset>
 
               <!-- Ghi chú giao hàng -->
               <div class="sm:col-span-2">
@@ -4448,6 +4490,39 @@
                   <p class="text-xs text-slate-500 mt-0.5">Xác thực 3D-Secure 2.0 an toàn tuyệt đối qua cổng thanh toán liên kết ngân hàng.</p>
                 </div>
               </label>
+
+              <label class="payment-card flex items-start gap-3.5 rounded-2xl border-2 border-brand/40 bg-gradient-to-r from-brand-soft/70 to-white p-4 cursor-pointer transition hover:border-brand has-[:checked]:border-brand has-[:checked]:bg-brand-soft/40">
+                <input type="radio" name="payment_method" value="bnpl" class="mt-1 h-4 w-4 text-brand focus:ring-brand accent-brand">
+                <div class="flex-1">
+                  <div class="flex flex-wrap items-center justify-between gap-2">
+                    <span class="text-sm font-bold text-slate-900">Thanh toán Mua trước trả sau</span>
+                    <span class="rounded-md bg-brand px-2 py-0.5 text-[10px] font-black text-white">TRẢ GÓP 0%</span>
+                  </div>
+                  <p class="mt-0.5 text-xs text-slate-500">Kredivo / MoMo / Home PayLater / Fundiin</p>
+                </div>
+              </label>
+
+              <div id="bnplBox" class="hidden rounded-2xl border border-brand/30 bg-brand-soft/20 p-4 space-y-3">
+                <p class="text-xs font-bold text-slate-800">Chọn kỳ hạn thanh toán</p>
+                <div class="grid grid-cols-1 sm:grid-cols-3 gap-2">
+                  <label class="rounded-xl border-2 border-brand bg-white p-3 cursor-pointer has-[:checked]:border-brand has-[:checked]:bg-white">
+                    <input type="radio" name="installment_term" value="3" checked class="accent-brand">
+                    <span class="mt-1 block text-xs font-extrabold text-slate-900">3 tháng · 0%</span>
+                    <span id="installmentAmount3" class="mt-1 block text-xs font-bold text-brand">0₫/tháng</span>
+                  </label>
+                  <label class="rounded-xl border-2 border-slate-200 bg-white p-3 cursor-pointer has-[:checked]:border-brand has-[:checked]:bg-white">
+                    <input type="radio" name="installment_term" value="6" class="accent-brand">
+                    <span class="mt-1 block text-xs font-extrabold text-slate-900">6 tháng · 0%</span>
+                    <span id="installmentAmount6" class="mt-1 block text-xs font-bold text-brand">0₫/tháng</span>
+                  </label>
+                  <label class="rounded-xl border-2 border-slate-200 bg-white p-3 cursor-pointer has-[:checked]:border-brand has-[:checked]:bg-white">
+                    <input type="radio" name="installment_term" value="12" class="accent-brand">
+                    <span class="mt-1 block text-xs font-extrabold text-slate-900">12 tháng</span>
+                    <span id="installmentAmount12" class="mt-1 block text-xs font-bold text-brand">0₫/tháng</span>
+                  </label>
+                </div>
+                <p class="text-[11px] font-medium text-slate-600">Duyệt hồ sơ tự động trong 30 giây bằng CCCD, nhận máy ngay không cần trả trước.</p>
+              </div>
 
             </div>
           </div>

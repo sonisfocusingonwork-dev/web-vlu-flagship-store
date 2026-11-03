@@ -18,6 +18,11 @@
   // Phương thức thanh toán
   var paymentRadios = document.querySelectorAll('input[name="payment_method"]');
   var vietqrBox = document.getElementById('vietqrBox');
+  var bnplBox = document.getElementById('bnplBox');
+  var installmentRadios = document.querySelectorAll('input[name="installment_term"]');
+  var shippingRadios = document.querySelectorAll('input[name="shipping_method"]');
+  var deliveryAddressFields = document.getElementById('deliveryAddressFields');
+  var storePickupFields = document.getElementById('storePickupFields');
   var qrOrderCodeText = document.getElementById('qrOrderCodeText');
   var qrOrderTotalText = document.getElementById('qrOrderTotalText');
 
@@ -37,6 +42,40 @@
     return window.VLU_CART;
   }
 
+  function getSelectedValue(radios, fallback) {
+    var selected = fallback;
+    radios.forEach(function (radio) {
+      if (radio.checked) selected = radio.value;
+    });
+    return selected;
+  }
+
+  function updateShippingFields() {
+    var pickup = getSelectedValue(shippingRadios, 'delivery') === 'pickup';
+    var addressInputs = deliveryAddressFields ? deliveryAddressFields.querySelectorAll('input, select, textarea') : [];
+    Array.prototype.forEach.call(addressInputs, function (input) {
+      input.disabled = pickup;
+      input.required = !pickup;
+    });
+    if (deliveryAddressFields) deliveryAddressFields.classList.toggle('hidden', pickup);
+    if (storePickupFields) storePickupFields.classList.toggle('hidden', !pickup);
+    if (storePickupFields) {
+      storePickupFields.querySelectorAll('input[name="store_location"]').forEach(function (input) {
+        input.disabled = !pickup;
+      });
+    }
+  }
+
+  function updateInstallmentAmounts() {
+    var engine = getCartEngine();
+    if (!engine) return;
+    var total = engine.getTotal();
+    [3, 6, 12].forEach(function (months) {
+      var amount = document.getElementById('installmentAmount' + months);
+      if (amount) amount.textContent = engine.formatVND(Math.ceil(total / months)) + '/tháng';
+    });
+  }
+
   // Render danh sách sản phẩm ở cột phải (Order Review)
   function renderOrderReview() {
     var engine = getCartEngine();
@@ -47,6 +86,7 @@
     var subtotal = engine.getSubtotal();
     var discount = engine.getDiscount();
     var total = engine.getTotal();
+    updateInstallmentAmounts();
 
     if (checkoutCountBadge) {
       checkoutCountBadge.textContent = count > 0 ? count + ' sản phẩm' : '0 sản phẩm';
@@ -61,6 +101,7 @@
       }
       if (checkoutSubtotal) checkoutSubtotal.textContent = '0₫';
       if (checkoutTotal) checkoutTotal.textContent = '0₫';
+      if (checkoutDiscountRow) checkoutDiscountRow.classList.add('hidden');
       return;
     }
 
@@ -117,7 +158,18 @@
         } else {
           if (vietqrBox) vietqrBox.classList.add('hidden');
         }
+        if (bnplBox) bnplBox.classList.toggle('hidden', getSelectedValue(paymentRadios, 'cod') !== 'bnpl');
       });
+    });
+
+    shippingRadios.forEach(function (radio) {
+      radio.addEventListener('change', updateShippingFields);
+    });
+    updateShippingFields();
+    updateInstallmentAmounts();
+
+    window.addEventListener('vlu:cart-updated', function () {
+      renderOrderReview();
     });
 
     // Nút sao chép (Số tài khoản / Cú pháp chuyển khoản)
@@ -171,6 +223,8 @@
         var district = districtInput ? districtInput.value.trim() : '';
         var address = addressInput ? addressInput.value.trim() : '';
         var notes = notesInput ? notesInput.value.trim() : '';
+        var shippingMethod = getSelectedValue(shippingRadios, 'delivery');
+        var selectedStore = getSelectedValue(storePickupFields ? storePickupFields.querySelectorAll('input[name="store_location"]') : [], '');
 
         // Validate Họ tên
         if (!fullname) {
@@ -187,11 +241,25 @@
           return;
         }
 
-        // Validate Địa chỉ nhận hàng
-        if (!address) {
-          alert('Vui lòng nhập địa chỉ nhận hàng chi tiết (Số nhà, tên đường, phường/xã)!');
-          addressInput.focus();
-          return;
+        var fullAddress = '';
+        if (shippingMethod === 'pickup') {
+          var storeRadio = storePickupFields ? storePickupFields.querySelector('input[name="store_location"]:checked') : null;
+          if (!storeRadio) {
+            alert('Vui lòng chọn chi nhánh nhận hàng!');
+            return;
+          }
+          var storeLabel = storeRadio.closest('label');
+          var storeLines = storeLabel ? storeLabel.querySelectorAll('strong, span.text-slate-500') : [];
+          fullAddress = Array.prototype.map.call(storeLines, function (line) { return line.textContent.trim(); }).join(' - ');
+        } else {
+          if (!city || !district || !address) {
+            alert('Vui lòng nhập Tỉnh/Thành, Quận/Huyện và địa chỉ số nhà, tên đường!');
+            if (!city && cityInput) cityInput.focus();
+            else if (!district && districtInput) districtInput.focus();
+            else if (addressInput) addressInput.focus();
+            return;
+          }
+          fullAddress = address + ', ' + district + ', ' + city;
         }
 
         // Lấy phương thức thanh toán đã chọn
@@ -202,11 +270,12 @@
             selectedMethod = r.value;
             if (r.value === 'vietqr') selectedMethodLabel = 'Chuyển khoản VietQR';
             if (r.value === 'credit') selectedMethodLabel = 'Thẻ tín dụng / Apple Pay';
+            if (r.value === 'bnpl') selectedMethodLabel = 'Mua trước trả sau (Kredivo / MoMo / Home PayLater / Fundiin)';
           }
         });
+        var installmentTerm = selectedMethod === 'bnpl' ? getSelectedValue(installmentRadios, '3') : '';
 
         var finalTotal = engine.formatVND(engine.getTotal());
-        var fullAddress = address + (district ? ', ' + district : '') + (city ? ', ' + city : '');
 
         // Điền thông tin vào Modal Đặt hàng thành công
         if (successOrderId) successOrderId.textContent = currentOrderId;
@@ -224,9 +293,14 @@
             customer_phone: phone,
             customer_email: email || '',
             customer_address: fullAddress,
+            shipping_method: shippingMethod,
+            store_location: shippingMethod === 'pickup' ? selectedStore : '',
             customer_notes: notes || '',
             payment_method: selectedMethodLabel,
             payment_key: selectedMethod,
+            installment_term: installmentTerm,
+            installment_monthly: installmentTerm ? Math.ceil(engine.getTotal() / Number(installmentTerm)) : 0,
+            user_id: engine.getCurrentUserId ? engine.getCurrentUserId() : 'guest',
             items: cart.map(function (it) {
               return {
                 id: it.id,

@@ -98,6 +98,7 @@ $title = $categoryNames[$cat] ?? 'Tất Cả Sản Phẩm';
 
   <script src="frontend/assets/js/products-data.js"></script>
   <script src="frontend/assets/js/image-manifest.js"></script>
+  <script src="frontend/assets/js/main.js"></script>
   <script>
     (function() {
       const urlParams = new URLSearchParams(window.location.search);
@@ -166,6 +167,9 @@ $title = $categoryNames[$cat] ?? 'Tất Cả Sản Phẩm';
         const imageUrl = img || fallbackImage;
         const url = 'product-detail.html?id=' + encodeURIComponent(p.id) + '&name=' + encodeURIComponent(p.name) + '&cat=' + encodeURIComponent(category);
         const price = Number(p.basePrice) > 0 ? formatVND(p.basePrice) : 'Liên hệ';
+        const addButton = Number(p.basePrice) > 0
+          ? `<button type="button" data-add data-id="${escapeHtml(p.id)}" data-name="${escapeHtml(p.name)}" data-price="${Number(p.basePrice)}" aria-label="Thêm ${escapeHtml(p.name)} vào giỏ hàng" class="relative z-30 grid h-10 w-10 shrink-0 place-items-center rounded-full bg-slate-900 text-white transition hover:bg-brand"><svg class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg></button>`
+          : '<span class="rounded-lg bg-slate-100 px-3 py-1.5 text-xs font-semibold text-slate-600">Chi tiết</span>';
         return `
           <article class="product-card group relative flex flex-col rounded-xl border border-slate-200/80 bg-white p-3 shadow-sm transition-all duration-300 hover:-translate-y-1 hover:border-slate-300 hover:shadow-lg sm:p-4">
             <a href="${url}" class="absolute inset-0 z-20 rounded-xl" aria-label="Xem ${escapeHtml(p.name)}"></a>
@@ -181,7 +185,7 @@ $title = $categoryNames[$cat] ?? 'Tất Cả Sản Phẩm';
                   <span class="text-sm font-extrabold text-brand sm:text-base">${price}</span>
                   ${p.oldPrice ? `<span class="block text-xs text-slate-400 line-through">${formatVND(p.oldPrice)}</span>` : ''}
                 </div>
-                <span class="rounded-lg bg-slate-900 px-3 py-1.5 text-xs font-semibold text-white transition group-hover:bg-brand">Chi tiết</span>
+                ${addButton}
               </div>
             </div>
           </article>

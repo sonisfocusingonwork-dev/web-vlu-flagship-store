@@ -27,6 +27,12 @@
     return window.VLU_CART;
   }
 
+  function escapeHtml(value) {
+    return String(value == null ? '' : value).replace(/[&<>"']/g, function (char) {
+      return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[char];
+    });
+  }
+
   function renderCart() {
     var engine = getCartEngine();
     if (!engine) return;
@@ -40,8 +46,14 @@
 
     // Cập nhật số lượng sản phẩm trên tiêu đề
     if (cartCountHeader) {
-      cartCountHeader.textContent = count > 0 ? '(' + count + ' sản phẩm)' : '';
+      cartCountHeader.textContent = '(' + count + ' sản phẩm)';
     }
+
+    if (summarySubtotal) summarySubtotal.textContent = engine.formatVND(subtotal);
+    if (summaryTotal) summaryTotal.textContent = engine.formatVND(total);
+    if (summaryDiscountRow) summaryDiscountRow.classList.toggle('hidden', discount <= 0);
+    if (discount > 0 && summaryDiscount) summaryDiscount.textContent = '-' + engine.formatVND(discount);
+    if (activeVoucherBox) activeVoucherBox.classList.toggle('hidden', !(voucher && voucher.code));
 
     if (!items || items.length === 0) {
       if (cartMainContent) cartMainContent.classList.add('hidden');
@@ -64,22 +76,27 @@
       items.forEach(function (item, index) {
         var lineTotal = (parseInt(item.price, 10) || 0) * (parseInt(item.quantity, 10) || 1);
         var oldLineTotal = item.oldPrice ? (parseInt(item.oldPrice, 10) * (parseInt(item.quantity, 10) || 1)) : 0;
-        var detailUrl = 'product-detail.html?id=' + encodeURIComponent(item.id || '') + '&name=' + encodeURIComponent(item.name || '');
+        var detailUrl = 'product-detail.html?id=' + encodeURIComponent(item.id || '') + '&name=' + encodeURIComponent(item.name || '') + '&cat=' + encodeURIComponent(item.category || '');
+        var fallbackImage = 'frontend/assets/images/placeholders/' + ({
+          'dien-thoai': 'phone.svg', laptop: 'laptop.svg', ipad: 'ipad.svg',
+          'tai-nghe': 'headphones.svg', loa: 'speaker.svg', 'phu-kien': 'accessories.svg',
+          'dong-ho-dien-tu': 'watch.svg'
+        }[item.category] || 'phone.svg');
 
         html += '<div class="group relative flex flex-col sm:flex-row items-start sm:items-center gap-4 rounded-2xl border border-slate-200/80 bg-white p-4 sm:p-5 transition-all duration-200 hover:border-slate-300 hover:shadow-sm" data-index="' + index + '">';
         
         // Cột ảnh
         html += '  <a href="' + detailUrl + '" class="h-24 w-24 sm:h-28 sm:w-28 shrink-0 rounded-xl bg-slate-50 border border-slate-100 p-2 flex items-center justify-center transition group-hover:scale-102">';
-        html += '    <img src="' + (item.image || 'frontend/assets/images/logo.png') + '" alt="' + item.name + '" class="max-h-full max-w-full object-contain" onerror="this.onerror=null;this.src=\'image_2c97c5.png\';">';
+        html += '    <img src="' + escapeHtml(item.image || fallbackImage) + '" alt="' + escapeHtml(item.name) + '" class="max-h-full max-w-full object-contain" onerror="this.onerror=null;this.src=\'' + fallbackImage + '\';">';
         html += '  </a>';
 
         // Cột thông tin
         html += '  <div class="flex-1 min-w-0 space-y-1.5">';
         html += '    <div class="flex items-start justify-between gap-3">';
         html += '      <h3 class="text-base font-bold text-slate-900 hover:text-brand transition truncate">';
-        html += '        <a href="' + detailUrl + '">' + item.name + '</a>';
+        html += '        <a href="' + detailUrl + '">' + escapeHtml(item.name) + '</a>';
         html += '      </h3>';
-        html += '      <button type="button" class="btn-remove-item text-slate-400 hover:text-red-500 transition p-1" data-index="' + index + '" aria-label="Xóa ' + item.name + ' khỏi giỏ hàng" title="Xóa món này">';
+        html += '      <button type="button" class="btn-remove-item text-slate-400 hover:text-red-500 transition p-1" data-index="' + index + '" aria-label="Xóa ' + escapeHtml(item.name) + ' khỏi giỏ hàng" title="Xóa món này">';
         html += '        <svg class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0"/></svg>';
         html += '      </button>';
         html += '    </div>';
@@ -88,12 +105,12 @@
         html += '    <div class="flex flex-wrap items-center gap-2 text-xs">';
         if (item.color) {
           html += '      <span class="inline-flex items-center gap-1 rounded-md bg-slate-100 px-2.5 py-1 font-medium text-slate-700">';
-          html += '        Màu sắc: <strong class="text-slate-900">' + item.color + '</strong>';
+          html += '        Màu sắc: <strong class="text-slate-900">' + escapeHtml(item.color) + '</strong>';
           html += '      </span>';
         }
         if (item.variant) {
           html += '      <span class="inline-flex items-center gap-1 rounded-md bg-slate-100 px-2.5 py-1 font-medium text-slate-700">';
-          html += '        Cấu hình: <strong class="text-slate-900">' + item.variant + '</strong>';
+          html += '        Cấu hình: <strong class="text-slate-900">' + escapeHtml(item.variant) + '</strong>';
           html += '      </span>';
         }
         html += '      <span class="inline-flex items-center gap-1 text-emerald-600 font-semibold">';
