@@ -46,7 +46,7 @@ $title = $categoryNames[$cat] ?? 'Tất Cả Sản Phẩm';
         extend: {
           fontFamily: { sans: ['"Plus Jakarta Sans"', 'system-ui', 'sans-serif'] },
           colors: {
-            brand: { DEFAULT: '#dc2626', dark: '#b91c1c', light: '#ef4444', soft: '#fef2f2' },
+            brand: { DEFAULT: '#C8102E', dark: '#A00D25', light: '#DC2626', soft: '#FDECEF' },
             ink: '#0B0F19'
           }
         }
@@ -54,35 +54,9 @@ $title = $categoryNames[$cat] ?? 'Tất Cả Sản Phẩm';
     };
   </script>
 </head>
-<body class="bg-slate-50 text-slate-900 antialiased selection:bg-brand selection:text-white min-h-screen flex flex-col">
+<body class="bg-[#FBFBFE] font-sans text-ink antialiased selection:bg-brand selection:text-white min-h-screen flex flex-col">
 
-  <!-- Header -->
-  <header class="sticky top-0 z-40 w-full border-b border-slate-200/80 bg-white/80 backdrop-blur-xl">
-    <div class="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 sm:px-6">
-      <div class="flex items-center gap-8">
-        <a href="index.html" class="flex items-center gap-2">
-          <img src="frontend/assets/images/logo.png" alt="VLU Store Logo" class="h-9 w-auto">
-          <span class="text-lg font-black tracking-wider text-slate-900">VLU<span class="text-brand">STORE</span></span>
-        </a>
-        <nav class="hidden md:flex items-center gap-6 text-sm font-semibold text-slate-600">
-          <a href="category.html?cat=dien-thoai" class="hover:text-brand transition <?= $cat === 'dien-thoai' ? 'text-brand font-bold' : '' ?>">Điện thoại</a>
-          <a href="category.html?cat=laptop" class="hover:text-brand transition <?= $cat === 'laptop' ? 'text-brand font-bold' : '' ?>">Laptop</a>
-          <a href="category.html?cat=ipad" class="hover:text-brand transition <?= $cat === 'ipad' ? 'text-brand font-bold' : '' ?>">iPad</a>
-          <a href="category.html?cat=tai-nghe" class="hover:text-brand transition <?= $cat === 'tai-nghe' ? 'text-brand font-bold' : '' ?>">Tai nghe</a>
-          <a href="category.html?cat=loa" class="hover:text-brand transition <?= $cat === 'loa' ? 'text-brand font-bold' : '' ?>">Loa</a>
-          <a href="category.html?cat=phu-kien" class="hover:text-brand transition <?= $cat === 'phu-kien' ? 'text-brand font-bold' : '' ?>">Phụ kiện</a>
-          <a href="category.html?cat=dong-ho-dien-tu" class="hover:text-brand transition <?= $cat === 'dong-ho-dien-tu' ? 'text-brand font-bold' : '' ?>">Đồng hồ</a>
-        </nav>
-      </div>
-
-      <div class="flex items-center gap-4">
-        <a href="cart.html" class="relative grid h-10 w-10 place-items-center rounded-full border border-slate-200 bg-white shadow-sm transition hover:border-brand/40 hover:text-brand">
-          <svg class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"/></svg>
-          <span id="cartCount" class="absolute -right-1 -top-1 grid h-5 min-w-[20px] place-items-center rounded-full bg-brand px-1 text-[11px] font-bold text-white shadow-sm">0</span>
-        </a>
-      </div>
-    </div>
-  </header>
+  <?php require __DIR__ . '/frontend/components/header.php'; ?>
 
   <!-- Breadcrumb & Header Banner -->
   <main class="flex-1 mx-auto max-w-7xl px-4 py-8 sm:px-6 w-full">
@@ -124,21 +98,60 @@ $title = $categoryNames[$cat] ?? 'Tất Cả Sản Phẩm';
 
   <script src="frontend/assets/js/products-data.js"></script>
   <script src="frontend/assets/js/image-manifest.js"></script>
-  <script src="frontend/assets/js/cart-engine.js"></script>
   <script>
     (function() {
       const urlParams = new URLSearchParams(window.location.search);
       const catParam = urlParams.get('cat') || '';
       const grid = document.getElementById('categoryProductGrid');
       const catalog = window.VLU_CATALOG || {};
+      const productsByKey = new Map();
+      const categoryFallbacks = {
+        'dien-thoai': 'phone.svg',
+        laptop: 'laptop.svg',
+        ipad: 'ipad.svg',
+        'tai-nghe': 'tai-nghe.svg',
+        loa: 'loa.svg',
+        'phu-kien': 'phu-kien.svg',
+        'dong-ho-dien-tu': 'dong-ho.svg'
+      };
 
-      let products = Object.values(catalog);
-      if (catParam) {
-        products = products.filter(p => p.category === catParam);
-      }
+      Object.values(catalog).forEach(function(product) {
+        if (!catParam || product.category === catParam) {
+          productsByKey.set(product.category + ':' + product.id, product);
+        }
+      });
+
+      document.querySelectorAll('.mega-panel .mega-item-link').forEach(function(link) {
+        const url = new URL(link.href, window.location.href);
+        const category = url.searchParams.get('cat') || '';
+        if (!category || (catParam && category !== catParam)) return;
+
+        const id = url.searchParams.get('id') || '';
+        const key = category + ':' + id;
+        if (!id || productsByKey.has(key)) return;
+
+        const group = link.closest('.mega-brand-col');
+        productsByKey.set(key, {
+          id: id,
+          name: url.searchParams.get('name') || link.textContent.trim(),
+          brand: group ? group.querySelector('h4').textContent.trim() : '',
+          category: category,
+          basePrice: null,
+          image: '',
+          tagline: ''
+        });
+      });
+
+      const products = Array.from(productsByKey.values());
 
       function formatVND(n) {
         return Number(n).toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.') + '₫';
+      }
+
+      function escapeHtml(value) {
+        return String(value == null ? '' : value).replace(/[&<>"']/g, function(char) {
+          return {'&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'}[char];
+        });
       }
 
       if (products.length === 0) {
@@ -148,22 +161,27 @@ $title = $categoryNames[$cat] ?? 'Tất Cả Sản Phẩm';
 
       grid.innerHTML = products.map(p => {
         const img = p.image || (p.colors && p.colors[0] ? p.colors[0].image : '');
-        const url = 'product-detail.html?id=' + encodeURIComponent(p.id) + '&name=' + encodeURIComponent(p.name);
+        const category = p.category || catParam;
+        const fallbackImage = 'frontend/assets/images/placeholders/' + (categoryFallbacks[category] || 'phone.svg');
+        const imageUrl = img || fallbackImage;
+        const url = 'product-detail.html?id=' + encodeURIComponent(p.id) + '&name=' + encodeURIComponent(p.name) + '&cat=' + encodeURIComponent(category);
+        const price = Number(p.basePrice) > 0 ? formatVND(p.basePrice) : 'Liên hệ';
         return `
-          <article class="group flex flex-col rounded-2xl border border-slate-200/80 bg-white p-4 shadow-sm transition-all duration-300 hover:-translate-y-1 hover:border-slate-300 hover:shadow-lg">
-            <div class="relative aspect-square w-full overflow-hidden rounded-xl bg-slate-50 p-4">
-              <span class="absolute left-2.5 top-2.5 rounded-full bg-brand px-2 py-0.5 text-[11px] font-bold text-white shadow-sm">${p.brand}</span>
-              <img src="${img}" alt="${p.name}" loading="lazy" class="h-full w-full object-contain transition duration-500 group-hover:scale-105">
+          <article class="product-card group relative flex flex-col rounded-xl border border-slate-200/80 bg-white p-3 shadow-sm transition-all duration-300 hover:-translate-y-1 hover:border-slate-300 hover:shadow-lg sm:p-4">
+            <a href="${url}" class="absolute inset-0 z-20 rounded-xl" aria-label="Xem ${escapeHtml(p.name)}"></a>
+            <div class="relative aspect-square w-full overflow-hidden rounded-lg bg-slate-50 p-4">
+              <span class="absolute left-2.5 top-2.5 z-10 rounded-full bg-brand px-2 py-0.5 text-[11px] font-bold text-white shadow-sm">${escapeHtml(p.brand || 'VLU Store')}</span>
+              <img src="${escapeHtml(imageUrl)}" alt="${escapeHtml(p.name)}" loading="lazy" onerror="this.onerror=null;this.src='${fallbackImage}';" class="h-full w-full object-contain transition duration-500 group-hover:scale-105">
             </div>
-            <div class="mt-4 flex flex-1 flex-col">
-              <h3 class="font-bold text-slate-900 group-hover:text-brand line-clamp-1">${p.name}</h3>
-              <p class="mt-1 text-xs text-slate-500 line-clamp-1">${p.tagline || ''}</p>
-              <div class="mt-auto pt-4 flex items-center justify-between">
+            <div class="relative z-10 mt-3 flex flex-1 flex-col sm:mt-4">
+              <h3 class="font-bold text-slate-900 group-hover:text-brand line-clamp-2">${escapeHtml(p.name)}</h3>
+              <p class="mt-1 min-h-4 text-xs text-slate-500 line-clamp-1">${escapeHtml(p.tagline || 'Sản phẩm chính hãng')}</p>
+              <div class="pointer-events-none mt-auto flex items-center justify-between gap-2 pt-4">
                 <div>
-                  <span class="text-base font-extrabold text-brand">${formatVND(p.basePrice)}</span>
+                  <span class="text-sm font-extrabold text-brand sm:text-base">${price}</span>
                   ${p.oldPrice ? `<span class="block text-xs text-slate-400 line-through">${formatVND(p.oldPrice)}</span>` : ''}
                 </div>
-                <a href="${url}" class="rounded-xl bg-slate-900 px-3 py-1.5 text-xs font-semibold text-white transition hover:bg-brand">Chi tiết</a>
+                <span class="rounded-lg bg-slate-900 px-3 py-1.5 text-xs font-semibold text-white transition group-hover:bg-brand">Chi tiết</span>
               </div>
             </div>
           </article>
