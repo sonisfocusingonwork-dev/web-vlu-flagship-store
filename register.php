@@ -45,21 +45,7 @@ function e($value): string
 
   <!-- Stylesheet Hệ thống Glassmorphic 2026 -->
   <link rel="stylesheet" href="style.css">
-  <style>
-    /* Nền Ambient Mesh Gradient phong cách Apple Event 2026 */
-    .ambient-bg {
-      background: radial-gradient(circle at 15% 20%, rgba(200, 16, 46, 0.08) 0%, transparent 45%),
-                  radial-gradient(circle at 85% 80%, rgba(99, 102, 241, 0.08) 0%, transparent 45%),
-                  radial-gradient(circle at 50% 50%, rgba(248, 249, 252, 1) 0%, #F1F4F9 100%);
-    }
-    .glass-auth-card {
-      background: rgba(255, 255, 255, 0.88);
-      backdrop-filter: blur(28px) saturate(190%);
-      -webkit-backdrop-filter: blur(28px) saturate(190%);
-      border: 1px solid rgba(255, 255, 255, 0.9);
-      box-shadow: 0 25px 60px -15px rgba(15, 23, 42, 0.08), 0 0 0 1px rgba(226, 232, 240, 0.6);
-    }
-  </style>
+  <link rel="stylesheet" href="frontend/assets/css/auth.css">
 </head>
 <body class="ambient-bg font-sans text-ink antialiased min-h-screen flex flex-col justify-between selection:bg-brand selection:text-white relative overflow-x-hidden">
 
@@ -70,7 +56,7 @@ function e($value): string
   <!-- Header Đỉnh: Nút Điều hướng quay về Trang chủ -->
   <header class="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-5 flex items-center justify-between relative z-20">
     <a href="index.html" class="site-logo inline-flex items-center gap-2.5 transition active:scale-95" aria-label="VLU FLAGSHIP STORE – Về trang chủ">
-      <img src="frontend/assets/images/logo.png" onerror="this.onerror=null;this.src='image_2c97c5.png';" alt="VLU FLAGSHIP STORE" class="h-9 w-auto">
+      <span class="hologram-logo"><img src="frontend/assets/images/logo.png" onerror="this.onerror=null;this.src='image_2c97c5.png';" alt="VLU FLAGSHIP STORE"></span>
       <span class="text-sm sm:text-base font-extrabold tracking-tight text-slate-900 hidden sm:inline">VLU FLAGSHIP STORE</span>
     </a>
     <a href="index.html" class="inline-flex items-center gap-1.5 rounded-full bg-white/80 border border-slate-200/80 px-4 py-2 text-xs font-bold text-slate-700 hover:text-brand hover:border-brand/30 hover:bg-white transition-all shadow-sm active:scale-95">
