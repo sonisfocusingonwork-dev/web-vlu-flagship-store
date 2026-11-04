@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Quản lý tài khoản, đơn hàng và quyền lợi thành viên VLU FLAGSHIP STORE.">
+  <title>Tài khoản của tôi – VLU FLAGSHIP STORE</title>
+  <link rel="icon" type="image/png" href="frontend/assets/images/logo.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap&subset=vietnamese" rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: { sans: ['"Plus Jakarta Sans"', 'system-ui', 'sans-serif'] },
+          colors: { brand: { DEFAULT: '#C8102E', dark: '#A00D25', soft: '#FDECEF' }, ink: '#0B0F19' }
+        }
+      }
+    };
+  </script>
+  <link rel="stylesheet" href="frontend/assets/css/style.css">
+  <link rel="stylesheet" href="frontend/assets/css/auth.css">
+  <link rel="stylesheet" href="frontend/assets/css/account.css">
+</head>
+<body class="account-page font-sans text-ink antialiased">
+  <header class="account-topbar">
+    <a class="site-logo inline-flex items-center gap-2.5" href="index.php" aria-label="VLU FLAGSHIP STORE – Trang chủ">
+      <img src="frontend/assets/images/logo.png" alt="VLU FLAGSHIP STORE">
+      <span class="hidden text-sm font-extrabold tracking-tight text-slate-900 sm:inline">VLU FLAGSHIP STORE</span>
+    </a>
+    <div class="flex items-center gap-2">
+      <a class="account-top-link" href="index.php">Tiếp tục mua sắm</a>
+      <a class="account-cart-link" href="cart.html" aria-label="Mở giỏ hàng">Giỏ hàng <span id="accountCartCount">0</span></a>
+    </div>
+  </header>
+
+  <main class="account-layout">
+    <aside class="account-sidebar glass-panel">
+      <div class="account-profile-mini">
+        <div class="account-avatar" id="sidebarAvatar">V</div>
+        <div class="min-w-0">
+          <p class="account-eyebrow">TÀI KHOẢN VLU</p>
+          <p class="truncate font-extrabold text-slate-900" id="sidebarName">Khách hàng</p>
+          <p class="truncate text-xs text-slate-500" id="sidebarEmail"></p>
+        </div>
+      </div>
+      <nav id="accountNav" class="account-nav" aria-label="Các mục tài khoản"></nav>
+      <p class="account-sidebar-note">Dữ liệu tài khoản được lưu riêng trên thiết bị này.</p>
+    </aside>
+
+    <section class="account-content">
+      <div class="account-page-heading">
+        <div>
+          <p class="account-eyebrow">KHÔNG GIAN CỦA BẠN</p>
+          <h1 id="pageTitle" class="text-2xl font-black tracking-tight text-slate-950 sm:text-3xl">Tổng quan tài khoản</h1>
+          <p id="pageSubtitle" class="mt-1 text-sm text-slate-500">Theo dõi đơn hàng và các hoạt động gần đây.</p>
+        </div>
+        <button type="button" class="account-mobile-menu" id="mobileNavToggle" aria-expanded="false">☰ Danh mục</button>
+      </div>
+      <div id="accountNotice" class="account-notice hidden" role="status" aria-live="polite"></div>
+      <div id="accountPanel" class="space-y-5"></div>
+    </section>
+  </main>
+
+  <footer class="account-footer">© 2026 VLU FLAGSHIP STORE · Tài khoản của bạn</footer>
+  <div id="toast" role="status" aria-live="polite" class="pointer-events-none fixed bottom-6 left-1/2 z-50 -translate-x-1/2 rounded-full bg-ink px-5 py-3 text-sm font-semibold text-white opacity-0 shadow-xl transition-all"></div>
+
+  <script src="frontend/assets/js/cart-engine.js"></script>
+  <script src="frontend/assets/js/auth-engine.js"></script>
+  <script src="frontend/assets/js/products-data.js"></script>
+  <script src="frontend/assets/js/account-page.js"></script>
+</body>
+</html>

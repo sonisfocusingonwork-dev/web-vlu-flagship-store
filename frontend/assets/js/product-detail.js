@@ -269,6 +269,21 @@
     product = buildSmartFallback(rawName, rawId, rawCat);
   }
 
+  // Keep the recently viewed list isolated by the same identity used by the cart.
+  try {
+    var accountUser = JSON.parse(localStorage.getItem('vlu_user') || 'null');
+    var accountIdentity = accountUser && (accountUser.username || accountUser.email || accountUser.id);
+    if (accountIdentity && product.id) {
+      var accountKey = 'vlu_account_' + String(accountIdentity).trim().toLowerCase().replace(/[^a-z0-9._@-]+/g, '_');
+      var accountData = JSON.parse(localStorage.getItem(accountKey) || '{}');
+      if (!Array.isArray(accountData.recent)) accountData.recent = [];
+      accountData.recent = [product.id].concat(accountData.recent.filter(function (id) { return id !== product.id; })).slice(0, 24);
+      localStorage.setItem(accountKey, JSON.stringify(accountData));
+    }
+  } catch (error) {
+    console.warn('[ProductDetail] Không thể lưu lịch sử xem:', error);
+  }
+
   // 5. Cập nhật DOM
   function renderProduct(p) {
     // 5.1 Document Title & Meta

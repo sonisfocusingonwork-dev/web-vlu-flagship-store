@@ -231,6 +231,35 @@
     toastTimer = setTimeout(function () { toast.classList.remove('show'); }, 2200);
   }
 
+  function getAccountStoreKey() {
+    var user = null;
+    try { user = JSON.parse(localStorage.getItem('vlu_user') || 'null'); } catch (error) {}
+    var identity = user && (user.username || user.email || user.id);
+    if (!identity) return null;
+    return 'vlu_account_' + String(identity).trim().toLowerCase().replace(/[^a-z0-9._@-]+/g, '_');
+  }
+
+  function toggleWishlist(productId, button) {
+    var storeKey = getAccountStoreKey();
+    if (!storeKey || !productId) {
+      showToast('Đăng nhập để lưu sản phẩm yêu thích.');
+      return;
+    }
+    try {
+      var store = JSON.parse(localStorage.getItem(storeKey) || '{}');
+      if (!Array.isArray(store.wishlist)) store.wishlist = [];
+      var index = store.wishlist.indexOf(productId);
+      if (index === -1) store.wishlist.push(productId);
+      else store.wishlist.splice(index, 1);
+      localStorage.setItem(storeKey, JSON.stringify(store));
+      button.setAttribute('aria-pressed', String(index === -1));
+      showToast(index === -1 ? 'Đã thêm vào sản phẩm yêu thích.' : 'Đã xóa khỏi sản phẩm yêu thích.');
+    } catch (error) {
+      console.error('[Main] Không thể cập nhật danh sách yêu thích:', error);
+      showToast('Không thể lưu sản phẩm yêu thích trên thiết bị.');
+    }
+  }
+
   document.addEventListener('click', function (e) {
     var add = e.target.closest('[data-add]');
     if (add) {
@@ -287,12 +316,44 @@
     }
     var wish = e.target.closest('[data-wish]');
     if (wish) {
-      wish.setAttribute('aria-pressed', wish.getAttribute('aria-pressed') !== 'true');
+      var wishCard = wish.closest('.product-card');
+      var wishId = wish.dataset.id || '';
+      if (!wishId && window.location.pathname.indexOf('product-detail') !== -1) {
+        wishId = new URLSearchParams(window.location.search).get('id') || '';
+      }
+      var wishLink = wishCard && $('h3 a', wishCard);
+      if (wishLink) {
+        try { wishId = new URL(wishLink.href, window.location.href).searchParams.get('id') || wishId; } catch (error) {}
+      }
+      if (!wishId && window.VLU_FIND_PRODUCT) {
+        var productName = wishCard && $('h3 a', wishCard) ? $('h3 a', wishCard).textContent.trim() : '';
+        var product = productName ? window.VLU_FIND_PRODUCT(productName) : null;
+        if (product) wishId = product.id;
+      }
+      toggleWishlist(wishId, wish);
     }
   });
 
   /* ---------- 5. GLOBAL LINK BINDING CHO SẢN PHẨM ---------- */
   document.addEventListener('DOMContentLoaded', function () {
+    var accountKey = getAccountStoreKey();
+    if (accountKey) {
+      try {
+        var accountData = JSON.parse(localStorage.getItem(accountKey) || '{}');
+        var currentProductId = window.location.pathname.indexOf('product-detail') !== -1
+          ? new URLSearchParams(window.location.search).get('id')
+          : '';
+        $$('[data-wish]').forEach(function (wish) {
+          var card = wish.closest('.product-card');
+          var link = card && $('h3 a', card);
+          var productId = currentProductId || wish.dataset.id || '';
+          if (!productId && link) productId = new URL(link.href, window.location.href).searchParams.get('id') || '';
+          wish.setAttribute('aria-pressed', String(Array.isArray(accountData.wishlist) && accountData.wishlist.indexOf(productId) !== -1));
+        });
+      } catch (error) {
+        console.warn('[Main] Không thể nạp trạng thái yêu thích:', error);
+      }
+    }
     $$('.product-card').forEach(function (card) {
       var link = $('h3 a', card);
       if (link) {
@@ -301,6 +362,17 @@
           var name = (link.textContent || '').trim();
           var slug = name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
           link.setAttribute('href', 'product-detail.html?id=' + encodeURIComponent(slug) + '&name=' + encodeURIComponent(name));
+        }
+        var wish = $('[data-wish]', card);
+        var storeKey = getAccountStoreKey();
+        if (wish && storeKey) {
+          try {
+            var store = JSON.parse(localStorage.getItem(storeKey) || '{}');
+            var productId = new URL(link.href, window.location.href).searchParams.get('id');
+            wish.setAttribute('aria-pressed', String(Array.isArray(store.wishlist) && store.wishlist.indexOf(productId) !== -1));
+          } catch (error) {
+            console.warn('[Main] Không thể đồng bộ trạng thái yêu thích:', error);
+          }
         }
       }
     });
