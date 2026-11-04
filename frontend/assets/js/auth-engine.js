@@ -137,6 +137,7 @@
       var userDropdown = document.getElementById('headerUserDropdown');
       var userNameEl = document.getElementById('headerUserName');
       var userAvatarEl = document.getElementById('headerUserAvatar');
+      var menuAvatarEl = document.getElementById('menuUserAvatar');
       var menuFullName = document.getElementById('menuUserFullName');
       var menuEmail = document.getElementById('menuUserEmail');
       var menuRoleBadge = document.getElementById('menuUserRoleBadge');
@@ -156,10 +157,29 @@
         if (userDropdown) userDropdown.classList.remove('hidden');
 
         var displayName = user.fullname || user.username;
-        var firstLetter = displayName.charAt(0).toUpperCase();
-
         if (userNameEl) userNameEl.textContent = displayName;
-        if (userAvatarEl) userAvatarEl.textContent = firstLetter;
+        var firstLetter = displayName.charAt(0).toUpperCase();
+        [userAvatarEl, menuAvatarEl].forEach(function (avatarEl) {
+          if (!avatarEl) return;
+          avatarEl.replaceChildren();
+          if (typeof user.avatar === 'string' && user.avatar) {
+            var avatarImage = document.createElement('img');
+            avatarImage.src = user.avatar;
+            avatarImage.alt = '';
+            avatarImage.className = 'h-full w-full object-cover';
+            avatarEl.appendChild(avatarImage);
+          } else {
+            var avatarIcon = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+            avatarIcon.setAttribute('viewBox', '0 0 24 24');
+            avatarIcon.setAttribute('fill', 'currentColor');
+            avatarIcon.setAttribute('aria-hidden', 'true');
+            avatarIcon.setAttribute('class', userAvatarEl === avatarEl ? 'h-5 w-5' : 'h-8 w-8');
+            var avatarShape = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+            avatarShape.setAttribute('d', 'M12 12a4.25 4.25 0 1 0 0-8.5 4.25 4.25 0 0 0 0 8.5Zm0 2c-4.1 0-7.5 2.1-7.5 4.7V21h15v-2.3c0-2.6-3.4-4.7-7.5-4.7Z');
+            avatarIcon.appendChild(avatarShape);
+            avatarEl.appendChild(avatarIcon);
+          }
+        });
         if (menuFullName) menuFullName.textContent = displayName;
         if (menuEmail) menuEmail.textContent = user.email || '';
 

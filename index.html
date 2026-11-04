@@ -536,32 +536,38 @@
           <!-- Trạng thái đã đăng nhập (Dropdown Menu) -->
           <div id="headerUserDropdown" class="hidden relative">
             <button type="button" id="headerUserBtn" class="flex items-center gap-2 h-10 px-3 rounded-full bg-slate-100/80 hover:bg-slate-200/80 text-slate-900 transition active:scale-95 text-xs font-bold" aria-expanded="false" aria-haspopup="true">
-              <span class="grid h-6 w-6 place-items-center rounded-full bg-brand text-[10px] font-black text-white" id="headerUserAvatar">V</span>
+              <span class="grid h-7 w-7 place-items-center overflow-hidden rounded-full bg-slate-200 text-slate-500 ring-1 ring-white" id="headerUserAvatar" aria-hidden="true">
+                <svg class="h-5 w-5" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 12a4.25 4.25 0 1 0 0-8.5 4.25 4.25 0 0 0 0 8.5Zm0 2c-4.1 0-7.5 2.1-7.5 4.7V21h15v-2.3c0-2.6-3.4-4.7-7.5-4.7Z"/></svg>
+              </span>
               <span id="headerUserName" class="max-w-[100px] truncate">Người dùng</span>
               <svg class="h-3.5 w-3.5 text-slate-500" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="m19.5 8.25-7.5 7.5-7.5-7.5"/></svg>
             </button>
 
             <!-- Dropdown Menu Box -->
-            <div id="headerUserMenu" class="hidden absolute right-0 mt-2 w-56 rounded-2xl border border-slate-200/80 bg-white/95 backdrop-blur-xl p-2 shadow-xl ring-1 ring-black/5 z-50">
-              <div class="px-3 py-2 border-b border-slate-100">
-                <p id="menuUserFullName" class="text-xs font-bold text-slate-900 truncate">Họ và tên</p>
-                <div class="flex items-center gap-1.5 mt-0.5">
-                  <span id="menuUserRoleBadge" class="rounded-full bg-slate-100 px-2 py-0.5 text-[10px] font-extrabold text-slate-600">Khách hàng</span>
-                  <span id="menuUserEmail" class="text-[11px] text-slate-400 truncate"></span>
+            <div id="headerUserMenu" class="hidden absolute right-0 mt-3 w-72 min-w-[280px] rounded-3xl border border-white/70 bg-white/90 p-3.5 shadow-2xl shadow-slate-900/15 ring-1 ring-slate-900/5 backdrop-blur-2xl z-50">
+              <div class="flex items-center gap-3.5 border-b border-slate-100 px-2 pb-4 pt-1">
+                <span id="menuUserAvatar" class="grid h-12 w-12 shrink-0 place-items-center overflow-hidden rounded-full bg-slate-200 text-slate-500 ring-4 ring-slate-100" aria-hidden="true">
+                  <svg class="h-8 w-8" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 12a4.25 4.25 0 1 0 0-8.5 4.25 4.25 0 0 0 0 8.5Zm0 2c-4.1 0-7.5 2.1-7.5 4.7V21h15v-2.3c0-2.6-3.4-4.7-7.5-4.7Z"/></svg>
+                </span>
+                <div class="min-w-0 flex-1">
+                  <p id="menuUserFullName" class="truncate text-sm font-extrabold text-slate-900">Họ và tên</p>
+                  <p id="menuUserEmail" class="mt-1 truncate text-xs text-slate-500"></p>
+                  <span id="menuUserRoleBadge" class="mt-2 inline-flex rounded-full bg-slate-100 px-2.5 py-1 text-[10px] font-extrabold text-slate-600">Khách hàng</span>
                 </div>
               </div>
-              <div class="py-1">
-                <a href="admin.html" id="menuAdminBtn" class="hidden flex items-center gap-2 rounded-xl px-3 py-2 text-xs font-bold text-brand hover:bg-brand-soft transition">
+              <div class="space-y-1 py-3">
+                <a href="admin.html" id="menuAdminBtn" class="hidden flex min-h-11 items-center gap-3 rounded-2xl px-3.5 py-3 text-xs font-bold text-brand hover:bg-brand-soft transition">
                   <svg class="h-4 w-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M10.5 6h9.75M10.5 6a1.5 1.5 0 11-3 0m3 0a1.5 1.5 0 10-3 0M3.75 6H7.5m3 12h9.75m-9.75 0a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m-3.75 0H7.5m9-6h3.75m-3.75 0a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m-9.75 0h9.75"/></svg>
                   <span>Trang quản trị (Admin)</span>
                 </a>
-                <a href="cart.html" class="flex items-center gap-2 rounded-xl px-3 py-2 text-xs font-medium text-slate-700 hover:bg-slate-100 transition">
+                <a href="account.php?tab=orders" class="flex min-h-11 items-center gap-3 rounded-2xl px-3.5 py-3 text-xs font-semibold text-slate-700 hover:bg-slate-100 transition">
                   <svg class="h-4 w-4 text-slate-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 10.5V6a3.75 3.75 0 10-7.5 0v4.5m11.356-1.993l1.263 12c.07.665-.45 1.243-1.119 1.243H4.25a1.125 1.125 0 01-1.12-1.243l1.264-12A1.125 1.125 0 015.513 7.5h12.974c.576 0 1.059.435 1.119.993z"/></svg>
                   <span>Đơn hàng của tôi</span>
                 </a>
+                <a href="account.php" class="flex min-h-11 items-center gap-3 rounded-2xl px-3.5 py-3 text-xs font-semibold text-slate-700 hover:bg-slate-100 transition"><span>Tài khoản của tôi</span></a>
               </div>
-              <div class="pt-1 border-t border-slate-100">
-                <button type="button" id="headerLogoutBtn" class="w-full flex items-center gap-2 rounded-xl px-3 py-2 text-xs font-bold text-red-600 hover:bg-red-50 transition">
+              <div class="border-t border-slate-100 pt-2">
+                <button type="button" id="headerLogoutBtn" class="flex min-h-11 w-full items-center gap-3 rounded-2xl px-3.5 py-3 text-xs font-bold text-red-600 hover:bg-red-50 transition">
                   <svg class="h-4 w-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 9V5.25A2.25 2.25 0 0013.5 3h-6a2.25 2.25 0 00-2.25 2.25v13.5A2.25 2.25 0 007.5 21h6a2.25 2.25 0 002.25-2.25V15M12 9l-3 3m0 0l3 3m-3-3h12.75"/></svg>
                   <span>Đăng xuất</span>
                 </button>
