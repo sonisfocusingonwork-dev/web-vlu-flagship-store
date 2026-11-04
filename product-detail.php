@@ -109,7 +109,7 @@ $cartCount = 0;
 
             <!-- Ảnh lớn chính -->
             <img id="mainProductImg" class="main-product-img transition-all duration-300 transform group-hover:scale-105"
-                 src="img/phones/apple/iphone-18-pro-max-natural.webp"
+                 src="frontend/assets/images/placeholders/phone.svg"
                  alt="iPhone 18 Pro Max - Titan Tự Nhiên">
 
             <!-- Nhãn màu sắc đang hiển thị góc dưới -->
@@ -125,11 +125,11 @@ $cartCount = 0;
               
               <!-- Ảnh mặc định từ catalog; JavaScript sẽ hiển thị bộ ảnh đúng model. -->
               <button type="button" class="thumb-btn active"
-                      data-src="img/phones/apple/iphone-18-pro-max-natural.webp"
+                      data-src="frontend/assets/images/placeholders/phone.svg"
                       data-color-name="Titan Tự Nhiên"
                       data-color-key="natural"
                       aria-label="Xem ảnh iPhone 18 Pro Max màu Titan Tự Nhiên">
-                <img src="img/phones/apple/iphone-18-pro-max-natural.webp" alt="iPhone 18 Pro Max - Titan Tự Nhiên">
+                <img src="frontend/assets/images/placeholders/phone.svg" alt="iPhone 18 Pro Max - Titan Tự Nhiên">
               </button>
 
             </div>
@@ -206,7 +206,7 @@ $cartCount = 0;
               <button type="button" class="color-swatch-btn active"
                       data-color-key="natural"
                       data-color-name="Titan Tự Nhiên"
-                      data-img="img/phones/apple/iphone-18-pro-max-natural.webp"
+                      data-img="frontend/assets/images/placeholders/phone.svg"
                       style="background-color: #C5B9A5;"
                       title="Titan Tự Nhiên"
                       aria-label="Chọn màu Titan Tự Nhiên"
@@ -216,7 +216,7 @@ $cartCount = 0;
               <button type="button" class="color-swatch-btn"
                       data-color-key="black"
                       data-color-name="Titan Đen"
-                      data-img="img/phones/apple/iphone-18-pro-max-black.webp"
+                      data-img="frontend/assets/images/placeholders/phone.svg"
                       style="background-color: #3C3B37;"
                       title="Titan Đen"
                       aria-label="Chọn màu Titan Đen"
@@ -226,7 +226,7 @@ $cartCount = 0;
               <button type="button" class="color-swatch-btn"
                       data-color-key="white"
                       data-color-name="Titan Trắng"
-                      data-img="img/phones/apple/iphone-18-pro-max-white.webp"
+                      data-img="frontend/assets/images/placeholders/phone.svg"
                       style="background-color: #E3E4E5;"
                       title="Titan Trắng"
                       aria-label="Chọn màu Titan Trắng"
@@ -236,7 +236,7 @@ $cartCount = 0;
               <button type="button" class="color-swatch-btn"
                       data-color-key="desert"
                       data-color-name="Titan Sa Mạc"
-                      data-img="img/phones/apple/iphone-18-pro-max-desert.webp"
+                      data-img="frontend/assets/images/placeholders/phone.svg"
                       style="background-color: #C4A78A;"
                       title="Titan Sa Mạc"
                       aria-label="Chọn màu Titan Sa Mạc"

@@ -58,25 +58,42 @@ if (partialMatch) {
   catalogFailures++;
 }
 
+['iphone-18-pro', 'iphone-18-pro-max'].forEach(function (id) {
+  const product = context.VLU_FIND_PRODUCT(id);
+  const images = (product.colors || []).map(function (color) {
+    return color.image || color.img;
+  });
+  if (images.length === 0 || images.some(function (image) {
+    return image !== 'frontend/assets/images/placeholders/phone.svg';
+  })) {
+    console.error('✗ iPhone 18 Pro gallery still references incorrect model/banner images:', id, images);
+    catalogFailures++;
+  }
+});
+
 if (catalogFailures > 0) {
   process.exit(1);
 }
 console.log('✓ All catalog IDs and product image paths resolve exactly.');
 
 const detailImage = { style: {}, src: '', alt: '' };
+const thumbnailStrip = { innerHTML: '' };
 const detailContext = {
   window: {
-    location: { search: '?id=find-x9-ultra-pro&name=Find%20X9%20Ultra%20Pro&cat=dien-thoai' },
-    VLU_IMAGE_MANIFEST: [{
-      slug: 'find-x9-ultra',
-      images: [{ url: 'SanPham/Dien%20thoai/OPPO/Find%20X9%20Ultra/black.webp', color: 'Đen' }]
-    }]
+    location: { search: '?id=iphone-18-pro-max&name=iPhone%2018%20Pro%20Max&cat=dien-thoai' },
+    VLU_IMAGE_MANIFEST: [],
+    VLU_FIND_PRODUCT: context.VLU_FIND_PRODUCT,
+    VLU_GET_COLOR_HEX: context.VLU_GET_COLOR_HEX
   },
   document: {
     title: '',
     querySelector: () => null,
     querySelectorAll: () => [],
-    getElementById: (id) => id === 'mainProductImg' ? detailImage : null,
+    getElementById: (id) => {
+      if (id === 'mainProductImg') return detailImage;
+      if (id === 'thumbnailStrip') return thumbnailStrip;
+      return null;
+    },
     addEventListener: () => {}
   },
   URLSearchParams,
@@ -85,10 +102,15 @@ const detailContext = {
 const detailCode = fs.readFileSync(path.join(__dirname, '../../frontend/assets/js/product-detail.js'), 'utf8');
 vm.runInNewContext(detailCode, detailContext);
 if (detailImage.src !== 'frontend/assets/images/placeholders/phone.svg') {
-  console.error('✗ Product detail used another model\'s partial image match:', detailImage.src);
+  console.error('✗ Product detail used an incorrect iPhone 18 image:', detailImage.src);
   process.exit(1);
 }
-console.log('✓ Product detail does not reuse a similar model\'s image.');
+const renderedThumbnails = thumbnailStrip.innerHTML.match(/class="thumb-btn/g) || [];
+if (renderedThumbnails.length !== 1 || thumbnailStrip.innerHTML.indexOf('Banner/') !== -1) {
+  console.error('✗ Product detail rendered duplicate or banner thumbnails:', thumbnailStrip.innerHTML);
+  process.exit(1);
+}
+console.log('✓ iPhone 18 Pro Max detail renders one non-banner product placeholder.');
 
 ['product-detail.html', 'product-detail.php'].forEach(function (file) {
   const source = fs.readFileSync(path.join(__dirname, '../../', file), 'utf8');

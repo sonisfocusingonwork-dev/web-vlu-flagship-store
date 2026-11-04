@@ -325,8 +325,11 @@
     var thumbStrip = document.getElementById('thumbnailStrip');
     if (thumbStrip) {
       var thumbsHtml = '';
+      var seenThumbs = {};
       (p.colors || []).forEach(function (c, idx) {
         var cImg = c.image || c.img;
+        if (!cImg || seenThumbs[cImg] || /^https?:\/\//i.test(cImg) || /(^|\/)Banner\//i.test(cImg)) return;
+        seenThumbs[cImg] = true;
         thumbsHtml += '<button type="button" class="thumb-btn' + (idx === 0 ? ' active' : '') + '"'
           + ' data-src="' + cImg + '"'
           + ' data-color-name="' + c.name + '"'
@@ -336,6 +339,8 @@
           + '</button>'
       });
       (p.extraImages || []).forEach(function (extra) {
+        if (!extra.src || seenThumbs[extra.src] || /^https?:\/\//i.test(extra.src) || /(^|\/)Banner\//i.test(extra.src)) return;
+        seenThumbs[extra.src] = true;
         thumbsHtml += '<button type="button" class="thumb-btn"'
           + ' data-src="' + extra.src + '"'
           + ' data-color-name="' + extra.label + '"'

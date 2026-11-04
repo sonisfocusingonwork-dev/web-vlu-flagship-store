@@ -55,29 +55,29 @@
         "name": "Titan Tự Nhiên",
         "hex": "#C5B9A5",
         "key": "natural",
-        "image": "img/phones/apple/iphone-18-pro-max-natural.webp",
-        "img": "img/phones/apple/iphone-18-pro-max-natural.webp"
+        "image": "frontend/assets/images/placeholders/phone.svg",
+        "img": "frontend/assets/images/placeholders/phone.svg"
       },
       {
         "name": "Titan Đen",
         "hex": "#3C3B37",
         "key": "black",
-        "image": "img/phones/apple/iphone-18-pro-max-black.webp",
-        "img": "img/phones/apple/iphone-18-pro-max-black.webp"
+        "image": "frontend/assets/images/placeholders/phone.svg",
+        "img": "frontend/assets/images/placeholders/phone.svg"
       },
       {
         "name": "Titan Trắng",
         "hex": "#E3E4E5",
         "key": "white",
-        "image": "img/phones/apple/iphone-18-pro-max-white.webp",
-        "img": "img/phones/apple/iphone-18-pro-max-white.webp"
+        "image": "frontend/assets/images/placeholders/phone.svg",
+        "img": "frontend/assets/images/placeholders/phone.svg"
       },
       {
         "name": "Titan Sa Mạc",
         "hex": "#C7A382",
         "key": "desert",
-        "image": "img/phones/apple/iphone-18-pro-max-desert.webp",
-        "img": "img/phones/apple/iphone-18-pro-max-desert.webp"
+        "image": "frontend/assets/images/placeholders/phone.svg",
+        "img": "frontend/assets/images/placeholders/phone.svg"
       }
     ],
     "extraImages": [],
@@ -174,8 +174,8 @@
       ]
     ],
     "sku": "IPHONE-18-PRO-MAX",
-    "image": "img/phones/apple/iphone-18-pro-max-natural.webp",
-    "img": "img/phones/apple/iphone-18-pro-max-natural.webp"
+    "image": "frontend/assets/images/placeholders/phone.svg",
+    "img": "frontend/assets/images/placeholders/phone.svg"
   },
   "iphone-18-pro": {
     "id": "iphone-18-pro",
@@ -192,29 +192,29 @@
         "name": "Titan Tự Nhiên",
         "hex": "#C5B9A5",
         "key": "natural",
-        "image": "img/phones/apple/iphone-18-pro-natural.webp",
-        "img": "img/phones/apple/iphone-18-pro-natural.webp"
+        "image": "frontend/assets/images/placeholders/phone.svg",
+        "img": "frontend/assets/images/placeholders/phone.svg"
       },
       {
         "name": "Titan Đen",
         "hex": "#3C3B37",
         "key": "black",
-        "image": "img/phones/apple/iphone-18-pro-black.webp",
-        "img": "img/phones/apple/iphone-18-pro-black.webp"
+        "image": "frontend/assets/images/placeholders/phone.svg",
+        "img": "frontend/assets/images/placeholders/phone.svg"
       },
       {
         "name": "Titan Trắng",
         "hex": "#E3E4E5",
         "key": "white",
-        "image": "img/phones/apple/iphone-18-pro-white.webp",
-        "img": "img/phones/apple/iphone-18-pro-white.webp"
+        "image": "frontend/assets/images/placeholders/phone.svg",
+        "img": "frontend/assets/images/placeholders/phone.svg"
       },
       {
         "name": "Titan Sa Mạc",
         "hex": "#C7A382",
         "key": "desert",
-        "image": "img/phones/apple/iphone-18-pro-desert.webp",
-        "img": "img/phones/apple/iphone-18-pro-desert.webp"
+        "image": "frontend/assets/images/placeholders/phone.svg",
+        "img": "frontend/assets/images/placeholders/phone.svg"
       }
     ],
     "extraImages": [],
@@ -311,8 +311,8 @@
       ]
     ],
     "sku": "IPHONE-18-PRO",
-    "image": "img/phones/apple/iphone-18-pro-natural.webp",
-    "img": "img/phones/apple/iphone-18-pro-natural.webp"
+    "image": "frontend/assets/images/placeholders/phone.svg",
+    "img": "frontend/assets/images/placeholders/phone.svg"
   },
   "iphone-18": {
     "id": "iphone-18",
