@@ -42,7 +42,7 @@
     var slug = toSlug(query);
     for (var i = 0; i < manifest.length; i++) {
       var item = manifest[i];
-      if (item.slug === slug || item.slug.indexOf(slug) !== -1 || slug.indexOf(item.slug) !== -1) {
+      if (item.slug === slug) {
         if (item.images && item.images.length > 0) {
           return item.images;
         }

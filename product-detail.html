@@ -4301,14 +4301,13 @@
             </button>
 
             <!-- Ảnh lớn chính -->
-            <img id="mainProductImg"
-                 src="SanPham/SanPham/Iphone/Ip%2018%20pro%20max/%C4%90%E1%BB%8F%20Burgundy.png"
-                 alt="iPhone 18 Pro Max - Đỏ Burgundy"
-                 class="transition-all duration-300 transform group-hover:scale-105">
+            <img id="mainProductImg" class="main-product-img transition-all duration-300 transform group-hover:scale-105"
+                 src="img/phones/apple/iphone-18-pro-max-natural.webp"
+                 alt="iPhone 18 Pro Max - Titan Tự Nhiên">
 
             <!-- Nhãn màu sắc đang hiển thị góc dưới -->
             <div class="absolute bottom-4 left-4 z-10 rounded-full bg-white/80 px-3 py-1 text-[11px] font-bold text-slate-700 backdrop-blur-md border border-slate-200/60 shadow-xs">
-              Màu: <span id="imageColorLabel" class="text-brand">Đỏ Burgundy</span>
+              Màu: <span id="imageColorLabel" class="text-brand">Titan Tự Nhiên</span>
             </div>
           </div>
 
@@ -4317,49 +4316,13 @@
             <p class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">Bộ sưu tập màu sắc &amp; góc chụp</p>
             <div id="thumbnailStrip" class="flex items-center gap-3 overflow-x-auto pb-2 no-scrollbar">
               
-              <!-- Thumb 1: Đỏ Burgundy -->
+              <!-- Ảnh mặc định từ catalog; JavaScript sẽ hiển thị bộ ảnh đúng model. -->
               <button type="button" class="thumb-btn active"
-                      data-src="SanPham/SanPham/Iphone/Ip%2018%20pro%20max/%C4%90%E1%BB%8F%20Burgundy.png"
-                      data-color-name="Đỏ Burgundy"
-                      data-color-key="burgundy"
-                      aria-label="Xem ảnh Đỏ Burgundy">
-                <img src="SanPham/SanPham/Iphone/Ip%2018%20pro%20max/%C4%90%E1%BB%8F%20Burgundy.png" alt="Đỏ Burgundy">
-              </button>
-
-              <!-- Thumb 2: Titan Tự Nhiên (Băng thanh) -->
-              <button type="button" class="thumb-btn"
-                      data-src="SanPham/SanPham/Iphone/Ip%2018%20pro%20max/B%C4%83ng%20thanh.png"
+                      data-src="img/phones/apple/iphone-18-pro-max-natural.webp"
                       data-color-name="Titan Tự Nhiên"
                       data-color-key="natural"
-                      aria-label="Xem ảnh Titan Tự Nhiên">
-                <img src="SanPham/SanPham/Iphone/Ip%2018%20pro%20max/B%C4%83ng%20thanh.png" alt="Titan Tự Nhiên">
-              </button>
-
-              <!-- Thumb 3: Titan Đen -->
-              <button type="button" class="thumb-btn"
-                      data-src="SanPham/SanPham/Iphone/Ip%2018%20pro%20max/%C4%90en.png"
-                      data-color-name="Titan Đen"
-                      data-color-key="black"
-                      aria-label="Xem ảnh Titan Đen">
-                <img src="SanPham/SanPham/Iphone/Ip%2018%20pro%20max/%C4%90en.png" alt="Titan Đen">
-              </button>
-
-              <!-- Thumb 4: Titan Trắng / Bạc -->
-              <button type="button" class="thumb-btn"
-                      data-src="SanPham/SanPham/Iphone/Ip%2018%20pro%20max/B%E1%BA%A1c.png"
-                      data-color-name="Titan Trắng"
-                      data-color-key="white"
-                      aria-label="Xem ảnh Titan Trắng">
-                <img src="SanPham/SanPham/Iphone/Ip%2018%20pro%20max/B%E1%BA%A1c.png" alt="Titan Trắng">
-              </button>
-
-              <!-- Thumb 5: Góc chụp Banner Studio Hero -->
-              <button type="button" class="thumb-btn"
-                      data-src="Banner/iphone-18-pro_overview__bl9no3txkonm_og.png"
-                      data-color-name="Khung Titan 3D PRO"
-                      data-color-key="hero"
-                      aria-label="Xem góc chụp Studio PRO">
-                <img src="Banner/iphone-18-pro_overview__bl9no3txkonm_og.png" alt="Góc chụp Studio PRO">
+                      aria-label="Xem ảnh iPhone 18 Pro Max màu Titan Tự Nhiên">
+                <img src="img/phones/apple/iphone-18-pro-max-natural.webp" alt="iPhone 18 Pro Max - Titan Tự Nhiên">
               </button>
 
             </div>
@@ -4427,56 +4390,46 @@
           <div class="space-y-3">
             <div class="flex items-center justify-between">
               <span class="text-xs font-bold uppercase tracking-wider text-slate-500">
-                Màu sắc: <strong id="selectedColorName" class="text-slate-900 font-extrabold text-sm ml-1">Đỏ Burgundy</strong>
+                Màu sắc: <strong id="selectedColorName" class="text-slate-900 font-extrabold text-sm ml-1">Titan Tự Nhiên</strong>
               </span>
             </div>
             <div id="colorSwatches" class="flex items-center gap-3.5" role="radiogroup" aria-label="Chọn màu sắc sản phẩm">
               
-              <!-- Màu 1: Đỏ Burgundy -->
+              <!-- Màu 1: Titan Tự Nhiên -->
               <button type="button" class="color-swatch-btn active"
-                      data-color-key="burgundy"
-                      data-color-name="Đỏ Burgundy"
-                      data-img="SanPham/SanPham/Iphone/Ip%2018%20pro%20max/%C4%90%E1%BB%8F%20Burgundy.png"
-                      style="background-color: #5B1C24;"
-                      title="Đỏ Burgundy"
-                      aria-label="Chọn màu Đỏ Burgundy"
-                      aria-checked="true" role="radio"></button>
-
-              <!-- Màu 2: Titan Tự Nhiên (Băng thanh) -->
-              <button type="button" class="color-swatch-btn"
                       data-color-key="natural"
                       data-color-name="Titan Tự Nhiên"
-                      data-img="SanPham/SanPham/Iphone/Ip%2018%20pro%20max/B%C4%83ng%20thanh.png"
-                      style="background-color: #98928B;"
+                      data-img="img/phones/apple/iphone-18-pro-max-natural.webp"
+                      style="background-color: #C5B9A5;"
                       title="Titan Tự Nhiên"
                       aria-label="Chọn màu Titan Tự Nhiên"
-                      aria-checked="false" role="radio"></button>
+                      aria-checked="true" role="radio"></button>
 
-              <!-- Màu 3: Titan Đen -->
+              <!-- Màu 2: Titan Đen -->
               <button type="button" class="color-swatch-btn"
                       data-color-key="black"
                       data-color-name="Titan Đen"
-                      data-img="SanPham/SanPham/Iphone/Ip%2018%20pro%20max/%C4%90en.png"
-                      style="background-color: #252527;"
+                      data-img="img/phones/apple/iphone-18-pro-max-black.webp"
+                      style="background-color: #3C3B37;"
                       title="Titan Đen"
                       aria-label="Chọn màu Titan Đen"
                       aria-checked="false" role="radio"></button>
 
-              <!-- Màu 4: Titan Trắng -->
+              <!-- Màu 3: Titan Trắng -->
               <button type="button" class="color-swatch-btn"
                       data-color-key="white"
                       data-color-name="Titan Trắng"
-                      data-img="SanPham/SanPham/Iphone/Ip%2018%20pro%20max/B%E1%BA%A1c.png"
-                      style="background-color: #F0F0F2;"
+                      data-img="img/phones/apple/iphone-18-pro-max-white.webp"
+                      style="background-color: #E3E4E5;"
                       title="Titan Trắng"
                       aria-label="Chọn màu Titan Trắng"
                       aria-checked="false" role="radio"></button>
 
-              <!-- Màu 5: Titan Sa Mạc -->
+              <!-- Màu 4: Titan Sa Mạc -->
               <button type="button" class="color-swatch-btn"
                       data-color-key="desert"
                       data-color-name="Titan Sa Mạc"
-                      data-img="SanPham/SanPham/Iphone/Ip%2018%20pro%20max/B%C4%83ng%20thanh.png"
+                      data-img="img/phones/apple/iphone-18-pro-max-desert.webp"
                       style="background-color: #C4A78A;"
                       title="Titan Sa Mạc"
                       aria-label="Chọn màu Titan Sa Mạc"

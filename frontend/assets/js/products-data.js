@@ -8103,15 +8103,15 @@
         "name": "Xám Không Gian",
         "key": "space-black",
         "hex": "#2E3033",
-        "image": "SanPham/SanPham/Laptop/MacBook Pro/Tiêu Chuẩn.svg",
-        "img": "SanPham/SanPham/Laptop/MacBook Pro/Tiêu Chuẩn.svg"
+        "image": "frontend/assets/images/placeholders/laptop.svg",
+        "img": "frontend/assets/images/placeholders/laptop.svg"
       },
       {
         "name": "Bạc Ánh Kim",
         "key": "silver",
         "hex": "#E3E4E6",
-        "image": "SanPham/SanPham/Laptop/MacBook Pro/Tiêu Chuẩn.svg",
-        "img": "SanPham/SanPham/Laptop/MacBook Pro/Tiêu Chuẩn.svg"
+        "image": "frontend/assets/images/placeholders/laptop.svg",
+        "img": "frontend/assets/images/placeholders/laptop.svg"
       }
     ],
     "extraImages": [],
@@ -8210,8 +8210,8 @@
       ]
     ],
     "sku": "MBP16-M4",
-    "image": "SanPham/SanPham/Laptop/MacBook Pro/Tiêu Chuẩn.svg",
-    "img": "SanPham/SanPham/Laptop/MacBook Pro/Tiêu Chuẩn.svg"
+    "image": "frontend/assets/images/placeholders/laptop.svg",
+    "img": "frontend/assets/images/placeholders/laptop.svg"
   },
   "ipad-pro": {
     "id": "ipad-pro",
@@ -8228,15 +8228,15 @@
         "name": "Đen Không Gian",
         "key": "space-black",
         "hex": "#262729",
-        "image": "SanPham/SanPham/iPad/iPad Pro/Tiêu Chuẩn.svg",
-        "img": "SanPham/SanPham/iPad/iPad Pro/Tiêu Chuẩn.svg"
+        "image": "frontend/assets/images/placeholders/ipad.svg",
+        "img": "frontend/assets/images/placeholders/ipad.svg"
       },
       {
         "name": "Bạc Ánh Kim",
         "key": "silver",
         "hex": "#E3E4E6",
-        "image": "SanPham/SanPham/iPad/iPad Pro/Tiêu Chuẩn.svg",
-        "img": "SanPham/SanPham/iPad/iPad Pro/Tiêu Chuẩn.svg"
+        "image": "frontend/assets/images/placeholders/ipad.svg",
+        "img": "frontend/assets/images/placeholders/ipad.svg"
       }
     ],
     "extraImages": [],
@@ -8304,8 +8304,8 @@
       ]
     ],
     "sku": "IPAD-PRO-13-M4",
-    "image": "SanPham/SanPham/iPad/iPad Pro/Tiêu Chuẩn.svg",
-    "img": "SanPham/SanPham/iPad/iPad Pro/Tiêu Chuẩn.svg"
+    "image": "frontend/assets/images/placeholders/ipad.svg",
+    "img": "frontend/assets/images/placeholders/ipad.svg"
   },
   "airpods-pro-2": {
     "id": "airpods-pro-2",
@@ -8322,8 +8322,8 @@
         "name": "Trắng Tinh Khiết",
         "key": "white",
         "hex": "#FFFFFF",
-        "image": "SanPham/SanPham/Tai nghe/AirPods Pro 2/Tiêu Chuẩn.svg",
-        "img": "SanPham/SanPham/Tai nghe/AirPods Pro 2/Tiêu Chuẩn.svg"
+        "image": "frontend/assets/images/placeholders/headphones.svg",
+        "img": "frontend/assets/images/placeholders/headphones.svg"
       }
     ],
     "extraImages": [],
@@ -8366,8 +8366,8 @@
       ]
     ],
     "sku": "APP2-USBC",
-    "image": "SanPham/SanPham/Tai nghe/AirPods Pro 2/Tiêu Chuẩn.svg",
-    "img": "SanPham/SanPham/Tai nghe/AirPods Pro 2/Tiêu Chuẩn.svg"
+    "image": "frontend/assets/images/placeholders/headphones.svg",
+    "img": "frontend/assets/images/placeholders/headphones.svg"
   },
   "apple-watch-ultra-3": {
     "id": "apple-watch-ultra-3",
@@ -8384,15 +8384,15 @@
         "name": "Titan Tự Nhiên",
         "key": "natural",
         "hex": "#98928B",
-        "image": "SanPham/SanPham/Dong ho/Apple Watch Ultra 3/Tiêu Chuẩn.svg",
-        "img": "SanPham/SanPham/Dong ho/Apple Watch Ultra 3/Tiêu Chuẩn.svg"
+        "image": "frontend/assets/images/placeholders/watch.svg",
+        "img": "frontend/assets/images/placeholders/watch.svg"
       },
       {
         "name": "Titan Đen Satin",
         "key": "black",
         "hex": "#262729",
-        "image": "SanPham/SanPham/Dong ho/Apple Watch Ultra 3/Tiêu Chuẩn.svg",
-        "img": "SanPham/SanPham/Dong ho/Apple Watch Ultra 3/Tiêu Chuẩn.svg"
+        "image": "frontend/assets/images/placeholders/watch.svg",
+        "img": "frontend/assets/images/placeholders/watch.svg"
       }
     ],
     "extraImages": [],
@@ -8448,8 +8448,8 @@
       ]
     ],
     "sku": "AW-ULTRA-3",
-    "image": "SanPham/SanPham/Dong ho/Apple Watch Ultra 3/Tiêu Chuẩn.svg",
-    "img": "SanPham/SanPham/Dong ho/Apple Watch Ultra 3/Tiêu Chuẩn.svg"
+    "image": "frontend/assets/images/placeholders/watch.svg",
+    "img": "frontend/assets/images/placeholders/watch.svg"
   }
 };
 
@@ -8467,18 +8467,6 @@
       if (CATALOG[k].name && CATALOG[k].name.toLowerCase() === raw.toLowerCase()) {
         return CATALOG[k];
       }
-    }
-
-    // 3. Khớp một phần slug (ưu tiên khớp dài nhất)
-    var matches = [];
-    for (var k2 in CATALOG) {
-      if (slug.indexOf(k2) !== -1 || k2.indexOf(slug) !== -1) {
-        matches.push(CATALOG[k2]);
-      }
-    }
-    if (matches.length > 0) {
-      matches.sort(function (a, b) { return b.id.length - a.id.length; });
-      return matches[0];
     }
 
     return null;
