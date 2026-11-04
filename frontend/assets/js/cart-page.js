@@ -180,6 +180,27 @@
   // Khởi động sự kiện tương tác
   function initCartPage() {
     renderCart();
+    var engine = getCartEngine();
+    if (engine) {
+      var params = new URLSearchParams(window.location.search);
+      var identity = engine.getCurrentUserId ? engine.getCurrentUserId() : 'guest';
+      var pendingKey = 'vlu_pending_voucher_' + identity;
+      var pendingCode = params.get('applyVoucher') || localStorage.getItem(pendingKey);
+      if (pendingCode) {
+        var result = engine.applyVoucher(pendingCode);
+        if (result.success) {
+          localStorage.removeItem(pendingKey);
+          engine.showToast('Đã áp dụng voucher ' + result.voucher.code + '.');
+          params.delete('applyVoucher');
+          var cleanUrl = new URL(window.location.href);
+          cleanUrl.search = params.toString();
+          window.history.replaceState({}, '', cleanUrl);
+          renderCart();
+        } else {
+          engine.showToast(result.message);
+        }
+      }
+    }
 
     // Lắng nghe cập nhật từ CartEngine
     window.addEventListener('vlu:cart-updated', function () {

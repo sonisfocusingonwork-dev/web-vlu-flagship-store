@@ -59,6 +59,21 @@
       value: 0,
       minOrder: 0,
       label: 'Miễn phí vận chuyển toàn quốc (0₫)'
+    },
+    'FLAGSHIP500K': {
+      code: 'FLAGSHIP500K',
+      type: 'fixed',
+      value: 500000,
+      minOrder: 5000000,
+      label: 'Ưu đãi Flagship (-500.000₫)'
+    },
+    'SVVLU10': {
+      code: 'SVVLU10',
+      type: 'percent',
+      value: 10,
+      maxDiscount: 1000000,
+      minOrder: 1000000,
+      label: 'Ưu đãi sinh viên VLU (-10%)'
     }
   };
 
@@ -234,6 +249,30 @@
       if (!code) return { success: false, message: 'Vui lòng nhập mã giảm giá!' };
       var cleanCode = code.trim().toUpperCase();
       var promo = PROMO_CODES[cleanCode];
+
+      if (!promo && getCurrentUserId() !== 'guest') {
+        try {
+          var account = JSON.parse(localStorage.getItem('vlu_account_' + getCurrentUserId()) || '{}');
+          var wallet = account && Array.isArray(account.vouchers) ? account.vouchers : [];
+          var ownedVoucher = wallet.find(function (voucher) {
+            return String(voucher.code || '').toUpperCase() === cleanCode &&
+              (voucher.status || 'available') === 'available' &&
+              (!voucher.expiresAt || new Date(voucher.expiresAt + 'T23:59:59').getTime() >= Date.now());
+          });
+          if (ownedVoucher) {
+            promo = {
+              code: ownedVoucher.code,
+              type: ownedVoucher.type || 'fixed',
+              value: Number(ownedVoucher.value) || 0,
+              maxDiscount: Number(ownedVoucher.maxDiscount) || 0,
+              minOrder: Number(ownedVoucher.minOrder) || 0,
+              label: 'Voucher đổi điểm VLU (-100.000₫)'
+            };
+          }
+        } catch (error) {
+          console.warn('[CartEngine] Không thể kiểm tra voucher cá nhân:', error);
+        }
+      }
 
       if (!promo) {
         return { success: false, message: 'Mã "' + cleanCode + '" không hợp lệ hoặc đã hết lượt dùng.' };

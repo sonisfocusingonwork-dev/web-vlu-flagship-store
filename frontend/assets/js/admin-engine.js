@@ -551,6 +551,47 @@
       }
     },
 
+    syncAccountOrder: function (order, remove) {
+      if (!order || !order.user_id || order.user_id === 'guest') return;
+      var key = 'vlu_account_' + String(order.user_id).trim().toLowerCase().replace(/[^a-z0-9._@-]+/g, '_');
+      try {
+        var account = JSON.parse(localStorage.getItem(key) || '{}');
+        if (!account || typeof account !== 'object' || Array.isArray(account)) account = {};
+        if (!Array.isArray(account.orders)) account.orders = [];
+        if (remove) {
+          account.orders = account.orders.filter(function (entry) {
+            return String(entry.id) !== String(order.id);
+          });
+        } else {
+          var index = account.orders.findIndex(function (entry) {
+            return String(entry.id) === String(order.id);
+          });
+          var previousStatus = index === -1 ? '' : String(account.orders[index].status || '');
+          if (index === -1) account.orders.unshift(order);
+          else account.orders[index] = order;
+          if (previousStatus && previousStatus !== String(order.status || '')) {
+            if (!Array.isArray(account.notifications)) account.notifications = [];
+            var statusText = {
+              pending: 'Chờ xác nhận', confirmed: 'Đang chuẩn bị', processing: 'Đang chuẩn bị',
+              shipping: 'Đang giao', delivering: 'Đang giao', completed: 'Đã giao thành công',
+              delivered: 'Đã giao thành công', cancelled: 'Đã hủy'
+            };
+            account.notifications.unshift({
+              id: 'N-' + Date.now(),
+              type: ['shipping', 'delivering'].indexOf(String(order.status)) !== -1 ? 'shipping' : 'order',
+              title: 'Cập nhật trạng thái đơn hàng',
+              message: 'Đơn ' + order.id + ' chuyển sang trạng thái ' + (statusText[order.status] || order.status) + '.',
+              read: false,
+              createdAt: new Date().toISOString()
+            });
+          }
+        }
+        localStorage.setItem(key, JSON.stringify(account));
+      } catch (error) {
+        console.error('[AdminEngine] Không thể đồng bộ đơn hàng vào vùng dữ liệu tài khoản:', error);
+      }
+    },
+
     updateOrderStatus: function (orderId, newStatus) {
       var list = this.getOrders();
       for (var i = 0; i < list.length; i++) {
@@ -558,6 +599,7 @@
           list[i].status = newStatus;
           list[i].updated_at = new Date().toISOString();
           this.saveOrders(list);
+          this.syncAccountOrder(list[i], false);
           return list[i];
         }
       }
@@ -566,8 +608,10 @@
 
     deleteOrder: function (orderId) {
       var list = this.getOrders();
+      var removed = list.find(function (order) { return order.id === orderId; });
       var filtered = list.filter(function (o) { return o.id !== orderId; });
       this.saveOrders(filtered);
+      if (removed) this.syncAccountOrder(removed, true);
       return true;
     },
 

@@ -76,6 +76,93 @@
     });
   }
 
+  function prefillSavedAddress() {
+    try {
+      var user = JSON.parse(localStorage.getItem('vlu_user') || 'null');
+      if (!user || !(user.username || user.email || user.id)) return;
+      var identity = String(user.username || user.email || user.id).trim().toLowerCase().replace(/[^a-z0-9._@-]+/g, '_');
+      var account = JSON.parse(localStorage.getItem('vlu_account_' + identity) || '{}');
+      if (user.fullname && document.getElementById('checkoutFullname')) {
+        document.getElementById('checkoutFullname').value = user.fullname;
+      }
+      if (user.phone && document.getElementById('checkoutPhone')) {
+        document.getElementById('checkoutPhone').value = user.phone;
+      }
+      var addresses = account && Array.isArray(account.addresses) ? account.addresses : [];
+      var address = addresses.find(function (item) { return item.default; });
+      if (!address) return;
+      var fullname = document.getElementById('checkoutFullname');
+      var phone = document.getElementById('checkoutPhone');
+      var city = document.getElementById('checkoutCity');
+      var district = document.getElementById('checkoutDistrict');
+      var line = document.getElementById('checkoutAddress');
+      if (fullname) fullname.value = address.name || user.fullname || '';
+      if (phone) phone.value = address.phone || user.phone || '';
+      if (city && address.city) {
+        var cityOption = Array.prototype.find.call(city.options, function (option) {
+          return option.value.toLowerCase() === String(address.city).toLowerCase();
+        });
+        if (!cityOption) {
+          cityOption = document.createElement('option');
+          cityOption.value = address.city;
+          cityOption.textContent = address.city;
+          city.appendChild(cityOption);
+        }
+        city.value = cityOption.value;
+      }
+      if (district) district.value = address.district || '';
+      if (line) line.value = [address.street, address.ward].filter(Boolean).join(', ') || address.address || '';
+    } catch (error) {
+      console.warn('[Checkout] Tidak dapat điền địa chỉ mặc định từ hồ sơ:', error);
+    }
+  }
+
+  function saveOrderToAccount(order) {
+    try {
+      var user = JSON.parse(localStorage.getItem('vlu_user') || 'null');
+      var identity = user && (user.username || user.email || user.id);
+      if (!identity) return;
+      var normalized = String(identity).trim().toLowerCase().replace(/[^a-z0-9._@-]+/g, '_');
+      var key = 'vlu_account_' + normalized;
+      var account = JSON.parse(localStorage.getItem(key) || '{}');
+      if (!account || typeof account !== 'object' || Array.isArray(account)) account = {};
+      if (!Array.isArray(account.orders)) account.orders = [];
+      account.orders = account.orders.filter(function (existing) {
+        return String(existing.id) !== String(order.id);
+      });
+      account.orders.unshift(order);
+      if (!Array.isArray(account.notifications)) account.notifications = [];
+      account.notifications.unshift({
+        id: 'N-' + Date.now(),
+        type: 'order',
+        title: 'Đã tiếp nhận đơn hàng',
+        message: 'Đơn ' + order.id + ' đã được ghi nhận và đang chờ xác nhận.',
+        read: false,
+        createdAt: new Date().toISOString()
+      });
+      if (order.payment_key !== 'cod') {
+        account.notifications.unshift({
+          id: 'N-' + (Date.now() + 1),
+          type: 'payment',
+          title: 'Đã ghi nhận phương thức thanh toán',
+          message: 'Phương thức ' + order.payment_method + ' được lưu cho đơn ' + order.id + '.',
+          read: false,
+          createdAt: new Date().toISOString()
+        });
+      }
+      if (order.voucher_code && Array.isArray(account.vouchers)) {
+        account.vouchers.forEach(function (voucher) {
+          if (voucher.code === order.voucher_code) voucher.status = 'used';
+        });
+        if (!Array.isArray(account.usedVouchers)) account.usedVouchers = [];
+        if (account.usedVouchers.indexOf(order.voucher_code) === -1) account.usedVouchers.push(order.voucher_code);
+      }
+      localStorage.setItem(key, JSON.stringify(account));
+    } catch (error) {
+      console.error('[Checkout] Không thể lưu đơn hàng trong vùng dữ liệu riêng của tài khoản:', error);
+    }
+  }
+
   // Render danh sách sản phẩm ở cột phải (Order Review)
   function renderOrderReview() {
     var engine = getCartEngine();
@@ -148,6 +235,7 @@
 
   // Khởi động các tương tác trang Checkout
   function initCheckoutPage() {
+    prefillSavedAddress();
     renderOrderReview();
 
     // Toggle khung VietQR khi thay đổi phương thức thanh toán
@@ -298,6 +386,7 @@
             customer_notes: notes || '',
             payment_method: selectedMethodLabel,
             payment_key: selectedMethod,
+            voucher_code: engine.getVoucher() ? engine.getVoucher().code : '',
             installment_term: installmentTerm,
             installment_monthly: installmentTerm ? Math.ceil(engine.getTotal() / Number(installmentTerm)) : 0,
             user_id: engine.getCurrentUserId ? engine.getCurrentUserId() : 'guest',
@@ -327,6 +416,7 @@
           }
           ordersList.unshift(newOrderRecord);
           localStorage.setItem('vlu_orders', JSON.stringify(ordersList));
+          saveOrderToAccount(newOrderRecord);
         } catch (err) {
           console.warn('Lỗi lưu đơn hàng vào vlu_orders:', err);
         }

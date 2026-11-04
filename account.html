@@ -37,9 +37,11 @@
   </header>
 
   <main class="account-layout">
-    <aside class="account-sidebar glass-panel">
+    <aside class="account-sidebar glass-panel" id="accountSidebar">
       <div class="account-profile-mini">
-        <div class="account-avatar" id="sidebarAvatar">V</div>
+        <div class="account-avatar account-avatar-fallback" id="sidebarAvatar" aria-label="Ảnh đại diện mặc định">
+          <svg class="h-8 w-8" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 12a4.25 4.25 0 1 0 0-8.5 4.25 4.25 0 0 0 0 8.5Zm0 2c-4.1 0-7.5 2.1-7.5 4.7V21h15v-2.3c0-2.6-3.4-4.7-7.5-4.7Z"/></svg>
+        </div>
         <div class="min-w-0">
           <p class="account-eyebrow">TÀI KHOẢN VLU</p>
           <p class="truncate font-extrabold text-slate-900" id="sidebarName">Khách hàng</p>
