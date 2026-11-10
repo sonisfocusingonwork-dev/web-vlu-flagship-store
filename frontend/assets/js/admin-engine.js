@@ -14,187 +14,52 @@
   // 1. DỮ LIỆU DANH MỤC MẪU BAN ĐẦU (CATEGORIES SEED)
   var DEFAULT_CATEGORIES = [
     { id: 1, name: 'Apple', slug: 'apple', icon: '🍎', description: 'iPhone, iPad, MacBook, Apple Watch, AirPods' },
-    { id: 2, name: 'Samsung', slug: 'samsung', icon: '🟢', description: 'Galaxy S26, Z Fold8, Z Flip8, Galaxy Tab, Watch' },
-    { id: 3, name: 'Xiaomi', slug: 'xiaomi', icon: '🔵', description: 'Xiaomi 17 Ultra, Redmi Note, Xiaomi Pad' },
-    { id: 4, name: 'OPPO', slug: 'oppo', icon: '🟠', description: 'Find X9 Ultra, Reno Series, Find N5' },
-    { id: 5, name: 'ASUS', slug: 'asus', icon: '💻', description: 'ROG Strix, TUF Gaming, Zenbook, Vivobook' },
-    { id: 6, name: 'Dell & HP', slug: 'dell-hp', icon: '🖥️', description: 'Dell XPS, Inspiron, HP Spectre, Pavilion' },
-    { id: 7, name: 'Sony & Âm thanh', slug: 'sony-audio', icon: '🎧', description: 'Tai nghe WH-1000XM5, WF-1000XM5, Marshall' },
-    { id: 8, name: 'JBL & Loa', slug: 'jbl-loa', icon: '🔊', description: 'JBL Flip 6, Boombox, Marshall Emberton, Bose' },
-    { id: 9, name: 'Phụ kiện cao cấp', slug: 'phu-kien', icon: '⚡', description: 'Củ sạc GaN, Cáp Type-C, Pin dự phòng, Ốp MagSafe' }
+    { id: 2, name: 'Samsung', slug: 'samsung', icon: '🟢', description: 'Galaxy phones, tablets, earbuds, and watches' },
+    { id: 3, name: 'Xiaomi', slug: 'xiaomi', icon: '🔵', description: 'Xiaomi, Redmi, POCO, and Pad devices' },
+    { id: 4, name: 'OPPO', slug: 'oppo', icon: '🟠', description: 'Find, Reno, and A series phones' },
+    { id: 5, name: 'vivo', slug: 'vivo', icon: '🔷', description: 'X and V series phones' },
+    { id: 6, name: 'ASUS', slug: 'asus', icon: '💻', description: 'Vivobook, Zenbook, ROG, and ProArt laptops' },
+    { id: 7, name: 'Lenovo', slug: 'lenovo', icon: '💻', description: 'IdeaPad, Legion, and Yoga laptops' },
+    { id: 8, name: 'HP', slug: 'hp', icon: '💻', description: 'OmniBook and ZBook laptops' },
+    { id: 9, name: 'Acer', slug: 'acer', icon: '💻', description: 'Swift and Predator laptops' },
+    { id: 10, name: 'MSI', slug: 'msi', icon: '💻', description: 'Vector and Creator laptops' },
+    { id: 11, name: 'Dell', slug: 'dell', icon: '💻', description: 'XPS laptops' },
+    { id: 12, name: 'JBL', slug: 'jbl', icon: '🔊', description: 'Headphones and speakers' },
+    { id: 13, name: 'Marshall', slug: 'marshall', icon: '🔊', description: 'Portable and home speakers' },
+    { id: 14, name: 'Soundcore', slug: 'soundcore', icon: '🔊', description: 'Portable Soundcore speakers' }
   ];
 
   // 2. DỮ LIỆU SẢN PHẨM MẪU BAN ĐẦU (PRODUCTS SEED)
-  var DEFAULT_PRODUCTS = [
-    {
-      id: 101,
-      category_id: 1,
-      category_name: 'Apple',
-      name: 'iPhone 18 Pro & iPhone 18 Pro Max',
-      price: 34990000,
-      old_price: 36990000,
-      image: 'SanPham/SanPham/Iphone/Ip 18 pro max/Đỏ Burgundy.png',
-      description: 'Đỉnh cao công nghệ Titanium, chip A20 Pro siêu mạnh mẽ, camera tiềm vọng 10x.',
-      status: 'active',
-      stock: 45
-    },
-    {
-      id: 102,
-      category_id: 1,
-      category_name: 'Apple',
-      name: 'iPhone Air',
-      price: 26990000,
-      old_price: 28990000,
-      image: 'SanPham/SanPham/Iphone/Ip Air/Vàng Nhạt.png',
-      description: 'Thiết kế siêu mỏng nhẹ đột phá, độ mỏng kỷ lục 5.4mm, chip Apple A19 Pro.',
-      status: 'active',
-      stock: 60
-    },
-    {
-      id: 103,
-      category_id: 1,
-      category_name: 'Apple',
-      name: 'iPhone 17',
-      price: 22990000,
-      old_price: 24990000,
-      image: 'SanPham/SanPham/Iphone/Ip 17/Trắng.png',
-      description: 'Màu sắc trẻ trung năng động, camera kép 48MP nâng cấp toàn diện, Dynamic Island.',
-      status: 'active',
-      stock: 35
-    },
-    {
-      id: 201,
-      category_id: 2,
-      category_name: 'Samsung',
-      name: 'Galaxy S26 Ultra',
-      price: 31990000,
-      old_price: 33990000,
-      image: 'SanPham/SanPham/Samsung/SS S26 Ultra/Trắng.webp',
-      description: 'Flagship Android đỉnh cao với Galaxy AI thông minh, bút S Pen tích hợp và camera 200MP.',
-      status: 'active',
-      stock: 28
-    },
-    {
-      id: 202,
-      category_id: 2,
-      category_name: 'Samsung',
-      name: 'Galaxy Z Fold8',
-      price: 44990000,
-      old_price: 47990000,
-      image: 'SanPham/SanPham/Samsung/SS Galaxy Z Fold8/Cream.webp',
-      description: 'Thiết kế gập mở màn hình lớn như tablet, bản lề flex siêu mỏng không nếp gấp.',
-      status: 'active',
-      stock: 15
-    },
-    {
-      id: 301,
-      category_id: 3,
-      category_name: 'Xiaomi',
-      name: 'Xiaomi 17 Ultra',
-      price: 26990000,
-      old_price: 28990000,
-      image: 'SanPham/SanPham/Xiaomi/Xiaomi 17 ultra/Trắng.webp',
-      description: 'Kiệt tác quang học huyền thoại Leica, cảm biến 1-inch và hệ thống 4 camera chuyên nghiệp.',
-      status: 'active',
-      stock: 20
-    },
-    {
-      id: 401,
-      category_id: 4,
-      category_name: 'OPPO',
-      name: 'OPPO Find X9 Ultra',
-      price: 27990000,
-      old_price: 29990000,
-      image: 'SanPham/SanPham/Oppo/OPPO Find X9 Ultra/Cam.png',
-      description: 'Camera tiềm vọng kép đầu tiên cùng hệ màu Hasselblad tự nhiên chân thực.',
-      status: 'active',
-      stock: 18
-    },
-    {
-      id: 501,
-      category_id: 1,
-      category_name: 'Apple',
-      name: 'MacBook Pro 16" M4 Max',
-      price: 79990000,
-      old_price: 84990000,
-      image: 'frontend/assets/images/placeholders/laptop.svg',
-      description: 'Hiệu năng đỉnh cao đồ họa chuyên nghiệp, màn hình Liquid Retina XDR 120Hz.',
-      status: 'active',
-      stock: 12
-    },
-    {
-      id: 502,
-      category_id: 5,
-      category_name: 'ASUS',
-      name: 'ASUS ROG Strix SCAR 18',
-      price: 89990000,
-      old_price: 94990000,
-      image: 'frontend/assets/images/placeholders/laptop.svg',
-      description: 'Cỗ máy gaming tối thượng Core i9 thế hệ mới, RTX 4090 16GB, tản nhiệt buồng hơi 3 quạt.',
-      status: 'active',
-      stock: 8
-    },
-    {
-      id: 601,
-      category_id: 1,
-      category_name: 'Apple',
-      name: 'iPad Pro M4 Ultra Thin',
-      price: 29990000,
-      old_price: 31990000,
-      image: 'frontend/assets/images/placeholders/ipad.svg',
-      description: 'Màn hình OLED Tandem siêu sáng 1600 nits, chip M4 siêu tốc độ xử lý AI.',
-      status: 'active',
-      stock: 25
-    },
-    {
-      id: 701,
-      category_id: 1,
-      category_name: 'Apple',
-      name: 'AirPods Pro 2 (USB-C)',
-      price: 5790000,
-      old_price: 6190000,
-      image: 'SanPham/SanPham/Tai nghe/AirPods Pro 2/Tiêu Chuẩn.svg',
-      description: 'Chống ồn chủ động ANC gấp 2 lần, âm thanh thích ứng và cổng sạc USB-C tiện dụng.',
-      status: 'active',
-      stock: 80
-    },
-    {
-      id: 702,
-      category_id: 7,
-      category_name: 'Sony & Âm thanh',
-      name: 'Sony WH-1000XM5 Hi-Res',
-      price: 7990000,
-      old_price: 8690000,
-      image: 'frontend/assets/images/placeholders/tai-nghe.svg',
-      description: 'Tai nghe chống ồn hàng đầu thế giới, thiết kế công thái học nhẹ nhàng êm ái cả ngày.',
-      status: 'active',
-      stock: 30
-    },
-    {
-      id: 801,
-      category_id: 8,
-      category_name: 'JBL & Loa',
-      name: 'Loa JBL Flip 6 Portable',
-      price: 2490000,
-      old_price: 2990000,
-      image: 'frontend/assets/images/placeholders/loa.svg',
-      description: 'Âm thanh 2 đường tiếng uy lực, chống nước bụi chuẩn IP67, pin bền bỉ 12 giờ liên tục.',
-      status: 'active',
-      stock: 50
-    },
-    {
-      id: 901,
-      category_id: 1,
-      category_name: 'Apple',
-      name: 'Apple Watch Ultra 2 Titanium',
-      price: 21990000,
-      old_price: 23990000,
-      image: 'frontend/assets/images/placeholders/dong-ho.svg',
-      description: 'Vỏ titan 49mm siêu bền chuẩn quân đội, GPS băng tần kép, pin tới 72 giờ ở chế độ tiết kiệm.',
-      status: 'active',
-      stock: 22
-    }
-  ];
+  var DEFAULT_PRODUCTS = [];
+
+  function makeCatalogProducts() {
+    var catalog = window.VLU_CATALOG || {};
+    var categoryIds = DEFAULT_CATEGORIES.reduce(function (ids, category) {
+      ids[category.name.toLowerCase()] = category.id;
+      return ids;
+    }, {});
+    return Object.keys(catalog).map(function (id) {
+      var product = catalog[id];
+      return {
+        id: id,
+        category_id: categoryIds[String(product.brand || '').toLowerCase()] || 1,
+        category_name: product.brand,
+        name: product.name,
+        price: Number(product.basePrice) || 0,
+        old_price: Number(product.oldPrice) || null,
+        image: product.image,
+        description: product.tagline || '',
+        status: 'active',
+        stock: Number(product.stock) || 0
+      };
+    });
+  }
+
+  if (window.VLU_CATALOG) {
+    DEFAULT_PRODUCTS = makeCatalogProducts();
+  } else {
+    console.error('[AdminEngine] Không thể khởi tạo sản phẩm: catalog chưa được tải.');
+  }
 
   // 3. DỮ LIỆU ĐƠN HÀNG MẪU BAN ĐẦU (ORDERS SEED)
   var DEFAULT_ORDERS = [
@@ -371,8 +236,44 @@
           return DEFAULT_PRODUCTS.slice();
         }
         var list = JSON.parse(raw);
-        return Array.isArray(list) ? list : DEFAULT_PRODUCTS.slice();
+        if (!Array.isArray(list)) return DEFAULT_PRODUCTS.slice();
+        if (!window.VLU_CATALOG) return list;
+
+        var catalog = window.VLU_CATALOG;
+        var aliases = window.VLU_PRODUCT_ID_ALIASES || {};
+        var byName = {};
+        list.forEach(function (product) {
+          if (product && product.name) byName[String(product.name).trim().toLowerCase()] = product;
+        });
+        var categoryIds = DEFAULT_CATEGORIES.reduce(function (ids, category) {
+          ids[category.name.toLowerCase()] = category.id;
+          return ids;
+        }, {});
+        var synchronized = Object.keys(catalog).reduce(function (result, id) {
+          var product = catalog[id];
+          var saved = list.find(function (item) {
+            return item && (String(aliases[item.id] || item.id) === id ||
+              String(item.name || '').trim().toLowerCase() === product.name.toLowerCase());
+          }) || byName[product.name.toLowerCase()];
+          if (!saved) saved = {};
+          result.push({
+            id: id,
+            category_id: categoryIds[String(product.brand || '').toLowerCase()] || 1,
+            category_name: product.brand,
+            name: product.name,
+            price: Number(saved.price) || Number(product.basePrice) || 0,
+            old_price: Number(saved.old_price) || Number(product.oldPrice) || null,
+            image: product.image || saved.image,
+            description: product.tagline || saved.description || '',
+            status: saved.status || 'active',
+            stock: Number(saved.stock) || Number(product.stock) || 0
+          });
+          return result;
+        }, []);
+        if (JSON.stringify(synchronized) !== JSON.stringify(list)) this.saveProducts(synchronized);
+        return synchronized;
       } catch (e) {
+        console.error('[AdminEngine] Không thể đồng bộ danh mục sản phẩm:', e);
         return DEFAULT_PRODUCTS.slice();
       }
     },
@@ -388,7 +289,7 @@
 
     addProduct: function (productData) {
       var list = this.getProducts();
-      var newId = list.length > 0 ? Math.max.apply(Math, list.map(function (p) { return parseInt(p.id, 10) || 0; })) + 1 : 101;
+      var newId = 'admin-product-' + Date.now();
       
       var newProd = {
         id: newId,
@@ -411,10 +312,9 @@
 
     updateProduct: function (id, productData) {
       var list = this.getProducts();
-      var numId = parseInt(id, 10);
       var idx = -1;
       for (var i = 0; i < list.length; i++) {
-        if (parseInt(list[i].id, 10) === numId) {
+        if (String(list[i].id) === String(id)) {
           idx = i;
           break;
         }
@@ -437,9 +337,8 @@
 
     deleteProduct: function (id) {
       var list = this.getProducts();
-      var numId = parseInt(id, 10);
       var filtered = list.filter(function (p) {
-        return parseInt(p.id, 10) !== numId;
+        return String(p.id) !== String(id);
       });
       this.saveProducts(filtered);
       return true;
@@ -456,13 +355,17 @@
     getCategories: function () {
       try {
         var raw = localStorage.getItem(STORAGE_CATEGORIES);
-        if (!raw) {
-          this.saveCategories(DEFAULT_CATEGORIES);
-          return DEFAULT_CATEGORIES.slice();
-        }
-        var list = JSON.parse(raw);
-        return Array.isArray(list) ? list : DEFAULT_CATEGORIES.slice();
+        var stored = raw ? JSON.parse(raw) : [];
+        var synchronized = DEFAULT_CATEGORIES.map(function (category) {
+          var saved = Array.isArray(stored) && stored.find(function (item) {
+            return item && (item.slug === category.slug || item.name === category.name);
+          });
+          return saved ? Object.assign({}, category, { created_at: saved.created_at }) : Object.assign({}, category);
+        });
+        if (JSON.stringify(stored) !== JSON.stringify(synchronized)) this.saveCategories(synchronized);
+        return synchronized;
       } catch (e) {
+        console.error('[AdminEngine] Không thể đồng bộ danh mục hãng:', e);
         return DEFAULT_CATEGORIES.slice();
       }
     },

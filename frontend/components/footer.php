@@ -13,7 +13,7 @@
           <span class="text-base font-extrabold tracking-tight text-slate-900">VLU FLAGSHIP STORE</span>
         </a>
         <p class="max-w-md text-sm leading-relaxed text-slate-500">
-          Hệ thống cửa hàng công nghệ chính hãng: điện thoại, laptop, iPad, tai nghe, loa, phụ kiện và đồng hồ điện tử. Cam kết 100% hàng chuẩn VN/A, bảo hành toàn diện, đổi trả minh bạch.
+          Hệ thống cửa hàng công nghệ chính hãng: điện thoại, laptop, iPad, tai nghe, loa và đồng hồ điện tử. Cam kết 100% hàng chuẩn VN/A, bảo hành toàn diện, đổi trả minh bạch.
         </p>
         <div class="flex items-center gap-4 text-xs text-slate-500">
           <span class="flex items-center gap-1 font-semibold text-emerald-600">
@@ -36,7 +36,6 @@
           <li><a href="index.html#ipad" class="font-medium transition hover:text-brand">iPad</a></li>
           <li><a href="index.html#tai-nghe" class="font-medium transition hover:text-brand">Tai nghe</a></li>
           <li><a href="index.html#loa" class="font-medium transition hover:text-brand">Loa</a></li>
-          <li><a href="index.html#phu-kien" class="font-medium transition hover:text-brand">Phụ kiện</a></li>
           <li><a href="index.html#dong-ho" class="font-medium transition hover:text-brand">Đồng hồ điện tử</a></li>
         </ul>
       </div>

@@ -32,15 +32,15 @@ $banners = [
     ],
     [
         'eyebrow' => 'Xiaomi · Flagship',
-        'title' => 'Xiaomi 17 Ultra',
-        'text' => 'Ống kính Leica, cảm biến 1-inch cho nhiếp ảnh di động chuyên nghiệp.',
+        'title' => 'Xiaomi 15 Ultra',
+        'text' => 'Ống kính Leica cho trải nghiệm nhiếp ảnh di động chuyên nghiệp.',
         'image' => 'Banner/1793210880061_6690802098732450037_6690802098732450037_6a8b3b4c8e68135516fb3c5dc26fc679.jpg',
         'position' => 'center',
     ],
     [
         'eyebrow' => 'OPPO · Flagship',
-        'title' => 'OPPO Find X9 Ultra',
-        'text' => 'Camera tiềm vọng kép hợp tác Hasselblad, sạc nhanh SuperVOOC.',
+        'title' => 'OPPO Find X8 Ultra',
+        'text' => 'Camera Hasselblad cho trải nghiệm nhiếp ảnh flagship.',
         'image' => 'Banner/1793210675516_6690802098732450037_6690802098732450037_a8855076415c152f1279d1ae05c669e9.jpg',
         'position' => 'center',
     ],
@@ -67,19 +67,19 @@ $banners = [
     ],
     [
         'eyebrow' => 'Xiaomi · Flagship',
-        'title' => 'Xiaomi 17 Ultra',
-        'text' => 'Ống kính Leica, cảm biến 1-inch cho nhiếp ảnh di động chuyên nghiệp.',
+        'title' => 'Xiaomi 15 Ultra',
+        'text' => 'Ống kính Leica cho trải nghiệm nhiếp ảnh di động chuyên nghiệp.',
         'image' => 'Banner/1793210880061_6690802098732450037_6690802098732450037_6a8b3b4c8e68135516fb3c5dc26fc679.jpg',
         'position' => 'center',
-        'link' => 'product-detail.html?id=xiaomi-17-ultra',
+        'link' => 'product-detail.html?id=xiaomi-15-ultra',
     ],
     [
         'eyebrow' => 'OPPO · Flagship',
-        'title' => 'OPPO Find X9 Ultra',
-        'text' => 'Camera tiềm vọng kép hợp tác Hasselblad, sạc nhanh SuperVOOC.',
+        'title' => 'OPPO Find X8 Ultra',
+        'text' => 'Camera Hasselblad cho trải nghiệm nhiếp ảnh flagship.',
         'image' => 'Banner/1793210675516_6690802098732450037_6690802098732450037_a8855076415c152f1279d1ae05c669e9.jpg',
         'position' => 'center',
-        'link' => 'product-detail.html?id=oppo-find-x9-ultra',
+        'link' => 'product-detail.html?id=oppo-find-x8-ultra',
     ],
 ];
 PHP;
@@ -92,31 +92,6 @@ $content = preg_replace(
     '<a href="<?= vlu_product_url($p[\'name\'], $p[\'brand\'] ?? \'\', $p[\'slug\'] ?? (string)$p[\'id\']) ?>"',
     $content
 );
-
-// Thêm slug vào $defaultProducts
-$slugMap = [
-    101 => 'iphone-18-pro-max',
-    102 => 'iphone-air',
-    103 => 'iphone-17',
-    201 => 'galaxy-s26-ultra',
-    202 => 'galaxy-z-fold8',
-    203 => 'galaxy-z-flip8',
-    204 => 'galaxy-s26',
-    301 => 'xiaomi-17-ultra',
-    302 => 'xiaomi-17-pro-max',
-    401 => 'oppo-find-x9-ultra',
-    402 => 'oppo-find-x9-pro',
-    404 => 'oppo-find-n5',
-];
-
-foreach ($slugMap as $id => $slug) {
-    $content = preg_replace(
-        "/'id' => $id,/",
-        "'id' => $id, 'slug' => '$slug',",
-        $content,
-        1
-    );
-}
 
 file_put_contents($indexPath, $content);
 echo "Đã cập nhật index.php thành công!\n";

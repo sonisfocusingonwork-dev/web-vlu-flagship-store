@@ -52,212 +52,7 @@
   }
 
   // 3. Cơ chế Smart Fallback – Tự động nhận diện cấu hình từ tên sản phẩm
-  function buildSmartFallback(name, id, catHint) {
-    var n = (name || id || 'iPhone 18 Pro Max').replace(/-/g, ' ');
-    var lower = n.toLowerCase();
-
-    // Nhận diện Hãng
-    var brand = 'Apple';
-    if (lower.indexOf('samsung') !== -1 || lower.indexOf('galaxy') !== -1) brand = 'Samsung';
-    else if (lower.indexOf('xiaomi') !== -1) brand = 'Xiaomi';
-    else if (lower.indexOf('redmi') !== -1) brand = 'Redmi';
-    else if (lower.indexOf('oppo') !== -1 || lower.indexOf('reno') !== -1 || lower.indexOf('find') !== -1) brand = 'OPPO';
-    else if (lower.indexOf('asus') !== -1 || lower.indexOf('rog') !== -1) brand = 'ASUS';
-    else if (lower.indexOf('lenovo') !== -1 || lower.indexOf('thinkpad') !== -1 || lower.indexOf('legion') !== -1) brand = 'Lenovo';
-    else if (lower.indexOf('hp') !== -1 || lower.indexOf('pavilion') !== -1 || lower.indexOf('omen') !== -1) brand = 'HP';
-    else if (lower.indexOf('dell') !== -1 || lower.indexOf('xps') !== -1) brand = 'Dell';
-    else if (lower.indexOf('sony') !== -1) brand = 'Sony';
-    else if (lower.indexOf('jbl') !== -1) brand = 'JBL';
-    else if (lower.indexOf('bose') !== -1) brand = 'Bose';
-    else if (lower.indexOf('marshall') !== -1) brand = 'Marshall';
-
-    // Nhận diện Danh mục
-    var category = catHint || 'dien-thoai';
-    if (lower.indexOf('macbook') !== -1 || lower.indexOf('laptop') !== -1 || lower.indexOf('vivobook') !== -1 ||
-        lower.indexOf('rog') !== -1 || lower.indexOf('thinkpad') !== -1 || lower.indexOf('legion') !== -1 ||
-        lower.indexOf('pavilion') !== -1 || lower.indexOf('xps') !== -1 || lower.indexOf('zenbook') !== -1) {
-      category = 'laptop';
-    } else if (lower.indexOf('ipad') !== -1 || lower.indexOf('tab') !== -1 || lower.indexOf('pad') !== -1 || lower.indexOf('matepad') !== -1) {
-      category = 'ipad';
-    } else if (lower.indexOf('airpods') !== -1 || lower.indexOf('buds') !== -1 || lower.indexOf('wh-') !== -1 ||
-               lower.indexOf('wf-') !== -1 || lower.indexOf('tai nghe') !== -1 || lower.indexOf('quietcomfort') !== -1) {
-      category = 'tai-nghe';
-    } else if (lower.indexOf('loa') !== -1 || lower.indexOf('speaker') !== -1 || lower.indexOf('flip') !== -1 ||
-               lower.indexOf('charge') !== -1 || lower.indexOf('emberton') !== -1 || lower.indexOf('stanmore') !== -1 ||
-               lower.indexOf('soundlink') !== -1 || lower.indexOf('onyx') !== -1) {
-      category = 'loa';
-    } else if (lower.indexOf('watch') !== -1 || lower.indexOf('đồng hồ') !== -1 || lower.indexOf('garmin') !== -1) {
-      category = 'dong-ho-dien-tu';
-    } else if (lower.indexOf('sạc') !== -1 || lower.indexOf('cáp') !== -1 || lower.indexOf('ốp') !== -1 ||
-               lower.indexOf('pin dự phòng') !== -1 || lower.indexOf('pencil') !== -1) {
-      category = 'phu-kien';
-    }
-
-    // Tính giá tiền cố định theo tên
-    var hash = 0;
-    for (var i = 0; i < n.length; i++) hash = ((hash << 5) - hash) + n.charCodeAt(i);
-    hash = Math.abs(hash);
-
-    var basePrice = 24990000;
-    var variantLabel = 'Dung lượng lưu trữ';
-    var variants = [
-      { label: '256GB', delta: 0, discount: '-5%' },
-      { label: '512GB', delta: 3500000, discount: '-5%' },
-      { label: '1TB', delta: 8000000, discount: '-4%' }
-    ];
-    var placeholderSvg = 'frontend/assets/images/placeholders/phone.svg';
-    var highlights = [];
-    var specs = [];
-
-    if (category === 'laptop') {
-      basePrice = 18990000 + (hash % 20) * 1000000;
-      variantLabel = 'Cấu hình RAM / SSD';
-      variants = [
-        { label: '16GB RAM / 512GB SSD', delta: 0, discount: '-6%' },
-        { label: '32GB RAM / 1TB SSD', delta: 6000000, discount: '-5%' },
-        { label: '64GB RAM / 2TB SSD', delta: 15000000, discount: '-4%' }
-      ];
-      placeholderSvg = 'frontend/assets/images/placeholders/laptop.svg';
-      highlights = [
-        { icon: 'screen', title: 'Màn hình', value: '15.6" Retina / OLED', bullets: ['Độ phân giải siêu nét', 'Tần số quét cao mượt mà', 'Chuẩn màu đồ họa 100% sRGB / DCI-P3'] },
-        { icon: 'cpu', title: 'Vi xử lý', value: 'Thế Hệ Mới Nhất', bullets: ['Hiệu năng đa nhân mạnh mẽ', 'Tăng tốc đồ họa và xử lý AI', 'Tản nhiệt buồng hơi êm ái'] },
-        { icon: 'battery', title: 'Thời lượng Pin', value: 'Pin Dài Cả Ngày', bullets: ['Sạc nhanh qua cổng USB-C', 'Tiết kiệm điện năng thông minh'] },
-        { icon: 'camera', title: 'Thiết kế', value: 'Vỏ Nhôm Nguyên Khối', bullets: ['Thiết kế mỏng nhẹ sang trọng', 'Bàn phím êm ái có đèn nền'] }
-      ];
-      specs = [
-        ['Dòng máy', n],
-        ['Thương hiệu', brand],
-        ['Bảo hành', 'Chính hãng 24 tháng toàn quốc']
-      ];
-    } else if (category === 'ipad') {
-      basePrice = 12990000 + (hash % 15) * 1000000;
-      variantLabel = 'Dung lượng & Kết nối';
-      variants = [
-        { label: '128GB (Wi-Fi)', delta: 0, discount: '-5%' },
-        { label: '256GB (Wi-Fi)', delta: 2500000, discount: '-5%' },
-        { label: '512GB (5G Cellular)', delta: 7000000, discount: '-4%' }
-      ];
-      placeholderSvg = 'frontend/assets/images/placeholders/tablet.svg';
-      highlights = [
-        { icon: 'screen', title: 'Màn hình', value: 'Màn Hình Retina / OLED', bullets: ['Màu sắc sống động', 'Tần số quét 120Hz mượt mà', 'Hỗ trợ bút cảm ứng vẽ chuyên nghiệp'] },
-        { icon: 'cpu', title: 'Vi xử lý', value: 'Chip Đầu Bảng', bullets: ['Xử lý đồ họa đa nhiệm mượt', 'Hỗ trợ bàn phím ngoài như laptop'] }
-      ];
-      specs = [['Tên thiết bị', n], ['Hãng sản xuất', brand], ['Bảo hành', '12 - 24 tháng']];
-    } else if (category === 'tai-nghe') {
-      basePrice = 2490000 + (hash % 10) * 500000;
-      variantLabel = 'Phiên bản tai nghe';
-      variants = [
-        { label: 'Bản Tiêu Chuẩn', delta: 0, discount: '-8%' },
-        { label: 'Bản Cao Cấp (Chống Ồn ANC)', delta: 1200000, discount: '-6%' }
-      ];
-      placeholderSvg = 'frontend/assets/images/placeholders/headphones.svg';
-      highlights = [
-        { icon: 'cpu', title: 'Chất âm', value: 'Hi-Res Audio & ANC', bullets: ['Chống ồn chủ động thông minh', 'Âm trầm sâu, dải cao trong trẻo', 'Micro đàm thoại khử ồn gió'] },
-        { icon: 'battery', title: 'Thời lượng Pin', value: 'Lên tới 30 Giờ', bullets: ['Sạc nhanh 10 phút dùng 2 giờ', 'Hỗ trợ sạc không dây'] }
-      ];
-      specs = [['Dòng tai nghe', n], ['Thương hiệu', brand], ['Bảo hành', '12 tháng chính hãng']];
-    } else if (category === 'loa') {
-      basePrice = 1990000 + (hash % 12) * 600000;
-      variantLabel = 'Phiên bản loa';
-      variants = [
-        { label: 'Bản Di Động (Bluetooth)', delta: 0, discount: '-7%' },
-        { label: 'Bản Có Dây & Trợ Lý Ảo', delta: 1500000, discount: '-5%' }
-      ];
-      placeholderSvg = 'frontend/assets/images/placeholders/speaker.svg';
-      highlights = [
-        { icon: 'cpu', title: 'Âm thanh', value: 'Công Suất Lớn Chống Nước', bullets: ['Chuẩn kháng nước IP67 bền bỉ', 'Âm thanh 360 độ lan tỏa', 'Kết nối nhiều loa cùng lúc'] },
-        { icon: 'battery', title: 'Pin Di Động', value: 'Chơi Nhạc 20 Giờ', bullets: ['Pin bền bỉ cho tiệc tùng', 'Cổng sạc Type-C tiện lợi'] }
-      ];
-      specs = [['Dòng loa', n], ['Hãng sản xuất', brand], ['Bảo hành', '12 tháng']];
-    } else if (category === 'dong-ho-dien-tu') {
-      basePrice = 4990000 + (hash % 14) * 800000;
-      variantLabel = 'Kích thước & Kết nối';
-      variants = [
-        { label: '41mm (Bản GPS)', delta: 0, discount: '-6%' },
-        { label: '45mm (Bản GPS + LTE)', delta: 2500000, discount: '-5%' }
-      ];
-      placeholderSvg = 'frontend/assets/images/placeholders/watch.svg';
-      highlights = [
-        { icon: 'screen', title: 'Màn hình', value: 'Always-On AMOLED', bullets: ['Độ sáng cao rõ ngoài trời', 'Mặt kính chống trầy xước', 'Nhiều mặt đồng hồ tùy biến'] },
-        { icon: 'battery', title: 'Theo dõi Sức khỏe', value: 'Cảm Biến Nhịp Tim & SpO2', bullets: ['Đo điện tâm đồ ECG', 'Theo dõi giấc ngủ chuyên sâu', 'Hơn 100 chế độ thể thao'] }
-      ];
-      specs = [['Tên đồng hồ', n], ['Hãng sản xuất', brand], ['Bảo hành', '12 tháng']];
-    } else if (category === 'phu-kien') {
-      basePrice = 490000 + (hash % 8) * 150000;
-      variantLabel = 'Tùy chọn quy cách';
-      variants = [
-        { label: 'Tiêu Chuẩn (Chính Hãng)', delta: 0, discount: '-10%' },
-        { label: 'Bản Combo Cao Cấp', delta: 300000, discount: '-15%' }
-      ];
-      placeholderSvg = 'frontend/assets/images/placeholders/accessories.svg';
-      highlights = [
-        { icon: 'cpu', title: 'Chất lượng', value: 'Chuẩn Flagship', bullets: ['Độ bền vượt trội', 'Tương thích 100% với thiết bị', 'Chứng nhận an toàn chống cháy nổ'] }
-      ];
-      specs = [['Tên phụ kiện', n], ['Thương hiệu', brand], ['Bảo hành', '12 tháng 1 đổi 1']];
-    } else {
-      // Điện thoại
-      basePrice = 18990000 + (hash % 16) * 1000000;
-      highlights = [
-        { icon: 'screen', title: 'Màn hình', value: 'Màn Hình Tràn Viền 120Hz', bullets: ['Tấm nền OLED rực rỡ sắc nét', 'Độ sáng cực đại ngoài trời', 'Kính cường lực bảo vệ tối đa'] },
-        { icon: 'cpu', title: 'Vi xử lý', value: 'Chipset Flagship 2026', bullets: ['Hiệu năng xử lý cực nhanh', 'Tích hợp AI trí tuệ nhân tạo', 'Tối ưu pin vượt trội'] },
-        { icon: 'camera', title: 'Camera', value: 'Hệ Thống Camera Đỉnh Cao', bullets: ['Chụp đêm rõ nét từng chi tiết', 'Quay video 4K sắc nét', 'Nhiều chế độ chân dung xóa phông'] },
-        { icon: 'battery', title: 'Pin & Sạc', value: 'Sạc Nhanh Cực Tốc', bullets: ['Dùng thoải mái cả ngày dài', 'Sạc 50% trong 25 phút'] }
-      ];
-      specs = [
-        ['Tên sản phẩm', n],
-        ['Thương hiệu', brand],
-        ['Hệ điều hành', brand === 'Apple' ? 'iOS' : 'Android'],
-        ['Bảo hành', 'Chính hãng 24 tháng toàn quốc']
-      ];
-    }
-
-    // Tra cứu ảnh thật trong SanPham/SanPham
-    var foundImages = findImagesInManifest(n);
-    var colors = [];
-    if (foundImages.length > 0) {
-      colors = foundImages.map(function (img, idx) {
-        return {
-          name: img.color || ('Màu ' + (idx + 1)),
-          key: toSlug(img.color || 'color-' + idx),
-          hex: (window.VLU_GET_COLOR_HEX ? window.VLU_GET_COLOR_HEX(img.color) : '#334155'),
-          img: img.url
-        };
-      });
-    } else {
-      colors = [
-        { name: 'Titan Tự Nhiên', key: 'natural', hex: '#98928B', img: placeholderSvg },
-        { name: 'Titan Đen', key: 'black', hex: '#252527', img: placeholderSvg },
-        { name: 'Titan Trắng', key: 'white', hex: '#F0F0F2', img: placeholderSvg }
-      ];
-    }
-
-    return {
-      id: toSlug(n),
-      name: n,
-      brand: brand,
-      category: category,
-      badge: brand + ' · Flagship',
-      badgeSub: 'Chính Hãng VN/A',
-      tagline: 'Thiết bị công nghệ chính hãng ' + brand + ' với chế độ bảo hành minh bạch tại VLU FLAGSHIP STORE.',
-      basePrice: basePrice,
-      oldPrice: Math.round(basePrice * 1.08),
-      colors: colors,
-      extraImages: [],
-      variantLabel: variantLabel,
-      variants: variants,
-      perks: [
-        'Thu cũ đổi mới trợ giá lên tới 4.000.000₫',
-        'Tặng combo quà tặng chính hãng kèm máy',
-        'Bảo hành chính hãng 12 - 24 tháng minh bạch',
-        'Giao hỏa tốc nội thành trong vòng 2 giờ'
-      ],
-      highlights: highlights,
-      specs: specs,
-      sku: 'FLAGSHIP-' + (hash % 9000 + 1000)
-    };
-  }
-
-  // 4. Tìm kiếm hoặc tự động sinh sản phẩm
+  // 4. Chỉ hiển thị sản phẩm thuộc danh mục hiện hành
   var product = null;
   if (rawId && window.VLU_FIND_PRODUCT) {
     product = window.VLU_FIND_PRODUCT(rawId);
@@ -266,7 +61,15 @@
     product = window.VLU_FIND_PRODUCT(rawName);
   }
   if (!product) {
-    product = buildSmartFallback(rawName, rawId, rawCat);
+    var main = document.getElementById('main');
+    if (main) {
+      main.innerHTML = '<section class="mx-auto max-w-3xl px-4 py-20 text-center">' +
+        '<h1 class="text-2xl font-extrabold text-slate-900">Sản phẩm không còn kinh doanh</h1>' +
+        '<p class="mt-3 text-sm text-slate-600">Sản phẩm này không thuộc danh mục hiện tại.</p>' +
+        '<a href="category.html" class="mt-6 inline-flex rounded-full bg-brand px-5 py-3 text-sm font-bold text-white">Xem danh mục sản phẩm</a>' +
+        '</section>';
+    }
+    return;
   }
 
   // Keep the recently viewed list isolated by the same identity used by the cart.
@@ -398,14 +201,14 @@
     if (variantGrid) {
       var variantsHtml = '';
       (p.variants || []).forEach(function (v, idx) {
-        var vPrice = p.basePrice + (v.delta || 0);
+        var vPrice = Number(p.basePrice) > 0 ? formatVND(p.basePrice + (v.delta || 0)) : 'Liên hệ';
         variantsHtml += '<button type="button" class="storage-btn' + (idx === 0 ? ' active' : '') + '"'
           + ' data-label="' + v.label + '"'
           + ' data-delta="' + (v.delta || 0) + '"'
           + ' data-discount="' + (v.discount || '') + '"'
           + ' role="radio" aria-checked="' + (idx === 0 ? 'true' : 'false') + '">'
           + '<span class="text-sm font-black text-slate-900">' + v.label + '</span>'
-          + '<span class="text-[11px] font-semibold text-slate-500 mt-0.5">' + formatVND(vPrice) + '</span>'
+          + '<span class="text-[11px] font-semibold text-slate-500 mt-0.5">' + vPrice + '</span>'
           + '</button>';
       });
       variantGrid.innerHTML = variantsHtml;
@@ -415,7 +218,8 @@
     var priceEl = document.getElementById('productPrice');
     var oldPriceEl = document.getElementById('oldPrice');
     var discountEl = document.getElementById('discountBadge');
-    if (priceEl) priceEl.textContent = formatVND(p.basePrice);
+    var hasPrice = Number(p.basePrice) > 0;
+    if (priceEl) priceEl.textContent = hasPrice ? formatVND(p.basePrice) : 'Giá liên hệ';
     if (oldPriceEl) {
       if (p.oldPrice && p.oldPrice > p.basePrice) {
         oldPriceEl.textContent = formatVND(p.oldPrice);
@@ -436,10 +240,21 @@
 
     var installmentNote = document.getElementById('pdInstallment');
     if (installmentNote) {
-      var monthly = Math.round(p.basePrice / 12);
-      installmentNote.innerHTML = '<svg class="h-4 w-4 text-emerald-600" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>'
-        + 'Trả góp 0% lãi suất – Chỉ từ <strong>' + formatVND(monthly) + '/tháng</strong> (Kỳ hạn 12 tháng)';
+      if (hasPrice) {
+        var monthly = Math.round(p.basePrice / 12);
+        installmentNote.innerHTML = '<svg class="h-4 w-4 text-emerald-600" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>'
+          + 'Trả góp 0% lãi suất – Chỉ từ <strong>' + formatVND(monthly) + '/tháng</strong> (Kỳ hạn 12 tháng)';
+      } else {
+        installmentNote.textContent = 'Giá sản phẩm đang được cập nhật.';
+      }
     }
+    ['addToCartBtn', 'buyNowBtn'].forEach(function (id) {
+      var button = document.getElementById(id);
+      if (!button) return;
+      button.disabled = !hasPrice;
+      button.classList.toggle('opacity-50', !hasPrice);
+      button.classList.toggle('cursor-not-allowed', !hasPrice);
+    });
 
     // 5.10 Khung Ưu Đãi Độc Quyền
     var perksContainer = document.getElementById('pdPerks');

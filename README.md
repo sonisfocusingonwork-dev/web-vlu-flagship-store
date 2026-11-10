@@ -13,7 +13,8 @@ web-dien-tu/
 │   ├── 📂 config/
 │   │   └── db.php                           # Cấu hình kết nối PDO MySQL (Bảo mật, tắt báo lỗi giao diện)
 │   └── 📂 database/
-│       ├── database.sql                     # CSDL gốc, bảng categories, products, users (admin)
+│       ├── database.sql                     # CSDL gốc với danh mục và sản phẩm chuẩn
+│       └── catalog-inventory.json           # Inventory chuẩn dùng chung cho PHP và tạo thư mục
 │       └── update_products.sql              # Script SQL cập nhật sản phẩm & ảnh thực tế
 │
 ├── 📂 frontend/                             # [FRONTEND - FE] Giao diện người dùng
@@ -27,17 +28,12 @@ web-dien-tu/
 │   │       └── 📂 banners/                  # Ảnh Hero Banner studio độ phân giải cao
 │   │           ├── iphone-18-pro_...png     # Banner Apple iPhone 18 Pro Max
 │   │           ├── 1793210573792_...jpg     # Banner Samsung Galaxy S26 Ultra
-│   │           ├── 1793210880061_...jpg     # Banner Xiaomi 17 Ultra Leica
-│   │           └── 1793210675516_...jpg     # Banner OPPO Find X9 Ultra Hasselblad
+│       │           ├── 1793210880061_...jpg     # Banner Xiaomi 15 Ultra Leica
+│       │           └── 1793210675516_...jpg     # Banner OPPO Find X8 Ultra Hasselblad
 │   └── 📂 components/
-│       └── header.php                       # Header Navigation Bar + 7 Mega-Menu toàn màn hình
+│       └── header.php                       # Header Navigation Bar + 6 Mega-Menu toàn màn hình
 │
-├── 📂 SanPham/                              # Thư mục ảnh sản phẩm phân theo hãng & màu sắc
-│   └── SanPham/
-│       ├── Iphone/
-│       ├── Samsung/
-│       ├── Xiaomi/
-│       └── Oppo/
+├── 📂 SanPham/                              # Danh mục / Hãng hoặc nhóm / Tên thương mại
 │
 ├── 📂 Banner/                               # Thư mục nguồn ảnh banner hero gốc
 │
@@ -67,7 +63,7 @@ web-dien-tu/
 ### 2. Frontend (FE)
 * **Thành phần giao diện (`frontend/components/header.php`):**
   - Chứa thanh điều hướng cố định (`sticky top-0 z-50`) với hiệu ứng kính mờ (`backdrop-filter: blur`).
-  - 7 bảng Mega-Menu thả xuống toàn màn hình (Điện thoại, Laptop, iPad, Tai nghe, Loa, Phụ kiện, Đồng hồ điện tử).
+  - 6 bảng Mega-Menu thả xuống toàn màn hình (Điện thoại, Laptop, iPad, Tai nghe, Loa, Đồng hồ điện tử).
   - Giới hạn chiều cao `max-height: 75vh` và thanh cuộn dọc slim scrollbar mượt mà.
 * **Phong cách & Kiểu dáng (`frontend/assets/css/style.css`):**
   - Hệ thống màu sắc chuẩn Apple 2026 kết hợp màu đỏ thương hiệu VLU `#C8102E`.

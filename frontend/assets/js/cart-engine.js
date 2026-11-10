@@ -88,6 +88,118 @@
       return getStorageKey('vlu_cart_voucher');
     },
 
+    sanitizeStaleProducts: function () {
+      var catalog = window.VLU_CATALOG;
+      if (!catalog || typeof catalog !== 'object') {
+        console.error('[CartEngine] Không thể làm sạch dữ liệu sản phẩm: catalog chưa được tải.');
+        return false;
+      }
+
+      var aliases = window.VLU_PRODUCT_ID_ALIASES || {};
+      function currentProduct(value) {
+        var productId = value && typeof value === 'object' ? value.id : value;
+        var id = String(productId == null ? '' : productId);
+        id = aliases[id] || id;
+        if (catalog[id]) return catalog[id];
+        var name = value && typeof value === 'object' ? String(value.name || '') : '';
+        if (!name) return null;
+        var nameKey = name.trim().toLowerCase();
+        return Object.keys(catalog).map(function (key) { return catalog[key]; }).find(function (product) {
+          return product.name.toLowerCase() === nameKey;
+        }) || null;
+      }
+
+      function sanitizeIds(ids) {
+        if (!Array.isArray(ids)) return { values: ids, changed: false };
+        var seen = {};
+        var clean = [];
+        ids.forEach(function (value) {
+          var product = currentProduct(value);
+          if (!product || seen[product.id]) return;
+          seen[product.id] = true;
+          if (value && typeof value === 'object') {
+            var updated = Object.assign({}, value, { id: product.id, name: product.name });
+            clean.push(updated);
+          } else {
+            clean.push(product.id);
+          }
+        });
+        var changed = clean.length !== ids.length || clean.some(function (value, index) {
+          var oldValue = ids[index];
+          return value && typeof value === 'object'
+            ? !oldValue || value.id !== oldValue.id || value.name !== oldValue.name
+            : value !== oldValue;
+        });
+        return { values: clean, changed: changed };
+      }
+
+      var changedKeys = [];
+      try {
+        var storageKeys = [];
+        for (var index = 0; index < localStorage.length; index++) {
+          storageKeys.push(localStorage.key(index));
+        }
+
+        storageKeys.forEach(function (key) {
+          if (!key) return;
+          try {
+            if (key.indexOf('vlu_cart_') === 0 && key.indexOf('vlu_cart_voucher_') !== 0) {
+            var rawCart = localStorage.getItem(key);
+            if (!rawCart) return;
+            var cart = JSON.parse(rawCart);
+            if (!Array.isArray(cart)) {
+              console.warn('[CartEngine] Giỏ hàng có định dạng không hợp lệ, không thể lọc:', key);
+              return;
+            }
+            var cleanCart = [];
+            cart.forEach(function (item) {
+              var product = currentProduct(item);
+              if (!product) return;
+              cleanCart.push(Object.assign({}, item, {
+                id: product.id,
+                name: product.name,
+                category: product.category,
+                image: product.image || item.image
+              }));
+            });
+            if (cleanCart.length !== cart.length || cleanCart.some(function (item, i) {
+              return item.id !== cart[i].id || item.name !== cart[i].name;
+            })) {
+              localStorage.setItem(key, JSON.stringify(cleanCart));
+              changedKeys.push(key);
+            }
+          } else if (key.indexOf('vlu_account_') === 0) {
+            var rawAccount = localStorage.getItem(key);
+            if (!rawAccount) return;
+            var account = JSON.parse(rawAccount);
+            if (!account || typeof account !== 'object' || Array.isArray(account)) {
+              console.warn('[CartEngine] Dữ liệu tài khoản có định dạng không hợp lệ, không thể lọc:', key);
+              return;
+            }
+            var changed = false;
+            ['wishlist', 'recent', 'compare'].forEach(function (field) {
+              var result = sanitizeIds(account[field]);
+              if (result.changed) {
+                account[field] = result.values;
+                changed = true;
+              }
+            });
+            if (changed) {
+              localStorage.setItem(key, JSON.stringify(account));
+              changedKeys.push(key);
+            }
+            }
+          } catch (error) {
+            console.error('[CartEngine] Không thể làm sạch dữ liệu sản phẩm trong storage key:', key, error);
+          }
+        });
+      } catch (error) {
+        console.error('[CartEngine] Không thể hoàn tất làm sạch sản phẩm cũ trong localStorage:', error);
+        return false;
+      }
+      return changedKeys;
+    },
+
     getCart: function () {
       try {
         var raw = localStorage.getItem(this.getCartStorageKey());
@@ -425,6 +537,7 @@
       localStorage.removeItem(LEGACY_STORAGE_KEY);
       localStorage.removeItem('vlu_cart_seeded');
     } catch (e) {}
+    CartEngine.sanitizeStaleProducts();
     CartEngine.updateBadge();
     window.addEventListener('storage', function (e) {
       if (e.key === CartEngine.getCartStorageKey() || e.key === CartEngine.getVoucherStorageKey() || e.key === AUTH_STORAGE_KEY) {

@@ -21,7 +21,6 @@ $categoryNames = [
     'ipad' => 'Máy Tính Bảng iPad & Tablet',
     'tai-nghe' => 'Tai Nghe & Âm Thanh Cao Cấp',
     'loa' => 'Loa Bluetooth Chính Hãng',
-    'phu-kien' => 'Phụ Kiện Công Nghệ',
     'dong-ho-dien-tu' => 'Đồng Hồ Thông Minh',
 ];
 
@@ -80,9 +79,14 @@ $title = $categoryNames[$cat] ?? 'Tất Cả Sản Phẩm';
         <a href="category.html?cat=ipad" class="rounded-full px-4 py-2 border transition <?= $cat === 'ipad' ? 'bg-slate-900 text-white border-slate-900' : 'bg-white text-slate-700 border-slate-200 hover:border-brand/50' ?>">iPad</a>
         <a href="category.html?cat=tai-nghe" class="rounded-full px-4 py-2 border transition <?= $cat === 'tai-nghe' ? 'bg-slate-900 text-white border-slate-900' : 'bg-white text-slate-700 border-slate-200 hover:border-brand/50' ?>">Tai nghe</a>
         <a href="category.html?cat=loa" class="rounded-full px-4 py-2 border transition <?= $cat === 'loa' ? 'bg-slate-900 text-white border-slate-900' : 'bg-white text-slate-700 border-slate-200 hover:border-brand/50' ?>">Loa</a>
-        <a href="category.html?cat=phu-kien" class="rounded-full px-4 py-2 border transition <?= $cat === 'phu-kien' ? 'bg-slate-900 text-white border-slate-900' : 'bg-white text-slate-700 border-slate-200 hover:border-brand/50' ?>">Phụ kiện</a>
         <a href="category.html?cat=dong-ho-dien-tu" class="rounded-full px-4 py-2 border transition <?= $cat === 'dong-ho-dien-tu' ? 'bg-slate-900 text-white border-slate-900' : 'bg-white text-slate-700 border-slate-200 hover:border-brand/50' ?>">Đồng hồ</a>
       </div>
+      <label class="flex items-center gap-2 text-xs font-bold text-slate-600">
+        Hãng
+        <select id="brandFilter" class="rounded-full border border-slate-200 bg-white px-3 py-2">
+          <option value="">Tất cả hãng</option>
+        </select>
+      </label>
     </div>
 
     <!-- Product Grid Container (Dynamic Rendering) -->
@@ -112,7 +116,6 @@ $title = $categoryNames[$cat] ?? 'Tất Cả Sản Phẩm';
         ipad: 'ipad.svg',
         'tai-nghe': 'tai-nghe.svg',
         loa: 'loa.svg',
-        'phu-kien': 'phu-kien.svg',
         'dong-ho-dien-tu': 'dong-ho.svg'
       };
 
@@ -122,28 +125,15 @@ $title = $categoryNames[$cat] ?? 'Tất Cả Sản Phẩm';
         }
       });
 
-      document.querySelectorAll('.mega-panel .mega-item-link').forEach(function(link) {
-        const url = new URL(link.href, window.location.href);
-        const category = url.searchParams.get('cat') || '';
-        if (!category || (catParam && category !== catParam)) return;
-
-        const id = url.searchParams.get('id') || '';
-        const key = category + ':' + id;
-        if (!id || productsByKey.has(key)) return;
-
-        const group = link.closest('.mega-brand-col');
-        productsByKey.set(key, {
-          id: id,
-          name: url.searchParams.get('name') || link.textContent.trim(),
-          brand: group ? group.querySelector('h4').textContent.trim() : '',
-          category: category,
-          basePrice: null,
-          image: '',
-          tagline: ''
-        });
-      });
-
       const products = Array.from(productsByKey.values());
+      const brandFilter = document.getElementById('brandFilter');
+      const brands = Array.from(new Set(products.map(function(product) { return product.brand; }).filter(Boolean))).sort();
+      brands.forEach(function(brand) {
+        const option = document.createElement('option');
+        option.value = brand;
+        option.textContent = brand;
+        brandFilter.appendChild(option);
+      });
 
       function formatVND(n) {
         return Number(n).toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.') + '₫';
@@ -171,7 +161,7 @@ $title = $categoryNames[$cat] ?? 'Tất Cả Sản Phẩm';
           ? `<button type="button" data-add data-id="${escapeHtml(p.id)}" data-name="${escapeHtml(p.name)}" data-price="${Number(p.basePrice)}" aria-label="Thêm ${escapeHtml(p.name)} vào giỏ hàng" class="relative z-30 grid h-10 w-10 shrink-0 place-items-center rounded-full bg-slate-900 text-white transition hover:bg-brand"><svg class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg></button>`
           : '<span class="rounded-lg bg-slate-100 px-3 py-1.5 text-xs font-semibold text-slate-600">Chi tiết</span>';
         return `
-          <article class="product-card group relative flex flex-col rounded-xl border border-slate-200/80 bg-white p-3 shadow-sm transition-all duration-300 hover:-translate-y-1 hover:border-slate-300 hover:shadow-lg sm:p-4">
+          <article class="product-card group relative flex flex-col rounded-xl border border-slate-200/80 bg-white p-3 shadow-sm transition-all duration-300 hover:-translate-y-1 hover:border-slate-300 hover:shadow-lg sm:p-4" data-brand="${escapeHtml(p.brand || '')}">
             <a href="${url}" class="absolute inset-0 z-20 rounded-xl" aria-label="Xem ${escapeHtml(p.name)}"></a>
             <div class="relative aspect-square w-full overflow-hidden rounded-lg bg-slate-50 p-4">
               <span class="absolute left-2.5 top-2.5 z-10 rounded-full bg-brand px-2 py-0.5 text-[11px] font-bold text-white shadow-sm">${escapeHtml(p.brand || 'VLU Store')}</span>
@@ -191,6 +181,11 @@ $title = $categoryNames[$cat] ?? 'Tất Cả Sản Phẩm';
           </article>
         `;
       }).join('');
+      brandFilter.addEventListener('change', function() {
+        grid.querySelectorAll('.product-card').forEach(function(card) {
+          card.hidden = Boolean(brandFilter.value && card.dataset.brand !== brandFilter.value);
+        });
+      });
     })();
   </script>
 </body>

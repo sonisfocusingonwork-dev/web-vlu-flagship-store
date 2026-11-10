@@ -79,7 +79,7 @@
         var detailUrl = 'product-detail.html?id=' + encodeURIComponent(item.id || '') + '&name=' + encodeURIComponent(item.name || '') + '&cat=' + encodeURIComponent(item.category || '');
         var fallbackImage = 'frontend/assets/images/placeholders/' + ({
           'dien-thoai': 'phone.svg', laptop: 'laptop.svg', ipad: 'ipad.svg',
-          'tai-nghe': 'headphones.svg', loa: 'speaker.svg', 'phu-kien': 'accessories.svg',
+          'tai-nghe': 'headphones.svg', loa: 'speaker.svg',
           'dong-ho-dien-tu': 'watch.svg'
         }[item.category] || 'phone.svg');
 

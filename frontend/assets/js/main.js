@@ -1,6 +1,6 @@
 /**
  * VLU FLAGSHIP STORE – Client Interaction Script
- * - Mega-Menu 7 danh mục (Điện thoại, Laptop, iPad, Tai nghe, Loa, Phụ kiện, Đồng hồ)
+ * - Mega-Menu 6 danh mục (Điện thoại, Laptop, iPad, Tai nghe, Loa, Đồng hồ)
  * - Hero Banner Carousel trượt vô hạn
  * - Mobile Drawer Accordion
  * - Giỏ hàng, nút yêu thích & Toast thông báo Dynamic Island
@@ -12,7 +12,182 @@
   var $ = function (s, el) { return (el || document).querySelector(s); };
   var $$ = function (s, el) { return Array.prototype.slice.call((el || document).querySelectorAll(s)); };
 
-  /* ---------- 1. MENU MEGA (7 DANH MỤC CHÍNH) ---------- */
+  var CATALOG_CATEGORIES = [
+    { id: 'dien-thoai', name: 'Điện thoại' },
+    { id: 'laptop', name: 'Laptop' },
+    { id: 'ipad', name: 'iPad' },
+    { id: 'tai-nghe', name: 'Tai nghe' },
+    { id: 'loa', name: 'Loa' },
+    { id: 'dong-ho-dien-tu', name: 'Đồng hồ điện tử' }
+  ];
+
+  function productHref(product) {
+    return 'product-detail.html?id=' + encodeURIComponent(product.id) +
+      '&name=' + encodeURIComponent(product.name) +
+      '&cat=' + encodeURIComponent(product.category);
+  }
+
+  function buildProductLinks(products, className) {
+    var list = document.createElement('ul');
+    list.className = className || 'space-y-0.5';
+    products.forEach(function (product) {
+      var item = document.createElement('li');
+      var link = document.createElement('a');
+      link.className = 'mega-item-link';
+      link.href = productHref(product);
+      link.title = product.name;
+      link.textContent = product.name;
+      item.appendChild(link);
+      list.appendChild(item);
+    });
+    return list;
+  }
+
+  function renderCatalogMenus() {
+    var catalog = window.VLU_CATALOG;
+    if (!catalog) return;
+    var products = Object.keys(catalog).map(function (id) { return catalog[id]; });
+    var navList = $('.nav-list');
+    if (navList) {
+      var navById = {};
+      $$('.nav-item-mega', navList).forEach(function (item) { navById[item.id.replace(/^menuItem-/, '')] = item; });
+      CATALOG_CATEGORIES.forEach(function (category) {
+        var item = navById[category.id];
+        if (!item) return;
+        navList.appendChild(item);
+        var panel = $('.mega-panel', item);
+        var menuContent = panel && $('.mega-menu-scroll .mx-auto', panel);
+        var grid = menuContent && Array.prototype.find.call(menuContent.children, function (child) {
+          return /\bgrid\b/.test(child.className) || child.classList.contains('mega-grid-flow');
+        });
+        if (!grid) return;
+        grid.textContent = '';
+        var brands = [];
+        products.filter(function (product) { return product.category === category.id; }).forEach(function (product) {
+          var groupName = product.menuGroup || product.brand;
+          var group = brands.find(function (entry) { return entry.name === groupName; });
+          if (!group) {
+            group = { name: groupName, products: [] };
+            brands.push(group);
+          }
+          group.products.push(product);
+        });
+        brands.forEach(function (group) {
+          var column = document.createElement('div');
+          var title = document.createElement('h4');
+          column.className = 'mega-brand-col';
+          title.className = 'text-xs font-extrabold text-slate-900 pb-2 mb-2.5 border-b border-slate-200/80 leading-tight';
+          title.textContent = group.name;
+          column.appendChild(title);
+          column.appendChild(buildProductLinks(group.products));
+          grid.appendChild(column);
+        });
+      });
+      Object.keys(navById).forEach(function (id) {
+        if (!CATALOG_CATEGORIES.some(function (category) { return category.id === id; })) navById[id].remove();
+      });
+    }
+
+    var mobileDrawer = $('#mobileDrawer');
+    if (mobileDrawer) {
+      var mobileByName = {};
+      $$('.mobile-brand-card', mobileDrawer).forEach(function (card) {
+        var button = $('button', card);
+        var label = button ? button.textContent.trim() : '';
+        mobileByName[label] = card;
+      });
+      CATALOG_CATEGORIES.forEach(function (category) {
+        var card = mobileByName[category.name];
+        if (!card) return;
+        var body = $('.mobile-accordion-body', card);
+        if (!body) return;
+        body.textContent = '';
+        var brands = [];
+        products.filter(function (product) { return product.category === category.id; }).forEach(function (product) {
+          var groupName = product.menuGroup || product.brand;
+          var group = brands.find(function (entry) { return entry.name === groupName; });
+          if (!group) {
+            group = { name: groupName, products: [] };
+            brands.push(group);
+          }
+          group.products.push(product);
+        });
+        brands.forEach(function (group) {
+          var section = document.createElement('div');
+          var title = document.createElement('p');
+          section.className = 'pl-2 border-l-2 border-slate-200';
+          title.className = 'text-xs font-black text-slate-800';
+          title.textContent = group.name;
+          section.appendChild(title);
+          group.products.forEach(function (product) {
+            var link = document.createElement('a');
+            link.className = 'block py-0.5 text-xs font-semibold text-slate-700 hover:text-brand';
+            link.href = productHref(product);
+            link.textContent = product.name;
+            section.appendChild(link);
+          });
+          body.appendChild(section);
+        });
+      });
+    }
+  }
+
+  renderCatalogMenus();
+
+  function escapeHtml(value) {
+    return String(value == null ? '' : value).replace(/[&<>"']/g, function (char) {
+      return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[char];
+    });
+  }
+
+  function renderHomeCatalog() {
+    var catalog = window.VLU_CATALOG;
+    if (!catalog) return;
+    var allProducts = Object.keys(catalog).map(function (id) { return catalog[id]; });
+    var featured = [];
+    CATALOG_CATEGORIES.forEach(function (category) {
+      allProducts.filter(function (product) { return product.category === category.id; }).slice(0, 2).forEach(function (product) {
+        featured.push(product);
+      });
+    });
+    var launchGrid = $('.launch-grid');
+    if (launchGrid) {
+      launchGrid.innerHTML = featured.map(function (product) {
+        var image = product.image || (product.colors && product.colors[0] && (product.colors[0].image || product.colors[0].img)) ||
+          'frontend/assets/images/placeholders/phone.svg';
+        var href = productHref(product);
+        var price = Number(product.basePrice) > 0 ? Number(product.basePrice).toLocaleString('vi-VN') + '₫' : 'Giá liên hệ';
+        return '<article class="product-card group">' +
+          '<div class="product-img-box"><button type="button" data-wish data-id="' + escapeHtml(product.id) + '" aria-pressed="false" aria-label="Yêu thích ' + escapeHtml(product.name) + '" class="absolute right-2 top-2 z-10 grid h-10 w-10 place-items-center rounded-full bg-white/90 text-slate-500 shadow-sm transition hover:text-red-600 active:scale-90"><svg class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><use href="#i-heart"/></svg></button>' +
+          '<img src="' + escapeHtml(image) + '" alt="' + escapeHtml(product.name) + '" loading="lazy" class="product-img"></div>' +
+          '<div class="mt-3 flex flex-1 flex-col sm:mt-4"><div class="flex items-center justify-between gap-2"><p class="text-xs font-bold uppercase tracking-wider text-slate-400">' + escapeHtml(product.brand) + '</p></div>' +
+          '<h3 class="mt-1 text-sm font-bold leading-snug text-slate-900 transition group-hover:text-brand sm:text-base"><a href="' + href + '" class="after:absolute after:inset-0 after:z-0">' + escapeHtml(product.name) + '</a></h3>' +
+          '<p class="mt-1 line-clamp-2 text-xs leading-relaxed text-slate-500">' + escapeHtml(product.tagline || 'Sản phẩm chính hãng tại VLU FLAGSHIP STORE.') + '</p>' +
+          '<div class="mt-auto flex items-end justify-between gap-2 pt-3"><p class="text-sm font-extrabold text-brand sm:text-lg">' + price + '</p>' +
+          (Number(product.basePrice) > 0 ? '<button type="button" data-add data-id="' + escapeHtml(product.id) + '" data-name="' + escapeHtml(product.name) + '" data-price="' + Number(product.basePrice) + '" aria-label="Thêm ' + escapeHtml(product.name) + ' vào giỏ hàng" class="relative z-10 grid h-10 w-10 shrink-0 place-items-center rounded-full bg-slate-900 text-white shadow-sm transition hover:bg-brand active:scale-95"><svg class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="2.5"><use href="#i-plus"/></svg></button>' : '') +
+          '</div></div></article>';
+      }).join('');
+    }
+
+    var slides = $$('.hero-slide');
+    var featuredSlides = allProducts.filter(function (product, index, list) {
+      return list.findIndex(function (entry) { return entry.brand === product.brand; }) === index;
+    }).slice(0, slides.length);
+    slides.forEach(function (slide, index) {
+      var product = featuredSlides[index];
+      if (!product) return;
+      var title = $('h2', slide);
+      var brand = $('.hero-content > span', slide);
+      var link = $('a', slide);
+      if (title) title.textContent = product.name;
+      if (brand) brand.textContent = product.brand + ' · Chính hãng';
+      if (link) link.href = productHref(product);
+    });
+  }
+
+  renderHomeCatalog();
+
+  /* ---------- 1. MENU MEGA (6 DANH MỤC CHÍNH) ---------- */
   var megaItems = $$('.nav-item-mega');
   var scrim = $('#megaScrim');
   var closeTimer = null;
@@ -275,7 +450,12 @@
           category = productUrl.searchParams.get('cat') || '';
         } catch (err) {}
       }
-      var product = window.VLU_FIND_PRODUCT ? window.VLU_FIND_PRODUCT(id) : null;
+      var product = window.VLU_FIND_PRODUCT ? (window.VLU_FIND_PRODUCT(id) || window.VLU_FIND_PRODUCT(name)) : null;
+      if (!product) {
+        showToast('Sản phẩm này không còn trong danh mục.');
+        return;
+      }
+      id = product.id;
       if (product && product.name) name = product.name;
       var price = parseInt(add.dataset.price, 10);
       if (!price && card) {
@@ -283,6 +463,10 @@
         if (priceEl) {
           price = parseInt(priceEl.textContent.replace(/[^0-9]/g, ''), 10) || 0;
         }
+      }
+      if (!(price > 0) && !(Number(product.basePrice) > 0)) {
+        showToast('Giá sản phẩm đang được cập nhật, chưa thể thêm vào giỏ hàng.');
+        return;
       }
       var imgEl = card ? $('img', card) : null;
       var selectedColor = product && product.colors && product.colors[0] ? product.colors[0] : null;

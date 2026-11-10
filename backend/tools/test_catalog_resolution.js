@@ -12,6 +12,11 @@ const context = {
     getElementById: () => null,
     addEventListener: () => {}
   },
+  localStorage: {
+    getItem: () => null,
+    setItem: () => {},
+    removeItem: () => {}
+  },
   URLSearchParams: class {
     constructor() {}
     get() { return null; }
@@ -85,6 +90,11 @@ const detailContext = {
     VLU_FIND_PRODUCT: context.VLU_FIND_PRODUCT,
     VLU_GET_COLOR_HEX: context.VLU_GET_COLOR_HEX
   },
+  localStorage: {
+    getItem: () => null,
+    setItem: () => {},
+    removeItem: () => {}
+  },
   document: {
     title: '',
     querySelector: () => null,
@@ -134,55 +144,39 @@ console.log('✓ iPhone 18 Pro Max detail renders one non-banner product placeho
 if (process.exitCode === 1) process.exit(1);
 console.log('✓ HTML and PHP detail templates only reference existing product images.');
 
-// Extract all item names from header.php
-const headerPhp = fs.readFileSync(path.join(__dirname, '../../frontend/components/header.php'), 'utf8');
-const regex = /'items'\s*=>\s*\[([^\]]+)\]/g;
-let match;
-const testItems = [];
-
-while ((match = regex.exec(headerPhp)) !== null) {
-  const itemsStr = match[1];
-  const items = itemsStr.split(',').map(s => s.replace(/['"\s]/g, '')).filter(Boolean);
-  testItems.push(...items);
+const inventory = JSON.parse(fs.readFileSync(path.join(__dirname, '../database/catalog-inventory.json'), 'utf8'));
+if (inventory.categories.length !== 6 || inventory.products.length !== 115) {
+  console.error('✗ Catalog inventory must contain six categories and 115 products.');
+  process.exit(1);
 }
-
-console.log('✓ Found', testItems.length, 'product lines in Mega-Menu to test with Smart Fallback resolver.');
+console.log('✓ Catalog inventory contains six categories and all 115 products.');
 
 // Test samples across categories
 const samples = [
   'iPhone 18 Pro Max',
   'Galaxy S26 Ultra',
-  'MacBook Pro',
-  'ASUS ROG Strix',
-  'iPad Pro',
-  'AirPods Pro 2',
-  'JBL Flip 6',
+  'MacBook Pro 16 M5 Max',
+  'ASUS ROG Strix G16',
+  'iPad Pro M5',
+  'AirPods Pro 3',
+  'JBL Flip 7',
   'Apple Watch Ultra 3',
-  'Cu sac GaN 35W Dual USB-C',
-  'Lenovo ThinkPad',
-  'Bose QuietComfort Ultra',
-  'Sony ULT Field 7',
-  'Reno13 Pro+ 5G',
-  'Redmi Note 15 Pro+'
+  'Lenovo Legion Pro 7i',
+  'Soundcore Boom 3i',
+  'OPPO Reno13 Pro 5G',
+  'Redmi Note 14 Pro+ 5G'
 ];
 
 let failed = 0;
 for (const sample of samples) {
-  let prod = context.VLU_FIND_PRODUCT(sample);
-  if (!prod) {
-    // Test fallback directly
-    prod = {
-      name: sample,
-      basePrice: 20000000,
-      colors: [{ name: 'Titan Tự Nhiên', hex: '#98928B' }],
-      variants: [{ label: 'Bản Tiêu Chuẩn' }]
-    };
-  }
-  if (!prod.name || prod.basePrice <= 0 || !prod.colors || prod.colors.length === 0) {
+  const prod = context.VLU_FIND_PRODUCT(sample);
+  if (!prod || !prod.name || !Array.isArray(prod.colors) || prod.colors.length === 0) {
     console.error('✗ Failed on:', sample);
     failed++;
   } else {
-    console.log(`  ✓ Sample: "${prod.name}" → Price: ${prod.basePrice.toLocaleString('vi-VN')}₫ | Colors: ${prod.colors.length} | Variants: ${prod.variants ? prod.variants.length : 1}`);
+    const price = Number(prod.basePrice) || 0;
+    const priceLabel = price > 0 ? `${price.toLocaleString('vi-VN')}₫` : 'Giá liên hệ';
+    console.log(`  ✓ Sample: "${prod.name}" → ${priceLabel} | Colors: ${prod.colors.length} | Variants: ${prod.variants ? prod.variants.length : 1}`);
   }
 }
 

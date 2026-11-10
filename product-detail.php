@@ -307,7 +307,7 @@ $cartCount = 0;
               </li>
               <li class="flex items-start gap-2">
                 <span class="text-brand font-bold">•</span>
-                <span>Giảm ngay 50% khi mua kèm ốp lưng MagSafe hoặc tai nghe AirPods Pro 2</span>
+                <span>Ưu đãi đặc biệt khi mua kèm tai nghe AirPods Pro 3</span>
               </li>
               <li class="flex items-start gap-2">
                 <span class="text-brand font-bold">•</span>

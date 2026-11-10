@@ -290,7 +290,7 @@ function e($value): string
               </div>
               <div>
                 <h3 id="statTotalProducts" class="text-2xl font-black text-slate-950 tracking-tight">0 thiết bị</h3>
-                <p class="text-[11px] font-semibold text-purple-600 mt-1">Đầy đủ 7 danh mục</p>
+                <p class="text-[11px] font-semibold text-purple-600 mt-1">Đầy đủ 6 danh mục</p>
               </div>
             </div>
 
@@ -807,6 +807,8 @@ function e($value): string
 
   <!-- Scripts -->
   <script src="frontend/assets/js/auth-engine.js"></script>
+  <script src="frontend/assets/js/products-data.js"></script>
+  <script src="frontend/assets/js/cart-engine.js"></script>
   <script src="frontend/assets/js/admin-engine.js"></script>
   <script src="frontend/assets/js/admin-page.js"></script>
 

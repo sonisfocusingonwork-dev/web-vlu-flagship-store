@@ -2,27 +2,11 @@
 
 $root = dirname(__DIR__, 2);
 $baseDir = $root . '/SanPham';
-$categoryFolders = [
-    'dien-thoai' => 'DienThoai',
-    'laptop' => 'Laptop',
-    'ipad' => 'iPad',
-    'tai-nghe' => 'TaiNghe',
-    'loa' => 'Loa',
-    'phu-kien' => 'PhuKien',
-    'dong-ho-dien-tu' => 'DongHoDienTu',
-];
-$accessoryFolders = [
-    'Phu-Kien-Dien-Thoai',
-    'Phu-Kien-Laptop-PC',
-    'Phu-Kien-Tai-Nghe',
-    'Phu-Kien-Loa',
-    'Phu-Kien-iPad-Tablet',
-    'Phu-Kien-Smartwatch',
-    'Phu-Kien-Gaming',
-    'Phu-Kien-Man-Hinh',
-    'Luu-Tru-Ket-Noi',
-    'Sac-Va-Nguon',
-];
+$inventoryFile = $root . '/backend/database/catalog-inventory.json';
+$inventory = json_decode((string)file_get_contents($inventoryFile), true);
+if (!is_array($inventory) || !isset($inventory['categories'], $inventory['products'])) {
+    throw new RuntimeException('Không thể tải danh mục sản phẩm: ' . $inventoryFile);
+}
 
 function folder_segment(string $name): string
 {
@@ -45,54 +29,64 @@ if (!is_dir($baseDir)) {
     mkdir($baseDir, 0775, true);
 }
 
-$imageExtensions = ['png', 'webp', 'jpg', 'jpeg', 'avif', 'gif', 'svg', 'bmp'];
+ensure_folder($baseDir);
+$createdModels = 0;
+$expectedDirectories = [$baseDir => true];
+foreach ($inventory['categories'] as $category) {
+    $categoryPath = $baseDir . '/' . folder_segment($category['folder']);
+    ensure_folder($categoryPath);
+    $expectedDirectories[$categoryPath] = true;
+}
+
+foreach ($inventory['products'] as $product) {
+    foreach (['folder_category', 'folder_group', 'folder_name'] as $segment) {
+        if (empty($product[$segment])) {
+            throw new RuntimeException('Thiếu đường dẫn thư mục cho sản phẩm: ' . ($product['name'] ?? 'không rõ'));
+        }
+    }
+    $productPath = $baseDir . '/' . folder_segment($product['folder_category']) . '/' .
+        folder_segment($product['folder_group']) . '/' . folder_segment($product['folder_name']);
+    $expectedDirectories[dirname($productPath)] = true;
+    $expectedDirectories[$productPath] = true;
+    ensure_folder($productPath);
+    $createdModels++;
+}
+
+$directories = [];
 $iterator = new RecursiveIteratorIterator(
     new RecursiveDirectoryIterator($baseDir, FilesystemIterator::SKIP_DOTS),
     RecursiveIteratorIterator::CHILD_FIRST
 );
-$deletedImages = 0;
 foreach ($iterator as $entry) {
-    if ($entry->isFile() && in_array(strtolower($entry->getExtension()), $imageExtensions, true)) {
-        if (!unlink($entry->getPathname())) {
-            throw new RuntimeException('Không thể xóa ảnh cũ: ' . $entry->getPathname());
-        }
-        $deletedImages++;
+    if ($entry->isDir()) {
+        $directories[] = $entry->getPathname();
     }
 }
 
-ob_start();
-require $root . '/frontend/components/header.php';
-ob_end_clean();
-
-ensure_folder($baseDir);
-$createdModels = 0;
-foreach ($navMegaCategories as $slug => $category) {
-    $categoryFolder = $categoryFolders[$slug] ?? folder_segment($category['name']);
-    $categoryPath = $baseDir . '/' . $categoryFolder;
-    ensure_folder($categoryPath);
-
-    foreach ($category['groups'] as $groupIndex => $group) {
-        $groupFolder = $slug === 'phu-kien'
-            ? $accessoryFolders[$groupIndex]
-            : folder_segment($group['title']);
-        $groupPath = $categoryPath . '/' . $groupFolder;
-        ensure_folder($groupPath);
-
-        $items = $group['items'] ?? [];
-        foreach ($group['sections'] ?? [] as $section) {
-            $items = array_merge($items, $section['items'] ?? []);
-        }
-
-        foreach (array_unique($items) as $item) {
-            $modelFolder = folder_segment(str_replace(['/', '\\'], '-', $item));
-            if ($modelFolder === '') {
-                continue;
-            }
-            ensure_folder($groupPath . '/' . $modelFolder);
-            $createdModels++;
+$removedDirectories = 0;
+foreach ($directories as $directory) {
+    if (isset($expectedDirectories[$directory])) {
+        continue;
+    }
+    $contents = array_values(array_diff(scandir($directory), ['.', '..']));
+    $removable = true;
+    foreach ($contents as $entry) {
+        if ($entry !== '.gitkeep' || !is_file($directory . '/' . $entry)) {
+            $removable = false;
+            break;
         }
     }
+    if (!$removable) {
+        error_log('Giữ thư mục sản phẩm cũ có dữ liệu ngoài .gitkeep: ' . $directory);
+        continue;
+    }
+    if (in_array('.gitkeep', $contents, true) && !unlink($directory . '/.gitkeep')) {
+        throw new RuntimeException('Không thể xóa .gitkeep cũ trong: ' . $directory);
+    }
+    if (!rmdir($directory)) {
+        throw new RuntimeException('Không thể xóa thư mục cũ: ' . $directory);
+    }
+    $removedDirectories++;
 }
 
-echo "Đã xóa $deletedImages file ảnh cũ.\n";
-echo "Đã tạo/đảm bảo $createdModels thư mục model và .gitkeep cho toàn bộ các cấp.\n";
+echo "Đã tạo/đảm bảo $createdModels thư mục model và .gitkeep; đã dọn $removedDirectories thư mục cũ không có dữ liệu sản phẩm.\n";

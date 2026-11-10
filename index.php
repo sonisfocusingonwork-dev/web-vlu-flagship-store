@@ -72,64 +72,7 @@ function cover_image(array $images, string $prefer = ''): string
 }
 
 /* ------------------------------------------------------------------
-   1) MENU NGANG + DROPDOWN (dưới thanh tìm kiếm)
-   ------------------------------------------------------------------ */
-$menu = [
-    ['slug' => 'dien-thoai', 'name' => 'Điện thoại', 'subs' => [
-        ['iphone', 'Apple iPhone', 'iPhone 18 Pro, iPhone Air, iPhone 17'],
-        ['samsung', 'Samsung Galaxy', 'Galaxy S26 Ultra, S26'],
-        ['xiaomi', 'Xiaomi', 'Xiaomi 17 Ultra, 17 Pro Max'],
-        ['oppo', 'OPPO', 'Find X9 Ultra, Find X9 Pro'],
-        ['dien-thoai-gap', 'Điện thoại gập', 'Galaxy Z Fold8, Z Flip8, Find N5'],
-    ]],
-    ['slug' => 'laptop', 'name' => 'Laptop', 'subs' => [
-        ['macbook-air', 'MacBook Air', 'Mỏng nhẹ, pin cả ngày'],
-        ['macbook-pro', 'MacBook Pro', 'Hiệu năng chuyên nghiệp'],
-        ['laptop-gaming', 'Laptop Gaming', 'Card đồ họa rời mạnh mẽ'],
-        ['laptop-van-phong', 'Laptop Văn phòng', 'Học tập & làm việc'],
-        ['laptop-do-hoa', 'Laptop Đồ họa', 'Màn hình chuẩn màu'],
-    ]],
-    ['slug' => 'ipad', 'name' => 'iPad', 'subs' => [
-        ['ipad-pro', 'iPad Pro', 'Chip M-series, màn hình OLED'],
-        ['ipad-air', 'iPad Air', 'Cân bằng hiệu năng & giá'],
-        ['ipad-mini', 'iPad mini', 'Nhỏ gọn một tay cầm'],
-        ['ipad-gen', 'iPad (Gen)', 'Lựa chọn phổ thông'],
-        ['may-tinh-bang-android', 'Máy tính bảng Android', 'Galaxy Tab, Xiaomi Pad'],
-    ]],
-    ['slug' => 'tai-nghe', 'name' => 'Tai nghe', 'subs' => [
-        ['airpods', 'AirPods', 'AirPods Pro, AirPods 4, AirPods Max'],
-        ['true-wireless', 'Tai nghe True Wireless', 'Không dây nhét tai'],
-        ['chup-tai', 'Tai nghe chụp tai', 'Chống ồn chủ động'],
-        ['the-thao', 'Tai nghe thể thao', 'Chống nước, bám tai'],
-        ['gaming', 'Tai nghe Gaming', 'Âm thanh vòm, micro rời'],
-    ]],
-    ['slug' => 'loa', 'name' => 'Loa', 'subs' => [
-        ['loa-bluetooth', 'Loa Bluetooth', 'Di động, chống nước'],
-        ['loa-thong-minh', 'Loa thông minh', 'Trợ lý giọng nói'],
-        ['soundbar', 'Loa Soundbar', 'Âm thanh cho TV'],
-        ['loa-karaoke', 'Loa Karaoke', 'Kèm micro không dây'],
-        ['loa-vi-tinh', 'Loa vi tính', 'Cho bàn làm việc'],
-    ]],
-    ['slug' => 'phu-kien', 'name' => 'Phụ kiện', 'subs' => [
-        ['sac-cap', 'Sạc & Cáp', 'Sạc nhanh USB-C, MagSafe'],
-        ['sac-du-phong', 'Sạc dự phòng', 'Dung lượng cao, nhỏ gọn'],
-        ['op-lung', 'Ốp lưng & Bao da', 'Bảo vệ thời trang'],
-        ['mieng-dan', 'Miếng dán màn hình', 'Cường lực, chống nhìn trộm'],
-        ['but-cam-ung', 'Bút cảm ứng', 'Apple Pencil, S Pen'],
-        ['chuot-ban-phim', 'Chuột & Bàn phím', 'Không dây, cơ học'],
-    ]],
-    ['slug' => 'dong-ho-dien-tu', 'name' => 'Đồng hồ điện tử', 'subs' => [
-        ['apple-watch', 'Apple Watch', 'Series, Ultra, SE'],
-        ['galaxy-watch', 'Samsung Galaxy Watch', 'Theo dõi sức khỏe toàn diện'],
-        ['xiaomi-amazfit', 'Xiaomi & Amazfit', 'Pin dài, giá tốt'],
-        ['garmin', 'Garmin', 'Chuyên thể thao, GPS'],
-        ['vong-deo-tay', 'Vòng đeo tay thông minh', 'Nhỏ gọn, đo nhịp tim'],
-        ['dong-ho-tre-em', 'Đồng hồ trẻ em', 'Định vị, nghe gọi'],
-    ]],
-];
-
-/* ------------------------------------------------------------------
-   2) HERO BANNER (ảnh phủ kín 100% khung, chữ nổi phía trên)
+   1) HERO BANNER (ảnh phủ kín 100% khung, chữ nổi phía trên)
    Lấy trực tiếp từ thư mục Banner/ của dự án
    ------------------------------------------------------------------ */
 $banners = [
@@ -150,15 +93,15 @@ $banners = [
     ],
     [
         'eyebrow' => 'Xiaomi · Flagship',
-        'title' => 'Xiaomi 17 Ultra',
-        'text' => 'Ống kính Leica, cảm biến 1-inch cho nhiếp ảnh di động chuyên nghiệp.',
+        'title' => 'Xiaomi 15 Ultra',
+        'text' => 'Ống kính Leica cho nhiếp ảnh di động chuyên nghiệp.',
         'image' => 'Banner/1793210880061_6690802098732450037_6690802098732450037_6a8b3b4c8e68135516fb3c5dc26fc679.jpg',
         'position' => 'center',
     ],
     [
         'eyebrow' => 'OPPO · Flagship',
-        'title' => 'OPPO Find X9 Ultra',
-        'text' => 'Camera tiềm vọng kép hợp tác Hasselblad, sạc nhanh SuperVOOC.',
+        'title' => 'OPPO Find X8 Ultra',
+        'text' => 'Camera Hasselblad cho trải nghiệm nhiếp ảnh flagship.',
         'image' => 'Banner/1793210675516_6690802098732450037_6690802098732450037_a8855076415c152f1279d1ae05c669e9.jpg',
         'position' => 'center',
     ],
@@ -168,32 +111,34 @@ $banners = [
    3) SẢN PHẨM MỚI RA MẮT
    Mặc định dùng ảnh trong thư mục SanPham; nếu CSDL có dữ liệu thì ưu tiên CSDL
    ------------------------------------------------------------------ */
-$defaultProducts = [
-    ['id' => 101, 'slug' => 'iphone-18-pro-max', 'brand' => 'Apple', 'name' => 'iPhone 18 Pro & iPhone 18 Pro Max', 'price' => 34990000, 'old_price' => 36990000,
-     'description' => 'Đỉnh cao công nghệ Titanium, chip A20 Pro siêu mạnh mẽ.', 'folder' => 'Dien thoai/iPhone 18 Pro Max', 'prefer' => 'Titan Sa Mạc'],
-    ['id' => 102, 'slug' => 'iphone-air', 'brand' => 'Apple', 'name' => 'iPhone Air', 'price' => 26990000, 'old_price' => 28990000,
-     'description' => 'Thiết kế siêu mỏng nhẹ đột phá, hiệu năng vượt trội.', 'folder' => 'Dien thoai/iPhone Air', 'prefer' => 'Vàng Nhạt'],
-    ['id' => 103, 'slug' => 'iphone-17', 'brand' => 'Apple', 'name' => 'iPhone 17', 'price' => 22990000, 'old_price' => null,
-     'description' => 'Màu sắc trẻ trung, camera kép nâng cấp toàn diện.', 'folder' => 'Dien thoai/iPhone 17', 'prefer' => 'Tím Oải Hương'],
-    ['id' => 201, 'slug' => 'galaxy-s26-ultra', 'brand' => 'Samsung', 'name' => 'Galaxy S26 Ultra', 'price' => 31990000, 'old_price' => null,
-     'description' => 'Galaxy AI, bút S Pen tích hợp và camera 200MP.', 'folder' => 'Dien thoai/Galaxy S26 Ultra', 'prefer' => 'Titan Đen'],
-    ['id' => 202, 'slug' => 'galaxy-z-fold8', 'brand' => 'Samsung', 'name' => 'Galaxy Z Fold8', 'price' => 44990000, 'old_price' => null,
-     'description' => 'Màn hình gập lớn như tablet, bản lề siêu mỏng.', 'folder' => 'Dien thoai/Galaxy Z Fold8', 'prefer' => 'Xám Titan'],
-    ['id' => 203, 'slug' => 'galaxy-z-flip8', 'brand' => 'Samsung', 'name' => 'Galaxy Z Flip8', 'price' => 25990000, 'old_price' => 28990000,
-     'description' => 'Gập vỏ sò nhỏ gọn, màn hình phụ Flex Window đa năng.', 'folder' => 'Dien thoai/Galaxy Z Flip8', 'prefer' => 'Xanh Mint'],
-    ['id' => 204, 'slug' => 'galaxy-s26', 'brand' => 'Samsung', 'name' => 'Galaxy S26', 'price' => 22990000, 'old_price' => null,
-     'description' => 'Thiết kế phẳng nguyên khối, màn hình Dynamic AMOLED 2X.', 'folder' => 'Dien thoai/Galaxy S26', 'prefer' => 'Đen Onyx'],
-    ['id' => 301, 'slug' => 'xiaomi-15-ultra', 'brand' => 'Xiaomi', 'name' => 'Xiaomi 15 Ultra', 'price' => 26990000, 'old_price' => null,
-     'description' => 'Ống kính Leica, cảm biến 1-inch chuyên nghiệp.', 'folder' => 'Dien thoai/Xiaomi 15 Ultra', 'prefer' => 'Đen'],
-    ['id' => 302, 'slug' => 'xiaomi-15-pro', 'brand' => 'Xiaomi', 'name' => 'Xiaomi 15 Pro', 'price' => 24990000, 'old_price' => 26990000,
-     'description' => 'Snapdragon đầu bảng, sạc siêu tốc HyperCharge.', 'folder' => 'Dien thoai/Xiaomi 15 Pro', 'prefer' => 'Xám Titan'],
-    ['id' => 401, 'slug' => 'find-x9-ultra', 'brand' => 'OPPO', 'name' => 'OPPO Find X9 Ultra', 'price' => 27990000, 'old_price' => null,
-     'description' => 'Camera tiềm vọng kép, hệ màu Hasselblad chân thực.', 'folder' => 'Dien thoai/Find X9 Ultra', 'prefer' => 'Cam Sa Mạc'],
-    ['id' => 402, 'slug' => 'find-x9-pro', 'brand' => 'OPPO', 'name' => 'OPPO Find X9 Pro', 'price' => 22990000, 'old_price' => null,
-     'description' => 'Thiết kế cao cấp, chip xử lý hình ảnh độc quyền.', 'folder' => 'Dien thoai/Find X9 Pro', 'prefer' => 'Trắng Ánh Trăng'],
-    ['id' => 404, 'slug' => 'find-n5', 'brand' => 'OPPO', 'name' => 'OPPO Find N5', 'price' => 39990000, 'old_price' => 42990000,
-     'description' => 'Màn gập không nếp gấp, siêu mỏng nhẹ.', 'folder' => 'Dien thoai/Find N5', 'prefer' => 'Than Chì Titan'],
+$inventoryFile = __DIR__ . '/backend/database/catalog-inventory.json';
+$catalogInventory = json_decode((string)file_get_contents($inventoryFile), true);
+if (!is_array($catalogInventory) || !isset($catalogInventory['products'])) {
+    throw new RuntimeException('Không thể tải danh mục trang chủ: ' . $inventoryFile);
+}
+$placeholderByCategory = [
+    'dien-thoai' => 'frontend/assets/images/placeholders/phone.svg',
+    'laptop' => 'frontend/assets/images/placeholders/laptop.svg',
+    'ipad' => 'frontend/assets/images/placeholders/ipad.svg',
+    'tai-nghe' => 'frontend/assets/images/placeholders/headphones.svg',
+    'loa' => 'frontend/assets/images/placeholders/loa.svg',
+    'dong-ho-dien-tu' => 'frontend/assets/images/placeholders/dong-ho.svg',
 ];
+$defaultProducts = [];
+foreach ($catalogInventory['products'] as $product) {
+    $defaultProducts[] = [
+        'id' => (int)$product['database_id'],
+        'slug' => (string)$product['id'],
+        'brand' => (string)$product['brand'],
+        'name' => (string)$product['name'],
+        'price' => (float)$product['price'],
+        'old_price' => $product['old_price'] ? (float)$product['old_price'] : null,
+        'description' => (string)$product['name'] . ' chính hãng tại VLU FLAGSHIP STORE.',
+        'image' => $placeholderByCategory[$product['category']] ?? $placeholderByCategory['dien-thoai'],
+        'folder' => '',
+        'prefer' => '',
+    ];
+}
 
 $defaultsById = [];
 foreach ($defaultProducts as $d) {
@@ -214,17 +159,20 @@ if ($conn instanceof PDO) {
 
         foreach ($rows as $row) {
             $id = (int)$row['id'];
-            $d = $defaultsById[$id] ?? [];
+            if (!isset($defaultsById[$id]) || !same_text((string)$row['name'], $defaultsById[$id]['name'])) {
+                continue;
+            }
+            $d = $defaultsById[$id];
             $images = !empty($d['folder']) ? product_images($d['folder']) : [];
-            $image = trim((string)($row['image'] ?? '')) ?: cover_image($images, $d['prefer'] ?? '');
+            $image = trim((string)($row['image'] ?? '')) ?: ($d['image'] ?? cover_image($images, $d['prefer'] ?? ''));
             if ($image === '') {
                 continue;
             }
             $newProducts[] = [
                 'id' => $id,
-                'brand' => $row['brand_name'] ?? ($d['brand'] ?? ''),
-                'name' => $row['name'],
-                'description' => $row['description'] ?? '',
+                'brand' => $d['brand'],
+                'name' => $d['name'],
+                'description' => $d['description'],
                 'price' => (float)$row['price'],
                 'old_price' => $d['old_price'] ?? null,
                 'image' => $image,
@@ -240,8 +188,7 @@ if ($conn instanceof PDO) {
 // Không có CSDL → dùng danh sách mặc định với ảnh trong thư mục SanPham
 if (empty($newProducts)) {
     foreach ($defaultProducts as $d) {
-        $images = product_images($d['folder']);
-        $newProducts[] = $d + ['image' => cover_image($images, $d['prefer']), 'colors' => count($images)];
+        $newProducts[] = $d + ['colors' => 0];
     }
 }
 
@@ -253,7 +200,7 @@ $cartCount = 0;
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>VLU FLAGSHIP STORE</title>
-  <meta name="description" content="VLU FLAGSHIP STORE – Điện thoại, laptop, iPad, tai nghe, loa, phụ kiện, camera và đồng hồ điện tử chính hãng.">
+  <meta name="description" content="VLU FLAGSHIP STORE – Điện thoại, laptop, iPad, tai nghe, loa và đồng hồ điện tử chính hãng.">
   <link rel="icon" type="image/png" href="frontend/assets/images/logo.png">
   <link rel="stylesheet" href="frontend/assets/css/style.css">
   <link rel="stylesheet" href="style.css">
@@ -837,14 +784,16 @@ $cartCount = 0;
 
               <div class="mt-auto flex items-end justify-between gap-2 pt-3">
                 <div>
-                  <p class="text-sm font-extrabold text-brand sm:text-lg"><?= number_format($p['price'], 0, ',', '.') ?>₫</p>
+                  <p class="text-sm font-extrabold text-brand sm:text-lg"><?= $p['price'] > 0 ? number_format($p['price'], 0, ',', '.') . '₫' : 'Giá liên hệ' ?></p>
                   <?php if ($hasSale): ?>
                     <p class="text-xs text-slate-400 line-through"><?= number_format($p['old_price'], 0, ',', '.') ?>₫</p>
                   <?php endif; ?>
                 </div>
+                <?php if ($p['price'] > 0): ?>
                 <button type="button" data-add data-id="<?= (int)$p['id'] ?>" data-name="<?= e($p['name']) ?>" data-price="<?= (int)$p['price'] ?>" aria-label="Thêm <?= e($p['name']) ?> vào giỏ hàng" class="relative z-10 grid h-10 w-10 shrink-0 place-items-center rounded-full bg-slate-900 text-white shadow-sm transition hover:bg-brand active:scale-95">
                   <svg class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><use href="#i-plus"/></svg>
                 </button>
+                <?php endif; ?>
               </div>
             </div>
           </article>

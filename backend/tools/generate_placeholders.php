@@ -24,10 +24,6 @@ $placeholders = [
         'title' => 'Loa Di Động',
         'icon' => '<rect x="120" y="70" width="240" height="340" rx="40" fill="#0F172A" opacity="0.9"/><circle cx="240" cy="170" r="48" fill="#1E293B"/><circle cx="240" cy="170" r="28" fill="#C8102E"/><circle cx="240" cy="290" r="56" fill="#1E293B"/><circle cx="240" cy="290" r="34" fill="#334155"/>',
     ],
-    'accessories' => [
-        'title' => 'Phụ Kiện Chính Hãng',
-        'icon' => '<rect x="140" y="100" width="200" height="200" rx="36" fill="#0F172A" opacity="0.85"/><path d="M190 300v70m100-70v70" stroke="#94A3B8" stroke-width="14" stroke-linecap="round"/><circle cx="240" cy="200" r="40" fill="#C8102E"/>',
-    ],
     'watch' => [
         'title' => 'Đồng Hồ Điện Tử',
         'icon' => '<rect x="180" y="30" width="120" height="80" rx="12" fill="#334155"/><rect x="180" y="370" width="120" height="80" rx="12" fill="#334155"/><rect x="140" y="100" width="200" height="280" rx="46" fill="#0F172A"/><rect x="156" y="116" width="168" height="248" rx="34" fill="#F8FAFC"/><circle cx="240" cy="240" r="50" fill="none" stroke="#C8102E" stroke-width="8"/><path d="M240 210v30l20 15" stroke="#C8102E" stroke-width="6" stroke-linecap="round"/>',
