@@ -281,15 +281,82 @@
     };
   }
 
-  function orders() {
+  function syncUserOrders() {
     var identity = currentIdentity(currentUser);
-    var all = Array.isArray(store.orders) ? store.orders : [];
-    if (!Array.isArray(all)) return [];
-    return all.filter(function (order) {
-      return String(order.user_id || '') === identity;
-    }).sort(function (a, b) {
+    var accountOrders = Array.isArray(store && store.orders) ? store.orders : [];
+    var userSpecificOrders = readJson('vlu_orders_' + identity, []);
+    var globalOrders = readJson('vlu_orders', []);
+    var mergedMap = {};
+    var mergedList = [];
+
+    function addOrderIfMatch(order) {
+      if (!order || !order.id) return;
+      var orderUser = String(order.user_id || 'guest').trim().toLowerCase().replace(/[^a-z0-9._@-]+/g, '_') || 'guest';
+      if (orderUser !== identity) return;
+      var idKey = String(order.id);
+      if (!mergedMap[idKey]) {
+        mergedMap[idKey] = true;
+        mergedList.push(order);
+      }
+    }
+
+    if (Array.isArray(globalOrders)) globalOrders.forEach(addOrderIfMatch);
+    if (Array.isArray(userSpecificOrders)) userSpecificOrders.forEach(addOrderIfMatch);
+    if (Array.isArray(accountOrders)) accountOrders.forEach(addOrderIfMatch);
+
+    mergedList.sort(function (a, b) {
       return new Date(b.created_at || 0).getTime() - new Date(a.created_at || 0).getTime();
     });
+
+    if (store) {
+      store.orders = mergedList;
+    }
+    return mergedList;
+  }
+
+  function fetchOrdersFromBackend() {
+    if (typeof fetch !== 'function' || !currentUser) return;
+    var identity = currentIdentity(currentUser);
+    fetch('backend/api/orders.php?action=list&user_id=' + encodeURIComponent(identity), {
+      method: 'GET',
+      headers: { 'Accept': 'application/json' }
+    })
+      .then(function (res) { return res.json(); })
+      .then(function (data) {
+        if (!data || !data.success || !Array.isArray(data.orders) || !data.orders.length) return;
+        var globalOrders = readJson('vlu_orders', []);
+        if (!Array.isArray(globalOrders)) globalOrders = [];
+        var userSpecificOrders = readJson('vlu_orders_' + identity, []);
+        if (!Array.isArray(userSpecificOrders)) userSpecificOrders = [];
+
+        data.orders.forEach(function (sqlOrder) {
+          if (!sqlOrder || !sqlOrder.id) return;
+          var gIdx = globalOrders.findIndex(function (o) { return o && String(o.id) === String(sqlOrder.id); });
+          if (gIdx === -1) globalOrders.unshift(sqlOrder);
+          else globalOrders[gIdx] = Object.assign({}, globalOrders[gIdx], sqlOrder);
+
+          var uIdx = userSpecificOrders.findIndex(function (o) { return o && String(o.id) === String(sqlOrder.id); });
+          if (uIdx === -1) userSpecificOrders.unshift(sqlOrder);
+          else userSpecificOrders[uIdx] = Object.assign({}, userSpecificOrders[uIdx], sqlOrder);
+        });
+
+        try {
+          localStorage.setItem('vlu_orders', JSON.stringify(globalOrders));
+          localStorage.setItem('vlu_orders_' + identity, JSON.stringify(userSpecificOrders));
+        } catch (e) {}
+
+        syncUserOrders();
+        saveStore();
+        reconcilePoints();
+        render();
+      })
+      .catch(function () {
+        // Fallback giữ nguyên dữ liệu localStorage khi offline
+      });
+  }
+
+  function orders() {
+    return syncUserOrders();
   }
 
   function statusLabel(status) {
@@ -414,10 +481,11 @@
       (recentProducts.length ? '<div class="account-product-grid">' + recentProducts.map(function (p) {
         return productCard(p, '<button class="account-button account-button-primary" data-action="add-cart" data-id="' + escapeHtml(p.id) + '">Thêm giỏ</button>', { compare: true });
       }).join('') + '</div>' : emptyState('◷', 'Lịch sử xem sản phẩm sẽ xuất hiện tại đây.')) + '</section>';
+    var isGuestUser = Boolean(currentUser && currentUser.isGuest);
     return '<section class="account-card account-card-pad"><div class="account-welcome">' + avatarMarkup +
-      '<div class="min-w-0 flex-1"><p class="account-eyebrow">CHÀO MỪNG TRỞ LẠI</p><h2 class="mt-1 text-xl font-black text-slate-950">' +
-      'Xin chào, ' + escapeHtml(profileName()) + '</h2><p class="account-muted mt-1">Tài khoản thành viên VLU FLAGSHIP STORE</p></div>' +
-      '<span class="account-badge account-tier-badge">✦ Thành viên VLU</span></div>' +
+      '<div class="min-w-0 flex-1"><p class="account-eyebrow">' + (isGuestUser ? 'PHIÊN MUA SẮM KHÁCH (GUEST)' : 'CHÀO MỪNG TRỞ LẠI') + '</p><h2 class="mt-1 text-xl font-black text-slate-950">' +
+      'Xin chào, ' + escapeHtml(profileName()) + '</h2><p class="account-muted mt-1">' + (isGuestUser ? 'Tài khoản Khách vãng lai (Guest) · VLU FLAGSHIP STORE' : 'Tài khoản thành viên VLU FLAGSHIP STORE') + '</p></div>' +
+      '<span class="account-badge account-tier-badge">' + (isGuestUser ? '✦ Khách (Guest)' : '✦ Thành viên VLU') + '</span></div>' +
       '<div class="account-loyalty-progress"><div class="flex items-center justify-between gap-3"><span>Điểm tích lũy trên thiết bị</span>' +
       '<strong>' + points.toLocaleString('vi-VN') + ' / ' + nextLevel + ' điểm</strong></div>' +
       '<div class="account-progress-track"><span style="width:' + progress + '%"></span></div>' +
@@ -1057,16 +1125,19 @@
   }
 
   function saveOrders(list) {
+    var identity = currentIdentity(currentUser);
+    var userFiltered = list.filter(function (order) {
+      return String(order.user_id || 'guest') === identity;
+    });
     try {
       localStorage.setItem('vlu_orders', JSON.stringify(list));
+      localStorage.setItem('vlu_orders_' + identity, JSON.stringify(userFiltered));
     } catch (error) {
       console.error('[AccountPage] Không thể cập nhật đơn hàng:', error);
       notify('Không thể cập nhật đơn hàng trên thiết bị.', true);
       return false;
     }
-    store.orders = list.filter(function (order) {
-      return String(order.user_id || '') === currentIdentity(currentUser);
-    });
+    store.orders = userFiltered;
     return saveStore();
   }
 
@@ -1299,10 +1370,21 @@
       if (action === 'cancel-order') {
         if (!window.confirm('Hủy đơn hàng? Chỉ đơn đang chờ xác nhận/đang chuẩn bị có thể hủy.')) return;
         var all = readJson('vlu_orders', []);
-        var order = all.find(function (entry) { return String(entry.id) === id && String(entry.user_id || '') === currentIdentity(currentUser); });
+        var identity = currentIdentity(currentUser);
+        var order = all.find(function (entry) { return String(entry.id) === id && String(entry.user_id || 'guest') === identity; });
         if (order && ['pending', 'confirmed', 'processing'].indexOf(String(order.status).toLowerCase()) !== -1) {
           order.status = 'cancelled';
-          if (saveOrders(all)) { notify('Đơn hàng đã được đánh dấu hủy trên thiết bị.'); render(); }
+          if (saveOrders(all)) {
+            if (typeof fetch === 'function') {
+              fetch('backend/api/orders.php', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+                body: JSON.stringify({ action: 'update_status', order_id: id, status: 'cancelled' })
+              }).catch(function () {});
+            }
+            notify('Đơn hàng đã được đánh dấu hủy thành công.');
+            render();
+          }
         } else notify('Đơn hàng này không còn ở trạng thái có thể hủy.', true);
       }
       if (action === 'buy-again') {
@@ -1683,18 +1765,28 @@
   function init() {
     currentUser = readJson('vlu_user', null);
     if (!currentUser || !currentUser.username) {
-      window.location.replace('login.html?next=' + encodeURIComponent('account.html'));
-      return;
+      if (window.VLU_AUTH && typeof window.VLU_AUTH.ensureGuestSession === 'function') {
+        currentUser = window.VLU_AUTH.ensureGuestSession();
+      } else {
+        currentUser = {
+          id: 'guest',
+          username: 'guest',
+          email: 'guest@vluflagship.vn',
+          fullname: 'Khách vãng lai (Guest)',
+          phone: '',
+          role: 0,
+          isGuest: true,
+          loginAt: new Date().toISOString()
+        };
+        try {
+          localStorage.setItem('vlu_user', JSON.stringify(currentUser));
+        } catch (e) {}
+      }
     }
     userKey = 'vlu_account_' + currentIdentity(currentUser);
     store = normalizeStore(readJson(userKey, {}));
-    if (!Array.isArray(store.orders)) {
-      var legacyOrders = readJson('vlu_orders', []);
-      store.orders = Array.isArray(legacyOrders) ? legacyOrders.filter(function (order) {
-        return String(order.user_id || '') === currentIdentity(currentUser);
-      }) : [];
-      saveStore();
-    }
+    syncUserOrders();
+    saveStore();
     ensureAccountRewards();
     reconcilePoints();
     if (store.profile.fullname) currentUser.fullname = store.profile.fullname;
@@ -1704,6 +1796,7 @@
     recordCurrentProduct();
     render();
     bindEvents();
+    fetchOrdersFromBackend();
     window.addEventListener('storage', function (event) {
       if (event.key === 'vlu_user') {
         currentUser = readJson('vlu_user', null);
@@ -1712,9 +1805,13 @@
           return;
         }
       }
-      if (event.key === 'vlu_orders') render();
+      if (event.key === 'vlu_orders' || (event.key && event.key.indexOf('vlu_orders_') === 0)) {
+        syncUserOrders();
+        render();
+      }
       if (event.key === userKey) {
         store = normalizeStore(readJson(userKey, {}));
+        syncUserOrders();
         if (store.profile.avatar) currentUser.avatar = store.profile.avatar;
         reconcilePoints();
         render();

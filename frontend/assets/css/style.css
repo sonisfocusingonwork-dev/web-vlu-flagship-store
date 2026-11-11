@@ -20,6 +20,13 @@
 html {
   scroll-behavior: smooth;
   font-family: var(--font-sans);
+  max-width: 100%;
+  overflow-x: hidden;
+}
+
+body {
+  max-width: 100%;
+  overflow-x: hidden;
 }
 
 .no-scrollbar {
@@ -421,10 +428,18 @@ html {
   z-index: 40;
 }
 
-body.has-mega-open .mega-scrim {
+body.has-mega-open .mega-scrim,
+body.has-mobile-drawer-open .mega-scrim {
   opacity: 1;
   visibility: visible;
   pointer-events: auto;
+}
+
+@media (max-width: 1023px) {
+  .nav-mega-bar,
+  .mega-panel {
+    display: none !important;
+  }
 }
 
 /* ==========================================================================
@@ -448,27 +463,41 @@ body.has-mega-open .mega-scrim {
    ========================================================================== */
 .mobile-drawer {
   position: fixed;
-  top: 4.5rem;
-  left: 0;
+  top: 0;
   right: 0;
   bottom: 0;
-  background: rgba(255, 255, 255, 0.95);
+  left: auto;
+  width: min(92vw, 400px);
+  height: 100vh;
+  height: 100dvh;
+  max-height: 100dvh;
+  background: rgba(255, 255, 255, 0.98);
   backdrop-filter: blur(28px);
   -webkit-backdrop-filter: blur(28px);
-  transform: translateY(-100%);
+  border-left: 1px solid rgba(226, 232, 240, 0.9);
+  box-shadow: -20px 0 48px -12px rgba(15, 23, 42, 0.22);
+  transform: translateX(104%);
   opacity: 0;
   visibility: hidden;
   pointer-events: none;
   overflow-y: auto;
-  transition: transform 0.3s var(--ease-spring), opacity 0.3s ease, visibility 0.3s;
-  z-index: 45;
+  overscroll-behavior: contain;
+  -webkit-overflow-scrolling: touch;
+  transition: transform 0.32s var(--ease-spring), opacity 0.25s ease, visibility 0.25s;
+  z-index: 60;
 }
 
 .mobile-drawer.is-open {
-  transform: translateY(0);
+  transform: translateX(0);
   opacity: 1;
   visibility: visible;
   pointer-events: auto;
+}
+
+@media (min-width: 1024px) {
+  .mobile-drawer {
+    display: none !important;
+  }
 }
 
 .mobile-brand-card {
@@ -780,4 +809,58 @@ body.has-mega-open .mega-scrim {
 .spec-table-row:last-child {
   border-bottom: none;
 }
+
+/* ==========================================================================
+   14. TỐI ƯU SCROLL TRANG ADMIN & GIAO DIỆN MOBILE RESPONSIVE (320px - 768px)
+   ========================================================================== */
+.admin-main {
+  min-width: 0;
+  overflow-x: hidden;
+}
+
+.admin-content {
+  min-width: 0;
+  padding-bottom: 3rem;
+}
+
+@media (max-width: 767px) {
+  .hero-slide {
+    height: 23rem;
+  }
+
+  .hero-content {
+    padding: 1.25rem !important;
+  }
+
+  .product-card {
+    padding: 0.875rem;
+    border-radius: 20px;
+  }
+
+  .product-img-box {
+    height: 9.75rem;
+    padding: 0.75rem;
+  }
+
+  .storage-btn {
+    padding: 0.625rem 0.5rem;
+    border-radius: 14px;
+  }
+
+  .spec-table-row {
+    flex-direction: column;
+    gap: 0.25rem;
+    padding: 0.75rem 0.875rem;
+  }
+
+  .spec-table-row span:last-child {
+    text-align: left !important;
+  }
+
+  #headerUserMenu {
+    right: 0;
+    max-width: calc(100vw - 1.5rem);
+  }
+}
+
 

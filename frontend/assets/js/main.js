@@ -102,6 +102,13 @@
         var body = $('.mobile-accordion-body', card);
         if (!body) return;
         body.textContent = '';
+
+        var viewAllLink = document.createElement('a');
+        viewAllLink.className = 'flex items-center justify-between rounded-xl bg-brand/10 px-3 py-2 text-xs font-extrabold text-brand hover:bg-brand hover:text-white transition';
+        viewAllLink.href = 'category.html?cat=' + encodeURIComponent(category.id);
+        viewAllLink.innerHTML = '<span>Xem tất cả ' + category.name + '</span><span>→</span>';
+        body.appendChild(viewAllLink);
+
         var brands = [];
         products.filter(function (product) { return product.category === category.id; }).forEach(function (product) {
           var groupName = product.menuGroup || product.brand;
@@ -115,13 +122,13 @@
         brands.forEach(function (group) {
           var section = document.createElement('div');
           var title = document.createElement('p');
-          section.className = 'pl-2 border-l-2 border-slate-200';
-          title.className = 'text-xs font-black text-slate-800';
+          section.className = 'pl-2.5 border-l-2 border-slate-200';
+          title.className = 'text-xs font-black text-slate-800 mb-0.5';
           title.textContent = group.name;
           section.appendChild(title);
           group.products.forEach(function (product) {
             var link = document.createElement('a');
-            link.className = 'block py-0.5 text-xs font-semibold text-slate-700 hover:text-brand';
+            link.className = 'block py-1 text-xs font-semibold text-slate-700 hover:text-brand';
             link.href = productHref(product);
             link.textContent = product.name;
             section.appendChild(link);
@@ -256,7 +263,10 @@
 
   // Đóng khi click scrim hoặc click ngoài
   if (scrim) {
-    scrim.addEventListener('click', closeAllMenus);
+    scrim.addEventListener('click', function () {
+      closeAllMenus();
+      closeMobileDrawer();
+    });
   }
 
   document.addEventListener('click', function (e) {
@@ -276,6 +286,29 @@
   var mobileBtn = $('#mobileMenuBtn');
   var mobileDrawer = $('#mobileDrawer');
 
+  if (mobileDrawer && mobileDrawer.parentElement !== document.body) {
+    // Di chuyển #mobileDrawer ra trực tiếp document.body để tránh bị backdrop-filter của #site-header khóa chiều cao position:fixed
+    document.body.appendChild(mobileDrawer);
+  }
+
+  if (mobileDrawer) {
+    var drawerInner = $('.mobile-drawer-inner', mobileDrawer);
+    if (drawerInner && !$('#mobileDrawerTopBar', drawerInner)) {
+      var topBar = document.createElement('div');
+      topBar.id = 'mobileDrawerTopBar';
+      topBar.className = 'flex items-center justify-between pb-3 border-b border-slate-200/80';
+      topBar.innerHTML =
+        '<div class="flex items-center gap-2">' +
+          '<span class="inline-block h-2.5 w-2.5 rounded-full bg-brand"></span>' +
+          '<span class="text-xs font-black uppercase tracking-wider text-slate-900">Danh mục &amp; Tiện ích</span>' +
+        '</div>' +
+        '<button type="button" id="mobileDrawerCloseBtn" aria-label="Đóng menu di động" class="grid h-9 w-9 place-items-center rounded-full bg-slate-100 text-slate-700 hover:bg-brand hover:text-white transition">' +
+          '<svg class="h-4 w-4" fill="none" stroke="currentColor" stroke-width="2.4" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>' +
+        '</button>';
+      drawerInner.insertBefore(topBar, drawerInner.firstChild);
+    }
+  }
+
   function closeMobileDrawer() {
     if (!mobileDrawer) return;
     mobileDrawer.classList.remove('is-open');
@@ -286,39 +319,76 @@
       if (burger) burger.classList.remove('hidden');
       if (closeIcon) closeIcon.classList.add('hidden');
     }
-    document.body.classList.remove('overflow-hidden');
+    document.body.classList.remove('overflow-hidden', 'has-mobile-drawer-open', 'has-mega-open');
+  }
+
+  function openMobileDrawer() {
+    if (!mobileDrawer) return;
+    closeAllMenus();
+    mobileDrawer.classList.add('is-open');
+    if (mobileBtn) {
+      mobileBtn.setAttribute('aria-expanded', 'true');
+      var burger = $('.icon-burger', mobileBtn);
+      var closeIcon = $('.icon-close', mobileBtn);
+      if (burger) burger.classList.add('hidden');
+      if (closeIcon) closeIcon.classList.remove('hidden');
+    }
+    document.body.classList.add('overflow-hidden', 'has-mobile-drawer-open', 'has-mega-open');
   }
 
   if (mobileBtn && mobileDrawer) {
-    mobileBtn.addEventListener('click', function () {
+    mobileBtn.addEventListener('click', function (e) {
+      e.preventDefault();
+      e.stopPropagation();
       var willOpen = !mobileDrawer.classList.contains('is-open');
       if (willOpen) {
-        mobileDrawer.classList.add('is-open');
-        mobileBtn.setAttribute('aria-expanded', 'true');
-        var burger = $('.icon-burger', mobileBtn);
-        var closeIcon = $('.icon-close', mobileBtn);
-        if (burger) burger.classList.add('hidden');
-        if (closeIcon) closeIcon.classList.remove('hidden');
-        document.body.classList.add('overflow-hidden');
+        openMobileDrawer();
       } else {
         closeMobileDrawer();
       }
     });
   }
 
-  $$('.mobile-accordion-toggle').forEach(function (btn) {
-    btn.addEventListener('click', function () {
-      var body = btn.nextElementSibling;
-      var chevron = $('svg', btn);
-      var isOpen = !body.classList.contains('hidden');
-      if (isOpen) {
-        body.classList.add('hidden');
-        if (chevron) chevron.style.transform = '';
-      } else {
-        body.classList.remove('hidden');
-        if (chevron) chevron.style.transform = 'rotate(180deg)';
+  var mobileDrawerCloseBtn = $('#mobileDrawerCloseBtn');
+  if (mobileDrawerCloseBtn) {
+    mobileDrawerCloseBtn.addEventListener('click', function (e) {
+      e.preventDefault();
+      closeMobileDrawer();
+    });
+  }
+
+  if (mobileDrawer) {
+    mobileDrawer.addEventListener('click', function (e) {
+      var toggleBtn = e.target.closest('.mobile-accordion-toggle');
+      if (toggleBtn) {
+        e.preventDefault();
+        var body = toggleBtn.nextElementSibling;
+        var chevron = $('svg:last-child', toggleBtn) || $('svg', toggleBtn);
+        if (!body) return;
+        var isOpen = !body.classList.contains('hidden');
+        if (isOpen) {
+          body.classList.add('hidden');
+          toggleBtn.setAttribute('aria-expanded', 'false');
+          if (chevron) chevron.style.transform = '';
+        } else {
+          body.classList.remove('hidden');
+          toggleBtn.setAttribute('aria-expanded', 'true');
+          if (chevron) chevron.style.transform = 'rotate(180deg)';
+        }
+        return;
+      }
+
+      var link = e.target.closest('a[href]');
+      if (link) {
+        closeMobileDrawer();
       }
     });
+  }
+
+  window.addEventListener('resize', function () {
+    if (window.innerWidth >= 1024 && mobileDrawer && mobileDrawer.classList.contains('is-open')) {
+      closeMobileDrawer();
+    }
   });
 
   /* ---------- 3. HERO SLIDER TRƯỢT VÔ HẠN ---------- */

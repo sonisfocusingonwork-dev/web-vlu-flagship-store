@@ -5,6 +5,11 @@
  */
 
 require_once __DIR__ . '/backend/lib/product_links.php';
+require_once __DIR__ . '/backend/config/db.php';
+
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
 
 function e($value): string
 {
@@ -463,13 +468,13 @@ function e($value): string
         Nhân viên chăm sóc khách hàng sẽ liên hệ xác nhận trong vòng 15 phút.
       </p>
 
-      <!-- Nút quay về trang chủ -->
+      <!-- Nút xem đơn hàng đã đặt & quay về trang chủ -->
       <div class="pt-2 flex flex-col sm:flex-row gap-3">
-        <a href="index.html" class="flex-1 rounded-full bg-brand py-3 text-sm font-extrabold text-white shadow-lg shadow-brand/25 transition hover:bg-brand-dark active:scale-95 text-center">
-          Quay về trang chủ
+        <a href="account.php?tab=orders" id="btnViewOrders" class="flex-1 rounded-full bg-brand py-3 text-sm font-extrabold text-white shadow-lg shadow-brand/25 transition hover:bg-brand-dark active:scale-95 text-center">
+          Xem đơn hàng đã đặt
         </a>
-        <a href="index.html#dien-thoai" class="flex-1 rounded-full border border-slate-200 bg-white py-3 text-sm font-bold text-slate-700 transition hover:bg-slate-50 text-center">
-          Tiếp tục mua sắm
+        <a href="index.php" id="btnBackToHome" class="flex-1 rounded-full border border-slate-200 bg-white py-3 text-sm font-bold text-slate-700 transition hover:bg-slate-50 text-center">
+          Quay về trang chủ
         </a>
       </div>
 

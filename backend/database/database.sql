@@ -45,6 +45,23 @@ INSERT INTO `categories` (`id`, `name`) VALUES
 (13, 'Marshall'),
 (14, 'Soundcore');
 
+-- --------------------------------------------------------
+-- Cấu trúc bảng `products` (Danh mục sản phẩm Flagship)
+-- --------------------------------------------------------
+DROP TABLE IF EXISTS `products`;
+CREATE TABLE `products` (
+  `id` INT(11) NOT NULL AUTO_INCREMENT,
+  `category_id` INT(11) DEFAULT NULL,
+  `name` VARCHAR(255) NOT NULL,
+  `price` DECIMAL(15,2) NOT NULL DEFAULT 0.00,
+  `description` TEXT DEFAULT NULL,
+  `image` VARCHAR(500) DEFAULT NULL,
+  `stock` INT(11) NOT NULL DEFAULT 15,
+  `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`),
+  KEY `idx_products_category` (`category_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
 -- Dữ liệu bảng `products` (115 mẫu thuộc đúng 6 danh mục)
 INSERT INTO `products` (`id`, `category_id`, `name`, `price`, `description`, `image`) VALUES
 (1001, 1, 'iPhone 18 Pro Max', 34990000.00, 'iPhone 18 Pro Max chính hãng Apple tại VLU FLAGSHIP STORE.', 'frontend/assets/images/placeholders/phone.svg'),
@@ -172,14 +189,68 @@ CREATE TABLE `users` (
   `password` VARCHAR(255) NOT NULL,
   `email` VARCHAR(100) NOT NULL UNIQUE,
   `fullname` VARCHAR(100) DEFAULT NULL,
+  `phone` VARCHAR(20) DEFAULT NULL,
   `role` ENUM('admin', 'customer') DEFAULT 'customer',
   `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- Tài khoản quản trị mặc định (Mật khẩu: admin123)
-INSERT INTO `users` (`id`, `username`, `password`, `email`, `fullname`, `role`) VALUES
-(1, 'admin', '$2y$10$e8wVdI6G95t8kGvEshOaMe7f/o/sN0Q9K3E21b7s0lY1eK4P3qZ0e', 'admin@vluflagship.vn', 'Quản trị viên VLU', 'admin');
+INSERT INTO `users` (`id`, `username`, `password`, `email`, `fullname`, `phone`, `role`) VALUES
+(1, 'admin', '$2y$10$e8wVdI6G95t8kGvEshOaMe7f/o/sN0Q9K3E21b7s0lY1eK4P3qZ0e', 'admin@vluflagship.vn', 'Quản trị viên VLU', '02871059999', 'admin');
+
+-- --------------------------------------------------------
+-- Cấu trúc bảng `orders` (Đơn đặt hàng của thành viên & Khách Guest)
+-- --------------------------------------------------------
+DROP TABLE IF EXISTS `order_details`;
+DROP TABLE IF EXISTS `orders`;
+CREATE TABLE `orders` (
+  `id` INT(11) NOT NULL AUTO_INCREMENT,
+  `order_code` VARCHAR(50) NOT NULL UNIQUE,
+  `user_id` INT(11) DEFAULT NULL COMMENT 'NULL hoặc 0 nếu là Tài khoản Khách (Guest)',
+  `user_identity` VARCHAR(100) DEFAULT 'guest' COMMENT 'Định danh tài khoản hoặc guest',
+  `customer_name` VARCHAR(150) NOT NULL,
+  `customer_phone` VARCHAR(30) NOT NULL,
+  `customer_email` VARCHAR(150) DEFAULT NULL,
+  `customer_address` TEXT NOT NULL,
+  `shipping_method` VARCHAR(30) DEFAULT 'home',
+  `store_location` VARCHAR(255) DEFAULT NULL,
+  `customer_notes` TEXT DEFAULT NULL,
+  `payment_method` VARCHAR(150) DEFAULT 'Thanh toán khi nhận hàng (COD)',
+  `payment_key` VARCHAR(50) DEFAULT 'cod',
+  `voucher_code` VARCHAR(50) DEFAULT NULL,
+  `installment_term` INT(11) DEFAULT 0,
+  `installment_monthly` DECIMAL(15,2) DEFAULT 0.00,
+  `subtotal` DECIMAL(15,2) NOT NULL DEFAULT 0.00,
+  `discount` DECIMAL(15,2) NOT NULL DEFAULT 0.00,
+  `total` DECIMAL(15,2) NOT NULL DEFAULT 0.00,
+  `status` VARCHAR(30) NOT NULL DEFAULT 'pending',
+  `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  `updated_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`),
+  KEY `idx_orders_user_id` (`user_id`),
+  KEY `idx_orders_user_identity` (`user_identity`),
+  KEY `idx_orders_status` (`status`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- --------------------------------------------------------
+-- Cấu trúc bảng `order_details` (Chi tiết sản phẩm trong đơn hàng)
+-- --------------------------------------------------------
+CREATE TABLE `order_details` (
+  `id` INT(11) NOT NULL AUTO_INCREMENT,
+  `order_id` INT(11) NOT NULL,
+  `order_code` VARCHAR(50) DEFAULT NULL,
+  `product_id` VARCHAR(50) NOT NULL,
+  `product_name` VARCHAR(255) NOT NULL,
+  `color` VARCHAR(100) DEFAULT 'Mặc định',
+  `variant` VARCHAR(100) DEFAULT 'Tiêu chuẩn',
+  `price` DECIMAL(15,2) NOT NULL DEFAULT 0.00,
+  `quantity` INT(11) NOT NULL DEFAULT 1,
+  `image` VARCHAR(500) DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `idx_order_details_order_id` (`order_id`),
+  CONSTRAINT `fk_order_details_order` FOREIGN KEY (`order_id`) REFERENCES `orders` (`id`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 COMMIT;
 

@@ -253,96 +253,110 @@ foreach ($catalogInventory['categories'] as $category) {
     </nav>
 
   </div>
+</header>
 
-  <!-- ================= MENU DI ĐỘNG (MOBILE DRAWER SHEET) ================= -->
-  <div id="mobileDrawer" class="mobile-drawer" role="dialog" aria-modal="true" aria-label="Menu danh mục di động">
-    <div class="mobile-drawer-inner p-4 space-y-3">
-      
-      <!-- Khung Tài khoản Mobile -->
-      <div class="pb-2 border-b border-slate-200/80">
-        <!-- Khi chưa đăng nhập -->
-        <a href="login.html" id="mobileLoginBtn" class="flex items-center justify-center gap-2 w-full py-2.5 rounded-2xl bg-brand text-white font-extrabold text-xs shadow-md shadow-brand/20 active:scale-98">
-          <svg class="h-4 w-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0A17.933 17.933 0 0112 21.75c-2.676 0-5.216-.584-7.499-1.632z"/></svg>
-          <span>Đăng nhập / Đăng ký</span>
-        </a>
+<!-- ================= MENU DI ĐỘNG (MOBILE DRAWER SHEET) ================= -->
+<div id="mobileDrawer" class="mobile-drawer" role="dialog" aria-modal="true" aria-label="Menu danh mục di động">
+  <div class="mobile-drawer-inner p-4 space-y-3">
 
-        <!-- Khi đã đăng nhập -->
-        <div id="mobileUserBox" class="hidden p-2.5 rounded-2xl bg-white border border-slate-200/80 space-y-2">
-          <div class="flex items-center justify-between">
-            <div class="flex items-center gap-2.5 min-w-0">
-              <span id="mobileUserAvatar" class="grid h-8 w-8 shrink-0 place-items-center rounded-full bg-brand text-xs font-black text-white">V</span>
-              <div class="min-w-0">
-                <p id="mobileUserName" class="text-xs font-bold text-slate-900 truncate">Người dùng</p>
-                <p id="mobileUserRole" class="text-[10px] font-bold text-emerald-600">Khách hàng VLU</p>
-              </div>
-            </div>
-            <button type="button" id="mobileLogoutBtn" class="text-xs font-bold text-red-500 hover:text-red-700 px-2 py-1">Đăng xuất</button>
-          </div>
-          <a href="admin.html" id="mobileAdminBtn" class="hidden flex items-center justify-center gap-1.5 w-full py-1.5 rounded-xl bg-brand/10 text-brand font-bold text-xs hover:bg-brand-soft transition">
-            <svg class="h-3.5 w-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M10.5 6h9.75M10.5 6a1.5 1.5 0 11-3 0m3 0a1.5 1.5 0 10-3 0M3.75 6H7.5m3 12h9.75m-9.75 0a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m-3.75 0H7.5m9-6h3.75m-3.75 0a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m-9.75 0h9.75"/></svg>
-            <span>Trang quản trị (Admin)</span>
-          </a>
-          <a href="account.php" class="block rounded-xl bg-slate-50 px-3 py-2 text-xs font-bold text-slate-700 hover:bg-brand-soft hover:text-brand">Tài khoản của tôi</a>
-          <a href="account.php?tab=orders" class="block rounded-xl bg-slate-50 px-3 py-2 text-xs font-bold text-slate-700 hover:bg-brand-soft hover:text-brand">Đơn hàng của tôi</a>
-        </div>
+    <!-- Thanh tiêu đề & Nút đóng Menu Mobile -->
+    <div id="mobileDrawerTopBar" class="flex items-center justify-between pb-3 border-b border-slate-200/80">
+      <div class="flex items-center gap-2">
+        <span class="inline-block h-2.5 w-2.5 rounded-full bg-brand"></span>
+        <span class="text-xs font-black uppercase tracking-wider text-slate-900">Danh mục &amp; Tiện ích</span>
       </div>
+      <button type="button" id="mobileDrawerCloseBtn" aria-label="Đóng menu di động" class="grid h-9 w-9 place-items-center rounded-full bg-slate-100 text-slate-700 hover:bg-brand hover:text-white transition">
+        <svg class="h-4 w-4" fill="none" stroke="currentColor" stroke-width="2.4" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
+      </button>
+    </div>
 
-      <!-- Ô tìm kiếm mobile -->
-      <form action="search.php" method="GET" class="relative">
-        <svg class="pointer-events-none absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
-        <input name="q" type="search" placeholder="Tìm kiếm sản phẩm…" class="h-11 w-full rounded-full border border-slate-200 bg-white pl-10 pr-4 text-sm font-medium text-slate-800 placeholder:text-slate-400 focus:outline-none focus:border-brand">
-      </form>
+    <!-- Khung Tài khoản Mobile -->
+    <div class="pb-2 border-b border-slate-200/80">
+      <!-- Khi chưa đăng nhập -->
+      <a href="login.html" id="mobileLoginBtn" class="flex items-center justify-center gap-2 w-full py-2.5 rounded-2xl bg-brand text-white font-extrabold text-xs shadow-md shadow-brand/20 active:scale-98">
+        <svg class="h-4 w-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0A17.933 17.933 0 0112 21.75c-2.676 0-5.216-.584-7.499-1.632z"/></svg>
+        <span>Đăng nhập / Đăng ký</span>
+      </a>
 
-      <!-- Accordion 6 danh mục chính trên Mobile -->
-      <div class="space-y-2">
-        <?php foreach ($navMegaCategories as $slug => $cat): ?>
-          <div class="mobile-brand-card">
-            <button type="button" class="mobile-accordion-toggle flex w-full items-center justify-between p-3.5 rounded-2xl bg-white/80 font-bold text-slate-900 text-left transition">
-              <span class="text-sm font-extrabold text-slate-900 flex items-center gap-2">
-                <?= $cat['icon'] ?>
-                <?= e($cat['name']) ?>
-              </span>
-              <svg class="h-4 w-4 text-slate-400 transition-transform duration-200" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/></svg>
-            </button>
-            <div class="mobile-accordion-body hidden px-3 pt-2 pb-3 space-y-3">
-              <?php foreach ($cat['groups'] as $grp): ?>
-                <div class="pl-2 border-l-2 border-slate-200">
-                  <p class="text-xs font-black text-slate-800"><?= e($grp['title']) ?></p>
-                  <?php if (!empty($grp['sections'])): ?>
-                    <?php foreach ($grp['sections'] as $sec): ?>
-                      <p class="text-[10px] font-bold text-slate-400 uppercase mt-1.5"><?= e($sec['title']) ?></p>
-                      <div class="mt-0.5 space-y-0.5">
-                        <?php foreach ($sec['items'] as $it): ?>
-                          <a href="<?= vlu_product_url($it, $slug) ?>" class="block py-0.5 text-xs font-semibold text-slate-700 hover:text-brand">
-                            <?= e($it) ?>
-                          </a>
-                        <?php endforeach; ?>
-                      </div>
-                    <?php endforeach; ?>
-                  <?php else: ?>
-                    <div class="mt-1 space-y-0.5">
-                      <?php foreach ($grp['items'] as $it): ?>
-                        <a href="<?= vlu_product_url($it, $slug) ?>" class="block py-0.5 text-xs font-semibold text-slate-700 hover:text-brand">
+      <!-- Khi đã đăng nhập -->
+      <div id="mobileUserBox" class="hidden p-2.5 rounded-2xl bg-white border border-slate-200/80 space-y-2">
+        <div class="flex items-center justify-between">
+          <div class="flex items-center gap-2.5 min-w-0">
+            <span id="mobileUserAvatar" class="grid h-8 w-8 shrink-0 place-items-center rounded-full bg-brand text-xs font-black text-white">V</span>
+            <div class="min-w-0">
+              <p id="mobileUserName" class="text-xs font-bold text-slate-900 truncate">Người dùng</p>
+              <p id="mobileUserRole" class="text-[10px] font-bold text-emerald-600">Khách hàng VLU</p>
+            </div>
+          </div>
+          <button type="button" id="mobileLogoutBtn" class="text-xs font-bold text-red-500 hover:text-red-700 px-2 py-1">Đăng xuất</button>
+        </div>
+        <a href="admin.html" id="mobileAdminBtn" class="hidden flex items-center justify-center gap-1.5 w-full py-1.5 rounded-xl bg-brand/10 text-brand font-bold text-xs hover:bg-brand-soft transition">
+          <svg class="h-3.5 w-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M10.5 6h9.75M10.5 6a1.5 1.5 0 11-3 0m3 0a1.5 1.5 0 10-3 0M3.75 6H7.5m3 12h9.75m-9.75 0a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m-3.75 0H7.5m9-6h3.75m-3.75 0a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m-9.75 0h9.75"/></svg>
+          <span>Trang quản trị (Admin)</span>
+        </a>
+        <a href="account.php" class="block rounded-xl bg-slate-50 px-3 py-2 text-xs font-bold text-slate-700 hover:bg-brand-soft hover:text-brand">Tài khoản của tôi</a>
+        <a href="account.php?tab=orders" class="block rounded-xl bg-slate-50 px-3 py-2 text-xs font-bold text-slate-700 hover:bg-brand-soft hover:text-brand">Đơn hàng của tôi</a>
+      </div>
+    </div>
+
+    <!-- Ô tìm kiếm mobile -->
+    <form action="search.php" method="GET" class="relative">
+      <svg class="pointer-events-none absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+      <input name="q" type="search" placeholder="Tìm kiếm sản phẩm…" class="h-11 w-full rounded-full border border-slate-200 bg-white pl-10 pr-4 text-sm font-medium text-slate-800 placeholder:text-slate-400 focus:outline-none focus:border-brand">
+    </form>
+
+    <!-- Accordion 6 danh mục chính trên Mobile -->
+    <div class="space-y-2 pb-6">
+      <?php foreach ($navMegaCategories as $slug => $cat): ?>
+        <div class="mobile-brand-card">
+          <button type="button" aria-expanded="false" class="mobile-accordion-toggle flex w-full items-center justify-between p-3.5 rounded-2xl bg-white/80 font-bold text-slate-900 text-left transition">
+            <span class="text-sm font-extrabold text-slate-900 flex items-center gap-2">
+              <?= $cat['icon'] ?>
+              <?= e($cat['name']) ?>
+            </span>
+            <svg class="h-4 w-4 text-slate-400 transition-transform duration-200" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/></svg>
+          </button>
+          <div class="mobile-accordion-body hidden px-3 pt-2 pb-3 space-y-3">
+            <a href="category.php?cat=<?= e($slug) ?>" class="flex items-center justify-between rounded-xl bg-brand/10 px-3 py-2 text-xs font-extrabold text-brand hover:bg-brand hover:text-white transition">
+              <span>Xem tất cả <?= e($cat['name']) ?></span>
+              <span>→</span>
+            </a>
+            <?php foreach ($cat['groups'] as $grp): ?>
+              <div class="pl-2.5 border-l-2 border-slate-200">
+                <p class="text-xs font-black text-slate-800 mb-0.5"><?= e($grp['title']) ?></p>
+                <?php if (!empty($grp['sections'])): ?>
+                  <?php foreach ($grp['sections'] as $sec): ?>
+                    <p class="text-[10px] font-bold text-slate-400 uppercase mt-1.5"><?= e($sec['title']) ?></p>
+                    <div class="mt-0.5 space-y-0.5">
+                      <?php foreach ($sec['items'] as $it): ?>
+                        <a href="<?= vlu_product_url($it, $slug) ?>" class="block py-1 text-xs font-semibold text-slate-700 hover:text-brand">
                           <?= e($it) ?>
                         </a>
                       <?php endforeach; ?>
                     </div>
-                  <?php endif; ?>
-                </div>
-              <?php endforeach; ?>
-            </div>
+                  <?php endforeach; ?>
+                <?php else: ?>
+                  <div class="mt-1 space-y-0.5">
+                    <?php foreach ($grp['items'] as $it): ?>
+                      <a href="<?= vlu_product_url($it, $slug) ?>" class="block py-1 text-xs font-semibold text-slate-700 hover:text-brand">
+                        <?= e($it) ?>
+                      </a>
+                    <?php endforeach; ?>
+                  </div>
+                <?php endif; ?>
+              </div>
+            <?php endforeach; ?>
           </div>
-        <?php endforeach; ?>
-      </div>
-
+        </div>
+      <?php endforeach; ?>
     </div>
+
   </div>
-</header>
+</div>
 
 <!-- Lớp phủ mờ nền trang (Scrim Blur) NẰM SAU HEADER (z-index 40 < header 50) -->
 <div id="megaScrim" class="mega-scrim" aria-hidden="true"></div>
 <script src="frontend/assets/js/products-data.js"></script>
-<script src="frontend/assets/js/cart-engine.js"></script>
 <script src="frontend/assets/js/catalog-menu.js"></script>
 <!-- Central Cart Engine 2026 -->
 <script src="frontend/assets/js/cart-engine.js"></script>

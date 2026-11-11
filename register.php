@@ -5,6 +5,65 @@
  */
 
 require_once __DIR__ . '/backend/lib/product_links.php';
+require_once __DIR__ . '/backend/config/db.php';
+
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
+
+$serverRegisterError = '';
+$serverRegisteredUser = null;
+
+if (($_SERVER['REQUEST_METHOD'] ?? 'GET') === 'POST' && isset($_POST['email'], $_POST['password'])) {
+    $fullname = trim((string)($_POST['fullname'] ?? ''));
+    $phone = trim((string)($_POST['phone'] ?? ''));
+    $email = trim((string)($_POST['email'] ?? ''));
+    $usernameInput = trim((string)($_POST['username'] ?? ''));
+    $regUsername = $usernameInput !== '' ? $usernameInput : $email;
+    $password = (string)($_POST['password'] ?? '');
+    $confirmPassword = (string)($_POST['confirm_password'] ?? '');
+
+    if ($fullname === '' || $email === '' || $password === '') {
+        $serverRegisterError = 'Vui lòng điền đầy đủ các thông tin đăng ký!';
+    } elseif ($confirmPassword !== '' && $password !== $confirmPassword) {
+        $serverRegisterError = 'Mật khẩu xác nhận không trùng khớp!';
+    } elseif ($conn !== null) {
+        try {
+            $checkStmt = $conn->prepare("SELECT id FROM users WHERE LOWER(email) = LOWER(:email) OR LOWER(username) = LOWER(:username) LIMIT 1");
+            $checkStmt->execute([':email' => $email, ':username' => $regUsername]);
+            if ($checkStmt->fetch()) {
+                $serverRegisterError = 'Email/Tài khoản này đã được đăng ký trên hệ thống!';
+            } else {
+                $hashedPassword = password_hash($password, PASSWORD_DEFAULT);
+                $role = (strtolower($email) === 'admin@vlu.edu.vn') ? 'admin' : 'customer';
+
+                $insertStmt = $conn->prepare("INSERT INTO users (username, password, email, fullname, phone, role) VALUES (:username, :password, :email, :fullname, :phone, :role)");
+                $insertStmt->execute([
+                    ':username' => $regUsername,
+                    ':password' => $hashedPassword,
+                    ':email' => $email,
+                    ':fullname' => $fullname,
+                    ':phone' => $phone,
+                    ':role' => $role
+                ]);
+
+                $newId = (int)$conn->lastInsertId();
+                $isAdmin = ($role === 'admin');
+                $serverRegisteredUser = [
+                    'id' => $newId,
+                    'username' => $regUsername,
+                    'email' => $email,
+                    'fullname' => $fullname,
+                    'phone' => $phone,
+                    'role' => $isAdmin ? 1 : 0
+                ];
+                $_SESSION['vlu_user'] = $serverRegisteredUser;
+            }
+        } catch (PDOException $e) {
+            $serverRegisterError = 'Lỗi CSDL khi đăng ký: ' . $e->getMessage();
+        }
+    }
+}
 
 function e($value): string
 {
@@ -81,7 +140,7 @@ function e($value): string
       </div>
 
       <!-- Khung báo lỗi (nếu có) -->
-      <div id="registerErrorMsg" class="hidden rounded-xl bg-red-50 border border-red-200 p-3 text-xs font-semibold text-red-600 text-center animate-fade-in"></div>
+      <div id="registerErrorMsg" class="<?= $serverRegisterError !== '' ? '' : 'hidden ' ?>rounded-xl bg-red-50 border border-red-200 p-3 text-xs font-semibold text-red-600 text-center animate-fade-in"><?= e($serverRegisterError) ?></div>
 
       <!-- Form Đăng ký (chuẩn bảng users: fullname, phone, email, password, confirm_password) -->
       <form id="registerForm" method="POST" action="register.php" class="space-y-4">
@@ -213,6 +272,17 @@ function e($value): string
   <!-- Scripts -->
   <script src="frontend/assets/js/cart-engine.js"></script>
   <script src="frontend/assets/js/auth-engine.js"></script>
+<?php if ($serverRegisteredUser !== null): ?>
+  <script>
+    (function () {
+      try {
+        var user = <?= json_encode($serverRegisteredUser, JSON_UNESCAPED_UNICODE) ?>;
+        localStorage.setItem('vlu_user', JSON.stringify(user));
+        window.location.href = 'index.php';
+      } catch (e) {}
+    })();
+  </script>
+<?php endif; ?>
   <script src="frontend/assets/js/register-page.js"></script>
 
 </body>

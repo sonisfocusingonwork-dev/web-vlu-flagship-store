@@ -4,11 +4,82 @@
  * Thiết kế chuẩn Apple ID Glassmorphism 2026, ambient mesh gradient, tích hợp name inputs cho bảng users
  */
 
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
+
+require_once __DIR__ . '/backend/config/db.php';
 require_once __DIR__ . '/backend/lib/product_links.php';
 
 function e($value): string
 {
     return htmlspecialchars((string)$value, ENT_QUOTES, 'UTF-8');
+}
+
+$loginErrorMsg = '';
+$loggedInUserJson = null;
+$redirectUrl = 'index.php';
+
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    $identifier = trim((string)($_POST['username'] ?? ''));
+    $password = (string)($_POST['password'] ?? '');
+
+    if ($identifier === '' || $password === '') {
+        $loginErrorMsg = 'Vui lòng nhập đầy đủ Email/Tên đăng nhập và Mật khẩu!';
+    } elseif ($conn === null) {
+        $loginErrorMsg = 'Không thể kết nối CSDL MySQL.';
+    } else {
+        try {
+            $stmt = $conn->prepare("SELECT id, username, password, email, fullname, role FROM users WHERE LOWER(username) = LOWER(:id1) OR LOWER(email) = LOWER(:id2) LIMIT 1");
+            $stmt->execute([
+                ':id1' => $identifier,
+                ':id2' => $identifier
+            ]);
+            $user = $stmt->fetch(PDO::FETCH_ASSOC);
+
+            if (!$user) {
+                $loginErrorMsg = 'Tài khoản không tồn tại, vui lòng đăng ký!';
+            } else {
+                $dbHash = (string)$user['password'];
+                $isPasswordValid = password_verify($password, $dbHash) || ($password === $dbHash);
+                if (!$isPasswordValid) {
+                    $loginErrorMsg = 'Mật khẩu không chính xác!';
+                } else {
+                    $roleText = strtolower(trim((string)$user['role']));
+                    $isAdmin = ($roleText === 'admin' || $roleText === '1' || strtolower((string)$user['username']) === 'admin');
+                    $sessionUser = [
+                        'id' => (int)$user['id'],
+                        'username' => $user['username'],
+                        'email' => $user['email'],
+                        'fullname' => $user['fullname'] ?: $user['username'],
+                        'role' => $isAdmin ? 1 : 0
+                    ];
+                    $_SESSION['vlu_user'] = $sessionUser;
+                    $loggedInUserJson = json_encode($sessionUser, JSON_UNESCAPED_UNICODE);
+
+                    // Phân luồng sau đăng nhập: Admin -> admin.php, User thường -> ?next= hợp lệ hoặc index.php
+                    $redirectUrl = 'index.php';
+                    if ($isAdmin) {
+                        $redirectUrl = 'admin.php';
+                    } else {
+                        $nextRaw = trim((string)($_POST['next'] ?? $_GET['next'] ?? ''));
+                        if (
+                            $nextRaw !== ''
+                            && preg_match('/^[A-Za-z0-9_\-\/.]+\.(php|html)(\?[A-Za-z0-9_\-=&%.]*)?$/', $nextRaw)
+                            && $nextRaw[0] !== '/'
+                            && strpos($nextRaw, '..') === false
+                            && strpos($nextRaw, '//') === false
+                            && !preg_match('/^admin\.(php|html)/i', $nextRaw)
+                        ) {
+                            $redirectUrl = $nextRaw;
+                        }
+                    }
+                }
+            }
+        } catch (PDOException $ex) {
+            $loginErrorMsg = 'Lỗi truy vấn CSDL: ' . $ex->getMessage();
+        }
+    }
 }
 ?>
 <!DOCTYPE html>
@@ -81,10 +152,11 @@ function e($value): string
       </div>
 
       <!-- Khung báo lỗi (nếu có) -->
-      <div id="loginErrorMsg" class="hidden rounded-xl bg-red-50 border border-red-200 p-3 text-xs font-semibold text-red-600 text-center animate-fade-in"></div>
+      <div id="loginErrorMsg" class="<?= !empty($loginErrorMsg) ? '' : 'hidden' ?> rounded-xl bg-red-50 border border-red-200 p-3 text-xs font-semibold text-red-600 text-center animate-fade-in"><?= e($loginErrorMsg) ?></div>
 
       <!-- Form Đăng nhập (chuẩn bảng users: username, password, remember) -->
       <form id="loginForm" method="POST" action="login.php" class="space-y-4">
+        <input type="hidden" name="next" value="<?= e($_GET['next'] ?? $_POST['next'] ?? '') ?>">
         
         <!-- Ô nhập: Email hoặc Username -->
         <div>
@@ -182,11 +254,23 @@ function e($value): string
           <span class="font-extrabold text-slate-900">💡 Tài khoản Quản trị viên (Admin):</span>
           <button type="button" id="quickAdminBtn" class="font-bold text-brand hover:underline">Điền nhanh</button>
         </div>
-        <p class="text-slate-500">Email: <strong class="text-slate-800">admin@vlu.edu.vn</strong> | Mật khẩu: bất kỳ</p>
+        <p class="text-slate-500">Tài khoản: <strong class="text-slate-800">admin</strong> hoặc <strong class="text-slate-800">admin@vluflagship.vn</strong> | Mật khẩu: <strong class="text-slate-800">admin123</strong></p>
       </div>
 
     </div>
   </main>
+
+  <?php if (!empty($loggedInUserJson)): ?>
+  <script>
+    (function () {
+      var redirectUrl = <?= json_encode($redirectUrl, JSON_UNESCAPED_SLASHES) ?>;
+      try {
+        localStorage.setItem('vlu_user', <?= json_encode($loggedInUserJson, JSON_UNESCAPED_UNICODE | JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_QUOT) ?>);
+      } catch (e) {}
+      window.location.href = redirectUrl;
+    })();
+  </script>
+  <?php endif; ?>
 
   <!-- Footer Tối giản -->
   <footer class="w-full max-w-7xl mx-auto px-4 py-5 text-center text-xs text-slate-400 relative z-20">

@@ -47,6 +47,12 @@ function e($value): string
   <!-- Stylesheet Hệ thống Glassmorphic 2026 -->
   <link rel="stylesheet" href="style.css">
   <style>
+    html, body {
+      min-height: 100vh;
+      overflow-x: hidden;
+      overflow-y: auto !important;
+      -webkit-overflow-scrolling: touch;
+    }
     .glass-sidebar {
       background: rgba(255, 255, 255, 0.88);
       backdrop-filter: blur(24px) saturate(190%);
@@ -57,6 +63,13 @@ function e($value): string
       backdrop-filter: blur(20px);
       -webkit-backdrop-filter: blur(20px);
       border: 1px solid rgba(226, 232, 240, 0.8);
+    }
+    .admin-main,
+    .admin-content {
+      min-height: 100vh;
+      overflow-y: auto;
+      overflow-x: hidden;
+      -webkit-overflow-scrolling: touch;
     }
     .custom-scrollbar::-webkit-scrollbar {
       width: 6px;
@@ -72,12 +85,23 @@ function e($value): string
     .custom-scrollbar::-webkit-scrollbar-thumb:hover {
       background: rgba(148, 163, 184, 1);
     }
-    .text-xs {
-      font-size: 10px
+    @media (max-width: 1023px) {
+      #adminLayout > aside nav {
+        display: flex;
+        overflow-x: auto;
+        gap: 0.5rem;
+        padding-bottom: 0.25rem;
+        -webkit-overflow-scrolling: touch;
+      }
+      #adminLayout > aside nav > button {
+        width: auto;
+        flex-shrink: 0;
+        white-space: nowrap;
+      }
     }
   </style>
 </head>
-<body class="bg-[#F8F9FC] font-sans text-ink antialiased min-h-screen flex flex-col selection:bg-brand selection:text-white">
+<body class="bg-[#F8F9FC] font-sans text-ink antialiased min-h-screen flex flex-col selection:bg-brand selection:text-white overflow-x-hidden">
 
   <!-- ============================================================
        0. KHUNG BẢO VỆ PHÂN QUYỀN (ACCESS DENIED GATE)
@@ -106,7 +130,7 @@ function e($value): string
           <span>Đăng nhập nhanh quyền Admin (Demo)</span>
         </button>
 
-        <a href="login.html" class="block w-full py-2.5 rounded-full border border-slate-200 bg-white text-slate-700 font-bold text-xs hover:bg-slate-50 transition active:scale-95 text-center">
+        <a href="login.php" class="block w-full py-2.5 rounded-full border border-slate-200 bg-white text-slate-700 font-bold text-xs hover:bg-slate-50 transition active:scale-95 text-center">
           Đăng nhập bằng tài khoản khác
         </a>
 
@@ -120,12 +144,12 @@ function e($value): string
   <!-- ============================================================
        BỐ CỤC CHÍNH (ADMIN LAYOUT: SIDEBAR + MAIN CONTENT)
        ============================================================ -->
-  <div id="adminLayout" class="flex-1 flex flex-col lg:flex-row min-h-screen">
+  <div id="adminLayout" class="admin-layout flex-1 flex flex-col lg:flex-row min-h-screen">
     
     <!-- ============================================================
          1. SIDEBAR ĐIỀU HƯỚNG BÊN TRÁI (LEFT SIDEBAR)
          ============================================================ -->
-    <aside class="glass-sidebar w-full lg:w-72 shrink-0 border-r border-slate-200/80 flex flex-col justify-between p-5 lg:sticky lg:top-0 lg:h-screen z-30">
+    <aside class="glass-sidebar w-full lg:w-72 shrink-0 border-b lg:border-b-0 lg:border-r border-slate-200/80 flex flex-col justify-between p-4 sm:p-5 lg:sticky lg:top-0 lg:h-screen overflow-y-auto custom-scrollbar z-30">
       
       <div class="space-y-6">
         <!-- Logo & Nhãn thương hiệu Admin -->
@@ -213,15 +237,15 @@ function e($value): string
     <!-- ============================================================
          2. KHUNG NỘI DUNG CHÍNH (RIGHT MAIN CONTENT)
          ============================================================ -->
-    <main class="flex-1 flex flex-col min-w-0 overflow-y-auto custom-scrollbar">
+    <main class="admin-main flex-1 flex flex-col min-w-0 overflow-y-auto overflow-x-hidden custom-scrollbar">
       
       <!-- Topbar Header -->
-      <header class="sticky top-0 z-20 border-b border-slate-200/80 bg-white/90 backdrop-blur-md px-6 py-4 flex flex-wrap items-center justify-between gap-4">
+      <header class="sticky top-0 z-20 border-b border-slate-200/80 bg-white/90 backdrop-blur-md px-4 sm:px-6 py-4 flex flex-wrap items-center justify-between gap-4">
         <div>
           <nav aria-label="Breadcrumb" class="text-[11px] font-semibold text-slate-400 mb-0.5">
             <span>Admin</span> / <span id="topbarBreadcrumb" class="text-slate-700">Tổng quan hệ thống</span>
           </nav>
-          <h1 id="topbarPageTitle" class="text-xl sm:text-2xl font-black text-slate-950 tracking-tight">Tổng quan hệ thống (Dashboard)</h1>
+          <h1 id="topbarPageTitle" class="text-lg sm:text-2xl font-black text-slate-950 tracking-tight">Tổng quan hệ thống (Dashboard)</h1>
         </div>
 
         <div class="flex items-center gap-3">
@@ -240,7 +264,7 @@ function e($value): string
       </header>
 
       <!-- Vùng hiển thị các Tab Panel -->
-      <div class="p-6 sm:p-8 space-y-8 flex-1">
+      <div class="admin-content p-4 sm:p-8 space-y-6 sm:space-y-8 flex-1">
 
         <!-- ============================================================
              TAB 1: TỔNG QUAN (DASHBOARD)

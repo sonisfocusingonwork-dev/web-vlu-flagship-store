@@ -57,40 +57,48 @@
         return;
       }
 
-      if (password.length < 4) {
-        showError('Mật khẩu quá ngắn (tối thiểu 4 ký tự)!');
-        return;
-      }
-
       // Hiệu ứng nút bấm đang xử lý
       if (btnLoginSubmit) {
         btnLoginSubmit.disabled = true;
         btnLoginSubmit.innerHTML = '<span class="inline-block animate-spin mr-2">◌</span> Đang xác thực...';
       }
 
-      setTimeout(function () {
-        var res = { success: false, message: 'Lỗi hệ thống' };
-        if (window.VLU_AUTH) {
-          res = window.VLU_AUTH.login(username, password, remember);
-        }
-
-        if (res.success) {
+      function handleLoginResult(res) {
+        if (res && res.success) {
           if (loginErrorMsg) loginErrorMsg.classList.add('hidden');
           if (window.VLU_CART && typeof window.VLU_CART.showToast === 'function') {
             window.VLU_CART.showToast(res.message);
           }
-          // Chuyển hướng sang trang chủ sau 500ms
+          // Phân luồng sau đăng nhập: Admin -> Dashboard (admin.php/html), User -> trang chủ hoặc ?next=
+          var loggedUser = res.user || (window.VLU_AUTH && window.VLU_AUTH.getUser ? window.VLU_AUTH.getUser() : null);
+          var nextParam = '';
+          try { nextParam = new URLSearchParams(window.location.search).get('next') || ''; } catch (err) {}
+          var targetUrl = resolveTargetUrl(loggedUser, nextParam);
           setTimeout(function () {
-            window.location.href = 'index.html';
-          }, 500);
+            window.location.href = targetUrl;
+          }, 400);
         } else {
           if (btnLoginSubmit) {
             btnLoginSubmit.disabled = false;
             btnLoginSubmit.innerHTML = '<span>Đăng nhập</span><svg class="h-4 w-4" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3"/></svg>';
           }
-          showError(res.message);
+          var errMsg = (res && res.message) ? res.message : 'Tài khoản không tồn tại, vui lòng đăng ký!';
+          showError(errMsg);
         }
-      }, 400);
+      }
+
+      if (window.VLU_AUTH && typeof window.VLU_AUTH.login === 'function') {
+        var loginResult = window.VLU_AUTH.login(username, password, remember);
+        if (loginResult && typeof loginResult.then === 'function') {
+          loginResult.then(handleLoginResult).catch(function () {
+            handleLoginResult({ success: false, message: 'Lỗi xác thực hệ thống.' });
+          });
+        } else {
+          handleLoginResult(loginResult);
+        }
+      } else {
+        handleLoginResult({ success: false, message: 'Module xác thực chưa sẵn sàng.' });
+      }
     });
   }
 
@@ -98,22 +106,14 @@
   var btnGoogleLogin = document.getElementById('btnGoogleLogin');
   if (btnGoogleLogin) {
     btnGoogleLogin.addEventListener('click', function () {
-      if (window.VLU_AUTH) {
-        window.VLU_AUTH.login('google.user@gmail.com', 'google_auth_demo', true);
-        if (window.VLU_CART) window.VLU_CART.showToast('Đăng nhập thành công bằng tài khoản Google!');
-        setTimeout(function () { window.location.href = 'index.html'; }, 500);
-      }
+      showError('Tính năng đăng nhập với Google hiện đang bảo trì kết nối OAuth. Vui lòng đăng nhập bằng Email/Tài khoản.');
     });
   }
 
   var btnAppleLogin = document.getElementById('btnAppleLogin');
   if (btnAppleLogin) {
     btnAppleLogin.addEventListener('click', function () {
-      if (window.VLU_AUTH) {
-        window.VLU_AUTH.login('apple.id@icloud.com', 'apple_id_demo', true);
-        if (window.VLU_CART) window.VLU_CART.showToast('Đăng nhập thành công bằng Apple ID!');
-        setTimeout(function () { window.location.href = 'index.html'; }, 500);
-      }
+      showError('Tính năng đăng nhập Apple ID hiện đang bảo trì kết nối Apple Sign-In. Vui lòng đăng nhập bằng Email/Tài khoản.');
     });
   }
 
@@ -121,8 +121,8 @@
   var quickAdminBtn = document.getElementById('quickAdminBtn');
   if (quickAdminBtn && usernameInput && passwordInput) {
     quickAdminBtn.addEventListener('click', function () {
-      usernameInput.value = 'admin@vlu.edu.vn';
-      passwordInput.value = 'Admin@2026';
+      usernameInput.value = 'admin';
+      passwordInput.value = 'admin123';
       if (loginErrorMsg) loginErrorMsg.classList.add('hidden');
     });
   }
@@ -134,6 +134,21 @@
     } else {
       alert(msg);
     }
+  }
+
+  /**
+   * Xác định trang đích sau đăng nhập thành công (đồng bộ với VLU_AUTH.getPostLoginUrl)
+   * - Admin (role == 1 / 'admin' / username 'admin') -> admin.php hoặc admin.html
+   * - User thường -> ?next= hợp lệ hoặc index.php / index.html
+   */
+  function resolveTargetUrl(user, nextParam) {
+    if (window.VLU_AUTH && typeof window.VLU_AUTH.getPostLoginUrl === 'function') {
+      return window.VLU_AUTH.getPostLoginUrl(user, nextParam);
+    }
+    var ext = window.location.pathname.indexOf('.php') !== -1 ? '.php' : '.html';
+    var isAdmin = !!user && (Number(user.role) === 1 || String(user.role).toLowerCase() === 'admin' ||
+      String(user.username || '').toLowerCase() === 'admin');
+    return (isAdmin ? 'admin' : 'index') + ext;
   }
 
 })(window, document);

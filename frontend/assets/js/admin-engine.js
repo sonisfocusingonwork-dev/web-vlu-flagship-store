@@ -195,7 +195,15 @@
         var raw = localStorage.getItem('vlu_user');
         if (!raw) return { isAuthorized: false, user: null };
         var user = JSON.parse(raw);
-        if (user && user.role === 1) {
+        var isAdmin = window.VLU_AUTH && typeof window.VLU_AUTH.isAdminUser === 'function'
+          ? window.VLU_AUTH.isAdminUser(user)
+          : !!user && !user.isGuest && (Number(user.role) === 1 || String(user.role).toLowerCase() === 'admin' ||
+            String(user.username || '').toLowerCase() === 'admin');
+        if (isAdmin) {
+          if (user.role !== 1) {
+            user.role = 1;
+            try { localStorage.setItem('vlu_user', JSON.stringify(user)); } catch (err) {}
+          }
           return { isAuthorized: true, user: user };
         }
         return { isAuthorized: false, user: user };
@@ -209,20 +217,20 @@
      */
     quickLoginAdmin: function () {
       if (window.VLU_AUTH) {
-        window.VLU_AUTH.login('admin@vlu.edu.vn', 'Admin@2026', true);
-      } else {
-        var adminUser = {
-          id: 1,
-          username: 'admin@vlu.edu.vn',
-          email: 'admin@vlu.edu.vn',
-          fullname: 'Quản Trị Viên VLU',
-          phone: '0901234567',
-          role: 1,
-          loginAt: new Date().toISOString()
-        };
-        localStorage.setItem('vlu_user', JSON.stringify(adminUser));
+        // Trả về Promise: chờ xác thực xong (API MySQL hoặc danh sách tài khoản hợp lệ) mới mở khóa Dashboard
+        return Promise.resolve(window.VLU_AUTH.login('admin', 'admin123', true));
       }
-      // this.initDashboard();
+      var adminUser = {
+        id: 1,
+        username: 'admin',
+        email: 'admin@vluflagship.vn',
+        fullname: 'Quản Trị Viên VLU',
+        phone: '0901234567',
+        role: 1,
+        loginAt: new Date().toISOString()
+      };
+      localStorage.setItem('vlu_user', JSON.stringify(adminUser));
+      return Promise.resolve({ success: true, user: adminUser });
     },
 
     /* ==========================================================================
@@ -307,6 +315,13 @@
 
       list.unshift(newProd);
       this.saveProducts(list);
+      if (typeof fetch === 'function') {
+        fetch('backend/api/orders.php', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+          body: JSON.stringify({ action: 'save_product', product: newProd })
+        }).catch(function () {});
+      }
       return newProd;
     },
 
@@ -332,6 +347,13 @@
       if (productData.stock !== undefined) list[idx].stock = parseInt(productData.stock, 10) || 0;
 
       this.saveProducts(list);
+      if (typeof fetch === 'function') {
+        fetch('backend/api/orders.php', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+          body: JSON.stringify({ action: 'save_product', product: list[idx] })
+        }).catch(function () {});
+      }
       return list[idx];
     },
 
@@ -341,6 +363,13 @@
         return String(p.id) !== String(id);
       });
       this.saveProducts(filtered);
+      if (typeof fetch === 'function') {
+        fetch('backend/api/orders.php', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+          body: JSON.stringify({ action: 'delete_product', id: id })
+        }).catch(function () {});
+      }
       return true;
     },
 
@@ -455,9 +484,28 @@
     },
 
     syncAccountOrder: function (order, remove) {
-      if (!order || !order.user_id || order.user_id === 'guest') return;
-      var key = 'vlu_account_' + String(order.user_id).trim().toLowerCase().replace(/[^a-z0-9._@-]+/g, '_');
+      if (!order) return;
+      var normalizedUserId = String(order.user_id || 'guest').trim().toLowerCase().replace(/[^a-z0-9._@-]+/g, '_') || 'guest';
+      var key = 'vlu_account_' + normalizedUserId;
+      var userOrdersKey = 'vlu_orders_' + normalizedUserId;
       try {
+        // 1. Đồng bộ vlu_orders_<userId>
+        var userOrders = JSON.parse(localStorage.getItem(userOrdersKey) || '[]');
+        if (!Array.isArray(userOrders)) userOrders = [];
+        if (remove) {
+          userOrders = userOrders.filter(function (entry) {
+            return String(entry.id) !== String(order.id);
+          });
+        } else {
+          var uIdx = userOrders.findIndex(function (entry) {
+            return String(entry.id) === String(order.id);
+          });
+          if (uIdx === -1) userOrders.unshift(order);
+          else userOrders[uIdx] = order;
+        }
+        localStorage.setItem(userOrdersKey, JSON.stringify(userOrders));
+
+        // 2. Đồng bộ vlu_account_<userId> (bao gồm cả vlu_account_guest)
         var account = JSON.parse(localStorage.getItem(key) || '{}');
         if (!account || typeof account !== 'object' || Array.isArray(account)) account = {};
         if (!Array.isArray(account.orders)) account.orders = [];
@@ -503,6 +551,13 @@
           list[i].updated_at = new Date().toISOString();
           this.saveOrders(list);
           this.syncAccountOrder(list[i], false);
+          if (typeof fetch === 'function') {
+            fetch('backend/api/orders.php', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+              body: JSON.stringify({ action: 'update_status', order_id: orderId, status: newStatus })
+            }).catch(function () {});
+          }
           return list[i];
         }
       }
@@ -515,6 +570,13 @@
       var filtered = list.filter(function (o) { return o.id !== orderId; });
       this.saveOrders(filtered);
       if (removed) this.syncAccountOrder(removed, true);
+      if (typeof fetch === 'function') {
+        fetch('backend/api/orders.php', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+          body: JSON.stringify({ action: 'delete', order_id: orderId })
+        }).catch(function () {});
+      }
       return true;
     },
 
@@ -659,9 +721,87 @@
         event.initCustomEvent('vlu:admin-updated', true, true, {});
       }
       window.dispatchEvent(event);
+    },
+
+    syncWithBackend: function () {
+      var self = this;
+      if (typeof fetch !== 'function') return;
+
+      // 1. Đồng bộ danh sách đơn hàng từ MySQL
+      fetch('backend/api/orders.php?action=list&is_admin=1', {
+        method: 'GET',
+        headers: { 'Accept': 'application/json' }
+      })
+        .then(function (res) { return res.json(); })
+        .then(function (data) {
+          if (!data || !data.success || !Array.isArray(data.orders) || !data.orders.length) return;
+          var localOrders = self.getOrders();
+          var changed = false;
+          data.orders.forEach(function (sqlOrder) {
+            if (!sqlOrder || !sqlOrder.id) return;
+            var idx = localOrders.findIndex(function (o) { return o && String(o.id) === String(sqlOrder.id); });
+            if (idx === -1) {
+              localOrders.unshift(sqlOrder);
+              changed = true;
+            } else if (localOrders[idx].status !== sqlOrder.status) {
+              localOrders[idx] = Object.assign({}, localOrders[idx], sqlOrder);
+              changed = true;
+            }
+          });
+          if (changed) {
+            self.saveOrders(localOrders);
+          }
+        })
+        .catch(function () {});
+
+      // 2. Đồng bộ danh sách tài khoản thành viên từ MySQL
+      fetch('backend/api/auth.php?action=users', {
+        method: 'GET',
+        headers: { 'Accept': 'application/json' }
+      })
+        .then(function (res) { return res.json(); })
+        .then(function (data) {
+          if (!data || !data.success || !Array.isArray(data.users) || !data.users.length) return;
+          var localUsers = self.getUsers();
+          var changed = false;
+          data.users.forEach(function (u) {
+            if (!u || !u.username) return;
+            var exists = localUsers.some(function (lu) {
+              return String(lu.username).toLowerCase() === String(u.username).toLowerCase() ||
+                     (u.email && String(lu.email || '').toLowerCase() === String(u.email).toLowerCase());
+            });
+            if (!exists) {
+              localUsers.unshift({
+                id: u.id,
+                username: u.username,
+                fullname: u.fullname || u.username,
+                email: u.email || '',
+                phone: u.phone || '',
+                role: u.role === 'admin' ? 1 : 0,
+                status: 'active',
+                created_at: String(u.created_at || '').slice(0, 10)
+              });
+              changed = true;
+            }
+          });
+          if (changed) {
+            try {
+              localStorage.setItem(STORAGE_USERS, JSON.stringify(localUsers));
+              self.emitUpdate();
+            } catch (e) {}
+          }
+        })
+        .catch(function () {});
     }
   };
 
   window.VLU_ADMIN = AdminEngine;
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', function () {
+      AdminEngine.syncWithBackend();
+    });
+  } else {
+    AdminEngine.syncWithBackend();
+  }
 
 })(window, document);

@@ -986,6 +986,10 @@
 }
 
 @media (max-width: 900px) {
+  .account-page {
+    overflow-x: hidden;
+  }
+
   .account-layout {
     grid-template-columns: 1fr;
     gap: 14px;
@@ -1004,11 +1008,13 @@
 
   .account-sidebar.is-open {
     display: block;
+    margin-bottom: 6px;
   }
 
   .account-nav {
-    max-height: 320px;
+    max-height: 360px;
     grid-template-columns: repeat(2, minmax(0, 1fr));
+    -webkit-overflow-scrolling: touch;
   }
 }
 
@@ -1052,21 +1058,31 @@
 
   .account-nav {
     grid-template-columns: 1fr;
+    max-height: 340px;
   }
 
   .account-page-heading {
-    align-items: flex-end;
+    align-items: center;
+    flex-wrap: wrap;
   }
 
   .account-mobile-menu {
-    min-height: 36px;
-    padding-inline: 10px;
-    font-size: 10px;
+    min-height: 38px;
+    padding-inline: 12px;
+    font-size: 11px;
   }
 
   .account-order-row,
   .account-list-row {
     align-items: flex-start;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .account-order-actions {
+    width: 100%;
+    justify-content: flex-start;
+    flex-wrap: wrap;
   }
 
   .account-address-grid,
@@ -1085,6 +1101,10 @@
   .account-session-card {
     align-items: flex-start;
     flex-wrap: wrap;
+  }
+
+  .account-invoice-info {
+    grid-template-columns: 1fr;
   }
 }
 
