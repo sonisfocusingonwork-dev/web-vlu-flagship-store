@@ -304,6 +304,23 @@
         applyVoucherBtn.click();
       }
     });
+
+    // Nút Tiến hành thanh toán: Tự động kích hoạt Tài khoản Khách (Silent Guest Login) nếu chưa đăng nhập
+    if (checkoutBtn) {
+      var isPhpEnv = window.location.pathname.indexOf('.php') !== -1;
+      checkoutBtn.setAttribute('href', isPhpEnv ? 'checkout.php' : 'checkout.html');
+      checkoutBtn.addEventListener('click', function (e) {
+        var engine = getCartEngine();
+        var items = engine ? engine.getCart() : [];
+        if (!items || items.length === 0) {
+          e.preventDefault();
+          return;
+        }
+        if (window.VLU_AUTH && typeof window.VLU_AUTH.ensureGuestSession === 'function') {
+          window.VLU_AUTH.ensureGuestSession();
+        }
+      });
+    }
   }
 
   if (document.readyState === 'loading') {

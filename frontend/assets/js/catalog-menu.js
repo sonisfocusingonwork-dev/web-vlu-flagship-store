@@ -93,6 +93,13 @@
       var body = card && card.querySelector('.mobile-accordion-body');
       if (!body) return;
       body.textContent = '';
+
+      var viewAllLink = document.createElement('a');
+      viewAllLink.className = 'flex items-center justify-between rounded-xl bg-brand/10 px-3 py-2 text-xs font-extrabold text-brand hover:bg-brand hover:text-white transition';
+      viewAllLink.href = 'category.html?cat=' + encodeURIComponent(category.id);
+      viewAllLink.innerHTML = '<span>Xem tất cả ' + category.name + '</span><span>→</span>';
+      body.appendChild(viewAllLink);
+
       var groups = [];
       products.filter(function (product) { return product.category === category.id; }).forEach(function (product) {
         var groupName = product.menuGroup || product.brand;
@@ -106,13 +113,13 @@
       groups.forEach(function (group) {
         var section = document.createElement('div');
         var title = document.createElement('p');
-        section.className = 'pl-2 border-l-2 border-slate-200';
-        title.className = 'text-xs font-black text-slate-800';
+        section.className = 'pl-2.5 border-l-2 border-slate-200';
+        title.className = 'text-xs font-black text-slate-800 mb-0.5';
         title.textContent = group.name;
         section.appendChild(title);
         group.products.forEach(function (product) {
           var link = document.createElement('a');
-          link.className = 'block py-0.5 text-xs font-semibold text-slate-700 hover:text-brand';
+          link.className = 'block py-1 text-xs font-semibold text-slate-700 hover:text-brand';
           link.href = productHref(product);
           link.textContent = product.name;
           section.appendChild(link);

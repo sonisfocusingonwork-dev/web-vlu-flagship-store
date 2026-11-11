@@ -32,18 +32,29 @@
     var btnQuickAdmin = document.getElementById('btnQuickAdminLogin');
     if (btnQuickAdmin) {
       btnQuickAdmin.addEventListener('click', function () {
-        engine.quickLoginAdmin();
-        if (gate) gate.classList.add('hidden');
-        if (adminLayout) adminLayout.classList.remove('blur-sm', 'pointer-events-none');
-        var newAuth = engine.checkAuth();
-        updateAdminProfile(newAuth.user);
-        engine.showToast('Chào mừng Quản trị viên VLU! Đã mở khóa bảng điều khiển.');
-        renderCurrentTab();
+        Promise.resolve(engine.quickLoginAdmin()).then(function (res) {
+          var newAuth = engine.checkAuth();
+          if (!newAuth.isAuthorized) {
+            engine.showToast((res && res.message) || 'Không thể đăng nhập quyền Admin. Vui lòng đăng nhập bằng tài khoản Admin.');
+            return;
+          }
+          if (gate) gate.classList.add('hidden');
+          if (adminLayout) adminLayout.classList.remove('blur-sm', 'pointer-events-none');
+          updateAdminProfile(newAuth.user);
+          engine.showToast('Chào mừng Quản trị viên VLU! Đã mở khóa bảng điều khiển.');
+          switchTab('dashboard');
+        });
       });
     }
 
-    // 2. KHỞI TẠO TAB ROUTER
+    // 2. KHỞI TẠO TAB ROUTER (mặc định mở tab Tổng quan - Dashboard)
     initTabRouter();
+    var initialTab = 'dashboard';
+    try {
+      var hashTab = (window.location.hash || '').replace('#', '');
+      if (hashTab && document.getElementById('tabPanel-' + hashTab)) initialTab = hashTab;
+    } catch (e) {}
+    switchTab(initialTab);
 
     // 3. KHỞI TẠO CÁC BẢNG DỮ LIỆU & MODAL
     renderDashboard();
@@ -70,7 +81,7 @@
         e.preventDefault();
         if (window.VLU_AUTH) window.VLU_AUTH.logout();
         else localStorage.removeItem('vlu_user');
-        window.location.href = 'login.html';
+        window.location.href = window.location.pathname.indexOf('.php') !== -1 ? 'login.php' : 'login.html';
       });
     }
 
@@ -795,11 +806,10 @@
     var engine = window.VLU_ADMIN;
     if (!engine) return;
     var products = engine.getProducts();
-    var numId = parseInt(id, 10);
-    var p = products.find(function (item) { return parseInt(item.id, 10) === numId; });
+    var p = products.find(function (item) { return String(item.id) === String(id); });
     if (!p) return;
 
-    editingProductId = numId;
+    editingProductId = p.id;
     var title = document.getElementById('productModalTitle');
     if (title) title.textContent = 'Cập nhật sản phẩm #' + p.id;
 
@@ -925,9 +935,21 @@
       m.classList.add('hidden');
       m.classList.remove('flex');
     });
+    document.body.classList.remove('overflow-hidden');
+    document.body.style.overflow = '';
+    if (document.documentElement) {
+      document.documentElement.classList.remove('overflow-hidden');
+      document.documentElement.style.overflow = '';
+    }
     editingProductId = null;
     editingCategoryId = null;
     currentViewingOrderId = null;
   }
+
+  document.addEventListener('keydown', function (e) {
+    if (e.key === 'Escape') {
+      closeAllModals();
+    }
+  });
 
 })(window, document);

@@ -206,34 +206,44 @@
         btnRegisterSubmit.innerHTML = '<span class="inline-block animate-spin mr-2">◌</span> Đang tạo tài khoản...';
       }
 
-      setTimeout(function () {
-        var res = { success: false, message: 'Lỗi hệ thống' };
-        if (window.VLU_AUTH) {
-          res = window.VLU_AUTH.register({
-            fullname: fullname,
-            phone: phone,
-            email: email,
-            password: password
-          });
-        }
-
-        if (res.success) {
+      function handleRegisterResult(res) {
+        if (res && res.success) {
           if (registerErrorMsg) registerErrorMsg.classList.add('hidden');
           if (window.VLU_CART && typeof window.VLU_CART.showToast === 'function') {
             window.VLU_CART.showToast(res.message);
           }
-          // Chuyển hướng sang trang chủ sau 500ms
+          // Chuyển hướng sang trang chủ (index.php hoặc index.html) sau 400ms
           setTimeout(function () {
-            window.location.href = 'index.html';
-          }, 500);
+            var targetHome = window.location.pathname.indexOf('.php') !== -1 ? 'index.php' : 'index.html';
+            window.location.href = targetHome;
+          }, 400);
         } else {
           if (btnRegisterSubmit) {
             btnRegisterSubmit.disabled = false;
             btnRegisterSubmit.innerHTML = '<span>Đăng ký tài khoản</span><svg class="h-4 w-4" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3"/></svg>';
           }
-          showError(res.message);
+          showError((res && res.message) ? res.message : 'Đăng ký tài khoản không thành công!');
         }
-      }, 400);
+      }
+
+      if (window.VLU_AUTH && typeof window.VLU_AUTH.register === 'function') {
+        var regPromise = window.VLU_AUTH.register({
+          fullname: fullname,
+          phone: phone,
+          email: email,
+          password: password
+        });
+
+        if (regPromise && typeof regPromise.then === 'function') {
+          regPromise.then(handleRegisterResult).catch(function () {
+            handleRegisterResult({ success: false, message: 'Lỗi đăng ký tài khoản.' });
+          });
+        } else {
+          handleRegisterResult(regPromise);
+        }
+      } else {
+        handleRegisterResult({ success: false, message: 'Module xác thực chưa sẵn sàng.' });
+      }
 
     });
   }

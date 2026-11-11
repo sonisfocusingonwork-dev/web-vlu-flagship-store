@@ -119,10 +119,33 @@
 
   function saveOrderToAccount(order) {
     try {
-      var user = JSON.parse(localStorage.getItem('vlu_user') || 'null');
-      var identity = user && (user.username || user.email || user.id);
-      if (!identity) return;
-      var normalized = String(identity).trim().toLowerCase().replace(/[^a-z0-9._@-]+/g, '_');
+      var user = (window.VLU_AUTH && typeof window.VLU_AUTH.ensureGuestSession === 'function')
+        ? window.VLU_AUTH.ensureGuestSession({
+            fullname: order.customer_name,
+            phone: order.customer_phone,
+            email: order.customer_email
+          })
+        : JSON.parse(localStorage.getItem('vlu_user') || 'null');
+
+      var identity = (user && (user.username || user.email || user.id)) || order.user_id || 'guest';
+      var normalized = String(identity).trim().toLowerCase().replace(/[^a-z0-9._@-]+/g, '_') || 'guest';
+
+      // 1. Lưu vào vlu_orders_<userId>
+      var userOrdersKey = 'vlu_orders_' + normalized;
+      var userOrdersList = [];
+      try {
+        userOrdersList = JSON.parse(localStorage.getItem(userOrdersKey) || '[]');
+        if (!Array.isArray(userOrdersList)) userOrdersList = [];
+      } catch (e) {
+        userOrdersList = [];
+      }
+      userOrdersList = userOrdersList.filter(function (existing) {
+        return String(existing.id) !== String(order.id);
+      });
+      userOrdersList.unshift(order);
+      localStorage.setItem(userOrdersKey, JSON.stringify(userOrdersList));
+
+      // 2. Lưu vào vlu_account_<userId>
       var key = 'vlu_account_' + normalized;
       var account = JSON.parse(localStorage.getItem(key) || '{}');
       if (!account || typeof account !== 'object' || Array.isArray(account)) account = {};
@@ -131,6 +154,14 @@
         return String(existing.id) !== String(order.id);
       });
       account.orders.unshift(order);
+
+      // Đồng bộ họ tên & SĐT người nhận vào hồ sơ nếu là Tài khoản Khách hoặc chưa có
+      account.profile = Object.assign({}, account.profile || {}, {
+        fullname: (account.profile && account.profile.fullname && !user.isGuest) ? account.profile.fullname : (order.customer_name || (user && user.fullname) || 'Khách vãng lai (Guest)'),
+        phone: (account.profile && account.profile.phone && !user.isGuest) ? account.profile.phone : (order.customer_phone || (user && user.phone) || ''),
+        email: (account.profile && account.profile.email && !user.isGuest) ? account.profile.email : (order.customer_email || (user && user.email) || '')
+      });
+
       if (!Array.isArray(account.notifications)) account.notifications = [];
       account.notifications.unshift({
         id: 'N-' + Date.now(),
@@ -235,6 +266,10 @@
 
   // Khởi động các tương tác trang Checkout
   function initCheckoutPage() {
+    // Tự động kích hoạt Tài khoản Khách (Silent Guest Login) nếu người dùng chưa đăng nhập
+    if (window.VLU_AUTH && typeof window.VLU_AUTH.ensureGuestSession === 'function') {
+      window.VLU_AUTH.ensureGuestSession();
+    }
     prefillSavedAddress();
     renderOrderReview();
 
@@ -373,8 +408,18 @@
         if (successPaymentMethod) successPaymentMethod.textContent = selectedMethodLabel;
         if (successTotalAmount) successTotalAmount.textContent = finalTotal;
 
-        // Tự động lưu đơn hàng vào vlu_orders để Admin quản lý ngay lập tức
+        // Tự động lưu đơn hàng vào vlu_orders, vlu_orders_<userId> và vlu_account_<userId>
         try {
+          // Đồng bộ Họ tên & SĐT vào phiên Tài khoản Khách (hoặc khởi tạo nếu chưa có)
+          if (window.VLU_AUTH && typeof window.VLU_AUTH.ensureGuestSession === 'function') {
+            window.VLU_AUTH.ensureGuestSession({
+              fullname: fullname,
+              phone: phone,
+              email: email
+            });
+          }
+
+          var resolvedUserId = engine.getCurrentUserId ? engine.getCurrentUserId() : 'guest';
           var newOrderRecord = {
             id: currentOrderId,
             customer_name: fullname,
@@ -389,7 +434,7 @@
             voucher_code: engine.getVoucher() ? engine.getVoucher().code : '',
             installment_term: installmentTerm,
             installment_monthly: installmentTerm ? Math.ceil(engine.getTotal() / Number(installmentTerm)) : 0,
-            user_id: engine.getCurrentUserId ? engine.getCurrentUserId() : 'guest',
+            user_id: resolvedUserId,
             items: cart.map(function (it) {
               return {
                 id: it.id,
@@ -417,12 +462,85 @@
           ordersList.unshift(newOrderRecord);
           localStorage.setItem('vlu_orders', JSON.stringify(ordersList));
           saveOrderToAccount(newOrderRecord);
+
+          // Đồng bộ lưu đơn hàng & chi tiết đơn hàng vào bảng orders / order_details trong MySQL qua API
+          if (typeof fetch === 'function') {
+            var activeAuthUser = (window.VLU_AUTH && typeof window.VLU_AUTH.getUser === 'function')
+              ? window.VLU_AUTH.getUser()
+              : null;
+            var sqlOrderPayload = Object.assign({}, newOrderRecord, {
+              order_code: newOrderRecord.id,
+              db_user_id: activeAuthUser && !activeAuthUser.isGuest && Number(activeAuthUser.id) > 0
+                ? Number(activeAuthUser.id)
+                : null
+            });
+            fetch('backend/api/orders.php', {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json',
+                'Accept': 'application/json'
+              },
+              body: JSON.stringify({
+                action: 'create',
+                order: sqlOrderPayload
+              })
+            }).catch(function (apiErr) {
+              console.warn('[Checkout] Lưu đơn hàng MySQL offline, đã giữ tại localStorage:', apiErr);
+            });
+          }
         } catch (err) {
           console.warn('Lỗi lưu đơn hàng vào vlu_orders:', err);
         }
 
-        // Xóa giỏ hàng và cập nhật badge
-        engine.clearCart();
+        // Xóa giỏ hàng chuẩn hóa theo đúng yêu cầu:
+        // CHỈ ĐƯỢC XÓA key giỏ hàng của user đó (ví dụ vlu_cart_userId), TUYỆT ĐỐI KHÔNG dùng localStorage.clear()
+        // hay xóa key vlu_user chứa thông tin phiên đăng nhập hiện tại.
+        try {
+          var currentUser = (window.VLU_AUTH && typeof window.VLU_AUTH.getUser === 'function')
+            ? window.VLU_AUTH.getUser()
+            : JSON.parse(localStorage.getItem('vlu_user') || 'null');
+
+          var currentId = currentUser && (currentUser.username || currentUser.email || currentUser.id);
+          var normalizedCartId = currentId
+            ? String(currentId).trim().toLowerCase().replace(/[^a-z0-9._@-]+/g, '_')
+            : 'guest';
+
+          // Chỉ xóa đúng key giỏ hàng và voucher của tài khoản hiện tại
+          localStorage.removeItem('vlu_cart_' + normalizedCartId);
+          localStorage.removeItem('vlu_cart_voucher_' + normalizedCartId);
+          localStorage.removeItem('vlu_cart'); // xóa legacy fallback nếu có
+          localStorage.removeItem('vlu_cart_voucher');
+
+          // Đảm bảo bảo toàn tuyệt đối phiên đăng nhập vlu_user
+          if (currentUser && typeof currentUser === 'object') {
+            localStorage.setItem('vlu_user', JSON.stringify(currentUser));
+          }
+
+          // Cập nhật lại huy hiệu giỏ hàng về 0
+          if (engine && typeof engine.updateBadge === 'function') {
+            engine.updateBadge();
+          }
+          if (engine && typeof engine.emitUpdate === 'function') {
+            engine.emitUpdate();
+          }
+        } catch (clearErr) {
+          console.warn('[Checkout] Lỗi làm sạch giỏ hàng:', clearErr);
+        }
+
+        // Cập nhật đường link nút Xem đơn hàng đã đặt & Quay về trang chủ theo đúng môi trường (PHP vs HTML)
+        var isPhpEnv = window.location.pathname.indexOf('.php') !== -1;
+        var btnViewOrders = document.getElementById('btnViewOrders');
+        var btnBackToHome = document.getElementById('btnBackToHome');
+        var btnContinueShopping = document.getElementById('btnContinueShopping');
+        if (btnViewOrders) {
+          btnViewOrders.setAttribute('href', isPhpEnv ? 'account.php?tab=orders' : 'account.html?tab=orders');
+        }
+        if (btnBackToHome) {
+          btnBackToHome.setAttribute('href', isPhpEnv ? 'index.php' : 'index.html');
+        }
+        if (btnContinueShopping) {
+          btnContinueShopping.setAttribute('href', isPhpEnv ? 'index.php#dien-thoai' : 'index.html#dien-thoai');
+        }
 
         // Hiển thị Modal Đặt hàng thành công
         if (successModal) {

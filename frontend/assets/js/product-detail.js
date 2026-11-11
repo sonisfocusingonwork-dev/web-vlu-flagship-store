@@ -458,10 +458,13 @@
       return;
     }
 
-    // Click Nút Mua Ngay -> Lưu vào giỏ hàng và chuyển hướng thẳng sang cart.html
+    // Click Nút Mua Ngay -> Tự động kích hoạt Tài khoản Khách (nếu chưa đăng nhập), lưu vào giỏ hàng và chuyển hướng
     var buyBtn = e.target.closest('#buyNowBtn');
     if (buyBtn) {
       try {
+        if (window.VLU_AUTH && typeof window.VLU_AUTH.ensureGuestSession === 'function') {
+          window.VLU_AUTH.ensureGuestSession();
+        }
         var buyItem = {
           id: product.id,
           name: product.name,
