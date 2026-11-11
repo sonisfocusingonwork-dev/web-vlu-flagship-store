@@ -320,6 +320,11 @@
       if (closeIcon) closeIcon.classList.add('hidden');
     }
     document.body.classList.remove('overflow-hidden', 'has-mobile-drawer-open', 'has-mega-open');
+    if (document.documentElement) {
+      document.documentElement.classList.remove('overflow-hidden');
+      document.documentElement.style.overflow = '';
+    }
+    document.body.style.overflow = '';
   }
 
   function openMobileDrawer() {
@@ -334,6 +339,9 @@
       if (closeIcon) closeIcon.classList.remove('hidden');
     }
     document.body.classList.add('overflow-hidden', 'has-mobile-drawer-open', 'has-mega-open');
+    if (document.documentElement) {
+      document.documentElement.classList.add('overflow-hidden');
+    }
   }
 
   if (mobileBtn && mobileDrawer) {
@@ -349,13 +357,12 @@
     });
   }
 
-  var mobileDrawerCloseBtn = $('#mobileDrawerCloseBtn');
-  if (mobileDrawerCloseBtn) {
-    mobileDrawerCloseBtn.addEventListener('click', function (e) {
+  document.addEventListener('click', function (e) {
+    if (e.target.closest('#mobileDrawerCloseBtn') || e.target.closest('[data-close-drawer]')) {
       e.preventDefault();
       closeMobileDrawer();
-    });
-  }
+    }
+  });
 
   if (mobileDrawer) {
     mobileDrawer.addEventListener('click', function (e) {

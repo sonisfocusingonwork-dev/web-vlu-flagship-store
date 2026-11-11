@@ -49,9 +49,13 @@ function e($value): string
   <style>
     html, body {
       min-height: 100vh;
+      max-width: 100vw;
       overflow-x: hidden;
-      overflow-y: auto !important;
+      overflow-y: auto;
       -webkit-overflow-scrolling: touch;
+    }
+    body.overflow-hidden {
+      overflow: hidden !important;
     }
     .glass-sidebar {
       background: rgba(255, 255, 255, 0.88);
@@ -64,11 +68,21 @@ function e($value): string
       -webkit-backdrop-filter: blur(20px);
       border: 1px solid rgba(226, 232, 240, 0.8);
     }
-    .admin-main,
-    .admin-content {
+    .admin-main {
       min-height: 100vh;
+      min-width: 0;
       overflow-y: auto;
       overflow-x: hidden;
+      -webkit-overflow-scrolling: touch;
+    }
+    .admin-content {
+      min-width: 0;
+      padding-bottom: 3rem;
+    }
+    .table-responsive {
+      width: 100%;
+      max-width: 100%;
+      overflow-x: auto;
       -webkit-overflow-scrolling: touch;
     }
     .custom-scrollbar::-webkit-scrollbar {
@@ -349,8 +363,8 @@ function e($value): string
                 </button>
               </div>
 
-              <div class="overflow-x-auto">
-                <table class="w-full text-left text-xs">
+              <div class="overflow-x-auto table-responsive custom-scrollbar">
+                <table class="w-full text-left text-xs min-w-[650px]">
                   <thead class="text-slate-400 font-bold uppercase tracking-wider border-b border-slate-100 text-[10px]">
                     <tr>
                       <th class="py-2.5 px-4">Mã đơn</th>
@@ -424,8 +438,8 @@ function e($value): string
               <span id="productsCountBadge" class="rounded-full bg-slate-100 px-3 py-1 text-xs font-bold text-slate-700">0 sản phẩm</span>
             </div>
 
-            <div class="overflow-x-auto">
-              <table class="w-full text-left text-xs">
+            <div class="overflow-x-auto table-responsive custom-scrollbar">
+              <table class="w-full text-left text-xs min-w-[700px]">
                 <thead class="bg-slate-50/80 text-slate-400 font-bold uppercase tracking-wider border-b border-slate-200/80 text-[10px]">
                   <tr>
                     <th class="py-3 px-4">Mã</th>
@@ -468,8 +482,8 @@ function e($value): string
               <span id="categoriesCountBadge" class="rounded-full bg-slate-100 px-3 py-1 text-xs font-bold text-slate-700">0 danh mục</span>
             </div>
 
-            <div class="overflow-x-auto">
-              <table class="w-full text-left text-xs">
+            <div class="overflow-x-auto table-responsive custom-scrollbar">
+              <table class="w-full text-left text-xs min-w-[700px]">
                 <thead class="bg-slate-50/80 text-slate-400 font-bold uppercase tracking-wider border-b border-slate-200/80 text-[10px]">
                   <tr>
                     <th class="py-3 px-4">ID</th>
@@ -529,8 +543,8 @@ function e($value): string
               <span id="ordersCountBadge" class="rounded-full bg-slate-100 px-3 py-1 text-xs font-bold text-slate-700">0 đơn hàng</span>
             </div>
 
-            <div class="overflow-x-auto">
-              <table class="w-full text-left text-xs">
+            <div class="overflow-x-auto table-responsive custom-scrollbar">
+              <table class="w-full text-left text-xs min-w-[700px]">
                 <thead class="bg-slate-50/80 text-slate-400 font-bold uppercase tracking-wider border-b border-slate-200/80 text-[10px]">
                   <tr>
                     <th class="py-3 px-4">Mã đơn</th>
@@ -566,8 +580,8 @@ function e($value): string
           </div>
 
           <div class="glass-card rounded-3xl shadow-sm overflow-hidden">
-            <div class="overflow-x-auto">
-              <table class="w-full text-left text-xs">
+            <div class="overflow-x-auto table-responsive custom-scrollbar">
+              <table class="w-full text-left text-xs min-w-[700px]">
                 <thead class="bg-slate-50/80 text-slate-400 font-bold uppercase tracking-wider border-b border-slate-200/80 text-[10px]">
                   <tr>
                     <th class="py-3 px-4">ID</th>
@@ -770,8 +784,8 @@ function e($value): string
       <!-- Bảng danh sách mặt hàng đã đặt -->
       <div>
         <h4 class="text-xs font-extrabold uppercase tracking-wider text-slate-700 mb-2">Sản phẩm trong đơn</h4>
-        <div class="overflow-x-auto rounded-2xl border border-slate-200/80">
-          <table class="w-full text-left text-xs">
+        <div class="overflow-x-auto table-responsive custom-scrollbar rounded-2xl border border-slate-200/80">
+          <table class="w-full text-left text-xs min-w-[500px]">
             <thead class="bg-slate-50 text-slate-400 font-bold uppercase text-[10px]">
               <tr>
                 <th class="py-2 px-3">Sản phẩm</th>

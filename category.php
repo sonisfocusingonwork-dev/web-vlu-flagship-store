@@ -72,7 +72,7 @@ $title = $categoryNames[$cat] ?? 'Tất Cả Sản Phẩm';
       </div>
 
       <!-- Category Filter Pills -->
-      <div class="flex flex-wrap gap-2 text-xs font-bold">
+      <div class="filter-pills-scroll no-scrollbar flex flex-nowrap sm:flex-wrap gap-2 text-xs font-bold w-full md:w-auto">
         <a href="category.html" class="rounded-full px-4 py-2 border transition <?= empty($cat) ? 'bg-slate-900 text-white border-slate-900' : 'bg-white text-slate-700 border-slate-200 hover:border-brand/50' ?>">Tất cả</a>
         <a href="category.html?cat=dien-thoai" class="rounded-full px-4 py-2 border transition <?= $cat === 'dien-thoai' ? 'bg-slate-900 text-white border-slate-900' : 'bg-white text-slate-700 border-slate-200 hover:border-brand/50' ?>">Điện thoại</a>
         <a href="category.html?cat=laptop" class="rounded-full px-4 py-2 border transition <?= $cat === 'laptop' ? 'bg-slate-900 text-white border-slate-900' : 'bg-white text-slate-700 border-slate-200 hover:border-brand/50' ?>">Laptop</a>

@@ -322,7 +322,7 @@ $cartCount = 0;
             <!-- Nút chính: MUA NGAY (chuyển hướng sang cart.html) -->
             <a href="cart.html"
                id="buyNowBtn"
-               class="flex-1 h-13 py-3.5 rounded-full bg-brand text-white font-extrabold text-center hover:bg-brand-dark transition-all duration-200 shadow-lg shadow-brand/25 active:scale-98 flex items-center justify-center gap-2 text-base">
+               class="flex-1 min-h-[48px] py-3.5 rounded-full bg-brand text-white font-extrabold text-center hover:bg-brand-dark transition-all duration-200 shadow-lg shadow-brand/25 active:scale-98 flex items-center justify-center gap-2 text-sm sm:text-base">
               <span>Mua ngay</span>
               <svg class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3"/></svg>
             </a>
@@ -330,7 +330,7 @@ $cartCount = 0;
             <!-- Nút phụ: THÊM VÀO GIỎ HÀNG (kèm hiệu ứng Toast) -->
             <button type="button"
                     id="addToCartBtn"
-                    class="flex-1 h-13 py-3.5 rounded-full bg-slate-900 text-white font-extrabold hover:bg-slate-800 transition-all duration-200 shadow-md active:scale-98 flex items-center justify-center gap-2 text-base">
+                    class="flex-1 min-h-[48px] py-3.5 rounded-full bg-slate-900 text-white font-extrabold hover:bg-slate-800 transition-all duration-200 shadow-md active:scale-98 flex items-center justify-center gap-2 text-sm sm:text-base">
               <svg class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" d="M6 7h12l-1 13H7L6 7Z"/><path d="M9 7a3 3 0 0 1 6 0"/>
               </svg>

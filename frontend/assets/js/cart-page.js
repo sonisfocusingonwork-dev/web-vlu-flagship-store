@@ -128,7 +128,7 @@
         }
         html += '      </div>';
 
-        html += '      <div class="flex items-center gap-4">';
+        html += '      <div class="flex flex-wrap items-center justify-between sm:justify-end gap-2 sm:gap-4 w-full sm:w-auto">';
         // Bộ tăng giảm số lượng
         html += '        <div class="inline-flex items-center rounded-full border border-slate-200 bg-slate-50/80 p-0.5 shadow-inner">';
         html += '          <button type="button" class="btn-qty-minus grid h-7 w-7 place-items-center rounded-full text-slate-600 transition hover:bg-white hover:text-brand active:scale-95" data-index="' + index + '" aria-label="Giảm 1 sản phẩm">';

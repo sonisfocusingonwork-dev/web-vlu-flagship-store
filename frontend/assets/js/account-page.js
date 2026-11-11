@@ -1236,7 +1236,15 @@
   function bindEvents() {
     document.getElementById('accountNav').addEventListener('click', function (event) {
       var button = event.target.closest('[data-tab]');
-      if (button) setTab(button.dataset.tab);
+      if (button) {
+        setTab(button.dataset.tab);
+        var sidebar = document.getElementById('accountSidebar');
+        if (sidebar && sidebar.classList.contains('is-open')) {
+          sidebar.classList.remove('is-open');
+          var toggle = document.getElementById('mobileNavToggle');
+          if (toggle) toggle.setAttribute('aria-expanded', 'false');
+        }
+      }
     });
     document.getElementById('mobileNavToggle').addEventListener('click', function () {
       var sidebar = document.getElementById('accountSidebar');

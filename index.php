@@ -542,44 +542,6 @@ $cartCount = 0;
       box-shadow: 0 0 0 4px rgba(200, 16, 46, 0.12);
     }
 
-    .mobile-drawer {
-      position: fixed;
-      top: 4.5rem;
-      left: 0;
-      right: 0;
-      bottom: 0;
-      background: rgba(255, 255, 255, 0.95);
-      backdrop-filter: blur(28px);
-      -webkit-backdrop-filter: blur(28px);
-      transform: translateY(-100%);
-      opacity: 0;
-      visibility: hidden;
-      pointer-events: none;
-      overflow-y: auto;
-      transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.3s ease, visibility 0.3s;
-      z-index: 45;
-    }
-    .mobile-drawer.is-open { transform: translateY(0); opacity: 1; visibility: visible; pointer-events: auto; }
-    .mobile-brand-card {
-      border: 1px solid rgba(226, 232, 240, 0.8);
-      border-radius: 18px;
-      overflow: hidden;
-      background: #fff;
-      box-shadow: 0 2px 8px -2px rgba(15, 23, 42, 0.04);
-    }
-      overflow-y: auto;
-      transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.3s ease, visibility 0.3s;
-      z-index: 45;
-    }
-    .mobile-drawer.is-open { transform: translateY(0); opacity: 1; visibility: visible; pointer-events: auto; }
-    .mobile-brand-card {
-      border: 1px solid rgba(226, 232, 240, 0.8);
-      border-radius: 18px;
-      overflow: hidden;
-      background: #fff;
-      box-shadow: 0 2px 8px -2px rgba(15, 23, 42, 0.04);
-    }
-
     /* ============ 3. HERO BANNER FULL-WIDTH ============ */
     .hero-slide {
       position: relative;

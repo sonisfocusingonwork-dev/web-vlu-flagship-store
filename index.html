@@ -346,44 +346,6 @@
       box-shadow: 0 0 0 4px rgba(200, 16, 46, 0.12);
     }
 
-    .mobile-drawer {
-      position: fixed;
-      top: 4.5rem;
-      left: 0;
-      right: 0;
-      bottom: 0;
-      background: rgba(255, 255, 255, 0.95);
-      backdrop-filter: blur(28px);
-      -webkit-backdrop-filter: blur(28px);
-      transform: translateY(-100%);
-      opacity: 0;
-      visibility: hidden;
-      pointer-events: none;
-      overflow-y: auto;
-      transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.3s ease, visibility 0.3s;
-      z-index: 45;
-    }
-    .mobile-drawer.is-open { transform: translateY(0); opacity: 1; visibility: visible; pointer-events: auto; }
-    .mobile-brand-card {
-      border: 1px solid rgba(226, 232, 240, 0.8);
-      border-radius: 18px;
-      overflow: hidden;
-      background: #fff;
-      box-shadow: 0 2px 8px -2px rgba(15, 23, 42, 0.04);
-    }
-      overflow-y: auto;
-      transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.3s ease, visibility 0.3s;
-      z-index: 45;
-    }
-    .mobile-drawer.is-open { transform: translateY(0); opacity: 1; visibility: visible; pointer-events: auto; }
-    .mobile-brand-card {
-      border: 1px solid rgba(226, 232, 240, 0.8);
-      border-radius: 18px;
-      overflow: hidden;
-      background: #fff;
-      box-shadow: 0 2px 8px -2px rgba(15, 23, 42, 0.04);
-    }
-
     /* ============ 3. HERO BANNER FULL-WIDTH ============ */
     .hero-slide {
       position: relative;
@@ -2742,6 +2704,17 @@
   <!-- ================= MENU DI ĐỘNG (MOBILE DRAWER SHEET) ================= -->
   <div id="mobileDrawer" class="mobile-drawer" role="dialog" aria-modal="true" aria-label="Menu danh mục di động">
     <div class="mobile-drawer-inner p-4 space-y-3">
+
+      <!-- Thanh tiêu đề & Nút đóng Menu Mobile -->
+      <div id="mobileDrawerTopBar" class="flex items-center justify-between pb-3 border-b border-slate-200/80">
+        <div class="flex items-center gap-2">
+          <span class="inline-block h-2.5 w-2.5 rounded-full bg-brand"></span>
+          <span class="text-xs font-black uppercase tracking-wider text-slate-900">Danh mục &amp; Tiện ích</span>
+        </div>
+        <button type="button" id="mobileDrawerCloseBtn" aria-label="Đóng menu di động" class="grid h-9 w-9 place-items-center rounded-full bg-slate-100 text-slate-700 hover:bg-brand hover:text-white transition">
+          <svg class="h-4 w-4" fill="none" stroke="currentColor" stroke-width="2.4" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
+        </button>
+      </div>
 
       <!-- Khung Tài khoản Mobile -->
       <div class="pb-2 border-b border-slate-200/80">

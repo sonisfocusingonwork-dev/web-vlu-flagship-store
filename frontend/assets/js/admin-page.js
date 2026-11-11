@@ -786,6 +786,16 @@
   /* ==========================================================================
      MODAL CONTROLS
      ========================================================================== */
+  function openModal(modal) {
+    if (!modal) return;
+    modal.classList.remove('hidden');
+    modal.classList.add('flex');
+    document.body.classList.add('overflow-hidden');
+    if (document.documentElement) {
+      document.documentElement.classList.add('overflow-hidden');
+    }
+  }
+
   function openAddProductModal() {
     editingProductId = null;
     var form = document.getElementById('productForm');
@@ -795,11 +805,7 @@
     var imgPreview = document.getElementById('prodModalImagePreview');
     if (imgPreview) imgPreview.src = 'frontend/assets/images/logo.png';
 
-    var modal = document.getElementById('productModal');
-    if (modal) {
-      modal.classList.remove('hidden');
-      modal.classList.add('flex');
-    }
+    openModal(document.getElementById('productModal'));
   }
 
   function openEditProductModal(id) {
@@ -824,11 +830,7 @@
     var imgPreview = document.getElementById('prodModalImagePreview');
     if (imgPreview) imgPreview.src = p.image || 'frontend/assets/images/logo.png';
 
-    var modal = document.getElementById('productModal');
-    if (modal) {
-      modal.classList.remove('hidden');
-      modal.classList.add('flex');
-    }
+    openModal(document.getElementById('productModal'));
   }
 
   function openAddCategoryModal() {
@@ -838,11 +840,7 @@
     var title = document.getElementById('categoryModalTitle');
     if (title) title.textContent = 'Thêm danh mục mới';
 
-    var modal = document.getElementById('categoryModal');
-    if (modal) {
-      modal.classList.remove('hidden');
-      modal.classList.add('flex');
-    }
+    openModal(document.getElementById('categoryModal'));
   }
 
   function openEditCategoryModal(id) {
@@ -862,11 +860,7 @@
     document.getElementById('catModalIcon').value = c.icon || '';
     document.getElementById('catModalDesc').value = c.description || '';
 
-    var modal = document.getElementById('categoryModal');
-    if (modal) {
-      modal.classList.remove('hidden');
-      modal.classList.add('flex');
-    }
+    openModal(document.getElementById('categoryModal'));
   }
 
   function openOrderDetailModal(orderId) {
@@ -922,11 +916,7 @@
       itemsTbody.innerHTML = html;
     }
 
-    var modal = document.getElementById('orderDetailModal');
-    if (modal) {
-      modal.classList.remove('hidden');
-      modal.classList.add('flex');
-    }
+    openModal(document.getElementById('orderDetailModal'));
   }
 
   function closeAllModals() {

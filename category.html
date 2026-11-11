@@ -2278,6 +2278,17 @@
   <div id="mobileDrawer" class="mobile-drawer" role="dialog" aria-modal="true" aria-label="Menu danh mục di động">
     <div class="mobile-drawer-inner p-4 space-y-3">
 
+      <!-- Thanh tiêu đề & Nút đóng Menu Mobile -->
+      <div id="mobileDrawerTopBar" class="flex items-center justify-between pb-3 border-b border-slate-200/80">
+        <div class="flex items-center gap-2">
+          <span class="inline-block h-2.5 w-2.5 rounded-full bg-brand"></span>
+          <span class="text-xs font-black uppercase tracking-wider text-slate-900">Danh mục &amp; Tiện ích</span>
+        </div>
+        <button type="button" id="mobileDrawerCloseBtn" aria-label="Đóng menu di động" class="grid h-9 w-9 place-items-center rounded-full bg-slate-100 text-slate-700 hover:bg-brand hover:text-white transition">
+          <svg class="h-4 w-4" fill="none" stroke="currentColor" stroke-width="2.4" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
+        </button>
+      </div>
+
       <!-- Khung Tài khoản Mobile -->
       <div class="pb-2 border-b border-slate-200/80">
         <!-- Khi chưa đăng nhập -->
@@ -3320,7 +3331,7 @@
       </div>
 
       <!-- Category Filter Pills -->
-      <div class="flex flex-wrap gap-2 text-xs font-bold">
+      <div class="filter-pills-scroll no-scrollbar flex flex-nowrap sm:flex-wrap gap-2 text-xs font-bold w-full md:w-auto">
         <a href="category.html" class="rounded-full px-4 py-2 border transition bg-white text-slate-700 border-slate-200 hover:border-brand/50">Tất cả</a>
         <a href="category.html?cat=dien-thoai" class="rounded-full px-4 py-2 border transition bg-white text-slate-700 border-slate-200 hover:border-brand/50">Điện thoại</a>
         <a href="category.html?cat=laptop" class="rounded-full px-4 py-2 border transition bg-white text-slate-700 border-slate-200 hover:border-brand/50">Laptop</a>
