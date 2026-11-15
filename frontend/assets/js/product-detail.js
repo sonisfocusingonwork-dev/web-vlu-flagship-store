@@ -51,14 +51,26 @@
     return [];
   }
 
-  // 3. Cơ chế Smart Fallback – Tự động nhận diện cấu hình từ tên sản phẩm
-  // 4. Chỉ hiển thị sản phẩm thuộc danh mục hiện hành
+  // 3. Cơ chế Fuzzy Lookup & Smart Fallback – Nhận diện chính xác 115 sản phẩm
   var product = null;
   if (rawId && window.VLU_FIND_PRODUCT) {
     product = window.VLU_FIND_PRODUCT(rawId);
   }
   if (!product && rawName && window.VLU_FIND_PRODUCT) {
     product = window.VLU_FIND_PRODUCT(rawName);
+  }
+  if (!product && (rawId || rawName) && window.VLU_FIND_PRODUCT) {
+    product = window.VLU_FIND_PRODUCT(toSlug(rawId || rawName));
+  }
+  if (!product && window.VLU_PRODUCTS && window.VLU_PRODUCTS.length > 0) {
+    // Tìm kiếm trong mảng VLU_PRODUCTS theo tên hoặc category
+    var cleanQ = (rawName || rawId).toLowerCase();
+    product = window.VLU_PRODUCTS.find(function (p) {
+      return p && (p.name.toLowerCase().indexOf(cleanQ) !== -1 || (p.id && p.id.indexOf(cleanQ) !== -1));
+    }) || window.VLU_PRODUCTS[0];
+  }
+  if (!product) {
+    product = (window.VLU_CATALOG && window.VLU_CATALOG['iphone-18-pro-max']) || null;
   }
   if (!product) {
     var main = document.getElementById('main');
@@ -98,12 +110,12 @@
     var catBreadcrumb = document.getElementById('pdBreadcrumbCat');
     if (catBreadcrumb) {
       catBreadcrumb.textContent = p.category ? p.category.toUpperCase().replace(/-/g, ' ') : 'SẢN PHẨM';
-      catBreadcrumb.href = 'category.php?cat=' + encodeURIComponent(p.category || 'dien-thoai');
+      catBreadcrumb.href = 'category.html?cat=' + encodeURIComponent(p.category || 'dien-thoai');
     }
     var brandBreadcrumb = document.getElementById('pdBreadcrumbBrand');
     if (brandBreadcrumb) {
       brandBreadcrumb.textContent = p.brand;
-      brandBreadcrumb.href = 'search.php?q=' + encodeURIComponent(p.brand);
+      brandBreadcrumb.href = 'category.html?q=' + encodeURIComponent(p.brand);
     }
     var nameBreadcrumb = document.getElementById('pdBreadcrumbName');
     if (nameBreadcrumb) nameBreadcrumb.textContent = p.name;
@@ -129,13 +141,19 @@
     // 5.5 Hình ảnh lớn mặc định
     var mainImg = document.getElementById('mainProductImg');
     var imageColorLabel = document.getElementById('imageColorLabel');
-    var defaultImgUrl = (p.colors && p.colors[0] && (p.colors[0].image || p.colors[0].img)) || 'frontend/assets/images/placeholders/phone.svg';
+    var resolveImg = window.resolveProductImageUrl || function (u) { return u; };
+    var defaultRawUrl = (p.colors && p.colors[0] && (p.colors[0].image || p.colors[0].img)) || p.image || 'frontend/assets/images/placeholders/phone.svg';
+    var defaultImgUrl = resolveImg(defaultRawUrl, p.category);
     var defaultColorName = (p.colors && p.colors[0] && p.colors[0].name) || 'Mặc định';
 
     if (mainImg) {
       mainImg.style.transition = 'opacity 0.22s ease-in-out, transform 0.22s ease-in-out';
       mainImg.src = defaultImgUrl;
       mainImg.alt = p.name + ' - ' + defaultColorName;
+      mainImg.onerror = function () {
+        this.onerror = null;
+        this.src = 'frontend/assets/images/placeholders/' + (p.category || 'phone') + '.svg';
+      };
     }
     if (imageColorLabel) imageColorLabel.textContent = defaultColorName;
 
@@ -148,23 +166,25 @@
         var cImg = c.image || c.img;
         if (!cImg || seenThumbs[cImg] || /^https?:\/\//i.test(cImg) || /(^|\/)Banner\//i.test(cImg)) return;
         seenThumbs[cImg] = true;
+        var resolvedThumbUrl = resolveImg(cImg, p.category);
         thumbsHtml += '<button type="button" class="thumb-btn' + (idx === 0 ? ' active' : '') + '"'
-          + ' data-src="' + cImg + '"'
+          + ' data-src="' + resolvedThumbUrl + '"'
           + ' data-color-name="' + c.name + '"'
           + ' data-color-key="' + c.key + '"'
           + ' aria-label="Xem ảnh ' + c.name + '">'
-          + '<img src="' + (c.image || c.img) + '" alt="' + c.name + '">'
-          + '</button>'
+          + '<img src="' + resolvedThumbUrl + '" alt="' + c.name + '" onerror="this.onerror=null;this.src=\'frontend/assets/images/placeholders/' + (p.category || 'phone') + '.svg\';">'
+          + '</button>';
       });
       (p.extraImages || []).forEach(function (extra) {
         if (!extra.src || seenThumbs[extra.src] || /^https?:\/\//i.test(extra.src) || /(^|\/)Banner\//i.test(extra.src)) return;
         seenThumbs[extra.src] = true;
+        var resolvedExtraUrl = resolveImg(extra.src, p.category);
         thumbsHtml += '<button type="button" class="thumb-btn"'
-          + ' data-src="' + extra.src + '"'
+          + ' data-src="' + resolvedExtraUrl + '"'
           + ' data-color-name="' + extra.label + '"'
           + ' data-color-key="' + extra.key + '"'
           + ' aria-label="Xem góc chụp ' + extra.label + '">'
-          + '<img src="' + extra.src + '" alt="' + extra.label + '">'
+          + '<img src="' + resolvedExtraUrl + '" alt="' + extra.label + '" onerror="this.onerror=null;this.src=\'frontend/assets/images/placeholders/' + (p.category || 'phone') + '.svg\';">'
           + '</button>';
       });
       thumbStrip.innerHTML = thumbsHtml;
@@ -337,7 +357,9 @@
   // 6.1 Đổi Màu Sắc & Thumbnail
   function changeColor(colorName, colorImg, colorKey) {
     currentColor = colorName;
-    currentImg = colorImg;
+    var resolveImg = window.resolveProductImageUrl || function (u) { return u; };
+    var resolvedColorImg = resolveImg(colorImg, product ? product.category : 'phone');
+    currentImg = resolvedColorImg;
 
     var selectedColorLabel = document.getElementById('selectedColorName');
     var imageColorLabel = document.getElementById('imageColorLabel');
@@ -346,13 +368,17 @@
     if (selectedColorLabel) selectedColorLabel.textContent = colorName;
     if (imageColorLabel) imageColorLabel.textContent = colorName;
 
-    if (mainImg && colorImg) {
+    if (mainImg && resolvedColorImg) {
       mainImg.style.transition = 'opacity 0.22s ease-in-out, transform 0.22s ease-in-out';
       mainImg.style.opacity = '0.2';
       mainImg.style.transform = 'scale(0.96)';
       setTimeout(function () {
-        mainImg.src = colorImg;
+        mainImg.src = resolvedColorImg;
         mainImg.alt = product.name + ' - ' + colorName;
+        mainImg.onerror = function () {
+          this.onerror = null;
+          this.src = 'frontend/assets/images/placeholders/' + (product ? product.category : 'phone') + '.svg';
+        };
         mainImg.style.opacity = '1';
         mainImg.style.transform = 'scale(1)';
       }, 140);
@@ -458,9 +484,10 @@
       return;
     }
 
-    // Click Nút Mua Ngay -> Tự động kích hoạt Tài khoản Khách (nếu chưa đăng nhập), lưu vào giỏ hàng và chuyển hướng
+    // Click Nút Mua Ngay -> Tự động kích hoạt Tài khoản Khách (nếu chưa đăng nhập), lưu vào giỏ hàng và chuyển hướng sang checkout.html
     var buyBtn = e.target.closest('#buyNowBtn');
     if (buyBtn) {
+      e.preventDefault();
       try {
         if (window.VLU_AUTH && typeof window.VLU_AUTH.ensureGuestSession === 'function') {
           window.VLU_AUTH.ensureGuestSession();
@@ -482,7 +509,36 @@
       } catch (err) {
         console.warn('Không thể lưu giỏ hàng vào localStorage:', err);
       }
+      window.location.href = 'checkout.html';
+      return;
     }
   });
+
+  // Lắng nghe sự kiện đồng bộ từ Admin (Storage & BroadcastChannel)
+  function onAdminSyncProduct() {
+    if (typeof window.VLU_SYNC_PRODUCTS === 'function') {
+      window.VLU_SYNC_PRODUCTS();
+    }
+    var refreshed = window.VLU_FIND_PRODUCT ? window.VLU_FIND_PRODUCT(rawId || rawName || product.id) : null;
+    if (refreshed) {
+      product = refreshed;
+      renderProduct(product);
+    }
+  }
+
+  window.addEventListener('storage', function (e) {
+    if (e.key === 'vlu_sync_timestamp' || e.key === 'vlu_admin_products' || e.key === 'vlu_products') {
+      onAdminSyncProduct();
+    }
+  });
+
+  try {
+    if (typeof BroadcastChannel !== 'undefined') {
+      var pdSyncBc = new BroadcastChannel('vlu_store_sync');
+      pdSyncBc.onmessage = function () {
+        onAdminSyncProduct();
+      };
+    }
+  } catch (eBc) {}
 
 })();

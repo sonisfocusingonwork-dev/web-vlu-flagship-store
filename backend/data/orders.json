@@ -1,0 +1,78 @@
+[
+    {
+        "id": 1,
+        "order_code": "#VLU-2026-81885",
+        "user_id": "5",
+        "user_identity": "tomandjerry@gmail.com",
+        "customer_name": "Nguyễn Thành Tâm",
+        "customer_phone": "0987654321",
+        "customer_email": "",
+        "shipping_address": "VLU Flagship Store Cơ sở chính (Bình Thạnh) - 69\/68 Đặng Thùy Trâm, P.13, Q. Bình Thạnh, TP.HCM",
+        "customer_address": "VLU Flagship Store Cơ sở chính (Bình Thạnh) - 69\/68 Đặng Thùy Trâm, P.13, Q. Bình Thạnh, TP.HCM",
+        "delivery_method": "pickup",
+        "shipping_method": "pickup",
+        "store_location": "Bình Thạnh",
+        "customer_notes": "",
+        "payment_method": "Thanh toán khi nhận hàng (COD)",
+        "payment_key": "cod",
+        "voucher_code": "VLU2026",
+        "installment_info": "",
+        "installment_term": 0,
+        "installment_monthly": 0,
+        "subtotal": 34990000,
+        "discount": 500000,
+        "total_amount": 34490000,
+        "total": 34490000,
+        "status": "pending",
+        "created_at": "2026-11-12 19:04:45",
+        "items": [
+            {
+                "id": "iphone-18-pro-max",
+                "name": "iPhone 18 Pro Max",
+                "color": "Bạc",
+                "variant": "256GB",
+                "price": 34990000,
+                "quantity": 1,
+                "image": "SanPham\/DienThoai\/Apple\/iPhone-18-Pro-Max\/iPhone-18-Pro-Max-Bac.png"
+            }
+        ]
+    },
+    {
+        "id": 1,
+        "order_code": "#TEST-GUEST-1794503916",
+        "user_id": "guest",
+        "user_identity": "guest",
+        "customer_name": "Nguyễn Văn Khách",
+        "customer_phone": "0987654321",
+        "customer_email": "guest@vluflagship.vn",
+        "shipping_address": "69\/68 Đặng Thùy Trâm, Phường 13, Bình Thạnh, TP.HCM",
+        "customer_address": "69\/68 Đặng Thùy Trâm, Phường 13, Bình Thạnh, TP.HCM",
+        "delivery_method": "home",
+        "shipping_method": "home",
+        "store_location": "",
+        "customer_notes": "",
+        "payment_method": "Thanh toán khi nhận hàng (COD)",
+        "payment_key": "cod",
+        "voucher_code": "",
+        "installment_info": "",
+        "installment_term": 0,
+        "installment_monthly": 0,
+        "subtotal": 30990000,
+        "discount": 0,
+        "total_amount": 30990000,
+        "total": 30990000,
+        "status": "confirmed",
+        "created_at": "2026-11-12 18:18:37",
+        "items": [
+            {
+                "id": 1,
+                "name": "iPhone 16 Pro Max 256GB Titan Sa Mạc",
+                "color": "Titan Sa Mạc",
+                "variant": "256GB",
+                "price": 30990000,
+                "quantity": 1,
+                "image": "SanPham\/DienThoai\/iPhone\/16promax.png"
+            }
+        ]
+    }
+]

@@ -83,11 +83,14 @@
           'dong-ho-dien-tu': 'watch.svg'
         }[item.category] || 'phone.svg');
 
+        var safeResolver = window.resolveProductImageUrl || function (u) { return u; };
+        var resolvedImg = safeResolver(item.image || fallbackImage, item.category);
+
         html += '<div class="group relative flex flex-col sm:flex-row items-start sm:items-center gap-4 rounded-2xl border border-slate-200/80 bg-white p-4 sm:p-5 transition-all duration-200 hover:border-slate-300 hover:shadow-sm" data-index="' + index + '">';
         
         // Cột ảnh
         html += '  <a href="' + detailUrl + '" class="h-24 w-24 sm:h-28 sm:w-28 shrink-0 rounded-xl bg-slate-50 border border-slate-100 p-2 flex items-center justify-center transition group-hover:scale-102">';
-        html += '    <img src="' + escapeHtml(item.image || fallbackImage) + '" alt="' + escapeHtml(item.name) + '" class="max-h-full max-w-full object-contain" onerror="this.onerror=null;this.src=\'' + fallbackImage + '\';">';
+        html += '    <img src="' + escapeHtml(resolvedImg) + '" alt="' + escapeHtml(item.name) + '" class="max-h-full max-w-full object-contain" onerror="this.onerror=null;this.src=\'' + fallbackImage + '\';">';
         html += '  </a>';
 
         // Cột thông tin
@@ -307,8 +310,7 @@
 
     // Nút Tiến hành thanh toán: Tự động kích hoạt Tài khoản Khách (Silent Guest Login) nếu chưa đăng nhập
     if (checkoutBtn) {
-      var isPhpEnv = window.location.pathname.indexOf('.php') !== -1;
-      checkoutBtn.setAttribute('href', isPhpEnv ? 'checkout.php' : 'checkout.html');
+      checkoutBtn.setAttribute('href', 'checkout.html');
       checkoutBtn.addEventListener('click', function (e) {
         var engine = getCartEngine();
         var items = engine ? engine.getCart() : [];

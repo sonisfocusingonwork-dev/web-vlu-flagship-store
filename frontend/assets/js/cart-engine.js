@@ -154,16 +154,18 @@
             var cleanCart = [];
             cart.forEach(function (item) {
               var product = currentProduct(item);
-              if (!product) return;
+              if (!product || product.status === 'deleted') return;
+              var newPrice = Number(product.basePrice) > 0 ? Number(product.basePrice) : item.price;
               cleanCart.push(Object.assign({}, item, {
                 id: product.id,
                 name: product.name,
                 category: product.category,
+                price: newPrice,
                 image: product.image || item.image
               }));
             });
             if (cleanCart.length !== cart.length || cleanCart.some(function (item, i) {
-              return item.id !== cart[i].id || item.name !== cart[i].name;
+              return item.id !== cart[i].id || item.name !== cart[i].name || item.price !== cart[i].price;
             })) {
               localStorage.setItem(key, JSON.stringify(cleanCart));
               changedKeys.push(key);
@@ -544,7 +546,28 @@
         CartEngine.updateBadge();
         CartEngine.emitUpdate();
       }
+      if (e.key === 'vlu_sync_timestamp' || e.key === 'vlu_admin_products' || e.key === 'vlu_products') {
+        if (typeof window.VLU_SYNC_PRODUCTS === 'function') {
+          window.VLU_SYNC_PRODUCTS();
+        }
+        CartEngine.sanitizeStaleProducts();
+        CartEngine.updateBadge();
+        CartEngine.emitUpdate();
+      }
     });
+    try {
+      if (typeof BroadcastChannel !== 'undefined') {
+        var cartSyncBc = new BroadcastChannel('vlu_store_sync');
+        cartSyncBc.onmessage = function () {
+          if (typeof window.VLU_SYNC_PRODUCTS === 'function') {
+            window.VLU_SYNC_PRODUCTS();
+          }
+          CartEngine.sanitizeStaleProducts();
+          CartEngine.updateBadge();
+          CartEngine.emitUpdate();
+        };
+      }
+    } catch (eBc) {}
     window.addEventListener('vlu:auth-updated', function () {
       CartEngine.updateBadge();
       CartEngine.emitUpdate();

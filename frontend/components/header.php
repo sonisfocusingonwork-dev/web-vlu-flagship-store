@@ -60,12 +60,12 @@ foreach ($catalogInventory['categories'] as $category) {
     <div class="flex items-center justify-between gap-4 py-3 md:gap-8">
 
       <!-- 1. Logo khử nền hòa trộn nguyên khối (không khung viền) -->
-      <a href="index.php" class="site-logo" aria-label="VLU FLAGSHIP STORE – Trang chủ">
+      <a href="index.html" class="site-logo" aria-label="VLU FLAGSHIP STORE – Trang chủ">
         <img src="frontend/assets/images/logo.png" onerror="this.onerror=null;this.src='image_2c97c5.png';" alt="VLU FLAGSHIP STORE" width="243" height="171">
       </a>
 
       <!-- 2. Thanh tìm kiếm trung tâm phong cách kính mờ Apple -->
-      <form action="search.php" method="GET" role="search" class="relative hidden sm:block flex-1 max-w-2xl">
+      <form action="category.html" method="GET" role="search" class="relative hidden sm:block flex-1 max-w-2xl">
         <label for="search-input" class="sr-only">Tìm kiếm sản phẩm</label>
         <div class="relative flex items-center">
           <svg class="pointer-events-none absolute left-4 h-4 w-4 text-slate-400" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
@@ -115,11 +115,11 @@ foreach ($catalogInventory['categories'] as $category) {
                   <svg class="h-4 w-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M10.5 6h9.75M10.5 6a1.5 1.5 0 11-3 0m3 0a1.5 1.5 0 10-3 0M3.75 6H7.5m3 12h9.75m-9.75 0a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m-3.75 0H7.5m9-6h3.75m-3.75 0a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m-9.75 0h9.75"/></svg>
                   <span>Trang quản trị (Admin)</span>
                 </a>
-                <a href="account.php?tab=orders" class="flex min-h-11 items-center gap-3 rounded-2xl px-3.5 py-3 text-xs font-semibold text-slate-700 hover:bg-slate-100 transition">
+                <a href="account.html?tab=orders" class="flex min-h-11 items-center gap-3 rounded-2xl px-3.5 py-3 text-xs font-semibold text-slate-700 hover:bg-slate-100 transition">
                   <svg class="h-4 w-4 text-slate-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 10.5V6a3.75 3.75 0 10-7.5 0v4.5m11.356-1.993l1.263 12c.07.665-.45 1.243-1.119 1.243H4.25a1.125 1.125 0 01-1.12-1.243l1.264-12A1.125 1.125 0 015.513 7.5h12.974c.576 0 1.059.435 1.119.993z"/></svg>
                   <span>Đơn hàng của tôi</span>
                 </a>
-                <a href="account.php" class="flex min-h-11 items-center gap-3 rounded-2xl px-3.5 py-3 text-xs font-semibold text-slate-700 hover:bg-slate-100 transition">
+                <a href="account.html" class="flex min-h-11 items-center gap-3 rounded-2xl px-3.5 py-3 text-xs font-semibold text-slate-700 hover:bg-slate-100 transition">
                   <span class="grid h-4 w-4 place-items-center text-slate-400">●</span>
                   <span>Tài khoản của tôi</span>
                 </a>
@@ -175,7 +175,7 @@ foreach ($catalogInventory['categories'] as $category) {
                   <!-- Tiêu đề bảng menu tinh giản -->
                   <div class="flex items-center justify-between pb-3.5 border-b border-slate-200/70 mb-5">
                     <h3 class="text-base font-extrabold text-slate-900 tracking-tight"><?= e($cat['name']) ?> chính hãng</h3>
-                    <a href="category.php?cat=<?= e($slug) ?>" class="inline-flex items-center gap-1.5 text-xs font-bold text-brand hover:text-brand-dark px-3 py-1 rounded-full bg-brand-soft hover:bg-brand-soft/80 transition-colors">
+                    <a href="category.html?cat=<?= e($slug) ?>" class="inline-flex items-center gap-1.5 text-xs font-bold text-brand hover:text-brand-dark px-3 py-1 rounded-full bg-brand-soft hover:bg-brand-soft/80 transition-colors">
                       Xem tất cả <?= e(mb_strtolower($cat['name'], 'UTF-8')) ?>
                       <svg class="h-3.5 w-3.5" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/></svg>
                     </a>
@@ -294,13 +294,13 @@ foreach ($catalogInventory['categories'] as $category) {
           <svg class="h-3.5 w-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M10.5 6h9.75M10.5 6a1.5 1.5 0 11-3 0m3 0a1.5 1.5 0 10-3 0M3.75 6H7.5m3 12h9.75m-9.75 0a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m-3.75 0H7.5m9-6h3.75m-3.75 0a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m-9.75 0h9.75"/></svg>
           <span>Trang quản trị (Admin)</span>
         </a>
-        <a href="account.php" class="block rounded-xl bg-slate-50 px-3 py-2 text-xs font-bold text-slate-700 hover:bg-brand-soft hover:text-brand">Tài khoản của tôi</a>
-        <a href="account.php?tab=orders" class="block rounded-xl bg-slate-50 px-3 py-2 text-xs font-bold text-slate-700 hover:bg-brand-soft hover:text-brand">Đơn hàng của tôi</a>
+        <a href="account.html" class="block rounded-xl bg-slate-50 px-3 py-2 text-xs font-bold text-slate-700 hover:bg-brand-soft hover:text-brand">Tài khoản của tôi</a>
+        <a href="account.html?tab=orders" class="block rounded-xl bg-slate-50 px-3 py-2 text-xs font-bold text-slate-700 hover:bg-brand-soft hover:text-brand">Đơn hàng của tôi</a>
       </div>
     </div>
 
     <!-- Ô tìm kiếm mobile -->
-    <form action="search.php" method="GET" class="relative">
+    <form action="category.html" method="GET" class="relative">
       <svg class="pointer-events-none absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
       <input name="q" type="search" placeholder="Tìm kiếm sản phẩm…" class="h-11 w-full rounded-full border border-slate-200 bg-white pl-10 pr-4 text-sm font-medium text-slate-800 placeholder:text-slate-400 focus:outline-none focus:border-brand">
     </form>
@@ -317,7 +317,7 @@ foreach ($catalogInventory['categories'] as $category) {
             <svg class="h-4 w-4 text-slate-400 transition-transform duration-200" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/></svg>
           </button>
           <div class="mobile-accordion-body hidden px-3 pt-2 pb-3 space-y-3">
-            <a href="category.php?cat=<?= e($slug) ?>" class="flex items-center justify-between rounded-xl bg-brand/10 px-3 py-2 text-xs font-extrabold text-brand hover:bg-brand hover:text-white transition">
+            <a href="category.html?cat=<?= e($slug) ?>" class="flex items-center justify-between rounded-xl bg-brand/10 px-3 py-2 text-xs font-extrabold text-brand hover:bg-brand hover:text-white transition">
               <span>Xem tất cả <?= e($cat['name']) ?></span>
               <span>→</span>
             </a>
@@ -356,9 +356,9 @@ foreach ($catalogInventory['categories'] as $category) {
 
 <!-- Lớp phủ mờ nền trang (Scrim Blur) NẰM SAU HEADER (z-index 40 < header 50) -->
 <div id="megaScrim" class="mega-scrim" aria-hidden="true"></div>
-<script src="frontend/assets/js/products-data.js"></script>
-<script src="frontend/assets/js/catalog-menu.js"></script>
+<script src="frontend/assets/js/products-data.js?v=2026_sync_ui_fix"></script>
+<script src="frontend/assets/js/catalog-menu.js?v=2026_sync_ui_fix"></script>
 <!-- Central Cart Engine 2026 -->
-<script src="frontend/assets/js/cart-engine.js"></script>
+<script src="frontend/assets/js/cart-engine.js?v=2026_sync_ui_fix"></script>
 <!-- Central Auth Engine 2026 -->
-<script src="frontend/assets/js/auth-engine.js"></script>
+<script src="frontend/assets/js/auth-engine.js?v=2026_sync_ui_fix"></script>

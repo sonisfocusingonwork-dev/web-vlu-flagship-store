@@ -147,15 +147,21 @@
       var confirmPassword = confirmPasswordInput ? confirmPasswordInput.value : '';
       var terms = termsCheckbox ? termsCheckbox.checked : false;
 
-      // Validate Họ tên
-      if (!fullname) {
-        showError('Vui lòng nhập Họ và tên của bạn!');
-        fullnameInput.focus();
+      // Validate Họ tên (tối thiểu 2 ký tự, không rỗng, không chứa ký tự đặc biệt nguy hiểm)
+      var dangerousCharsRegex = /[<>"'`;=\\\/]/;
+      if (!fullname || fullname.length < 2 || dangerousCharsRegex.test(fullname)) {
+        showError('Họ và tên không hợp lệ! Vui lòng nhập tối thiểu 2 ký tự và không chứa ký tự đặc biệt nguy hiểm.');
+        if (fullnameInput) {
+          fullnameInput.focus();
+          fullnameInput.classList.add('border-red-500', 'ring-2', 'ring-red-500/20');
+        }
         return;
+      } else if (fullnameInput) {
+        fullnameInput.classList.remove('border-red-500', 'ring-2', 'ring-red-500/20');
       }
 
-      // Validate Số điện thoại 10 số Việt Nam
-      var phoneRegex = /^(03|05|07|08|09)\d{8}$/;
+      // Validate Số điện thoại (10 chữ số chuẩn mạng di động Việt Nam)
+      var phoneRegex = /^(0[3|5|7|8|9])+([0-9]{8})$/;
       if (!phone || !phoneRegex.test(phone)) {
         showError('Số điện thoại không hợp lệ! Vui lòng nhập đúng 10 số di động tại Việt Nam (ví dụ: 0912345678).');
         if (phoneInput) {
@@ -168,7 +174,7 @@
       }
 
       // Validate Email
-      var emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      var emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
       if (!email || !emailRegex.test(email)) {
         showError('Địa chỉ Email không đúng định dạng!');
         if (emailInput) {
@@ -212,10 +218,9 @@
           if (window.VLU_CART && typeof window.VLU_CART.showToast === 'function') {
             window.VLU_CART.showToast(res.message);
           }
-          // Chuyển hướng sang trang chủ (index.php hoặc index.html) sau 400ms
+          // Chuyển hướng sang trang chủ index.html sau 400ms
           setTimeout(function () {
-            var targetHome = window.location.pathname.indexOf('.php') !== -1 ? 'index.php' : 'index.html';
-            window.location.href = targetHome;
+            window.location.href = 'index.html';
           }, 400);
         } else {
           if (btnRegisterSubmit) {

@@ -271,7 +271,7 @@
             name: product.name,
             price: Number(saved.price) || Number(product.basePrice) || 0,
             old_price: Number(saved.old_price) || Number(product.oldPrice) || null,
-            image: product.image || saved.image,
+            image: (product.image && product.image.indexOf('placeholders/') === -1) ? product.image : (saved.image || product.image),
             description: product.tagline || saved.description || '',
             status: saved.status || 'active',
             stock: Number(saved.stock) || Number(product.stock) || 0
@@ -289,6 +289,18 @@
     saveProducts: function (list) {
       try {
         localStorage.setItem(STORAGE_PRODUCTS, JSON.stringify(list));
+        localStorage.setItem('vlu_products', JSON.stringify(list));
+        localStorage.setItem('vlu_sync_timestamp', String(Date.now()));
+        try {
+          if (typeof BroadcastChannel !== 'undefined') {
+            var bc = new BroadcastChannel('vlu_store_sync');
+            bc.postMessage({ type: 'products_updated', timestamp: Date.now() });
+            bc.close();
+          }
+        } catch (eBc) {}
+        if (typeof window.VLU_SYNC_PRODUCTS === 'function') {
+          window.VLU_SYNC_PRODUCTS();
+        }
         this.emitUpdate();
       } catch (e) {
         console.error('Lỗi lưu products:', e);
@@ -463,12 +475,39 @@
     getOrders: function () {
       try {
         var raw = localStorage.getItem(STORAGE_ORDERS);
-        if (!raw) {
+        var list = [];
+        if (raw) {
+          list = JSON.parse(raw);
+          if (!Array.isArray(list)) list = [];
+        }
+
+        // Tự động quét và gom toàn bộ đơn hàng từ các key vlu_orders_* (bao gồm cả vlu_orders_guest)
+        try {
+          for (var i = 0; i < localStorage.length; i++) {
+            var k = localStorage.key(i);
+            if (k && k.indexOf('vlu_orders_') === 0) {
+              var uList = JSON.parse(localStorage.getItem(k) || '[]');
+              if (Array.isArray(uList)) {
+                uList.forEach(function (uo) {
+                  if (uo && uo.id) {
+                    var existsIdx = list.findIndex(function (ex) {
+                      return String(ex.id) === String(uo.id);
+                    });
+                    if (existsIdx === -1) {
+                      list.push(uo);
+                    }
+                  }
+                });
+              }
+            }
+          }
+        } catch (scanErr) {}
+
+        if (list.length === 0) {
           this.saveOrders(DEFAULT_ORDERS);
           return DEFAULT_ORDERS.slice();
         }
-        var list = JSON.parse(raw);
-        return Array.isArray(list) ? list : DEFAULT_ORDERS.slice();
+        return list;
       } catch (e) {
         return DEFAULT_ORDERS.slice();
       }
@@ -477,6 +516,14 @@
     saveOrders: function (list) {
       try {
         localStorage.setItem(STORAGE_ORDERS, JSON.stringify(list));
+        localStorage.setItem('vlu_sync_timestamp', String(Date.now()));
+        try {
+          if (typeof BroadcastChannel !== 'undefined') {
+            var bc = new BroadcastChannel('vlu_store_sync');
+            bc.postMessage({ type: 'orders_updated', timestamp: Date.now() });
+            bc.close();
+          }
+        } catch (eBc) {}
         this.emitUpdate();
       } catch (e) {
         console.error('Lỗi lưu orders:', e);
@@ -546,7 +593,7 @@
     updateOrderStatus: function (orderId, newStatus) {
       var list = this.getOrders();
       for (var i = 0; i < list.length; i++) {
-        if (list[i].id === orderId) {
+        if (String(list[i].id) === String(orderId)) {
           list[i].status = newStatus;
           list[i].updated_at = new Date().toISOString();
           this.saveOrders(list);
@@ -566,8 +613,8 @@
 
     deleteOrder: function (orderId) {
       var list = this.getOrders();
-      var removed = list.find(function (order) { return order.id === orderId; });
-      var filtered = list.filter(function (o) { return o.id !== orderId; });
+      var removed = list.find(function (order) { return String(order.id) === String(orderId); });
+      var filtered = list.filter(function (o) { return String(o.id) !== String(orderId); });
       this.saveOrders(filtered);
       if (removed) this.syncAccountOrder(removed, true);
       if (typeof fetch === 'function') {

@@ -30,8 +30,9 @@
     }
   </script>
 
-  <!-- Stylesheet Hệ thống Glassmorphic 2026 -->
-  <link rel="stylesheet" href="style.css">
+  <!-- Stylesheet Hệ thống Glassmorphic 2026 & Admin Dedicated Styles -->
+  <link rel="stylesheet" href="style.css?v=2026_sync_ui_fix">
+  <link rel="stylesheet" href="frontend/assets/css/admin.css?v=2026_sync_ui_fix">
   <style>
     html, body {
       min-height: 100vh;
@@ -149,7 +150,7 @@
     <!-- ============================================================
          1. SIDEBAR ĐIỀU HƯỚNG BÊN TRÁI (LEFT SIDEBAR)
          ============================================================ -->
-    <aside class="glass-sidebar w-full lg:w-72 shrink-0 border-b lg:border-b-0 lg:border-r border-slate-200/80 flex flex-col justify-between p-4 sm:p-5 lg:sticky lg:top-0 lg:h-screen overflow-y-auto custom-scrollbar z-30">
+    <aside id="adminSidebar" class="glass-sidebar w-full lg:w-72 shrink-0 border-b lg:border-b-0 lg:border-r border-slate-200/80 flex flex-col justify-between p-4 sm:p-5 lg:sticky lg:top-0 lg:h-screen overflow-y-auto custom-scrollbar z-30">
       
       <div class="space-y-6">
         <!-- Logo & Nhãn thương hiệu Admin -->
@@ -233,6 +234,7 @@
       </div>
 
     </aside>
+    <div id="adminSidebarBackdrop"></div>
 
     <!-- ============================================================
          2. KHUNG NỘI DUNG CHÍNH (RIGHT MAIN CONTENT)
@@ -241,11 +243,16 @@
       
       <!-- Topbar Header -->
       <header class="sticky top-0 z-20 border-b border-slate-200/80 bg-white/90 backdrop-blur-md px-4 sm:px-6 py-4 flex flex-wrap items-center justify-between gap-4">
-        <div>
-          <nav aria-label="Breadcrumb" class="text-[11px] font-semibold text-slate-400 mb-0.5">
-            <span>Admin</span> / <span id="topbarBreadcrumb" class="text-slate-700">Tổng quan hệ thống</span>
-          </nav>
-          <h1 id="topbarPageTitle" class="text-lg sm:text-2xl font-black text-slate-950 tracking-tight">Tổng quan hệ thống (Dashboard)</h1>
+        <div class="flex items-center gap-3">
+          <button type="button" id="btnAdminMobileSidebarToggle" class="lg:hidden p-2 rounded-xl bg-slate-100 text-slate-700 hover:bg-brand hover:text-white transition active:scale-95 text-sm font-bold flex items-center justify-center h-9 w-9" aria-label="Mở menu điều hướng Admin">
+            ☰
+          </button>
+          <div>
+            <nav aria-label="Breadcrumb" class="text-[11px] font-semibold text-slate-400 mb-0.5">
+              <span>Admin</span> / <span id="topbarBreadcrumb" class="text-slate-700">Tổng quan hệ thống</span>
+            </nav>
+            <h1 id="topbarPageTitle" class="text-lg sm:text-2xl font-black text-slate-950 tracking-tight">Tổng quan hệ thống (Dashboard)</h1>
+          </div>
         </div>
 
         <div class="flex items-center gap-3">
@@ -830,11 +837,11 @@
   <div id="toast" role="status" aria-live="polite" class="pointer-events-none fixed bottom-6 left-1/2 z-50 -translate-x-1/2 translate-y-4 rounded-full bg-ink px-5 py-3 text-sm font-semibold text-white opacity-0 shadow-xl"></div>
 
   <!-- Scripts -->
-  <script src="frontend/assets/js/auth-engine.js"></script>
-  <script src="frontend/assets/js/products-data.js"></script>
-  <script src="frontend/assets/js/cart-engine.js"></script>
-  <script src="frontend/assets/js/admin-engine.js"></script>
-  <script src="frontend/assets/js/admin-page.js"></script>
+  <script src="frontend/assets/js/auth-engine.js?v=2026_sync_ui_fix"></script>
+  <script src="frontend/assets/js/products-data.js?v=2026_sync_ui_fix"></script>
+  <script src="frontend/assets/js/cart-engine.js?v=2026_sync_ui_fix"></script>
+  <script src="frontend/assets/js/admin-engine.js?v=2026_sync_ui_fix"></script>
+  <script src="frontend/assets/js/admin-page.js?v=2026_sync_ui_fix"></script>
 
 </body>
 </html>

@@ -9,16 +9,14 @@
   var STORAGE_KEY = 'vlu_user';
   var REGISTERED_USERS_KEY = 'vlu_registered_users';
 
-  // Tài khoản Quản trị viên chuẩn CSDL MySQL (backend/database/database.sql)
+  // Tài khoản Quản trị viên chuẩn CSDL MySQL (backend/database/database.sql & backend/config/db.php)
   var DEFAULT_ADMIN_ACCOUNT = {
     id: 1,
     username: 'admin',
     email: 'admin@vluflagship.vn',
-    alt_email: 'admin@vlu.edu.vn',
     password: 'admin123',
-    alt_password: 'Admin@2026',
     fullname: 'Quản trị viên VLU',
-    phone: '0901234567',
+    phone: '02871059999',
     role: 1
   };
 
@@ -32,7 +30,7 @@
       if (!Array.isArray(list)) list = [];
       // Đảm bảo luôn có tài khoản Admin đối chiếu với SQL
       var hasAdmin = list.some(function (u) {
-        return u && (u.username === 'admin' || u.email === 'admin@vluflagship.vn' || u.email === 'admin@vlu.edu.vn');
+        return u && (u.username === 'admin' || u.email === 'admin@vluflagship.vn');
       });
       if (!hasAdmin) {
         list.unshift(DEFAULT_ADMIN_ACCOUNT);
@@ -62,24 +60,21 @@
 
   /**
    * Xác định tài khoản có quyền Quản trị viên (Admin) hay không.
-   * Chấp nhận role === 1 / '1' / 'admin' hoặc username === 'admin' (không áp dụng cho tài khoản Khách).
+   * Chấp nhận role === 1 / '1' / 'admin', username === 'admin', email === 'admin@vluflagship.vn'
    */
   function isAdminUser(user) {
     if (!user || typeof user !== 'object' || user.isGuest) return false;
     var roleText = String(user.role == null ? '' : user.role).trim().toLowerCase();
     var uname = String(user.username || '').trim().toLowerCase();
-    return Number(user.role) === 1 || roleText === 'admin' || uname === 'admin';
+    var email = String(user.email || '').trim().toLowerCase();
+    return Number(user.role) === 1 || roleText === 'admin' || uname === 'admin' || email === 'admin@vluflagship.vn';
   }
 
   /**
-   * Trang đích theo môi trường đang chạy (.php hoặc .html)
+   * Bắt buộc hiển thị giao diện bằng trang .html (Không tải trang .php trên trình duyệt)
    */
-  function isPhpEnvironment() {
-    return window.location.pathname.indexOf('.php') !== -1;
-  }
-
   function getPageUrl(baseName) {
-    return baseName + (isPhpEnvironment() ? '.php' : '.html');
+    return baseName + '.html';
   }
 
   /**
@@ -90,19 +85,20 @@
     var value = nextParam.trim();
     if (!/^[A-Za-z0-9_\-\/.]+\.(php|html)(\?[A-Za-z0-9_\-=&%.]*)?$/.test(value)) return '';
     if (value.charAt(0) === '/' || value.indexOf('..') !== -1 || value.indexOf('//') !== -1) return '';
-    return value;
+    // Chuẩn hóa mọi đuôi .php sang .html
+    return value.replace(/\.php(\?|$)/i, '.html$1');
   }
 
   /**
    * Tính URL chuyển hướng sau đăng nhập:
-   *  - Admin  -> admin.php / admin.html (Dashboard), bỏ qua ?next=
-   *  - User   -> ?next= hợp lệ (không phải trang admin) hoặc index.php / index.html
+   *  - Admin (role 1) -> Bắt buộc nhảy thẳng vào Dashboard admin.html
+   *  - User thường    -> ?next= hợp lệ (.html) hoặc index.html
    */
   function resolvePostLoginUrl(user, nextParam) {
-    if (isAdminUser(user)) return getPageUrl('admin');
+    if (isAdminUser(user)) return 'admin.html';
     var next = sanitizeNext(nextParam);
     if (next && !/^admin\.(php|html)/i.test(next)) return next;
-    return getPageUrl('index');
+    return 'index.html';
   }
 
   var AuthEngine = {
@@ -290,15 +286,14 @@
         }
       })
       .catch(function () {
-        // Bước 2: Khi chạy offline / môi trường không có PHP Web Server:
+        // Bước 2: Chỉ khi fetch bị Network Error hoàn toàn (ngoại tuyến không có PHP server):
         // ĐỐI CHIẾU TRỰC TIẾP VỚI DANH SÁCH TÀI KHOẢN ĐÃ ĐĂNG KÝ HỢP LỆ (BẢNG USERS)
         var registeredList = getRegisteredUsers();
         var foundUser = registeredList.find(function (u) {
           if (!u) return false;
           var uName = (u.username || '').toLowerCase();
           var uEmail = (u.email || '').toLowerCase();
-          var uAltEmail = (u.alt_email || '').toLowerCase();
-          return uName === cleanId || uEmail === cleanId || uAltEmail === cleanId;
+          return uName === cleanId || uEmail === cleanId;
         });
 
         // 1. Kiểm tra tài khoản có tồn tại hay không
@@ -311,14 +306,7 @@
         }
 
         // 2. Kiểm tra mật khẩu có chính xác hay không
-        var validPasswords = [foundUser.password];
-        if (foundUser.alt_password) validPasswords.push(foundUser.alt_password);
-
-        var isPwMatch = validPasswords.some(function (p) {
-          return String(p) === String(password);
-        });
-
-        if (!isPwMatch) {
+        if (String(foundUser.password) !== String(password)) {
           return {
             success: false,
             code: 'WRONG_PASSWORD',
@@ -353,7 +341,7 @@
 
         return {
           success: true,
-          message: 'Đăng nhập thành công! Chào mừng ' + loggedUser.fullname + (loggedUser.role === 1 ? ' (Quản trị viên)' : '') + '.',
+          message: 'Đăng nhập thành công! Chào mừng ' .concat(loggedUser.fullname, loggedUser.role === 1 ? ' (Quản trị viên)' : '', '.'),
           user: loggedUser
         };
       });
@@ -367,12 +355,13 @@
       if (!data || !data.email || !data.password) {
         return Promise.resolve({
           success: false,
+          code: 'MISSING_FIELDS',
           message: 'Vui lòng điền đầy đủ các thông tin đăng ký!'
         });
       }
 
       var cleanEmail = data.email.trim().toLowerCase();
-      var isAdmin = (cleanEmail === 'admin@vluflagship.vn' || cleanEmail === 'admin@vlu.edu.vn');
+      var isAdmin = (cleanEmail === 'admin@vluflagship.vn');
 
       var newUser = {
         id: isAdmin ? 1 : Date.now(),
@@ -385,7 +374,7 @@
         registeredAt: new Date().toISOString()
       };
 
-      // Thử gọi backend PHP lưu vào CSDL MySQL
+      // Gọi backend PHP lưu vào CSDL MySQL
       return fetch('backend/api/auth.php', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -397,25 +386,38 @@
           password: data.password
         })
       })
-      .then(function (res) { return res.json(); })
+      .then(function (res) {
+        return res.json().catch(function () {
+          return { success: false, code: 'INVALID_SERVER_RESPONSE', message: 'Lỗi phản hồi máy chủ.' };
+        });
+      })
       .then(function (apiRes) {
-        if (apiRes && apiRes.success && apiRes.user) {
-          newUser.id = apiRes.user.id || newUser.id;
+        if (apiRes && apiRes.success) {
+          if (apiRes.user) {
+            newUser.id = apiRes.user.id || newUser.id;
+            newUser.role = apiRes.user.role != null ? apiRes.user.role : newUser.role;
+          }
+          addRegisteredUser(newUser);
+          try {
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(newUser));
+          } catch (e) {}
+          self.updateHeaderAuth();
+          self.emitUpdate(newUser);
+          return {
+            success: true,
+            message: apiRes.message || 'Đăng ký tài khoản thành công! Bạn đã được tự động đăng nhập.',
+            user: newUser
+          };
+        } else {
+          return {
+            success: false,
+            code: apiRes ? apiRes.code : 'REGISTER_FAILED',
+            message: apiRes ? apiRes.message : 'Đăng ký tài khoản không thành công!'
+          };
         }
-        addRegisteredUser(newUser);
-        try {
-          localStorage.setItem(STORAGE_KEY, JSON.stringify(newUser));
-        } catch (e) {}
-        self.updateHeaderAuth();
-        self.emitUpdate(newUser);
-        return {
-          success: true,
-          message: 'Đăng ký tài khoản thành công! Bạn đã được tự động đăng nhập.',
-          user: newUser
-        };
       })
       .catch(function () {
-        // Fallback lưu local khi không có PHP server
+        // Fallback an toàn khi mạng offline hoàn toàn
         addRegisteredUser(newUser);
         try {
           localStorage.setItem(STORAGE_KEY, JSON.stringify(newUser));

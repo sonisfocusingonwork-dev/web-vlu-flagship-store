@@ -69,7 +69,7 @@
     });
 
     window.addEventListener('storage', function (e) {
-      if (e.key === 'vlu_orders' || e.key === 'vlu_admin_products' || e.key === 'vlu_user') {
+      if (e.key === 'vlu_orders' || (e.key && e.key.indexOf('vlu_orders_') === 0) || e.key === 'vlu_admin_products' || e.key === 'vlu_user') {
         renderCurrentTab();
       }
     });
@@ -81,7 +81,21 @@
         e.preventDefault();
         if (window.VLU_AUTH) window.VLU_AUTH.logout();
         else localStorage.removeItem('vlu_user');
-        window.location.href = window.location.pathname.indexOf('.php') !== -1 ? 'login.php' : 'login.html';
+        window.location.href = 'login.html';
+      });
+    }
+
+    // 5.1. NÚT MỞ / ĐÓNG SIDEBAR TRÊN ĐIỆN THOẠI & TABLET
+    var btnSidebarToggle = document.getElementById('btnAdminMobileSidebarToggle');
+    var sidebarBackdrop = document.getElementById('adminSidebarBackdrop');
+    if (btnSidebarToggle) {
+      btnSidebarToggle.addEventListener('click', function () {
+        document.body.classList.toggle('admin-sidebar-mobile-open');
+      });
+    }
+    if (sidebarBackdrop) {
+      sidebarBackdrop.addEventListener('click', function () {
+        document.body.classList.remove('admin-sidebar-mobile-open');
       });
     }
 
@@ -126,6 +140,7 @@
 
   function switchTab(tabId) {
     currentTab = tabId;
+    document.body.classList.remove('admin-sidebar-mobile-open');
 
     // Cập nhật giao diện menu sidebar
     var navItems = document.querySelectorAll('[data-tab-target]');
@@ -164,6 +179,11 @@
     };
     if (topTitle && titles[tabId]) topTitle.textContent = titles[tabId];
     if (topCrumb && titles[tabId]) topCrumb.textContent = titles[tabId];
+
+    // Tự động gọi đồng bộ từ Backend MySQL/JSON khi chuyển sang tab Dashboard hoặc Đơn hàng
+    if ((tabId === 'dashboard' || tabId === 'orders') && window.VLU_ADMIN && typeof window.VLU_ADMIN.syncWithBackend === 'function') {
+      window.VLU_ADMIN.syncWithBackend();
+    }
 
     renderCurrentTab();
   }
@@ -325,16 +345,18 @@
     }
 
     var html = '';
+    var safeResolver = window.resolveProductImageUrl || function (u) { return u; };
     filtered.forEach(function (p) {
+      var resolvedImg = safeResolver(p.image || 'frontend/assets/images/logo.png', p.category_name);
       html += '<tr class="border-b border-slate-100 hover:bg-slate-50/70 transition" data-id="' + p.id + '">';
       html += '  <td class="py-3 px-4 text-xs font-mono font-bold text-slate-400">#' + p.id + '</td>';
       html += '  <td class="py-3 px-4">';
       html += '    <div class="h-12 w-12 rounded-xl bg-slate-50 border border-slate-200/80 p-1 flex items-center justify-center">';
-      html += '      <img src="' + (p.image || 'frontend/assets/images/logo.png') + '" alt="' + p.name + '" class="max-h-full max-w-full object-contain" onerror="this.onerror=null;this.src=\'image_2c97c5.png\';">';
+      html += '      <img src="' + resolvedImg + '" alt="' + p.name + '" class="max-h-full max-w-full object-contain" onerror="this.onerror=null;this.src=\'frontend/assets/images/placeholders/phone.svg\';">';
       html += '    </div>';
       html += '  </td>';
       html += '  <td class="py-3 px-4 min-w-[200px]">';
-      html += '    <a href="product-detail.html?id=' + encodeURIComponent(p.name) + '" target="_blank" class="text-xs font-bold text-slate-900 hover:text-brand transition line-clamp-1" title="' + p.name + '">' + p.name + '</a>';
+      html += '    <a href="product-detail.html?id=' + encodeURIComponent(p.id) + '" target="_blank" class="text-xs font-bold text-slate-900 hover:text-brand transition line-clamp-1" title="' + p.name + '">' + p.name + '</a>';
       if (p.description) {
         html += '    <p class="text-[11px] text-slate-400 line-clamp-1 mt-0.5">' + p.description + '</p>';
       }
@@ -469,9 +491,9 @@
     var filtered = orders.filter(function (o) {
       var matchStatus = orderFilterStatus === 'all' || o.status === orderFilterStatus;
       var matchQuery = !query ||
-        o.id.toLowerCase().indexOf(query) !== -1 ||
+        String(o.id || '').toLowerCase().indexOf(query) !== -1 ||
         (o.customer_name && o.customer_name.toLowerCase().indexOf(query) !== -1) ||
-        (o.customer_phone && o.customer_phone.indexOf(query) !== -1);
+        (o.customer_phone && String(o.customer_phone).indexOf(query) !== -1);
       return matchStatus && matchQuery;
     });
 

@@ -232,9 +232,11 @@
       var html = '';
       items.forEach(function (item) {
         var lineTotal = (parseInt(item.price, 10) || 0) * (parseInt(item.quantity, 10) || 1);
+        var safeResolver = window.resolveProductImageUrl || function (u) { return u; };
+        var resolvedImg = safeResolver(item.image || 'frontend/assets/images/logo.png', item.category);
         html += '<div class="flex items-center gap-3 py-3 border-b border-slate-100 last:border-0">';
         html += '  <div class="h-16 w-16 shrink-0 rounded-xl bg-slate-50 border border-slate-100 p-1.5 flex items-center justify-center">';
-        html += '    <img src="' + (item.image || 'frontend/assets/images/logo.png') + '" alt="' + item.name + '" class="max-h-full max-w-full object-contain" onerror="this.onerror=null;this.src=\'image_2c97c5.png\';">';
+        html += '    <img src="' + resolvedImg + '" alt="' + item.name + '" class="max-h-full max-w-full object-contain" onerror="this.onerror=null;this.src=\'frontend/assets/images/placeholders/phone.svg\';">';
         html += '  </div>';
         html += '  <div class="flex-1 min-w-0">';
         html += '    <h4 class="text-xs sm:text-sm font-bold text-slate-900 truncate">' + item.name + '</h4>';
@@ -315,6 +317,77 @@
       }
     });
 
+    // RÀNG BUỘC CHẶT INPUT: Họ và tên người nhận (chỉ chữ và khoảng trắng, không số, không ký tự đặc biệt)
+    var fullnameInput = document.getElementById('checkoutFullname');
+    var fullnameError = document.getElementById('fullnameError');
+    if (fullnameInput) {
+      function sanitizeFullname(e) {
+        var original = fullnameInput.value;
+        var filtered = original.replace(/[^\p{L}\s]/gu, '');
+        if (original !== filtered) {
+          fullnameInput.value = filtered;
+          if (fullnameError) {
+            fullnameError.textContent = 'Họ và tên chỉ được chứa chữ cái, không được nhập số hoặc ký tự đặc biệt!';
+            fullnameError.classList.remove('hidden');
+          }
+        } else if (fullnameError && filtered.trim().length >= 2) {
+          fullnameError.classList.add('hidden');
+        }
+      }
+
+      fullnameInput.addEventListener('input', sanitizeFullname);
+      fullnameInput.addEventListener('paste', function () {
+        setTimeout(sanitizeFullname, 10);
+      });
+      fullnameInput.addEventListener('blur', function () {
+        var val = fullnameInput.value.trim();
+        if (fullnameError) {
+          if (!val || val.length < 2) {
+            fullnameError.textContent = 'Vui lòng nhập họ và tên hợp lệ (tối thiểu 2 ký tự)!';
+            fullnameError.classList.remove('hidden');
+          } else {
+            fullnameError.classList.add('hidden');
+          }
+        }
+      });
+    }
+
+    // RÀNG BUỘC CHẶT INPUT: Số điện thoại (chỉ số 0-9, chuẩn 10 chữ số)
+    var phoneInput = document.getElementById('checkoutPhone');
+    var phoneError = document.getElementById('phoneError');
+    if (phoneInput) {
+      function sanitizePhone(e) {
+        var original = phoneInput.value;
+        var filtered = original.replace(/[^0-9]/g, '').slice(0, 10);
+        if (original !== filtered) {
+          phoneInput.value = filtered;
+          if (phoneError) {
+            phoneError.textContent = 'Số điện thoại chỉ được chứa các chữ số (0-9)!';
+            phoneError.classList.remove('hidden');
+          }
+        } else if (phoneError && filtered.length === 10) {
+          phoneError.classList.add('hidden');
+        }
+      }
+
+      phoneInput.addEventListener('input', sanitizePhone);
+      phoneInput.addEventListener('paste', function () {
+        setTimeout(sanitizePhone, 10);
+      });
+      phoneInput.addEventListener('blur', function () {
+        var val = phoneInput.value.trim();
+        var phoneRegex = /^(03|05|07|08|09)[0-9]{8}$/;
+        if (phoneError) {
+          if (!phoneRegex.test(val)) {
+            phoneError.textContent = 'Số điện thoại không hợp lệ! Vui lòng nhập đúng 10 số di động (03, 05, 07, 08, 09...).';
+            phoneError.classList.remove('hidden');
+          } else {
+            phoneError.classList.add('hidden');
+          }
+        }
+      });
+    }
+
     // Xử lý nộp đơn hàng
     if (checkoutForm) {
       checkoutForm.addEventListener('submit', function (e) {
@@ -349,19 +422,34 @@
         var shippingMethod = getSelectedValue(shippingRadios, 'delivery');
         var selectedStore = getSelectedValue(storePickupFields ? storePickupFields.querySelectorAll('input[name="store_location"]') : [], '');
 
-        // Validate Họ tên
-        if (!fullname) {
-          alert('Vui lòng nhập Họ và tên người nhận hàng!');
-          fullnameInput.focus();
+        // Validate Họ tên (tối thiểu 2 ký tự, CHỈ CHỮ CÁI Unicode và khoảng trắng)
+        var nameStrictRegex = /^[\p{L}\s]{2,}$/u;
+        if (!fullname || !nameStrictRegex.test(fullname)) {
+          if (fullnameError) {
+            fullnameError.textContent = 'Họ và tên chỉ được chứa chữ cái, không được nhập số hoặc ký tự đặc biệt!';
+            fullnameError.classList.remove('hidden');
+          } else {
+            alert('Họ và tên chỉ được chứa chữ cái, không được nhập số hoặc ký tự đặc biệt!');
+          }
+          if (fullnameInput) fullnameInput.focus();
           return;
+        } else if (fullnameError) {
+          fullnameError.classList.add('hidden');
         }
 
         // Validate Số điện thoại (10 chữ số chuẩn đầu số Việt Nam)
-        var phoneRegex = /^(03|05|07|08|09)\d{8}$/;
+        var phoneRegex = /^(03|05|07|08|09)[0-9]{8}$/;
         if (!phone || !phoneRegex.test(phone)) {
-          alert('Số điện thoại không hợp lệ! Vui lòng nhập đúng 10 số di động tại Việt Nam (ví dụ: 0987654321).');
-          phoneInput.focus();
+          if (phoneError) {
+            phoneError.textContent = 'Số điện thoại không hợp lệ! Vui lòng nhập đúng 10 số di động (03, 05, 07, 08, 09...).';
+            phoneError.classList.remove('hidden');
+          } else {
+            alert('Số điện thoại không hợp lệ! Vui lòng nhập đúng 10 số di động (03, 05, 07, 08, 09...).');
+          }
+          if (phoneInput) phoneInput.focus();
           return;
+        } else if (phoneError) {
+          phoneError.classList.add('hidden');
         }
 
         var fullAddress = '';
@@ -376,7 +464,7 @@
           fullAddress = Array.prototype.map.call(storeLines, function (line) { return line.textContent.trim(); }).join(' - ');
         } else {
           if (!city || !district || !address) {
-            alert('Vui lòng nhập Tỉnh/Thành, Quận/Huyện và địa chỉ số nhà, tên đường!');
+            alert('Vui lòng nhập Tỉnh/Thành, Quận / Phường / Khu vực và địa chỉ số nhà, tên đường!');
             if (!city && cityInput) cityInput.focus();
             else if (!district && districtInput) districtInput.focus();
             else if (addressInput) addressInput.focus();
@@ -527,19 +615,18 @@
           console.warn('[Checkout] Lỗi làm sạch giỏ hàng:', clearErr);
         }
 
-        // Cập nhật đường link nút Xem đơn hàng đã đặt & Quay về trang chủ theo đúng môi trường (PHP vs HTML)
-        var isPhpEnv = window.location.pathname.indexOf('.php') !== -1;
+        // Cập nhật đường link nút Xem đơn hàng đã đặt & Quay về trang chủ (Bắt buộc .html)
         var btnViewOrders = document.getElementById('btnViewOrders');
         var btnBackToHome = document.getElementById('btnBackToHome');
         var btnContinueShopping = document.getElementById('btnContinueShopping');
         if (btnViewOrders) {
-          btnViewOrders.setAttribute('href', isPhpEnv ? 'account.php?tab=orders' : 'account.html?tab=orders');
+          btnViewOrders.setAttribute('href', 'account.html?tab=orders');
         }
         if (btnBackToHome) {
-          btnBackToHome.setAttribute('href', isPhpEnv ? 'index.php' : 'index.html');
+          btnBackToHome.setAttribute('href', 'index.html');
         }
         if (btnContinueShopping) {
-          btnContinueShopping.setAttribute('href', isPhpEnv ? 'index.php#dien-thoai' : 'index.html#dien-thoai');
+          btnContinueShopping.setAttribute('href', 'index.html#dien-thoai');
         }
 
         // Hiển thị Modal Đặt hàng thành công

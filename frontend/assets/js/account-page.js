@@ -217,8 +217,9 @@
 
   function localProductImage(image) {
     if (typeof image !== 'string' || !image || /^(?:https?:|data:|\/\/)/i.test(image) || image.indexOf('..') !== -1) return false;
-    return /^(?:SanPham|img|frontend\/assets\/images\/placeholders)\//i.test(image) &&
-      !/(^|\/)Banner\//i.test(image);
+    var clean = image.trim().replace(/^[\/\\]+/, '');
+    return /^(?:SanPham|img|frontend\/assets\/images\/placeholders)\//i.test(clean) &&
+      !/(^|\/)Banner\//i.test(clean);
   }
 
   function dateText(value) {
@@ -250,15 +251,18 @@
   }
 
   function productImage(product) {
-    var image = product && (product.image || product.img ||
+    var raw = product && (product.image || product.img ||
       (product.colors && product.colors[0] && (product.colors[0].image || product.colors[0].img)));
-    if (!localProductImage(image)) return PRODUCT_PLACEHOLDER;
-    return image;
+    var resolver = window.resolveProductImageUrl || function (u) { return u; };
+    if (!raw || !localProductImage(raw)) return PRODUCT_PLACEHOLDER;
+    return resolver(raw, product ? product.category : 'phone');
   }
 
   function itemImage(item) {
-    var image = item && item.image;
-    return localProductImage(image) ? image : PRODUCT_PLACEHOLDER;
+    var raw = item && (item.image || item.img);
+    var resolver = window.resolveProductImageUrl || function (u) { return u; };
+    if (!raw || !localProductImage(raw)) return PRODUCT_PLACEHOLDER;
+    return resolver(raw, item ? item.category : 'phone');
   }
 
   function catalogProduct(id) {
@@ -283,26 +287,33 @@
 
   function syncUserOrders() {
     var identity = currentIdentity(currentUser);
+    var isGuest = !currentUser || Boolean(currentUser.isGuest) || identity === 'guest';
     var accountOrders = Array.isArray(store && store.orders) ? store.orders : [];
     var userSpecificOrders = readJson('vlu_orders_' + identity, []);
     var globalOrders = readJson('vlu_orders', []);
     var mergedMap = {};
     var mergedList = [];
 
-    function addOrderIfMatch(order) {
+    function addOrderIfMatch(order, isTrusted) {
       if (!order || !order.id) return;
       var orderUser = String(order.user_id || 'guest').trim().toLowerCase().replace(/[^a-z0-9._@-]+/g, '_') || 'guest';
-      if (orderUser !== identity) return;
-      var idKey = String(order.id);
+      if (!isTrusted) {
+        if (isGuest) {
+          if (orderUser !== 'guest' && orderUser !== identity && order.user_id && order.user_id !== '0') return;
+        } else {
+          if (orderUser !== identity) return;
+        }
+      }
+      var idKey = String(order.order_code || order.id);
       if (!mergedMap[idKey]) {
         mergedMap[idKey] = true;
         mergedList.push(order);
       }
     }
 
-    if (Array.isArray(globalOrders)) globalOrders.forEach(addOrderIfMatch);
-    if (Array.isArray(userSpecificOrders)) userSpecificOrders.forEach(addOrderIfMatch);
-    if (Array.isArray(accountOrders)) accountOrders.forEach(addOrderIfMatch);
+    if (Array.isArray(accountOrders)) accountOrders.forEach(function (o) { addOrderIfMatch(o, true); });
+    if (Array.isArray(userSpecificOrders)) userSpecificOrders.forEach(function (o) { addOrderIfMatch(o, true); });
+    if (Array.isArray(globalOrders)) globalOrders.forEach(function (o) { addOrderIfMatch(o, false); });
 
     mergedList.sort(function (a, b) {
       return new Date(b.created_at || 0).getTime() - new Date(a.created_at || 0).getTime();
@@ -420,7 +431,7 @@
   function emptyState(icon, text, actionLabel, tab) {
     return '<div class="account-empty"><span class="account-empty-icon">' + icon + '</span>' +
       '<p class="text-sm font-extrabold text-slate-700">' + escapeHtml(text) + '</p>' +
-      (actionLabel ? '<a class="account-button mt-4" href="' + escapeHtml(tab || 'index.php') + '">' + escapeHtml(actionLabel) + '</a>' : '') +
+      (actionLabel ? '<a class="account-button mt-4" href="' + escapeHtml(tab || 'index.html') + '">' + escapeHtml(actionLabel) + '</a>' : '') +
       '</div>';
   }
 
@@ -666,7 +677,7 @@
         return '<button class="account-button' + (orderFilter === tab[0] ? ' account-button-primary' : '') +
           '" data-order-filter="' + tab[0] + '">' + tab[1] + '</button>';
       }).join('') + '</div><div id="orderRows" class="mt-2">' +
-      (list.length ? list.map(orderRow).join('') : emptyState('▤', orderSearch || orderFilter !== 'all' ? 'Không tìm thấy đơn hàng phù hợp.' : 'Chưa có đơn hàng nào của tài khoản này.', 'Mua sắm ngay', 'index.php')) +
+      (list.length ? list.map(orderRow).join('') : emptyState('▤', orderSearch || orderFilter !== 'all' ? 'Không tìm thấy đơn hàng phù hợp.' : 'Chưa có đơn hàng nào của tài khoản này.', 'Mua sắm ngay', 'index.html')) +
       '</div></section>';
   }
 
@@ -683,7 +694,7 @@
       field('Họ tên người nhận', 'name', editing.name || '', 'text', 'Nguyễn Văn An') +
       field('Số điện thoại', 'phone', editing.phone || '', 'tel', '09xxxxxxxx') +
       field('Tỉnh / Thành phố', 'city', editing.city || '', 'text', 'TP. Hồ Chí Minh') +
-      field('Quận / Huyện', 'district', editing.district || '', 'text', 'Quận 1') +
+      field('Quận / Phường / Khu vực', 'district', editing.district || '', 'text', 'Quận 1') +
       field('Phường / Xã', 'ward', editing.ward || '', 'text', 'Phường Bến Nghé') +
       field('Số nhà & Tên đường', 'street', editing.street || editing.address || '', 'text', 'Số nhà, tên đường') +
       '<div class="account-field"><label for="addressLabel">Loại địa chỉ</label><select class="account-select" id="addressLabel" name="label">' +
@@ -1173,7 +1184,7 @@
     } else {
       localStorage.removeItem('vlu_user');
     }
-    window.location.href = 'index.php';
+    window.location.href = 'index.html';
   }
 
   function downloadInvoice(orderId) {
@@ -1808,9 +1819,17 @@
     window.addEventListener('storage', function (event) {
       if (event.key === 'vlu_user') {
         currentUser = readJson('vlu_user', null);
-        if (!currentUser || currentIdentity(currentUser) !== userKey.replace(/^vlu_account_/, '')) {
-          window.location.replace('login.html');
-          return;
+        if (!currentUser) {
+          if (window.VLU_AUTH && typeof window.VLU_AUTH.ensureGuestSession === 'function') {
+            currentUser = window.VLU_AUTH.ensureGuestSession();
+          }
+        }
+        var currentId = currentIdentity(currentUser);
+        if (currentId !== userKey.replace(/^vlu_account_/, '')) {
+          userKey = 'vlu_account_' + currentId;
+          store = normalizeStore(readJson(userKey, {}));
+          syncUserOrders();
+          render();
         }
       }
       if (event.key === 'vlu_orders' || (event.key && event.key.indexOf('vlu_orders_') === 0)) {

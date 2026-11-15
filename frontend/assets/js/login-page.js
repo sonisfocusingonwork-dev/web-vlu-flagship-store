@@ -137,18 +137,20 @@
   }
 
   /**
-   * Xác định trang đích sau đăng nhập thành công (đồng bộ với VLU_AUTH.getPostLoginUrl)
-   * - Admin (role == 1 / 'admin' / username 'admin') -> admin.php hoặc admin.html
-   * - User thường -> ?next= hợp lệ hoặc index.php / index.html
+   * Xác định trang đích sau đăng nhập thành công (bắt buộc load trang .html):
+   * - Admin (role == 1 / 'admin' / username 'admin') -> Bắt buộc nhảy thẳng vào admin.html
+   * - User thường -> ?next= hợp lệ (.html) hoặc index.html
    */
   function resolveTargetUrl(user, nextParam) {
+    var isAdmin = !!user && (Number(user.role) === 1 || String(user.role).toLowerCase() === 'admin' ||
+      String(user.username || '').toLowerCase() === 'admin' || String(user.email || '').toLowerCase() === 'admin@vluflagship.vn');
+    if (isAdmin) {
+      return 'admin.html';
+    }
     if (window.VLU_AUTH && typeof window.VLU_AUTH.getPostLoginUrl === 'function') {
       return window.VLU_AUTH.getPostLoginUrl(user, nextParam);
     }
-    var ext = window.location.pathname.indexOf('.php') !== -1 ? '.php' : '.html';
-    var isAdmin = !!user && (Number(user.role) === 1 || String(user.role).toLowerCase() === 'admin' ||
-      String(user.username || '').toLowerCase() === 'admin');
-    return (isAdmin ? 'admin' : 'index') + ext;
+    return 'index.html';
   }
 
 })(window, document);

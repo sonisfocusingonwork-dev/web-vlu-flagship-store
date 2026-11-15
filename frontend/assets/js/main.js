@@ -160,13 +160,15 @@
     var launchGrid = $('.launch-grid');
     if (launchGrid) {
       launchGrid.innerHTML = featured.map(function (product) {
-        var image = product.image || (product.colors && product.colors[0] && (product.colors[0].image || product.colors[0].img)) ||
-          'frontend/assets/images/placeholders/phone.svg';
+        var rawImg = product.image || (product.colors && product.colors[0] && (product.colors[0].image || product.colors[0].img));
+        var safeResolver = window.resolveProductImageUrl || function (u) { return u; };
+        var image = safeResolver(rawImg, product.category);
+        var fallbackPlaceholder = 'frontend/assets/images/placeholders/' + (product.category || 'phone') + '.svg';
         var href = productHref(product);
         var price = Number(product.basePrice) > 0 ? Number(product.basePrice).toLocaleString('vi-VN') + '₫' : 'Giá liên hệ';
         return '<article class="product-card group">' +
           '<div class="product-img-box"><button type="button" data-wish data-id="' + escapeHtml(product.id) + '" aria-pressed="false" aria-label="Yêu thích ' + escapeHtml(product.name) + '" class="absolute right-2 top-2 z-10 grid h-10 w-10 place-items-center rounded-full bg-white/90 text-slate-500 shadow-sm transition hover:text-red-600 active:scale-90"><svg class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><use href="#i-heart"/></svg></button>' +
-          '<img src="' + escapeHtml(image) + '" alt="' + escapeHtml(product.name) + '" loading="lazy" class="product-img"></div>' +
+          '<img src="' + escapeHtml(image) + '" alt="' + escapeHtml(product.name) + '" loading="lazy" class="product-img" onerror="this.onerror=null;this.src=\'' + fallbackPlaceholder + '\';"></div>' +
           '<div class="mt-3 flex flex-1 flex-col sm:mt-4"><div class="flex items-center justify-between gap-2"><p class="text-xs font-bold uppercase tracking-wider text-slate-400">' + escapeHtml(product.brand) + '</p></div>' +
           '<h3 class="mt-1 text-sm font-bold leading-snug text-slate-900 transition group-hover:text-brand sm:text-base"><a href="' + href + '" class="after:absolute after:inset-0 after:z-0">' + escapeHtml(product.name) + '</a></h3>' +
           '<p class="mt-1 line-clamp-2 text-xs leading-relaxed text-slate-500">' + escapeHtml(product.tagline || 'Sản phẩm chính hãng tại VLU FLAGSHIP STORE.') + '</p>' +
@@ -638,5 +640,47 @@
       }
     });
   });
+
+  /* ---------- 6. REAL-TIME ADMIN -> USER SYNC (BroadcastChannel & Storage Event) ---------- */
+  function onStoreSync() {
+    if (typeof window.VLU_SYNC_PRODUCTS === 'function') {
+      window.VLU_SYNC_PRODUCTS();
+    }
+    renderCatalogMenus();
+
+    // Cập nhật giá trên các thẻ sản phẩm đang hiển thị trên trang
+    $$('.product-card').forEach(function (card) {
+      var link = $('h3 a', card);
+      if (!link) return;
+      var pName = link.textContent.trim();
+      var p = window.VLU_FIND_PRODUCT ? window.VLU_FIND_PRODUCT(pName) : null;
+      if (p) {
+        var priceEl = $('.product-price-current', card) || $('.font-black.text-brand', card);
+        if (priceEl && p.basePrice) {
+          priceEl.textContent = Number(p.basePrice).toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.') + '₫';
+        }
+      }
+    });
+
+    if (window.VLU_CART && typeof window.VLU_CART.sanitizeStaleProducts === 'function') {
+      window.VLU_CART.sanitizeStaleProducts();
+      window.VLU_CART.updateBadge();
+    }
+  }
+
+  window.addEventListener('storage', function (e) {
+    if (e.key === 'vlu_sync_timestamp' || e.key === 'vlu_admin_products' || e.key === 'vlu_products') {
+      onStoreSync();
+    }
+  });
+
+  try {
+    if (typeof BroadcastChannel !== 'undefined') {
+      var storeSyncChannel = new BroadcastChannel('vlu_store_sync');
+      storeSyncChannel.onmessage = function () {
+        onStoreSync();
+      };
+    }
+  } catch (errBc) {}
 
 })();
