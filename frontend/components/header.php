@@ -22,66 +22,86 @@ if (!is_array($catalogInventory) || !isset($catalogInventory['categories'], $cat
     throw new RuntimeException('Không thể tải danh mục menu: ' . $catalogFile);
 }
 $categoryIcons = [
-    'dien-thoai' => '<svg class="h-4 w-4 text-slate-700" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect width="14" height="20" x="5" y="2" rx="2" ry="2"/><path d="M12 18h.01"/></svg>',
-    'laptop' => '<svg class="h-4 w-4 text-slate-700" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect width="18" height="12" x="3" y="4" rx="2"/><path d="M2 20h20"/></svg>',
-    'ipad' => '<svg class="h-4 w-4 text-slate-700" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect width="16" height="20" x="4" y="2" rx="2"/><circle cx="12" cy="18" r="1"/></svg>',
-    'tai-nghe' => '<svg class="h-4 w-4 text-slate-700" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M3 14h3a2 2 0 0 1 2 2v3a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-7a9 9 0 0 1 18 0v7a2 2 0 0 1-2 2h-1a2 2 0 0 1-2-2v-3a2 2 0 0 1 2-2h3"/></svg>',
-    'loa' => '<svg class="h-4 w-4 text-slate-700" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M15.54 8.46a5 5 0 0 1 0 7.07"/></svg>',
-    'dong-ho-dien-tu' => '<svg class="h-4 w-4 text-slate-700" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect width="14" height="14" x="5" y="5" rx="3"/><path d="M9 2v3m6-3v3m-6 14v3m6-3v3"/></svg>',
+    'dien-thoai' => '<svg class="nav-cat-icon h-4 w-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect width="14" height="20" x="5" y="2" rx="2" ry="2"/><path d="M12 18h.01"/></svg>',
+    'laptop' => '<svg class="nav-cat-icon h-4 w-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect width="18" height="12" x="3" y="4" rx="2"/><path d="M2 20h20"/></svg>',
+    'ipad' => '<svg class="nav-cat-icon h-4 w-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect width="16" height="20" x="4" y="2" rx="2"/><circle cx="12" cy="18" r="1"/></svg>',
+    'tai-nghe' => '<svg class="nav-cat-icon h-4 w-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M3 14h3a2 2 0 0 1 2 2v3a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-7a9 9 0 0 1 18 0v7a2 2 0 0 1-2 2h-1a2 2 0 0 1-2-2v-3a2 2 0 0 1 2-2h3"/></svg>',
+    'loa' => '<svg class="nav-cat-icon h-4 w-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M15.54 8.46a5 5 0 0 1 0 7.07"/></svg>',
+    'dong-ho-dien-tu' => '<svg class="nav-cat-icon h-4 w-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect width="14" height="14" x="5" y="5" rx="3"/><path d="M9 2v3m6-3v3m-6 14v3m6-3v3"/></svg>',
+    'phu-kien' => '<svg class="nav-cat-icon h-4 w-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>',
 ];
 $navMegaCategories = [];
 foreach ($catalogInventory['categories'] as $category) {
     $slug = $category['slug'];
     $groups = [];
+    $brands = [];
+    $flagshipProducts = [];
     foreach ($catalogInventory['products'] as $product) {
         if ($product['category'] !== $slug) continue;
         $groupTitle = $product['folder_group'];
         if (!isset($groups[$groupTitle])) $groups[$groupTitle] = ['title' => $groupTitle, 'items' => []];
         $groups[$groupTitle]['items'][] = $product['name'];
+        $brandName = trim((string)($product['brand'] ?? ''));
+        if ($brandName !== '' && !in_array($brandName, $brands, true)) {
+            $brands[] = $brandName;
+        }
+        if (count($flagshipProducts) < 2) {
+            $flagshipProducts[] = $product;
+        }
     }
+    $heroProduct = $flagshipProducts[0] ?? null;
+    $heroImage = $heroProduct && !empty($heroProduct['image'])
+        ? str_replace('%2F', '/', rawurlencode(str_replace('\\', '/', $heroProduct['image'])))
+        : '';
     $navMegaCategories[$slug] = [
         'name' => $category['name'],
         'icon' => $categoryIcons[$slug] ?? '',
         'grid_class' => 'mega-grid-flow',
         'groups' => array_values($groups),
+        'brands' => array_slice($brands, 0, 8),
+        'hero_image' => $heroImage,
+        'hero_title' => $heroProduct['name'] ?? ($category['name'] . ' Flagship'),
+        'flagships' => $flagshipProducts,
     ];
 }
 ?>
 
 <!-- ============================================================
-     APPLE 2026 GLASSMORPHIC HEADER (STICKY CỐ ĐỊNH TẠI TOP: 0)
-     Hàng 1: Logo khử nền nguyên khối | Thanh tìm kiếm | Giỏ hàng
-     Hàng 2: Menu ngang 6 danh mục (Toàn bộ Mega-Menu với thanh cuộn)
+     VLU FLAGSHIP STORE – PREMIUM GLASSMORPHIC STICKY HEADER
+     Hàng 1: Logo khử nền | Thanh tìm kiếm Live Autocomplete | Tài khoản & Giỏ hàng
+     Hàng 2: Thanh danh mục & Mega-Menu (Hover Fade & Slide, Brand Tags & Showcase)
      ============================================================ -->
 <header id="site-header" class="site-header sticky top-0 z-50">
   <div class="mx-auto max-w-7xl px-4 sm:px-6">
 
-    <!-- [HÀNG TRÊN]: Logo + Tìm kiếm + Giỏ hàng -->
-    <div class="flex items-center justify-between gap-4 py-3 md:gap-8">
+    <!-- [HÀNG TRÊN]: Logo + Tìm kiếm + Tài khoản & Giỏ hàng -->
+    <div class="header-top-row flex items-center justify-between gap-4 md:gap-8">
 
-      <!-- 1. Logo khử nền hòa trộn nguyên khối (không khung viền) -->
+      <!-- 1. Logo VLU góc trái -->
       <a href="index.html" class="site-logo" aria-label="VLU FLAGSHIP STORE – Trang chủ">
         <img src="frontend/assets/images/logo.png" onerror="this.onerror=null;this.src='image_2c97c5.png';" alt="VLU FLAGSHIP STORE" width="243" height="171">
       </a>
 
-      <!-- 2. Thanh tìm kiếm trung tâm phong cách kính mờ Apple -->
-      <form action="category.html" method="GET" role="search" class="relative hidden sm:block flex-1 max-w-2xl">
+      <!-- 2. Thanh tìm kiếm thông minh + Live Autocomplete Dropdown -->
+      <form id="headerSearchWrapper" action="category.html" method="GET" role="search" class="relative hidden sm:block flex-1 max-w-2xl">
         <label for="search-input" class="sr-only">Tìm kiếm sản phẩm</label>
         <div class="relative flex items-center">
           <svg class="pointer-events-none absolute left-4 h-4 w-4 text-slate-400" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
-          <input id="search-input" name="q" type="search" placeholder="Bạn cần tìm iPhone, Galaxy, MacBook, iPad, tai nghe, loa…" autocomplete="off"
-                 class="glass-search-input h-11 w-full rounded-full pl-11 pr-12 text-sm font-medium placeholder:text-slate-400 transition-all focus:outline-none">
+          <input id="search-input" name="q" type="search" placeholder="Bạn cần tìm iPhone 18, Galaxy S26, MacBook M5, iPad Pro…" autocomplete="off"
+                 aria-autocomplete="list" aria-controls="searchSuggestDropdown" aria-expanded="false"
+                 class="glass-search-input h-11 w-full rounded-full pl-11 pr-16 text-sm font-medium placeholder:text-slate-400 transition-all focus:outline-none">
           <button type="submit" class="absolute right-1.5 h-8 px-4 rounded-full bg-brand text-xs font-bold text-white shadow-sm hover:bg-brand-dark transition-colors">Tìm</button>
         </div>
+        <div id="searchSuggestDropdown" class="search-suggest-dropdown" role="listbox" aria-label="Gợi ý sản phẩm trực tiếp"></div>
       </form>
 
       <!-- 3. Tài khoản, Giỏ hàng & Nút mở menu di động -->
-      <div class="flex items-center gap-2">
+      <div class="flex items-center gap-2.5">
         
         <!-- Nút Tài khoản / Đăng nhập (Auth Container) -->
         <div id="headerAuthContainer" class="relative">
           <!-- Trạng thái chưa đăng nhập -->
-          <a href="login.html" id="headerLoginBtn" class="flex items-center gap-1.5 h-10 px-3 rounded-full text-slate-700 transition hover:bg-slate-100/80 active:scale-95 text-xs font-bold" aria-label="Đăng nhập tài khoản">
+          <a href="login.html" id="headerLoginBtn" class="header-action-pill active:scale-95" aria-label="Đăng nhập tài khoản">
             <svg class="h-4.5 w-4.5 text-slate-600" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0A17.933 17.933 0 0112 21.75c-2.676 0-5.216-.584-7.499-1.632z"/>
             </svg>
@@ -90,16 +110,16 @@ foreach ($catalogInventory['categories'] as $category) {
 
           <!-- Trạng thái đã đăng nhập (Dropdown Menu) -->
           <div id="headerUserDropdown" class="hidden relative">
-            <button type="button" id="headerUserBtn" class="flex items-center gap-2 h-10 px-3 rounded-full bg-slate-100/80 hover:bg-slate-200/80 text-slate-900 transition active:scale-95 text-xs font-bold" aria-expanded="false" aria-haspopup="true">
+            <button type="button" id="headerUserBtn" class="header-action-pill active:scale-95" aria-expanded="false" aria-haspopup="true">
               <span class="grid h-7 w-7 place-items-center overflow-hidden rounded-full bg-slate-200 text-slate-500 ring-1 ring-white" id="headerUserAvatar" aria-hidden="true">
                 <svg class="h-5 w-5" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 12a4.25 4.25 0 1 0 0-8.5 4.25 4.25 0 0 0 0 8.5Zm0 2c-4.1 0-7.5 2.1-7.5 4.7V21h15v-2.3c0-2.6-3.4-4.7-7.5-4.7Z"/></svg>
               </span>
               <span id="headerUserName" class="max-w-[100px] truncate">Người dùng</span>
-              <svg class="h-3.5 w-3.5 text-slate-500" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="m19.5 8.25-7.5 7.5-7.5-7.5"/></svg>
+              <svg class="h-3.5 w-3.5 text-slate-500 transition-transform" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="m19.5 8.25-7.5 7.5-7.5-7.5"/></svg>
             </button>
 
             <!-- Dropdown Menu Box -->
-            <div id="headerUserMenu" class="hidden absolute right-0 mt-3 w-72 min-w-[280px] rounded-3xl border border-white/70 bg-white/90 p-3.5 shadow-2xl shadow-slate-900/15 ring-1 ring-slate-900/5 backdrop-blur-2xl z-50">
+            <div id="headerUserMenu" class="hidden absolute right-0 mt-3 w-72 min-w-[280px] rounded-2xl border border-slate-200/80 bg-white/95 p-3.5 shadow-2xl shadow-slate-900/15 ring-1 ring-slate-900/5 backdrop-blur-2xl z-50">
               <div class="flex items-center gap-3.5 border-b border-slate-100 px-2 pb-4 pt-1">
                 <span id="menuUserAvatar" class="grid h-12 w-12 shrink-0 place-items-center overflow-hidden rounded-full bg-slate-200 text-slate-500 ring-4 ring-slate-100" aria-hidden="true">
                   <svg class="h-8 w-8" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 12a4.25 4.25 0 1 0 0-8.5 4.25 4.25 0 0 0 0 8.5Zm0 2c-4.1 0-7.5 2.1-7.5 4.7V21h15v-2.3c0-2.6-3.4-4.7-7.5-4.7Z"/></svg>
@@ -111,21 +131,21 @@ foreach ($catalogInventory['categories'] as $category) {
                 </div>
               </div>
               <div class="space-y-1 py-3">
-                <a href="admin.html" id="menuAdminBtn" class="hidden flex min-h-11 items-center gap-3 rounded-2xl px-3.5 py-3 text-xs font-bold text-brand hover:bg-brand-soft transition">
+                <a href="admin.html" id="menuAdminBtn" class="hidden flex min-h-11 items-center gap-3 rounded-xl px-3.5 py-2.5 text-xs font-bold text-brand hover:bg-brand-soft transition">
                   <svg class="h-4 w-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M10.5 6h9.75M10.5 6a1.5 1.5 0 11-3 0m3 0a1.5 1.5 0 10-3 0M3.75 6H7.5m3 12h9.75m-9.75 0a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m-3.75 0H7.5m9-6h3.75m-3.75 0a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m-9.75 0h9.75"/></svg>
                   <span>Trang quản trị (Admin)</span>
                 </a>
-                <a href="account.html?tab=orders" class="flex min-h-11 items-center gap-3 rounded-2xl px-3.5 py-3 text-xs font-semibold text-slate-700 hover:bg-slate-100 transition">
+                <a href="account.html?tab=orders" class="flex min-h-11 items-center gap-3 rounded-xl px-3.5 py-2.5 text-xs font-semibold text-slate-700 hover:bg-slate-100 transition">
                   <svg class="h-4 w-4 text-slate-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 10.5V6a3.75 3.75 0 10-7.5 0v4.5m11.356-1.993l1.263 12c.07.665-.45 1.243-1.119 1.243H4.25a1.125 1.125 0 01-1.12-1.243l1.264-12A1.125 1.125 0 015.513 7.5h12.974c.576 0 1.059.435 1.119.993z"/></svg>
                   <span>Đơn hàng của tôi</span>
                 </a>
-                <a href="account.html" class="flex min-h-11 items-center gap-3 rounded-2xl px-3.5 py-3 text-xs font-semibold text-slate-700 hover:bg-slate-100 transition">
-                  <span class="grid h-4 w-4 place-items-center text-slate-400">●</span>
+                <a href="account.html" class="flex min-h-11 items-center gap-3 rounded-xl px-3.5 py-2.5 text-xs font-semibold text-slate-700 hover:bg-slate-100 transition">
+                  <svg class="h-4 w-4 text-slate-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0A17.933 17.933 0 0112 21.75c-2.676 0-5.216-.584-7.499-1.632z"/></svg>
                   <span>Tài khoản của tôi</span>
                 </a>
               </div>
               <div class="border-t border-slate-100 pt-2">
-                <button type="button" id="headerLogoutBtn" class="flex min-h-11 w-full items-center gap-3 rounded-2xl px-3.5 py-3 text-xs font-bold text-red-600 hover:bg-red-50 transition">
+                <button type="button" id="headerLogoutBtn" class="flex min-h-11 w-full items-center gap-3 rounded-xl px-3.5 py-2.5 text-xs font-bold text-red-600 hover:bg-red-50 transition">
                   <svg class="h-4 w-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 9V5.25A2.25 2.25 0 0013.5 3h-6a2.25 2.25 0 00-2.25 2.25v13.5A2.25 2.25 0 007.5 21h6a2.25 2.25 0 002.25-2.25V15M12 9l-3 3m0 0l3 3m-3-3h12.75"/></svg>
                   <span>Đăng xuất</span>
                 </button>
@@ -134,16 +154,53 @@ foreach ($catalogInventory['categories'] as $category) {
           </div>
         </div>
 
-        <!-- Nút Giỏ hàng -->
-        <a href="cart.html" class="relative grid h-10 w-10 place-items-center rounded-full text-slate-700 transition hover:bg-slate-100/80 active:scale-95" aria-label="Giỏ hàng, hiện có <?= $cartCount ?> sản phẩm">
-          <svg class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-            <path d="M6 7h12l-1 13H7L6 7Z"/><path d="M9 7a3 3 0 0 1 6 0"/>
-          </svg>
-          <span id="cartCount" class="absolute -top-0.5 -right-0.5 grid h-4.5 min-w-4.5 place-items-center rounded-full bg-brand px-1 text-[10px] font-extrabold text-white shadow-sm ring-2 ring-white"><?= $cartCount ?></span>
-        </a>
+        <!-- Nút Giỏ hàng + Mini Cart Preview Dropdown -->
+        <div id="headerCartWrapper" class="header-cart-wrapper relative">
+          <a href="cart.html" id="headerCartBtn" class="header-cart-btn active:scale-95" data-tooltip="Giỏ hàng" aria-label="Giỏ hàng, hiện có <?= $cartCount ?> sản phẩm" aria-expanded="false" aria-controls="miniCartDropdown">
+            <svg class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+              <path d="M6 7h12l-1 13H7L6 7Z"/><path d="M9 7a3 3 0 0 1 6 0"/>
+            </svg>
+            <span id="cartCount" class="header-cart-badge"><?= $cartCount ?></span>
+          </a>
+
+          <!-- Khung Mini Cart Preview Dropdown -->
+          <div id="miniCartDropdown" class="mini-cart-dropdown" role="region" aria-label="Xem nhanh giỏ hàng" aria-hidden="true">
+            <div class="mini-cart-header">
+              <div class="flex items-center gap-2">
+                <span class="grid h-7 w-7 place-items-center rounded-full bg-brand-soft text-brand">
+                  <svg class="h-4 w-4" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24"><path d="M6 7h12l-1 13H7L6 7Z"/><path d="M9 7a3 3 0 0 1 6 0"/></svg>
+                </span>
+                <div>
+                  <p class="text-xs font-extrabold uppercase tracking-wider text-slate-900">Giỏ hàng của bạn</p>
+                  <p id="miniCartSubheading" class="text-[11px] font-medium text-slate-500">0 sản phẩm đã chọn</p>
+                </div>
+              </div>
+              <a href="cart.html" class="text-xs font-bold text-brand hover:underline">Mở trang giỏ →</a>
+            </div>
+
+            <div id="miniCartBody" class="mini-cart-body">
+            </div>
+
+            <div id="miniCartFooter" class="mini-cart-footer hidden">
+              <div class="flex items-baseline justify-between gap-2 pb-3 border-b border-slate-100">
+                <span class="text-xs font-bold uppercase tracking-wider text-slate-500">Tổng tạm tính</span>
+                <span id="miniCartSubtotal" class="text-base font-extrabold text-brand">0₫</span>
+              </div>
+              <div class="mt-3 grid grid-cols-2 gap-2.5">
+                <a href="cart.html" class="inline-flex h-10 items-center justify-center rounded-xl border border-slate-200 bg-white px-3 text-xs font-extrabold text-slate-800 transition hover:border-slate-900 hover:bg-slate-900 hover:text-white">
+                  Xem giỏ hàng
+                </a>
+                <a href="checkout.html" class="inline-flex h-10 items-center justify-center gap-1 rounded-xl bg-brand px-3 text-xs font-extrabold text-white shadow-md shadow-brand/25 transition hover:bg-brand-dark">
+                  <span>Thanh toán ngay</span>
+                  <svg class="h-3.5 w-3.5" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/></svg>
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
 
         <!-- Nút Menu Hamburger (Mobile) -->
-        <button type="button" id="mobileMenuBtn" class="grid lg:hidden h-10 w-10 place-items-center rounded-full text-slate-700 transition hover:bg-slate-100 active:scale-95" aria-label="Mở menu danh mục" aria-expanded="false" aria-controls="mobileDrawer">
+        <button type="button" id="mobileMenuBtn" class="grid lg:hidden h-10 w-10 place-items-center rounded-full bg-slate-100/80 text-slate-700 transition hover:bg-slate-200/80 active:scale-95" aria-label="Mở menu danh mục" aria-expanded="false" aria-controls="mobileDrawer">
           <svg class="h-5 w-5 icon-burger" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5"/>
           </svg>
@@ -155,9 +212,9 @@ foreach ($catalogInventory['categories'] as $category) {
 
     </div>
 
-    <!-- [HÀNG DƯỚI]: THANH MENU NGANG 7 DANH MỤC CHÍNH -->
+    <!-- [HÀNG DƯỚI]: THANH MENU NGANG DANH MỤC CHÍNH -->
     <nav class="main-nav hidden lg:block border-t border-slate-200/60 py-1.5" aria-label="Danh mục sản phẩm">
-      <ul class="nav-list flex items-center justify-between">
+      <ul class="nav-list flex items-center justify-between gap-1">
 
         <?php foreach ($navMegaCategories as $slug => $cat): ?>
           <li class="nav-item-mega" id="menuItem-<?= e($slug) ?>">
@@ -167,66 +224,71 @@ foreach ($catalogInventory['categories'] as $category) {
               <svg class="nav-chev" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/></svg>
             </button>
 
-            <!-- BẢNG MEGA-MENU THẢ XUỐNG VỚI THANH CUỘN (MAX-HEIGHT: 75VH) -->
+            <!-- BẢNG MEGA-MENU CAO CẤP (FADE & SLIDE + BRAND TAGS + ẢNH ĐẠI DIỆN) -->
             <div id="megaPanel-<?= e($slug) ?>" class="mega-panel" role="region" aria-label="Bảng phân loại <?= e($cat['name']) ?>">
               <div class="mega-menu-scroll">
-                <div class="mx-auto max-w-7xl px-4 sm:px-6 py-6">
+                <div class="mx-auto max-w-7xl px-4 sm:px-6 py-6 mega-panel-inner">
 
-                  <!-- Tiêu đề bảng menu tinh giản -->
-                  <div class="flex items-center justify-between pb-3.5 border-b border-slate-200/70 mb-5">
-                    <h3 class="text-base font-extrabold text-slate-900 tracking-tight"><?= e($cat['name']) ?> chính hãng</h3>
-                    <a href="category.html?cat=<?= e($slug) ?>" class="inline-flex items-center gap-1.5 text-xs font-bold text-brand hover:text-brand-dark px-3 py-1 rounded-full bg-brand-soft hover:bg-brand-soft/80 transition-colors">
+                  <!-- Tiêu đề + Thương hiệu (Brand Tags) + Xem tất cả -->
+                  <div class="mega-panel-head flex flex-wrap items-center justify-between gap-3 pb-4 border-b border-slate-200/70 mb-5">
+                    <div class="flex flex-wrap items-center gap-3">
+                      <h3 class="text-base font-extrabold text-slate-900 tracking-tight"><?= e($cat['name']) ?> chính hãng</h3>
+                      <div class="mega-brand-tags" data-mega-brands="<?= e($slug) ?>">
+                        <?php foreach ($cat['brands'] as $brandName): ?>
+                          <a href="category.html?cat=<?= e($slug) ?>&amp;brand=<?= e(rawurlencode($brandName)) ?>" class="mega-brand-chip"><?= e($brandName) ?></a>
+                        <?php endforeach; ?>
+                      </div>
+                    </div>
+                    <a href="category.html?cat=<?= e($slug) ?>" class="inline-flex items-center gap-1.5 text-xs font-bold text-brand hover:text-brand-dark px-3.5 py-1.5 rounded-full bg-brand-soft hover:bg-brand-soft/80 transition-colors">
                       Xem tất cả <?= e(mb_strtolower($cat['name'], 'UTF-8')) ?>
                       <svg class="h-3.5 w-3.5" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/></svg>
                     </a>
                   </div>
 
-                  <!-- Lưới các nhóm/cột phân loại -->
+                  <!-- Lưới các nhóm/cột phân loại (con trực tiếp của .mx-auto cho catalog-menu.js) -->
                   <div class="<?= e($cat['grid_class']) ?>">
                     <?php foreach ($cat['groups'] as $grp): ?>
                       <div class="mega-brand-col">
-                        <!-- Tiêu đề nhóm/hãng thuần túy -->
                         <h4 class="text-xs font-extrabold text-slate-900 pb-2 mb-2.5 border-b border-slate-200/80 leading-tight">
                           <?= e($grp['title']) ?>
                         </h4>
-
-                        <!-- Danh sách tên dòng sản phẩm thuần túy -->
-                        <?php if (!empty($grp['sections'])): ?>
-                          <div class="space-y-3">
-                            <?php foreach ($grp['sections'] as $sec): ?>
-                              <div>
-                                <p class="text-[10px] font-bold uppercase tracking-wider text-slate-400 mb-1 px-1"><?= e($sec['title']) ?></p>
-                                <ul class="space-y-0.5">
-                                  <?php foreach ($sec['items'] as $item): ?>
-                                    <li>
-                                      <a href="<?= vlu_product_url($item, $slug) ?>" class="mega-item-link" title="<?= e($item) ?>">
-                                        <?= e($item) ?>
-                                      </a>
-                                    </li>
-                                  <?php endforeach; ?>
-                                </ul>
-                              </div>
-                            <?php endforeach; ?>
-                          </div>
-                        <?php else: ?>
-                          <ul class="space-y-0.5">
-                            <?php foreach ($grp['items'] as $item): ?>
-                              <li>
-                                <a href="<?= vlu_product_url($item, $slug) ?>" class="mega-item-link" title="<?= e($item) ?>">
-                                  <?= e($item) ?>
-                                </a>
-                              </li>
-                            <?php endforeach; ?>
-                          </ul>
-                        <?php endif; ?>
-
+                        <ul class="space-y-0.5">
+                          <?php foreach ($grp['items'] as $item): ?>
+                            <li>
+                              <a href="<?= vlu_product_url($item, $slug) ?>" class="mega-item-link" title="<?= e($item) ?>">
+                                <?= e($item) ?>
+                              </a>
+                            </li>
+                          <?php endforeach; ?>
+                        </ul>
                       </div>
                     <?php endforeach; ?>
                   </div>
 
+                  <!-- Khu vực Ảnh đại diện & Liên kết Flagship nổi bật -->
+                  <aside class="mega-showcase-aside" data-mega-aside="<?= e($slug) ?>">
+                    <div class="flex items-center justify-between">
+                      <span class="text-[10px] font-extrabold uppercase tracking-wider text-brand">Flagship nổi bật</span>
+                      <span class="text-[11px] font-semibold text-slate-400">Chính hãng VN/A</span>
+                    </div>
+                    <?php if ($cat['hero_image'] !== ''): ?>
+                      <div class="mega-showcase-img-wrap">
+                        <img src="<?= e($cat['hero_image']) ?>" alt="<?= e($cat['hero_title']) ?>" loading="lazy">
+                      </div>
+                    <?php endif; ?>
+                    <div class="space-y-1.5">
+                      <?php foreach ($cat['flagships'] as $fl): ?>
+                        <a href="<?= vlu_product_url($fl['name'], $slug) ?>" class="mega-flagship-link">
+                          <span class="truncate"><?= e($fl['name']) ?></span>
+                          <svg class="h-3.5 w-3.5 shrink-0 text-brand" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/></svg>
+                        </a>
+                      <?php endforeach; ?>
+                    </div>
+                  </aside>
+
                   <!-- Footer bảo đảm chân menu -->
-                  <div class="mt-6 pt-3.5 border-t border-slate-200/70 -mx-4 -mb-6 px-6 py-3 bg-slate-50/70 rounded-b-[24px] flex items-center justify-between text-xs text-slate-600 font-medium">
-                    <div class="flex items-center gap-6">
+                  <div class="mega-panel-foot mt-6 pt-3.5 border-t border-slate-200/70 -mx-4 -mb-6 px-6 py-3 bg-slate-50/75 rounded-b-[20px] flex flex-wrap items-center justify-between gap-2 text-xs text-slate-600 font-medium">
+                    <div class="flex flex-wrap items-center gap-5">
                       <span class="flex items-center gap-1.5 text-slate-700 font-bold">
                         <svg class="h-4 w-4 text-emerald-600" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg>
                         100% Chính hãng · Bảo hành 12 - 24 tháng
@@ -299,10 +361,12 @@ foreach ($catalogInventory['categories'] as $category) {
       </div>
     </div>
 
-    <!-- Ô tìm kiếm mobile -->
-    <form action="category.html" method="GET" class="relative">
-      <svg class="pointer-events-none absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
-      <input name="q" type="search" placeholder="Tìm kiếm sản phẩm…" class="h-11 w-full rounded-full border border-slate-200 bg-white pl-10 pr-4 text-sm font-medium text-slate-800 placeholder:text-slate-400 focus:outline-none focus:border-brand">
+    <!-- Ô tìm kiếm mobile + Live Autocomplete -->
+    <form id="mobileSearchWrapper" action="category.html" method="GET" class="relative">
+      <svg class="pointer-events-none absolute left-3.5 top-3.5 h-4 w-4 text-slate-400" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+      <input id="mobile-search-input" name="q" type="search" placeholder="Tìm kiếm sản phẩm…" autocomplete="off"
+             class="glass-search-input h-11 w-full rounded-full pl-10 pr-4 text-sm font-medium text-slate-800 placeholder:text-slate-400 focus:outline-none">
+      <div id="mobileSearchSuggestDropdown" class="search-suggest-dropdown" role="listbox" aria-label="Gợi ý sản phẩm trên di động"></div>
     </form>
 
     <!-- Accordion 6 danh mục chính trên Mobile -->
@@ -356,9 +420,9 @@ foreach ($catalogInventory['categories'] as $category) {
 
 <!-- Lớp phủ mờ nền trang (Scrim Blur) NẰM SAU HEADER (z-index 40 < header 50) -->
 <div id="megaScrim" class="mega-scrim" aria-hidden="true"></div>
-<script src="frontend/assets/js/products-data.js?v=2026_sync_ui_fix"></script>
-<script src="frontend/assets/js/catalog-menu.js?v=2026_sync_ui_fix"></script>
+<script src="frontend/assets/js/products-data.js?v=2026_sync_ui_fix_p4_v2"></script>
+<script src="frontend/assets/js/catalog-menu.js?v=2026_sync_ui_fix_p4_v2"></script>
 <!-- Central Cart Engine 2026 -->
-<script src="frontend/assets/js/cart-engine.js?v=2026_sync_ui_fix"></script>
+<script src="frontend/assets/js/cart-engine.js?v=2026_sync_ui_fix_p4_v2"></script>
 <!-- Central Auth Engine 2026 -->
-<script src="frontend/assets/js/auth-engine.js?v=2026_sync_ui_fix"></script>
+<script src="frontend/assets/js/auth-engine.js?v=2026_sync_ui_fix_p4_v2"></script>

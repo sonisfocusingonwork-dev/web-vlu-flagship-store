@@ -385,14 +385,14 @@
         "id": "samsung-galaxy-z-fold7",
         "database_id": 1012,
         "name": "Samsung Galaxy Z Fold7",
-        "image": "SanPham/DienThoai/Samsung/Samsung-Galaxy-Z-Fold7/Galaxy-Z-Fold7-Den.webp",
+        "image": "SanPham/DienThoai/Samsung/Samsung-Galaxy-Z-Fold7/Galaxy-Z-Fold7-Den-clean.png",
         "colors": [
             {
                 "name": "Đen",
                 "hex": "#1D1D1F",
                 "key": "den",
-                "image": "SanPham/DienThoai/Samsung/Samsung-Galaxy-Z-Fold7/Galaxy-Z-Fold7-Den.webp",
-                "img": "SanPham/DienThoai/Samsung/Samsung-Galaxy-Z-Fold7/Galaxy-Z-Fold7-Den.webp"
+                "image": "SanPham/DienThoai/Samsung/Samsung-Galaxy-Z-Fold7/Galaxy-Z-Fold7-Den-clean.png",
+                "img": "SanPham/DienThoai/Samsung/Samsung-Galaxy-Z-Fold7/Galaxy-Z-Fold7-Den-clean.png"
             },
             {
                 "name": "Xám",
@@ -450,14 +450,14 @@
         "id": "samsung-galaxy-s26-ultra",
         "database_id": 1014,
         "name": "Samsung Galaxy S26 Ultra",
-        "image": "SanPham/DienThoai/Samsung/Samsung-Galaxy-S26-Ultra/Galaxy-S26-Ultra-Den.webp",
+        "image": "SanPham/DienThoai/Samsung/Samsung-Galaxy-S26-Ultra/Galaxy-S26-Ultra-Den-clean.png",
         "colors": [
             {
                 "name": "Đen",
                 "hex": "#1D1D1F",
                 "key": "den",
-                "image": "SanPham/DienThoai/Samsung/Samsung-Galaxy-S26-Ultra/Galaxy-S26-Ultra-Den.webp",
-                "img": "SanPham/DienThoai/Samsung/Samsung-Galaxy-S26-Ultra/Galaxy-S26-Ultra-Den.webp"
+                "image": "SanPham/DienThoai/Samsung/Samsung-Galaxy-S26-Ultra/Galaxy-S26-Ultra-Den-clean.png",
+                "img": "SanPham/DienThoai/Samsung/Samsung-Galaxy-S26-Ultra/Galaxy-S26-Ultra-Den-clean.png"
             },
             {
                 "name": "Tím",
@@ -486,14 +486,14 @@
         "id": "samsung-galaxy-s26-plus",
         "database_id": 1015,
         "name": "Samsung Galaxy S26+",
-        "image": "SanPham/DienThoai/Samsung/Samsung-Galaxy-S26-Plus/Galaxy-S26-Plus-Den.webp",
+        "image": "SanPham/DienThoai/Samsung/Samsung-Galaxy-S26-Plus/Galaxy-S26-Plus-Den-clean.png",
         "colors": [
             {
                 "name": "Đen",
                 "hex": "#1D1D1F",
                 "key": "den",
-                "image": "SanPham/DienThoai/Samsung/Samsung-Galaxy-S26-Plus/Galaxy-S26-Plus-Den.webp",
-                "img": "SanPham/DienThoai/Samsung/Samsung-Galaxy-S26-Plus/Galaxy-S26-Plus-Den.webp"
+                "image": "SanPham/DienThoai/Samsung/Samsung-Galaxy-S26-Plus/Galaxy-S26-Plus-Den-clean.png",
+                "img": "SanPham/DienThoai/Samsung/Samsung-Galaxy-S26-Plus/Galaxy-S26-Plus-Den-clean.png"
             },
             {
                 "name": "Tím",
@@ -522,14 +522,14 @@
         "id": "samsung-galaxy-s26",
         "database_id": 1016,
         "name": "Samsung Galaxy S26",
-        "image": "SanPham/DienThoai/Samsung/Samsung-Galaxy-S26/Galaxy-S26-Den.webp",
+        "image": "SanPham/DienThoai/Samsung/Samsung-Galaxy-S26/Galaxy-S26-Den-clean.png",
         "colors": [
             {
                 "name": "Đen",
                 "hex": "#1D1D1F",
                 "key": "den",
-                "image": "SanPham/DienThoai/Samsung/Samsung-Galaxy-S26/Galaxy-S26-Den.webp",
-                "img": "SanPham/DienThoai/Samsung/Samsung-Galaxy-S26/Galaxy-S26-Den.webp"
+                "image": "SanPham/DienThoai/Samsung/Samsung-Galaxy-S26/Galaxy-S26-Den-clean.png",
+                "img": "SanPham/DienThoai/Samsung/Samsung-Galaxy-S26/Galaxy-S26-Den-clean.png"
             },
             {
                 "name": "Tím",
@@ -558,14 +558,14 @@
         "id": "samsung-galaxy-s25-ultra",
         "database_id": 1017,
         "name": "Samsung Galaxy S25 Ultra",
-        "image": "SanPham/DienThoai/Samsung/Samsung-Galaxy-S25-Ultra/Galaxy-S25-Ultra-Den.webp",
+        "image": "SanPham/DienThoai/Samsung/Samsung-Galaxy-S25-Ultra/Galaxy-S25-Ultra-Den-clean.png",
         "colors": [
             {
                 "name": "Đen",
                 "hex": "#1D1D1F",
                 "key": "den",
-                "image": "SanPham/DienThoai/Samsung/Samsung-Galaxy-S25-Ultra/Galaxy-S25-Ultra-Den.webp",
-                "img": "SanPham/DienThoai/Samsung/Samsung-Galaxy-S25-Ultra/Galaxy-S25-Ultra-Den.webp"
+                "image": "SanPham/DienThoai/Samsung/Samsung-Galaxy-S25-Ultra/Galaxy-S25-Ultra-Den-clean.png",
+                "img": "SanPham/DienThoai/Samsung/Samsung-Galaxy-S25-Ultra/Galaxy-S25-Ultra-Den-clean.png"
             },
             {
                 "name": "Trắng",
@@ -1570,14 +1570,14 @@
         "id": "macbook-pro-16-m5-max",
         "database_id": 1056,
         "name": "MacBook Pro 16 M5 Max",
-        "image": "SanPham/Laptop/MacBook/MacBook-Pro-16-M5-Max/ma5ac1_1.webp",
+        "image": "SanPham/Laptop/MacBook/MacBook-Pro-16-M5-Max/macbook-pro-16-m5-max.png",
         "colors": [
             {
                 "name": "Bản màu 1",
                 "hex": "#475569",
                 "key": "variant-1",
-                "image": "SanPham/Laptop/MacBook/MacBook-Pro-16-M5-Max/ma5ac1_1.webp",
-                "img": "SanPham/Laptop/MacBook/MacBook-Pro-16-M5-Max/ma5ac1_1.webp"
+                "image": "SanPham/Laptop/MacBook/MacBook-Pro-16-M5-Max/macbook-pro-16-m5-max.png",
+                "img": "SanPham/Laptop/MacBook/MacBook-Pro-16-M5-Max/macbook-pro-16-m5-max.png"
             },
             {
                 "name": "Bản màu 2",
@@ -2535,14 +2535,14 @@
         "id": "ipad-pro-m5",
         "database_id": 1076,
         "name": "iPad Pro M5",
-        "image": "SanPham/iPad/Apple/iPad-Pro-M5/ipad-pro-m5-2.webp",
+        "image": "SanPham/iPad/Apple/iPad-Pro-M5/ipad-pro-m5-cutout.png",
         "colors": [
             {
                 "name": "Bản màu 1",
                 "hex": "#475569",
                 "key": "variant-1",
-                "image": "SanPham/iPad/Apple/iPad-Pro-M5/ipad-pro-m5-2.webp",
-                "img": "SanPham/iPad/Apple/iPad-Pro-M5/ipad-pro-m5-2.webp"
+                "image": "SanPham/iPad/Apple/iPad-Pro-M5/ipad-pro-m5-cutout.png",
+                "img": "SanPham/iPad/Apple/iPad-Pro-M5/ipad-pro-m5-cutout.png"
             },
             {
                 "name": "Bản màu 2",
@@ -2811,14 +2811,14 @@
         "id": "airpods-pro-3",
         "database_id": 1086,
         "name": "AirPods Pro 3",
-        "image": "SanPham/TaiNghe/Apple/AirPods-Pro-3/airpods_pro_3_sep25_pdp_image_position_1__vn-vi_1.webp",
+        "image": "SanPham/TaiNghe/Apple/AirPods-Pro-3/airpods-pro-3-cutout.png",
         "colors": [
             {
                 "name": "Bản màu 1",
                 "hex": "#475569",
                 "key": "variant-1",
-                "image": "SanPham/TaiNghe/Apple/AirPods-Pro-3/airpods_pro_3_sep25_pdp_image_position_1__vn-vi_1.webp",
-                "img": "SanPham/TaiNghe/Apple/AirPods-Pro-3/airpods_pro_3_sep25_pdp_image_position_1__vn-vi_1.webp"
+                "image": "SanPham/TaiNghe/Apple/AirPods-Pro-3/airpods-pro-3-cutout.png",
+                "img": "SanPham/TaiNghe/Apple/AirPods-Pro-3/airpods-pro-3-cutout.png"
             },
             {
                 "name": "Bản màu 2",
@@ -3712,14 +3712,14 @@
         "id": "marshall-acton-iii",
         "database_id": 1105,
         "name": "Marshall Acton III",
-        "image": "SanPham/Loa/Marshall/Marshall-Acton-III/act-iii.webp",
+        "image": "SanPham/Loa/Marshall/Marshall-Acton-III/marshall_acton_iii_7_1.webp",
         "colors": [
             {
                 "name": "Bản màu 1",
                 "hex": "#475569",
                 "key": "variant-1",
-                "image": "SanPham/Loa/Marshall/Marshall-Acton-III/act-iii.webp",
-                "img": "SanPham/Loa/Marshall/Marshall-Acton-III/act-iii.webp"
+                "image": "SanPham/Loa/Marshall/Marshall-Acton-III/marshall_acton_iii_7_1.webp",
+                "img": "SanPham/Loa/Marshall/Marshall-Acton-III/marshall_acton_iii_7_1.webp"
             },
             {
                 "name": "Bản màu 2",
@@ -3732,8 +3732,8 @@
                 "name": "Bản màu 3",
                 "hex": "#475569",
                 "key": "variant-3",
-                "image": "SanPham/Loa/Marshall/Marshall-Acton-III/marshall_acton_iii_7_1.webp",
-                "img": "SanPham/Loa/Marshall/Marshall-Acton-III/marshall_acton_iii_7_1.webp"
+                "image": "SanPham/Loa/Marshall/Marshall-Acton-III/act-iii.webp",
+                "img": "SanPham/Loa/Marshall/Marshall-Acton-III/act-iii.webp"
             },
             {
                 "name": "Nâu",
@@ -3920,14 +3920,14 @@
         "id": "apple-watch-ultra-3",
         "database_id": 1110,
         "name": "Apple Watch Ultra 3",
-        "image": "SanPham/DongHoDienTu/Apple-Watch/Apple-Watch-Ultra-3/Apple-Watch-Ultra-3-Den.jpg",
+        "image": "SanPham/DongHoDienTu/Apple-Watch/Apple-Watch-Ultra-3/apple-watch-ultra-3-cutout.png",
         "colors": [
             {
                 "name": "Đen",
                 "hex": "#1D1D1F",
                 "key": "den",
-                "image": "SanPham/DongHoDienTu/Apple-Watch/Apple-Watch-Ultra-3/Apple-Watch-Ultra-3-Den.jpg",
-                "img": "SanPham/DongHoDienTu/Apple-Watch/Apple-Watch-Ultra-3/Apple-Watch-Ultra-3-Den.jpg"
+                "image": "SanPham/DongHoDienTu/Apple-Watch/Apple-Watch-Ultra-3/apple-watch-ultra-3-cutout.png",
+                "img": "SanPham/DongHoDienTu/Apple-Watch/Apple-Watch-Ultra-3/apple-watch-ultra-3-cutout.png"
             },
             {
                 "name": "Xám",

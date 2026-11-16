@@ -101,13 +101,13 @@ $missingVersion = [];
 
 foreach ($htmlFiles as $f) {
     $content = file_get_contents($rootDir . '/' . $f);
-    if (!strpos($content, '?v=2026_final_v4')) {
+    if (strpos($content, '?v=2026_sync_ui_fix') === false && strpos($content, '?v=2026_final_v4') === false) {
         $cacheBusterOk = false;
         $missingVersion[] = $f;
     }
 }
 
-assertTest("Tất cả 9 file HTML đều cập nhật cache-buster ?v=2026_final_v4",
+assertTest("Tất cả 9 file HTML đều cập nhật cache-buster (?v=2026_sync_ui_fix / ?v=2026_final_v4)",
     $cacheBusterOk, implode(', ', $missingVersion));
 
 // ---------------------------------------------------------------------

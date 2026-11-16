@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Tất Cả Sản Phẩm | VLU FLAGSHIP STORE</title>
   <link rel="icon" type="image/png" href="frontend/assets/images/logo.png">
-  <link rel="stylesheet" href="frontend/assets/css/style.css?v=2026_sync_ui_fix">
+  <link rel="stylesheet" href="frontend/assets/css/style.css?v=2026_sync_ui_fix_p4_v2">
   <link rel="stylesheet" href="style.css">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -3321,24 +3321,24 @@
     <nav class="mb-4 text-xs font-semibold text-slate-500">
       <a href="index.html" class="hover:text-brand">Trang chủ</a>
       <span class="mx-2">/</span>
-      <span class="text-slate-800">Tất Cả Sản Phẩm</span>
+      <span id="categoryBreadcrumbText" class="text-slate-800">Tất Cả Sản Phẩm</span>
     </nav>
 
     <div class="mb-8 flex flex-col md:flex-row md:items-end justify-between gap-4 border-b border-slate-200 pb-6">
       <div>
-        <h1 class="text-3xl font-extrabold tracking-tight text-slate-900 sm:text-4xl">Tất Cả Sản Phẩm</h1>
-        <p class="mt-2 text-sm text-slate-500">Khám phá các thiết bị công nghệ chính hãng với chế độ bảo hành 12 - 24 tháng toàn diện.</p>
+        <h1 id="categoryPageHeading" class="text-3xl font-extrabold tracking-tight text-slate-900 sm:text-4xl">Tất Cả Sản Phẩm</h1>
+        <p id="categoryPageSubheading" class="mt-2 text-sm text-slate-500">Khám phá các thiết bị công nghệ chính hãng với chế độ bảo hành 12 - 24 tháng toàn diện.</p>
       </div>
 
       <!-- Category Filter Pills -->
-      <div class="filter-pills-scroll no-scrollbar flex flex-nowrap sm:flex-wrap gap-2 text-xs font-bold w-full md:w-auto">
-        <a href="category.html" class="rounded-full px-4 py-2 border transition bg-white text-slate-700 border-slate-200 hover:border-brand/50">Tất cả</a>
-        <a href="category.html?cat=dien-thoai" class="rounded-full px-4 py-2 border transition bg-white text-slate-700 border-slate-200 hover:border-brand/50">Điện thoại</a>
-        <a href="category.html?cat=laptop" class="rounded-full px-4 py-2 border transition bg-white text-slate-700 border-slate-200 hover:border-brand/50">Laptop</a>
-        <a href="category.html?cat=ipad" class="rounded-full px-4 py-2 border transition bg-white text-slate-700 border-slate-200 hover:border-brand/50">iPad</a>
-        <a href="category.html?cat=tai-nghe" class="rounded-full px-4 py-2 border transition bg-white text-slate-700 border-slate-200 hover:border-brand/50">Tai nghe</a>
-        <a href="category.html?cat=loa" class="rounded-full px-4 py-2 border transition bg-white text-slate-700 border-slate-200 hover:border-brand/50">Loa</a>
-        <a href="category.html?cat=dong-ho-dien-tu" class="rounded-full px-4 py-2 border transition bg-white text-slate-700 border-slate-200 hover:border-brand/50">Đồng hồ</a>
+      <div id="categoryFilterPills" class="filter-pills-scroll no-scrollbar flex flex-nowrap sm:flex-wrap gap-2 text-xs font-bold w-full md:w-auto">
+        <a href="category.html" data-cat-pill="" class="rounded-full px-4 py-2 border transition bg-white text-slate-700 border-slate-200 hover:border-brand/50">Tất cả</a>
+        <a href="category.html?cat=dien-thoai" data-cat-pill="dien-thoai" class="rounded-full px-4 py-2 border transition bg-white text-slate-700 border-slate-200 hover:border-brand/50">Điện thoại</a>
+        <a href="category.html?cat=laptop" data-cat-pill="laptop" class="rounded-full px-4 py-2 border transition bg-white text-slate-700 border-slate-200 hover:border-brand/50">Laptop</a>
+        <a href="category.html?cat=ipad" data-cat-pill="ipad" class="rounded-full px-4 py-2 border transition bg-white text-slate-700 border-slate-200 hover:border-brand/50">iPad</a>
+        <a href="category.html?cat=tai-nghe" data-cat-pill="tai-nghe" class="rounded-full px-4 py-2 border transition bg-white text-slate-700 border-slate-200 hover:border-brand/50">Tai nghe</a>
+        <a href="category.html?cat=loa" data-cat-pill="loa" class="rounded-full px-4 py-2 border transition bg-white text-slate-700 border-slate-200 hover:border-brand/50">Loa</a>
+        <a href="category.html?cat=dong-ho-dien-tu" data-cat-pill="dong-ho-dien-tu" class="rounded-full px-4 py-2 border transition bg-white text-slate-700 border-slate-200 hover:border-brand/50">Đồng hồ</a>
       </div>
       <label class="flex items-center gap-2 text-xs font-bold text-slate-600">
         Hãng
@@ -3359,41 +3359,69 @@
     <p>© 2026 VLU FLAGSHIP STORE. Tất cả quyền được bảo lưu.</p>
   </footer>
 
-  <script src="frontend/assets/js/products-data.js?v=2026_sync_ui_fix"></script>
-  <script src="frontend/assets/js/catalog-menu.js?v=2026_sync_ui_fix"></script>
-  <script src="frontend/assets/js/image-manifest.js?v=2026_sync_ui_fix"></script>
-  <script src="frontend/assets/js/main.js?v=2026_sync_ui_fix"></script>
+  <script src="frontend/assets/js/products-data.js?v=2026_sync_ui_fix_p4_v2"></script>
+  <script src="frontend/assets/js/catalog-menu.js?v=2026_sync_ui_fix_p4_v2"></script>
+  <script src="frontend/assets/js/image-manifest.js?v=2026_sync_ui_fix_p4_v2"></script>
+  <script src="frontend/assets/js/main.js?v=2026_sync_ui_fix_p4_v2"></script>
   <script>
     (function() {
       const urlParams = new URLSearchParams(window.location.search);
-      const catParam = urlParams.get('cat') || '';
+      const catParam = (urlParams.get('cat') || '').trim();
+      const brandParam = (urlParams.get('brand') || '').trim();
+      const saleParam = (urlParams.get('sale') || '').trim();
+      const sortParam = (urlParams.get('sort') || '').trim();
+      const queryParam = (urlParams.get('q') || '').trim();
+
       const grid = document.getElementById('categoryProductGrid');
-      const catalog = window.VLU_CATALOG || {};
-      const productsByKey = new Map();
+      const brandFilter = document.getElementById('brandFilter');
+      const headingEl = document.getElementById('categoryPageHeading');
+      const subheadingEl = document.getElementById('categoryPageSubheading');
+      const breadcrumbEl = document.getElementById('categoryBreadcrumbText');
+      const searchInput = document.getElementById('headerSearchInput');
+
+      if (searchInput && queryParam) {
+        searchInput.value = queryParam;
+      }
+
+      const categoryNames = {
+        'dien-thoai': 'Điện thoại chính hãng',
+        laptop: 'Laptop chính hãng',
+        ipad: 'iPad & Máy tính bảng',
+        'tai-nghe': 'Tai nghe chính hãng',
+        loa: 'Loa chính hãng',
+        'am-thanh': 'Tai nghe & Loa chính hãng',
+        'dong-ho-dien-tu': 'Đồng hồ điện tử',
+        'phu-kien': 'Phụ kiện chính hãng'
+      };
+
       const categoryFallbacks = {
         'dien-thoai': 'phone.svg',
         laptop: 'laptop.svg',
-        ipad: 'ipad.svg',
-        'tai-nghe': 'tai-nghe.svg',
-        loa: 'loa.svg',
-        'dong-ho-dien-tu': 'dong-ho.svg'
+        ipad: 'tablet.svg',
+        'tai-nghe': 'earphone.svg',
+        loa: 'speaker.svg',
+        'dong-ho-dien-tu': 'watch.svg'
       };
 
-      Object.values(catalog).forEach(function(product) {
-        if (!catParam || product.category === catParam) {
-          productsByKey.set(product.category + ':' + product.id, product);
+      // Highlight active category filter pill
+      document.querySelectorAll('#categoryFilterPills [data-cat-pill]').forEach(function(pill) {
+        const pillCat = pill.getAttribute('data-cat-pill') || '';
+        const isActive = pillCat === catParam && !saleParam;
+        if (isActive) {
+          pill.className = 'rounded-full px-4 py-2 border transition bg-brand text-white border-brand shadow-sm';
+        } else {
+          pill.className = 'rounded-full px-4 py-2 border transition bg-white text-slate-700 border-slate-200 hover:border-brand/50';
         }
       });
 
-      const products = Array.from(productsByKey.values());
-      const brandFilter = document.getElementById('brandFilter');
-      const brands = Array.from(new Set(products.map(function(product) { return product.brand; }).filter(Boolean))).sort();
-      brands.forEach(function(brand) {
-        const option = document.createElement('option');
-        option.value = brand;
-        option.textContent = brand;
-        brandFilter.appendChild(option);
-      });
+      function normalizeText(str) {
+        if (!str) return '';
+        try {
+          return String(str).normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/[đĐ]/g, 'd').toLowerCase().trim();
+        } catch (e) {
+          return String(str).toLowerCase().trim();
+        }
+      }
 
       function formatVND(n) {
         return Number(n).toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.') + '₫';
@@ -3405,48 +3433,149 @@
         });
       }
 
-      if (products.length === 0) {
-        grid.innerHTML = '<div class="col-span-full py-16 text-center text-slate-400">Đang cập nhật sản phẩm cho danh mục này...</div>';
-        return;
+      const catalog = window.VLU_CATALOG || {};
+      const productsByKey = new Map();
+      Object.values(catalog).forEach(function(product) {
+        if (!product || product.status === 'inactive' || product.status === 'deleted') return;
+        const matchCat = !catParam
+          || product.category === catParam
+          || (catParam === 'am-thanh' && (product.category === 'tai-nghe' || product.category === 'loa'));
+        if (!matchCat) return;
+
+        if (saleParam === '1' || saleParam === 'true') {
+          const base = Number(product.basePrice) || 0;
+          const old = Number(product.oldPrice) || 0;
+          if (!(base > 0 && old > base)) return;
+        }
+
+        if (queryParam) {
+          const normQ = normalizeText(queryParam);
+          const haystack = normalizeText([product.name, product.brand, product.category, product.tagline, product.id].join(' '));
+          if (haystack.indexOf(normQ) === -1) return;
+        }
+
+        productsByKey.set(product.category + ':' + product.id, product);
+      });
+
+      let products = Array.from(productsByKey.values());
+
+      if (sortParam === 'moi-nhat') {
+        products.sort(function(a, b) {
+          const scoreGen = function(p) {
+            const id = String(p.id || '').toLowerCase();
+            if (/iphone-18|s26|m5|ultra-3|watch-series-11|watch-ultra-2|watch-9|airpods-max-2|airpods-pro-3|go-5|flip-7/.test(id)) return 3;
+            if (/iphone-17|z-fold7|z-flip7|m4|pad-9/.test(id)) return 2;
+            return 1;
+          };
+          return scoreGen(b) - scoreGen(a);
+        });
+      } else if (saleParam === '1' || saleParam === 'true') {
+        products.sort(function(a, b) {
+          return ((Number(b.oldPrice) || 0) - (Number(b.basePrice) || 0)) - ((Number(a.oldPrice) || 0) - (Number(a.basePrice) || 0));
+        });
       }
 
-      grid.innerHTML = products.map(p => {
-        const img = p.image || (p.colors && p.colors[0] ? (p.colors[0].image || p.colors[0].img) : '');
-        const category = p.category || catParam;
-        const fallbackImage = 'frontend/assets/images/placeholders/' + (categoryFallbacks[category] || 'phone.svg');
-        const resolver = window.resolveProductImageUrl || function(u) { return encodeURI(String(u || '').trim().replace(/^[\/\\]+/, '')); };
-        const imageUrl = resolver(img || fallbackImage, category);
-        const url = 'product-detail.html?id=' + encodeURIComponent(p.id) + '&name=' + encodeURIComponent(p.name) + '&cat=' + encodeURIComponent(category);
-        const price = Number(p.basePrice) > 0 ? formatVND(p.basePrice) : 'Liên hệ';
-        const addButton = Number(p.basePrice) > 0
-          ? `<button type="button" data-add data-id="${escapeHtml(p.id)}" data-name="${escapeHtml(p.name)}" data-price="${Number(p.basePrice)}" aria-label="Thêm ${escapeHtml(p.name)} vào giỏ hàng" class="relative z-30 grid h-10 w-10 shrink-0 place-items-center rounded-full bg-slate-900 text-white transition hover:bg-brand"><svg class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg></button>`
-          : '<span class="rounded-lg bg-slate-100 px-3 py-1.5 text-xs font-semibold text-slate-600">Chi tiết</span>';
-        return `
-          <article class="product-card group relative flex flex-col rounded-xl border border-slate-200/80 bg-white p-3 shadow-sm transition-all duration-300 hover:-translate-y-1 hover:border-slate-300 hover:shadow-lg sm:p-4" data-brand="${escapeHtml(p.brand || '')}">
-            <a href="${url}" class="absolute inset-0 z-20 rounded-xl" aria-label="Xem ${escapeHtml(p.name)}"></a>
-            <div class="relative aspect-square w-full overflow-hidden rounded-lg bg-slate-50 p-4">
-              <span class="absolute left-2.5 top-2.5 z-10 rounded-full bg-brand px-2 py-0.5 text-[11px] font-bold text-white shadow-sm">${escapeHtml(p.brand || 'VLU Store')}</span>
-              <img src="${escapeHtml(imageUrl)}" alt="${escapeHtml(p.name)}" loading="lazy" onerror="this.onerror=null;this.src='${fallbackImage}';" class="h-full w-full object-contain transition duration-500 group-hover:scale-105">
-            </div>
-            <div class="relative z-10 mt-3 flex flex-1 flex-col sm:mt-4">
-              <h3 class="font-bold text-slate-900 group-hover:text-brand line-clamp-2">${escapeHtml(p.name)}</h3>
-              <p class="mt-1 min-h-4 text-xs text-slate-500 line-clamp-1">${escapeHtml(p.tagline || 'Sản phẩm chính hãng')}</p>
-              <div class="pointer-events-none mt-auto flex items-center justify-between gap-2 pt-4">
-                <div>
-                  <span class="text-sm font-extrabold text-brand sm:text-base">${price}</span>
-                  ${p.oldPrice ? `<span class="block text-xs text-slate-400 line-through">${formatVND(p.oldPrice)}</span>` : ''}
-                </div>
-                ${addButton}
-              </div>
-            </div>
-          </article>
-        `;
-      }).join('');
-      brandFilter.addEventListener('change', function() {
-        grid.querySelectorAll('.product-card').forEach(function(card) {
-          card.hidden = Boolean(brandFilter.value && card.dataset.brand !== brandFilter.value);
-        });
+      const brands = Array.from(new Set(products.map(function(product) { return product.brand; }).filter(Boolean))).sort();
+      if (brandParam && !brands.some(function(b) { return b.toLowerCase() === brandParam.toLowerCase(); })) {
+        brands.push(brandParam);
+      }
+      brands.forEach(function(brand) {
+        const option = document.createElement('option');
+        option.value = brand;
+        option.textContent = brand;
+        brandFilter.appendChild(option);
       });
+
+      let activeBrandValue = '';
+      if (brandParam) {
+        const matchedOption = Array.from(brandFilter.options).find(function(opt) {
+          return opt.value.toLowerCase() === brandParam.toLowerCase();
+        });
+        if (matchedOption) {
+          brandFilter.value = matchedOption.value;
+          activeBrandValue = matchedOption.value;
+        }
+      }
+
+      function updateHeading(visibleCount) {
+        let title = 'Tất Cả Sản Phẩm';
+        if (queryParam) {
+          title = 'Kết quả tìm kiếm: “' + queryParam + '”';
+        } else if (saleParam === '1' || saleParam === 'true') {
+          title = 'Sản phẩm đang khuyến mãi';
+        } else if (catParam && categoryNames[catParam]) {
+          title = categoryNames[catParam];
+        } else if (sortParam === 'moi-nhat') {
+          title = 'Sản phẩm mới ra mắt';
+        } else if (sortParam === 'ban-chay') {
+          title = 'Sản phẩm bán chạy';
+        }
+        if (brandFilter.value) {
+          title = (catParam || saleParam || queryParam) ? (title + ' · ' + brandFilter.value) : ('Thương hiệu ' + brandFilter.value);
+        }
+        if (headingEl) headingEl.textContent = title;
+        if (breadcrumbEl) breadcrumbEl.textContent = title;
+        if (subheadingEl) {
+          subheadingEl.textContent = 'Hiển thị ' + visibleCount + ' thiết bị công nghệ chính hãng nguyên seal tại VLU FLAGSHIP STORE.';
+        }
+      }
+
+      function renderGrid() {
+        const selectedBrand = (brandFilter.value || '').trim().toLowerCase();
+        const filtered = products.filter(function(p) {
+          if (!selectedBrand) return true;
+          return String(p.brand || '').trim().toLowerCase() === selectedBrand;
+        });
+
+        updateHeading(filtered.length);
+
+        if (filtered.length === 0) {
+          grid.innerHTML = '<div class="col-span-full py-16 text-center text-slate-500 font-semibold">Chưa có sản phẩm phù hợp với bộ lọc hiện tại. <a href="category.html" class="text-brand underline ml-1">Xem tất cả sản phẩm</a></div>';
+          return;
+        }
+
+        grid.innerHTML = filtered.map(function(p) {
+          const img = p.image || (p.colors && p.colors[0] ? (p.colors[0].image || p.colors[0].img) : '');
+          const category = p.category || catParam || 'dien-thoai';
+          const fallbackImage = 'frontend/assets/images/placeholders/' + (categoryFallbacks[category] || 'phone.svg');
+          const resolver = window.resolveProductImageUrl || function(u) { return encodeURI(String(u || '').trim().replace(/^[\/\\]+/, '')); };
+          const imageUrl = resolver(img || fallbackImage, category);
+          const url = 'product-detail.html?id=' + encodeURIComponent(p.id) + '&name=' + encodeURIComponent(p.name) + '&cat=' + encodeURIComponent(category);
+          const hasPrice = Number(p.basePrice) > 0;
+          const hasSale = hasPrice && Number(p.oldPrice) > Number(p.basePrice);
+          const discountPct = hasSale ? Math.max(1, Math.round(((Number(p.oldPrice) - Number(p.basePrice)) / Number(p.oldPrice)) * 100)) : 0;
+          const price = hasPrice ? formatVND(p.basePrice) : 'Giá liên hệ';
+          const addButton = hasPrice
+            ? `<button type="button" data-add data-id="${escapeHtml(p.id)}" data-name="${escapeHtml(p.name)}" data-price="${Number(p.basePrice)}" aria-label="Thêm ${escapeHtml(p.name)} vào giỏ hàng" class="relative z-30 grid h-10 w-10 shrink-0 place-items-center rounded-full bg-slate-900 text-white transition hover:bg-brand"><svg class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg></button>`
+            : '<span class="rounded-lg bg-slate-100 px-3 py-1.5 text-xs font-semibold text-slate-600">Chi tiết</span>';
+          return `
+            <article class="product-card group relative flex flex-col rounded-xl border border-slate-200/80 bg-white p-3 shadow-sm transition-all duration-300 hover:-translate-y-1 hover:border-slate-300 hover:shadow-lg sm:p-4" data-brand="${escapeHtml(p.brand || '')}" data-product-id="${escapeHtml(p.id)}">
+              <a href="${url}" class="absolute inset-0 z-20 rounded-xl" aria-label="Xem ${escapeHtml(p.name)}"></a>
+              <div class="relative aspect-square w-full overflow-hidden rounded-lg bg-slate-50 p-4 flex items-center justify-center">
+                <div class="absolute left-2.5 top-2.5 z-10 flex flex-col items-start gap-1">
+                  <span class="rounded-full bg-brand px-2 py-0.5 text-[11px] font-bold text-white shadow-sm">${escapeHtml(p.brand || 'VLU Store')}</span>
+                  ${hasSale ? `<span class="rounded-full bg-rose-50 px-2 py-0.5 text-[11px] font-extrabold text-brand border border-rose-200">-${discountPct}%</span>` : ''}
+                </div>
+                <img src="${escapeHtml(imageUrl)}" alt="${escapeHtml(p.name)}" loading="lazy" onerror="this.onerror=null;this.src='${fallbackImage}';" class="h-full w-full object-contain mix-blend-multiply transition duration-500 group-hover:scale-105">
+              </div>
+              <div class="relative z-10 mt-3 flex flex-1 flex-col sm:mt-4">
+                <h3 class="font-bold text-slate-900 group-hover:text-brand line-clamp-2">${escapeHtml(p.name)}</h3>
+                <p class="mt-1 min-h-4 text-xs text-slate-500 line-clamp-1">${escapeHtml(p.tagline || 'Sản phẩm chính hãng')}</p>
+                <div class="pointer-events-none mt-auto flex items-center justify-between gap-2 pt-4">
+                  <div>
+                    <span class="text-sm font-extrabold text-brand sm:text-base">${price}</span>
+                    ${hasSale ? `<span class="block text-xs text-slate-400 line-through">${formatVND(p.oldPrice)}</span>` : ''}
+                  </div>
+                  ${addButton}
+                </div>
+              </div>
+            </article>
+          `;
+        }).join('');
+      }
+
+      renderGrid();
+      brandFilter.addEventListener('change', renderGrid);
     })();
   </script>
 </body>
