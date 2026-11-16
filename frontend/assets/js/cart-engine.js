@@ -80,6 +80,12 @@
   var CartEngine = {
     getCurrentUserId: getCurrentUserId,
 
+    getPromoCodes: function () {
+      return Object.keys(PROMO_CODES).map(function (k) {
+        return Object.assign({ expiresAt: '2026-12-31' }, PROMO_CODES[k]);
+      });
+    },
+
     getCartStorageKey: function () {
       return getStorageKey('vlu_cart');
     },
@@ -155,17 +161,25 @@
             cart.forEach(function (item) {
               var product = currentProduct(item);
               if (!product || product.status === 'deleted') return;
-              var newPrice = Number(product.basePrice) > 0 ? Number(product.basePrice) : item.price;
+              var matchedVar = Array.isArray(product.variants)
+                ? product.variants.find(function (v) { return v && v.label === item.variant; })
+                : null;
+              var variantDelta = matchedVar ? (Number(matchedVar.delta) || 0) : 0;
+              var newPrice = Number(product.basePrice) > 0 ? (Number(product.basePrice) + variantDelta) : item.price;
+              var matchedColor = Array.isArray(product.colors)
+                ? product.colors.find(function (c) { return c && (c.name === item.color || c.key === item.color); })
+                : null;
+              var newImg = (matchedColor && (matchedColor.image || matchedColor.img)) || item.image || product.image;
               cleanCart.push(Object.assign({}, item, {
                 id: product.id,
                 name: product.name,
                 category: product.category,
                 price: newPrice,
-                image: product.image || item.image
+                image: newImg
               }));
             });
             if (cleanCart.length !== cart.length || cleanCart.some(function (item, i) {
-              return item.id !== cart[i].id || item.name !== cart[i].name || item.price !== cart[i].price;
+              return item.id !== cart[i].id || item.name !== cart[i].name || item.price !== cart[i].price || item.image !== cart[i].image;
             })) {
               localStorage.setItem(key, JSON.stringify(cleanCart));
               changedKeys.push(key);

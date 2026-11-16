@@ -1769,6 +1769,7 @@
     toastEl.style.background = 'rgba(11, 15, 25, 0.94)';
     toastEl.style.backdropFilter = 'blur(18px)';
     toastEl.className = 'fixed bottom-6 left-1/2 z-50 -translate-x-1/2 rounded-2xl px-4 py-3 text-xs font-semibold text-white shadow-2xl transition-all duration-300 flex items-center gap-3 max-w-[92vw] sm:max-w-md';
+    var variantMeta = [item.color, item.variant].filter(function (v) { return v && String(v).trim(); }).join(' · ');
     toastEl.innerHTML =
       '<span class="h-10 w-10 shrink-0 rounded-xl bg-white p-1 flex items-center justify-center">' +
         '<img src="' + escapeHtml(thumbUrl) + '" alt="" class="h-full w-full object-contain mix-blend-multiply" onerror="this.onerror=null;this.src=\'' + fallback + '\';">' +
@@ -1776,6 +1777,7 @@
       '<div class="min-w-0 flex-1">' +
         '<p class="font-extrabold text-emerald-400">✓ Đã thêm vào giỏ hàng</p>' +
         '<p class="truncate text-white font-bold mt-0.5">' + escapeHtml(item.name) + ' <span class="text-slate-300 font-normal">×' + (item.quantity || 1) + '</span></p>' +
+        (variantMeta ? '<p class="truncate text-[11px] text-slate-300 mt-0.5">' + escapeHtml(variantMeta) + '</p>' : '') +
       '</div>' +
       '<a href="cart.html" class="shrink-0 rounded-xl bg-brand px-3 py-1.5 text-[11px] font-extrabold text-white hover:bg-brand-dark transition">Xem giỏ →</a>';
     toastEl.classList.add('show');
@@ -1817,6 +1819,8 @@
     showRichCartToast(addedItem);
     renderMiniCart();
   }
+
+  window.VLU_SHOW_CART_FEEDBACK = triggerCartFeedback;
 
   /* ---------- MINI CART PREVIEW DROPDOWN ---------- */
   var headerCartWrapper = $('#headerCartWrapper');

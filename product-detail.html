@@ -29,11 +29,23 @@
   </script>
 
   <!-- CSS hệ thống chuẩn Apple 2026 -->
-  <link rel="stylesheet" href="frontend/assets/css/style.css?v=2026_sync_ui_fix">
-  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="frontend/assets/css/style.css?v=2026_sync_ui_fix_pd5">
 </head>
 
 <body class="bg-[#FBFBFE] font-sans text-ink antialiased">
+
+  <!-- Bộ icon dùng chung (SVG sprite đồng bộ trang chủ) -->
+  <svg width="0" height="0" class="absolute" aria-hidden="true" focusable="false">
+    <symbol id="i-search" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></symbol>
+    <symbol id="i-bag" viewBox="0 0 24 24"><path d="M6 7h12l-1 13H7L6 7Z"/><path d="M9 7a3 3 0 0 1 6 0"/></symbol>
+    <symbol id="i-heart" viewBox="0 0 24 24"><path d="M12 20s-7-4.4-7-10a4 4 0 0 1 7-2.5A4 4 0 0 1 19 10c0 5.6-7 10-7 10Z"/></symbol>
+    <symbol id="i-eye" viewBox="0 0 24 24"><path d="M2 12s3.5-6 10-6 10 6 10 6-3.5 6-10 6-10-6-10-6Z"/><circle cx="12" cy="12" r="2.8"/></symbol>
+    <symbol id="i-star" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></symbol>
+    <symbol id="i-left" viewBox="0 0 24 24"><path d="m15 5-7 7 7 7"/></symbol>
+    <symbol id="i-right" viewBox="0 0 24 24"><path d="m9 5 7 7-7 7"/></symbol>
+    <symbol id="i-down" viewBox="0 0 24 24"><path d="m6 9 6 6 6-6"/></symbol>
+    <symbol id="i-plus" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></symbol>
+  </svg>
 
   <!-- ============================================================
        [HEADER] ĐỒNG BỘ 100% TỪ COMPONENT HEADER VỚI 6 MEGA-MENU
@@ -3325,9 +3337,9 @@
 <!-- Lớp phủ mờ nền trang (Scrim Blur) NẰM SAU HEADER (z-index 40 < header 50) -->
 <div id="megaScrim" class="mega-scrim" aria-hidden="true"></div>
 <!-- Central Cart Engine 2026 -->
-<script src="frontend/assets/js/cart-engine.js?v=2026_sync_ui_fix"></script>
+<script src="frontend/assets/js/cart-engine.js?v=2026_sync_ui_fix_pd5"></script>
 <!-- Central Auth Engine 2026 -->
-<script src="frontend/assets/js/auth-engine.js?v=2026_sync_ui_fix"></script>
+<script src="frontend/assets/js/auth-engine.js?v=2026_sync_ui_fix_pd5"></script>
 
   <main id="main">
 
@@ -3355,12 +3367,12 @@
       <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-start">
 
         <!-- ================= CỘT TRÁI: HÌNH ẢNH SẢN PHẨM ================= -->
-        <div class="lg:col-span-7 space-y-4">
+        <div class="lg:col-span-7 pd-gallery-column">
 
           <!-- Khung ảnh lớn sắc nét phong cách Apple Studio -->
-          <div class="gallery-viewer group relative p-6 sm:p-10">
+          <div id="mainImageStage" class="gallery-viewer product-gallery-main group">
             <!-- Huy hiệu nổi bật góc ảnh -->
-            <div id="pdBadges" class="absolute left-4 top-4 z-10 flex flex-col gap-2">
+            <div id="pdBadges" class="absolute left-4 top-4 z-15 flex flex-col gap-2 pointer-events-none">
               <span class="inline-flex items-center gap-1.5 rounded-full bg-slate-900/85 px-3 py-1 text-xs font-bold text-white backdrop-blur-md shadow-sm">
                 <span class="h-1.5 w-1.5 rounded-full bg-brand"></span>
                 Titanium Cấp 5
@@ -3370,32 +3382,72 @@
               </span>
             </div>
 
-            <!-- Nút Yêu thích trên góc ảnh -->
-            <button type="button" data-wish aria-pressed="false" aria-label="Thêm vào danh sách yêu thích"
-                    class="absolute right-4 top-4 z-10 grid h-11 w-11 place-items-center rounded-full bg-white/90 text-slate-500 shadow-md transition hover:text-red-600 hover:scale-105 active:scale-95">
-              <svg class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M12 20s-7-4.4-7-10a4 4 0 0 1 7-2.5A4 4 0 0 1 19 10c0 5.6-7 10-7 10Z"/>
+            <!-- Cụm nút Yêu thích & Phóng to toàn màn hình góc trên phải -->
+            <div class="gallery-top-actions" data-gallery-ui="true">
+              <button type="button" id="pdWishBtn" data-wish aria-pressed="false" aria-label="Thêm vào danh sách yêu thích"
+                      class="gallery-icon-btn" title="Lưu vào danh sách yêu thích">
+                <svg class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M12 20s-7-4.4-7-10a4 4 0 0 1 7-2.5A4 4 0 0 1 19 10c0 5.6-7 10-7 10Z"/>
+                </svg>
+              </button>
+              <button type="button" id="galleryFullscreenBtn" class="gallery-icon-btn" aria-label="Phóng to toàn màn hình" title="Xem ảnh toàn màn hình">
+                <svg class="h-[18px] w-[18px]" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24">
+                  <path d="M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7"/>
+                </svg>
+              </button>
+            </div>
+
+            <!-- Nút điều hướng chuyển ảnh Trái / Phải -->
+            <button type="button" id="galleryPrevBtn" class="gallery-nav-btn gallery-nav-prev" data-gallery-ui="true" aria-label="Ảnh trước">
+              <svg class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24">
+                <path d="M15 18l-6-6 6-6"/>
+              </svg>
+            </button>
+            <button type="button" id="galleryNextBtn" class="gallery-nav-btn gallery-nav-next" data-gallery-ui="true" aria-label="Ảnh tiếp theo">
+              <svg class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24">
+                <path d="M9 18l6-6-6-6"/>
               </svg>
             </button>
 
-            <!-- Ảnh lớn chính -->
-            <img id="mainProductImg" class="main-product-img transition-all duration-300 transform group-hover:scale-105"
-                 src="frontend/assets/images/placeholders/phone.svg"
-                 alt="iPhone 18 Pro Max - Titan Tự Nhiên">
+            <!-- Vùng sân khấu ảnh chính (hỗ trợ Interactive Mouse Zoom) & Video (nếu có) -->
+            <div id="galleryCanvas" class="gallery-stage-canvas is-zoom-ready">
+              <img id="mainProductImg" class="main-product-img"
+                   src="frontend/assets/images/placeholders/phone.svg"
+                   alt="iPhone 18 Pro Max - Titan Tự Nhiên">
+              <video id="mainProductVideo" class="main-product-video hidden" controls playsinline preload="metadata"></video>
+            </div>
 
-            <!-- Nhãn màu sắc đang hiển thị góc dưới -->
-            <div class="absolute bottom-4 left-4 z-10 rounded-full bg-white/80 px-3 py-1 text-[11px] font-bold text-slate-700 backdrop-blur-md border border-slate-200/60 shadow-xs">
-              Màu: <span id="imageColorLabel" class="text-brand">Titan Tự Nhiên</span>
+            <!-- Thanh trạng thái góc dưới: Nhãn màu/góc chụp & bộ đếm + gợi ý zoom -->
+            <div class="gallery-bottom-bar" data-gallery-ui="true">
+              <div class="gallery-pill">
+                Màu: <span id="imageColorLabel" class="text-brand ml-1">Titan Tự Nhiên</span>
+              </div>
+              <div class="flex items-center gap-2">
+                <span id="galleryZoomHint" class="hidden md:inline-flex items-center gap-1.5 gallery-pill text-slate-500">
+                  <svg class="h-3.5 w-3.5 text-brand" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24">
+                    <circle cx="11" cy="11" r="7"/><path stroke-linecap="round" d="m21 21-4.3-4.3M11 8v6M8 11h6"/>
+                  </svg>
+                  Rê chuột để phóng to
+                </span>
+                <span id="galleryCounterBadge" class="gallery-pill gallery-counter-pill" aria-live="polite">1 / 1</span>
+              </div>
             </div>
           </div>
 
-          <!-- Dải ảnh thu nhỏ (Thumbnails) tương tác chuyển ảnh mượt mà -->
-          <div>
-            <p class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">Bộ sưu tập màu sắc &amp; góc chụp</p>
-            <div id="thumbnailStrip" class="flex items-center gap-3 overflow-x-auto pb-2 no-scrollbar">
+          <!-- Dải ảnh thu nhỏ (Thumbnails) tách biệt hoàn toàn với khung ảnh chính -->
+          <div id="productThumbSection" class="pd-thumb-section">
+            <div class="flex items-center justify-between gap-2 mb-2.5">
+              <p class="text-xs font-bold text-slate-500 uppercase tracking-wider">Bộ sưu tập màu sắc &amp; góc chụp</p>
+              <button type="button" id="galleryVideoBtn" class="hidden inline-flex items-center gap-1.5 rounded-full border border-slate-200 bg-white px-3 py-1 text-xs font-bold text-slate-700 shadow-sm transition hover:border-brand hover:text-brand">
+                <svg class="h-3.5 w-3.5 text-brand" fill="currentColor" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+                <span>Video sản phẩm</span>
+              </button>
+            </div>
+            <div id="thumbnailStrip" class="thumbnail-strip flex items-center gap-3 overflow-x-auto no-scrollbar">
 
               <!-- Ảnh mặc định từ catalog; JavaScript sẽ hiển thị bộ ảnh đúng model. -->
-              <button type="button" class="thumb-btn active"
+              <button type="button" class="thumb-btn active is-active"
+                      data-index="0"
                       data-src="frontend/assets/images/placeholders/phone.svg"
                       data-color-name="Titan Tự Nhiên"
                       data-color-key="natural"
@@ -3409,224 +3461,209 @@
         </div>
 
         <!-- ================= CỘT PHẢI: TƯƠNG TÁC CHỌN CẤU HÌNH & MUA HÀNG ================= -->
-        <div class="lg:col-span-5 space-y-6">
+        <div class="lg:col-span-5 pd-info-column space-y-5 min-w-0">
 
-          <!-- 1. Tiêu đề, Hãng & Đánh giá -->
-          <div>
-            <div class="flex items-center gap-2 mb-1.5">
-              <span id="pdEyebrow" class="text-xs font-black uppercase tracking-[0.2em] text-brand">Apple · Flagship 2026</span>
-              <span class="inline-block h-1 w-1 rounded-full bg-slate-300"></span>
-              <span class="text-xs font-bold text-slate-500">Chính hãng VN/A</span>
-            </div>
-            <h1 id="pdName" class="text-2xl sm:text-3xl lg:text-4xl font-extrabold text-slate-950 tracking-tight leading-tight">iPhone 18 Pro Max</h1>
-
-            <div class="flex items-center gap-3 mt-3 flex-wrap">
-              <!-- Rating Stars -->
-              <div class="flex items-center gap-1 text-amber-500">
-                <span class="text-xs font-black text-slate-900 mr-0.5">5.0</span>
-                <svg class="h-4 w-4 fill-current" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
-                <svg class="h-4 w-4 fill-current" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
-                <svg class="h-4 w-4 fill-current" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
-                <svg class="h-4 w-4 fill-current" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
-                <svg class="h-4 w-4 fill-current" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
+          <!-- 1. Nhãn Thương hiệu, Tồn kho, Tiêu đề, Meta Đánh giá & SKU, Highlights -->
+          <div class="pd-header-block space-y-3">
+            <div class="flex items-center justify-between gap-2 flex-wrap">
+              <div class="flex items-center gap-2 flex-wrap">
+                <span id="pdEyebrow" class="inline-flex items-center rounded-full bg-brand-soft px-3 py-1 text-[11px] font-black uppercase tracking-[0.14em] text-brand">Apple · Flagship 2026</span>
+                <span class="inline-flex items-center gap-1 rounded-full bg-slate-100 px-2.5 py-1 text-[11px] font-bold text-slate-700">
+                  <svg class="h-3.5 w-3.5 text-emerald-600" fill="none" stroke="currentColor" stroke-width="2.4" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
+                  Chính hãng VLU · VN/A
+                </span>
               </div>
-              <span class="text-xs text-slate-400">·</span>
-              <span class="text-xs font-semibold text-slate-500">1.248 Đánh giá</span>
-              <span class="text-xs text-slate-400">·</span>
 
-              <!-- Tình trạng 'Còn hàng' có đèn xanh pulse sang trọng -->
-              <span class="inline-flex items-center gap-1.5 rounded-full bg-emerald-50 px-2.5 py-0.5 text-xs font-bold text-emerald-700 border border-emerald-200">
+              <!-- Tình trạng tồn kho thực tế -->
+              <span id="pdStockBadge" class="inline-flex items-center gap-1.5 rounded-full bg-emerald-50 px-3 py-1 text-xs font-bold text-emerald-700 border border-emerald-200">
                 <span class="relative flex h-2 w-2">
                   <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
                   <span class="relative inline-flex rounded-full h-2 w-2 bg-emerald-600"></span>
                 </span>
-                Còn hàng
+                Còn hàng sẵn
               </span>
             </div>
+
+            <h1 id="pdName" class="text-2xl sm:text-3xl lg:text-[2.15rem] font-extrabold text-slate-950 tracking-tight leading-[1.16]">iPhone 18 Pro Max</h1>
+
+            <!-- Dòng Meta: Đánh giá thực tế (scroll xuống khu vực đánh giá) + SKU tự động -->
+            <div class="flex items-center gap-2.5 flex-wrap text-xs">
+              <button type="button" id="pdRatingMetaBtn" class="inline-flex items-center gap-1.5 rounded-full bg-amber-50/80 border border-amber-200/70 px-2.5 py-1 font-bold text-slate-800 hover:border-amber-400 transition cursor-pointer" title="Xem đánh giá khách hàng">
+                <span id="pdRatingStars" class="flex items-center gap-0.5 text-amber-500">
+                  <svg class="h-3.5 w-3.5 fill-current" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
+                </span>
+                <span id="pdRatingText">Chưa có đánh giá</span>
+              </button>
+              <span class="text-slate-300">·</span>
+              <span id="pdMetaSku" class="inline-flex items-center rounded-md bg-slate-100 px-2.5 py-1 font-mono text-[11px] font-bold text-slate-700 tracking-tight">SKU: VLU-IP18PM-256-BAC</span>
+            </div>
+
+            <!-- Mô tả ngắn & 3-4 Đặc điểm nổi bật trích xuất từ thông số thực tế -->
+            <p id="pdTagline" class="text-sm text-slate-600 leading-relaxed">Tuyệt phẩm Titanium đột phá, bảo hành chính hãng 24 tháng tại VLU FLAGSHIP STORE.</p>
+            <div id="pdQuickHighlights" class="grid grid-cols-1 sm:grid-cols-2 gap-2 pt-0.5"></div>
           </div>
 
-          <!-- 2. Khung Giá Tiền Tự Động Cập Nhật Theo Cấu Hình -->
-          <div class="p-4 sm:p-5 rounded-2xl bg-slate-50 border border-slate-200/70">
-            <div class="flex items-baseline gap-3 flex-wrap">
-              <span id="productPrice" class="text-3xl sm:text-4xl font-extrabold text-brand tracking-tight transition-all duration-300">
+          <!-- 2. Khung Giá Bán, Trả Góp 0% & Mã Giảm Giá Hợp Lệ -->
+          <div class="pd-price-panel p-4 sm:p-5 rounded-2xl bg-slate-50/90 border border-slate-200/80 space-y-3">
+            <div class="flex items-baseline gap-2.5 flex-wrap">
+              <span id="productPrice" class="pd-price-main text-3xl sm:text-[2.1rem] font-extrabold text-brand tracking-tight">
                 34.990.000₫
               </span>
-              <span id="oldPrice" class="text-base text-slate-400 line-through font-semibold transition-all duration-300">
-                36.990.000₫
+              <span id="oldPrice" class="text-base text-slate-400 line-through font-semibold">
+                37.789.200₫
               </span>
               <span id="discountBadge" class="rounded-full bg-red-100 text-brand px-2.5 py-0.5 text-xs font-extrabold">
-                -5%
+                -6%
+              </span>
+              <span id="savingsBadge" class="rounded-full bg-emerald-100 text-emerald-800 px-2.5 py-0.5 text-[11px] font-bold">
+                Tiết kiệm 2.799.200₫
               </span>
             </div>
-            <p id="pdInstallment" class="mt-2 text-xs font-medium text-slate-600 flex items-center gap-1.5">
-              <svg class="h-4 w-4 text-emerald-600" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
-              Trả góp 0% lãi suất – Chỉ từ <strong>2.915.000₫/tháng</strong> (Kỳ hạn 12 tháng)
-            </p>
+
+            <div id="pdInstallmentBox" class="rounded-xl bg-white/95 border border-emerald-200/75 px-3.5 py-2.5">
+              <p id="pdInstallment" class="text-xs font-medium text-slate-700 flex items-center gap-2">
+                <svg class="h-4 w-4 text-emerald-600 shrink-0" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                <span>Trả góp 0% lãi suất – Chỉ từ <strong>2.915.833₫/tháng</strong> (Kỳ hạn 12 tháng)</span>
+              </p>
+            </div>
+
+            <!-- Dải Voucher / Mã giảm giá hợp lệ của hệ thống -->
+            <div id="pdVoucherSection" class="pt-1 border-t border-slate-200/70 space-y-2">
+              <div class="flex items-center justify-between gap-2">
+                <span class="text-[11px] font-extrabold uppercase tracking-wider text-slate-500 flex items-center gap-1.5">
+                  <svg class="h-3.5 w-3.5 text-brand" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 14l6-6m-5.5.5h.01m4.99 5h.01M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16l3.5-2 3.5 2 3.5-2 3.5 2z"/></svg>
+                  Mã giảm giá khả dụng
+                </span>
+                <span class="text-[11px] font-semibold text-slate-400">Áp dụng tại Giỏ hàng</span>
+              </div>
+              <div id="pdVoucherList" class="pd-voucher-strip flex gap-2 overflow-x-auto pb-1 no-scrollbar"></div>
+            </div>
           </div>
 
-          <!-- 3. Chọn Màu Sắc (Swatches có viền sáng & tương tác chuyển ảnh) -->
-          <div class="space-y-3">
-            <div class="flex items-center justify-between">
+          <!-- 3. Chọn Màu Sắc (Swatches đồng bộ #mainImageStage & #thumbnailStrip) -->
+          <div class="pd-option-group space-y-2.5">
+            <div class="flex items-center justify-between gap-2 flex-wrap">
               <span class="text-xs font-bold uppercase tracking-wider text-slate-500">
-                Màu sắc: <strong id="selectedColorName" class="text-slate-900 font-extrabold text-sm ml-1">Titan Tự Nhiên</strong>
+                Màu sắc: <strong id="selectedColorName" class="text-slate-950 font-extrabold text-sm ml-1">Bạc</strong>
               </span>
+              <span id="pdColorStockNote" class="text-[11px] font-bold text-emerald-600">Sẵn hàng tại VLU Store</span>
             </div>
-            <div id="colorSwatches" class="flex items-center gap-3.5" role="radiogroup" aria-label="Chọn màu sắc sản phẩm">
-
-              <!-- Màu 1: Titan Tự Nhiên -->
-              <button type="button" class="color-swatch-btn active"
-                      data-color-key="natural"
-                      data-color-name="Titan Tự Nhiên"
-                      data-img="frontend/assets/images/placeholders/phone.svg"
-                      style="background-color: #C5B9A5;"
-                      title="Titan Tự Nhiên"
-                      aria-label="Chọn màu Titan Tự Nhiên"
-                      aria-checked="true" role="radio"></button>
-
-              <!-- Màu 2: Titan Đen -->
-              <button type="button" class="color-swatch-btn"
-                      data-color-key="black"
-                      data-color-name="Titan Đen"
-                      data-img="frontend/assets/images/placeholders/phone.svg"
-                      style="background-color: #3C3B37;"
-                      title="Titan Đen"
-                      aria-label="Chọn màu Titan Đen"
-                      aria-checked="false" role="radio"></button>
-
-              <!-- Màu 3: Titan Trắng -->
-              <button type="button" class="color-swatch-btn"
-                      data-color-key="white"
-                      data-color-name="Titan Trắng"
-                      data-img="frontend/assets/images/placeholders/phone.svg"
-                      style="background-color: #E3E4E5;"
-                      title="Titan Trắng"
-                      aria-label="Chọn màu Titan Trắng"
-                      aria-checked="false" role="radio"></button>
-
-              <!-- Màu 4: Titan Sa Mạc -->
-              <button type="button" class="color-swatch-btn"
-                      data-color-key="desert"
-                      data-color-name="Titan Sa Mạc"
-                      data-img="frontend/assets/images/placeholders/phone.svg"
-                      style="background-color: #C4A78A;"
-                      title="Titan Sa Mạc"
-                      aria-label="Chọn màu Titan Sa Mạc"
-                      aria-checked="false" role="radio"></button>
-
-            </div>
+            <div id="colorSwatches" class="flex items-center gap-3 flex-wrap" role="radiogroup" aria-label="Chọn màu sắc sản phẩm"></div>
           </div>
 
-          <!-- 4. Chọn Dung Lượng (256GB / 512GB / 1TB - JavaScript tự động cập nhật giá) -->
-          <div class="space-y-3">
-            <div class="flex items-center justify-between">
+          <!-- 4. Chọn Phiên bản / Dung lượng / Cấu hình thực tế -->
+          <div class="pd-option-group space-y-2.5">
+            <div class="flex items-center justify-between gap-2">
               <span class="text-xs font-bold uppercase tracking-wider text-slate-500">
-                <span id="variantLabel">Dung lượng lưu trữ</span>: <strong id="selectedVariantName" class="text-slate-900 font-extrabold text-sm ml-1">256GB</strong>
+                <span id="variantLabel">Dung lượng lưu trữ</span>: <strong id="selectedVariantName" class="text-slate-950 font-extrabold text-sm ml-1">256GB</strong>
               </span>
             </div>
-            <div id="variantGrid" class="grid grid-cols-3 gap-3" role="radiogroup" aria-label="Chọn phiên bản">
+            <div id="variantGrid" class="pd-variant-grid" role="radiogroup" aria-label="Chọn phiên bản"></div>
+          </div>
 
-              <!-- Bản 256GB -->
-              <button type="button" class="storage-btn active"
-                      data-capacity="256GB"
-                      data-price="34990000"
-                      data-old-price="36990000"
-                      data-discount="-5%"
-                      role="radio" aria-checked="true">
-                <span class="text-sm font-black text-slate-900">256GB</span>
-                <span class="text-[11px] font-semibold text-slate-500 mt-0.5">34.990.000₫</span>
+          <!-- 5. Hộp Ưu Đãi Đặc Quyền VLU FLAGSHIP STORE (Mở Modal chi tiết) -->
+          <div class="pd-perks-card p-4 sm:p-4.5 rounded-2xl bg-brand-soft/65 border border-brand/20 space-y-3">
+            <div class="flex items-center justify-between gap-2">
+              <p class="text-xs font-black uppercase tracking-wider text-brand flex items-center gap-1.5">
+                <svg class="h-4 w-4 shrink-0" fill="none" stroke="currentColor" stroke-width="2.4" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 8v13m0-13V6a2 2 0 112 2h-2zm0 0V5.5A2.5 2.5 0 109.5 8H12zm-7 4h14M5 12a2 2 0 110-4h14a2 2 0 110 4M5 12v7a2 2 0 002 2h10a2 2 0 002-2v-7"/></svg>
+                Ưu đãi đặc quyền VLU FLAGSHIP
+              </p>
+              <button type="button" id="pdViewPerksDetailBtn" data-policy-key="perks" class="text-xs font-extrabold text-brand hover:text-brand-dark underline-offset-2 hover:underline shrink-0 cursor-pointer">
+                Xem chi tiết ›
+              </button>
+            </div>
+            <ul id="pdPerks" class="text-xs text-slate-700 space-y-2 font-medium"></ul>
+          </div>
+
+          <!-- 6. Số lượng, Tồn kho & Cụm Nút Mua Hàng -->
+          <div class="pd-actions-cluster space-y-3 pt-1">
+            <!-- Hàng Bộ chọn số lượng + Nút Yêu thích -->
+            <div class="flex items-center justify-between gap-3 flex-wrap">
+              <div class="flex items-center gap-3">
+                <span class="text-xs font-bold uppercase tracking-wider text-slate-500">Số lượng:</span>
+                <div class="pd-qty-stepper" role="group" aria-label="Chọn số lượng sản phẩm">
+                  <button type="button" id="qtyMinusBtn" class="pd-qty-btn" aria-label="Giảm số lượng">−</button>
+                  <input type="text" id="pdQtyInput" class="pd-qty-input" value="1" readonly aria-label="Số lượng mua">
+                  <button type="button" id="qtyPlusBtn" class="pd-qty-btn" aria-label="Tăng số lượng">+</button>
+                </div>
+                <span id="pdStockLimitHint" class="text-[11px] font-semibold text-slate-500">Còn hàng sẵn</span>
+              </div>
+
+              <button type="button" id="pdWishActionBtn" data-wish aria-pressed="false"
+                      class="pd-wish-action-btn inline-flex items-center gap-1.5 rounded-full border border-slate-200 bg-white px-3.5 py-2 text-xs font-bold text-slate-600 shadow-sm transition hover:border-brand hover:text-brand active:scale-95">
+                <svg class="h-4 w-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M12 20s-7-4.4-7-10a4 4 0 0 1 7-2.5A4 4 0 0 1 19 10c0 5.6-7 10-7 10Z"/>
+                </svg>
+                <span id="pdWishLabel">Yêu thích</span>
+              </button>
+            </div>
+
+            <!-- Phản hồi khóa đặt mua khi Hết hàng / Giá liên hệ -->
+            <div id="pdUnavailableNotice" class="hidden rounded-xl bg-amber-50 border border-amber-200 px-3.5 py-2.5 text-xs font-semibold text-amber-800 flex items-center gap-2">
+              <svg class="h-4 w-4 text-amber-600 shrink-0" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/></svg>
+              <span id="pdUnavailableText">Phiên bản này hiện đang cập nhật giá / tạm hết hàng.</span>
+            </div>
+
+            <!-- Cụm nút CTA chính -->
+            <div class="flex flex-col sm:flex-row gap-3">
+              <button type="button"
+                      id="buyNowBtn"
+                      class="pd-cta-primary flex-1 min-h-[52px] px-6 py-3.5 rounded-full bg-brand text-white font-extrabold text-center hover:bg-brand-dark transition-all duration-200 shadow-lg shadow-brand/25 active:scale-[0.98] flex items-center justify-center gap-2 text-sm sm:text-base cursor-pointer">
+                <span>Mua ngay</span>
+                <svg class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3"/></svg>
               </button>
 
-              <!-- Bản 512GB -->
-              <button type="button" class="storage-btn"
-                      data-capacity="512GB"
-                      data-price="38990000"
-                      data-old-price="40990000"
-                      data-discount="-5%"
-                      role="radio" aria-checked="false">
-                <span class="text-sm font-black text-slate-900">512GB</span>
-                <span class="text-[11px] font-semibold text-slate-500 mt-0.5">38.990.000₫</span>
+              <button type="button"
+                      id="addToCartBtn"
+                      class="pd-cta-secondary flex-1 min-h-[52px] px-6 py-3.5 rounded-full bg-slate-900 text-white font-extrabold hover:bg-slate-800 transition-all duration-200 shadow-md active:scale-[0.98] flex items-center justify-center gap-2 text-sm sm:text-base cursor-pointer">
+                <svg class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M6 7h12l-1 13H7L6 7Z"/><path d="M9 7a3 3 0 0 1 6 0"/>
+                </svg>
+                <span>Thêm vào giỏ hàng</span>
               </button>
-
-              <!-- Bản 1TB -->
-              <button type="button" class="storage-btn"
-                      data-capacity="1TB"
-                      data-price="44990000"
-                      data-old-price="46990000"
-                      data-discount="-4%"
-                      role="radio" aria-checked="false">
-                <span class="text-sm font-black text-slate-900">1TB</span>
-                <span class="text-[11px] font-semibold text-slate-500 mt-0.5">44.990.000₫</span>
-              </button>
-
             </div>
           </div>
 
-          <!-- 5. Khung Ưu Đãi Độc Quyền (Bento Promo Card) -->
-          <div class="p-4 rounded-2xl bg-brand-soft/60 border border-brand/20 space-y-2">
-            <p class="text-xs font-black uppercase tracking-wider text-brand flex items-center gap-1.5">
-              <svg class="h-4 w-4" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 8v13m0-13V6a2 2 0 112 2h-2zm0 0V5.5A2.5 2.5 0 109.5 8H12zm-7 4h14M5 12a2 2 0 110-4h14a2 2 0 110 4M5 12v7a2 2 0 002 2h10a2 2 0 002-2v-7"/></svg>
-              Ưu đãi đặc quyền tại VLU FLAGSHIP STORE
-            </p>
-            <ul id="pdPerks" class="text-xs text-slate-700 space-y-1.5 font-medium">
-              <li class="flex items-start gap-2">
-                <span class="text-brand font-bold">•</span>
-                <span>Thu cũ trợ giá lên tới <strong>5.000.000₫</strong> khi lên đời iPhone 18 Pro Max</span>
-              </li>
-              <li class="flex items-start gap-2">
-                <span class="text-brand font-bold">•</span>
-                <span>Tặng củ sạc nhanh 35W GaN Dual USB-C &amp; kính cường lực cao cấp</span>
-              </li>
-              <li class="flex items-start gap-2">
-                <span class="text-brand font-bold">•</span>
-                <span>Ưu đãi đặc biệt khi mua kèm tai nghe AirPods Pro 3</span>
-              </li>
-              <li class="flex items-start gap-2">
-                <span class="text-brand font-bold">•</span>
-                <span>Bảo hành VIP 24 tháng chính hãng, 1 đổi 1 trong 30 ngày nếu phát sinh lỗi</span>
-              </li>
-            </ul>
-          </div>
-
-          <!-- 6. Cụm Nút Hành Động (Mua Ngay -> cart.html & Thêm Vào Giỏ Toast) -->
-          <div class="flex flex-col sm:flex-row gap-3 pt-2">
-
-            <!-- Nút chính: MUA NGAY (kích hoạt phiên Khách & chuyển hướng sang checkout.html) -->
-            <a href="checkout.html"
-               id="buyNowBtn"
-               class="flex-1 min-h-[48px] py-3.5 rounded-full bg-brand text-white font-extrabold text-center hover:bg-brand-dark transition-all duration-200 shadow-lg shadow-brand/25 active:scale-98 flex items-center justify-center gap-2 text-sm sm:text-base">
-              <span>Mua ngay</span>
-              <svg class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3"/></svg>
-            </a>
-
-            <!-- Nút phụ: THÊM VÀO GIỎ HÀNG (kèm hiệu ứng Toast) -->
-            <button type="button"
-                    id="addToCartBtn"
-                    class="flex-1 min-h-[48px] py-3.5 rounded-full bg-slate-900 text-white font-extrabold hover:bg-slate-800 transition-all duration-200 shadow-md active:scale-98 flex items-center justify-center gap-2 text-sm sm:text-base">
-              <svg class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M6 7h12l-1 13H7L6 7Z"/><path d="M9 7a3 3 0 0 1 6 0"/>
-              </svg>
-              <span>Thêm vào giỏ hàng</span>
-            </button>
-
-          </div>
-
-          <!-- 7. Cam Kết Dịch Vụ Chuẩn Flagship -->
-          <div class="grid grid-cols-2 gap-3 pt-3 border-t border-slate-200/70 text-xs text-slate-600 font-semibold">
-            <div class="flex items-center gap-2">
-              <svg class="h-4 w-4 text-emerald-600 flex-shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
-              <span>100% Máy mới nguyên seal</span>
-            </div>
-            <div class="flex items-center gap-2">
-              <svg class="h-4 w-4 text-blue-600 flex-shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
-              <span>Giao hỏa tốc nội thành 2h</span>
-            </div>
-            <div class="flex items-center gap-2">
-              <svg class="h-4 w-4 text-brand flex-shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>
-              <span>Đổi mới 30 ngày miễn phí</span>
-            </div>
-            <div class="flex items-center gap-2">
-              <svg class="h-4 w-4 text-purple-600 flex-shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg>
-              <span>Bảo hành chính hãng 24 tháng</span>
+          <!-- 7. Khu vực Cam Kết & Dịch Vụ Chuẩn Flagship (6 hạng mục có thể nhấn xem Modal chi tiết) -->
+          <div class="pt-3 border-t border-slate-200/80 space-y-2.5">
+            <p class="text-[11px] font-extrabold uppercase tracking-wider text-slate-400">Cam kết &amp; Dịch vụ chuẩn Flagship (Nhấn để xem chi tiết)</p>
+            <div id="pdCommitmentsGrid" class="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+              <button type="button" class="pd-commitment-card" data-policy-key="authentic">
+                <span class="pd-commitment-icon text-emerald-600 bg-emerald-50">
+                  <svg class="h-4 w-4" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
+                </span>
+                <span class="pd-commitment-text">100% Chính hãng VN/A</span>
+              </button>
+              <button type="button" class="pd-commitment-card" data-policy-key="warranty">
+                <span class="pd-commitment-icon text-purple-600 bg-purple-50">
+                  <svg class="h-4 w-4" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg>
+                </span>
+                <span class="pd-commitment-text">Bảo hành 12–24 tháng</span>
+              </button>
+              <button type="button" class="pd-commitment-card" data-policy-key="delivery">
+                <span class="pd-commitment-icon text-blue-600 bg-blue-50">
+                  <svg class="h-4 w-4" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
+                </span>
+                <span class="pd-commitment-text">Giao nhanh 2H · 5 chi nhánh</span>
+              </button>
+              <button type="button" class="pd-commitment-card" data-policy-key="exchange">
+                <span class="pd-commitment-icon text-brand bg-brand-soft">
+                  <svg class="h-4 w-4" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>
+                </span>
+                <span class="pd-commitment-text">Đổi mới 1 đổi 1 (30 ngày)</span>
+              </button>
+              <button type="button" class="pd-commitment-card" data-policy-key="support">
+                <span class="pd-commitment-icon text-sky-600 bg-sky-50">
+                  <svg class="h-4 w-4" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M18.364 5.636l-3.536 3.536m0 5.656l3.536 3.536M9.172 9.172L5.636 5.636m3.536 9.192l-3.536 3.536M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-5 0a4 4 0 11-8 0 4 4 0 018 0z"/></svg>
+                </span>
+                <span class="pd-commitment-text">Hỗ trợ kỹ thuật 24/7</span>
+              </button>
+              <button type="button" class="pd-commitment-card" data-policy-key="payment">
+                <span class="pd-commitment-icon text-amber-600 bg-amber-50">
+                  <svg class="h-4 w-4" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/></svg>
+                </span>
+                <span class="pd-commitment-text">Thanh toán SSL · Trả góp 0%</span>
+              </button>
             </div>
           </div>
 
@@ -3636,170 +3673,338 @@
     </section>
 
     <!-- ============================================================
-         PHẦN 2: BẢNG THÔNG SỐ KỸ THUẬT CHI TIẾT (BENTO GRID HIỆN ĐẠI 2026)
+         PHẦN 2: BẢNG THÔNG SỐ KỸ THUẬT CHI TIẾT & PHÂN NHÓM CHUYÊN BIỆT (PART 3)
          ============================================================ -->
-    <section class="mx-auto max-w-7xl px-4 py-12 sm:px-6 sm:py-16 border-t border-slate-200/80">
+    <section id="pdSpecsSection" class="mx-auto max-w-7xl px-4 py-12 sm:px-6 sm:py-16 border-t border-slate-200/80">
 
       <!-- Tiêu đề phần thông số -->
-      <div class="mb-8">
-        <div class="flex items-center gap-2">
-          <span class="text-xs font-black uppercase tracking-[0.2em] text-brand">Chi Tiết Phần Cứng</span>
-          <span class="inline-block h-1 w-1 rounded-full bg-slate-300"></span>
-          <span class="text-xs font-bold text-slate-500">Thế hệ Flagship đỉnh cao 2026</span>
+      <div class="mb-8 flex flex-wrap items-end justify-between gap-4">
+        <div>
+          <div class="flex items-center gap-2">
+            <span class="text-xs font-black uppercase tracking-[0.2em] text-brand">Chi Tiết Phần Cứng</span>
+            <span class="inline-block h-1 w-1 rounded-full bg-slate-300"></span>
+            <span id="pdSpecsCategoryPill" class="text-xs font-bold text-slate-500">Thông số chuẩn xác theo từng dòng máy</span>
+          </div>
+          <h2 class="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight mt-1">
+            Bảng thông số kỹ thuật chi tiết
+          </h2>
+          <p id="pdSpecsSubtitle" class="text-sm text-slate-500 mt-1">
+            Tổng hợp cấu hình phần cứng chính hãng được chuẩn hóa và khử trùng lặp từ dữ liệu sản phẩm.
+          </p>
         </div>
-        <h2 class="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight mt-1">
-          Bảng thông số kỹ thuật chi tiết
-        </h2>
-        <p class="text-sm text-slate-500 mt-1">
-          Trang bị những công nghệ phần cứng tiên phong nhất thế giới từ hệ sinh thái Apple.
-        </p>
+
+        <button type="button" id="pdSpecModalBtn"
+                class="inline-flex items-center gap-2 rounded-full border border-slate-200 bg-white px-4 py-2 text-xs font-extrabold text-slate-700 shadow-sm transition hover:border-brand hover:text-brand cursor-pointer">
+          <svg class="h-4 w-4 text-brand" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h10"/></svg>
+          <span>Xem bảng tóm tắt nhanh</span>
+        </button>
       </div>
 
-      <!-- Lưới Bento Grid 8 khối cấu hình -->
-      <div id="pdBento" class="spec-bento-grid mb-8">
+      <!-- Dải Thẻ Thông Số Nổi Bật (Quick Spec Cards) -->
+      <div id="pdBento" class="spec-bento-grid mb-8"></div>
 
-        <!-- Khối 1: Màn hình -->
-        <div class="spec-bento-card">
-          <div class="flex items-center gap-2.5 mb-3 text-brand">
-            <svg class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect width="18" height="18" x="3" y="3" rx="2"/><path d="M7 7h10v10H7z"/></svg>
-            <h3 class="text-sm font-extrabold uppercase tracking-wider text-slate-900">Màn hình</h3>
-          </div>
-          <p class="text-lg font-black text-slate-950">6.9" Super Retina XDR</p>
-          <ul class="mt-2 text-xs text-slate-600 space-y-1 font-medium">
-            <li>• Tấm nền OLED ProMotion 120Hz mượt mà</li>
-            <li>• Dynamic Island thế hệ 2.0 cảm ứng</li>
-            <li>• Always-On Display &amp; Độ sáng 3000 nits</li>
-            <li>• Mặt kính Ceramic Shield siêu bền thế hệ mới</li>
-          </ul>
-        </div>
-
-        <!-- Khối 2: Vi xử lý -->
-        <div class="spec-bento-card">
-          <div class="flex items-center gap-2.5 mb-3 text-purple-600">
-            <svg class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 3v2m6-2v2M9 19v2m6-2v2M3 9h2m-2 6h2m14-6h2m-2 6h2M7 19h10a2 2 0 002-2V7a2 2 0 00-2-2H7a2 2 0 00-2 2v10a2 2 0 002 2zM9 9h6v6H9V9z"/></svg>
-            <h3 class="text-sm font-extrabold uppercase tracking-wider text-slate-900">Vi xử lý (CPU)</h3>
-          </div>
-          <p class="text-lg font-black text-slate-950">Apple A20 Pro (2nm)</p>
-          <ul class="mt-2 text-xs text-slate-600 space-y-1 font-medium">
-            <li>• Tiến trình 2nm tiên tiến nhất thế giới</li>
-            <li>• 6 lõi CPU (2 lõi hiệu năng cao + 4 lõi tiết kiệm điện)</li>
-            <li>• GPU 6 lõi với Ray Tracing tăng tốc phần cứng</li>
-            <li>• Neural Engine 16 lõi xử lý AI tốc độ cao</li>
-          </ul>
-        </div>
-
-        <!-- Khối 3: Camera -->
-        <div class="spec-bento-card">
-          <div class="flex items-center gap-2.5 mb-3 text-blue-600">
-            <svg class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z"/><circle cx="12" cy="13" r="4"/></svg>
-            <h3 class="text-sm font-extrabold uppercase tracking-wider text-slate-900">Camera Pro</h3>
-          </div>
-          <p class="text-lg font-black text-slate-950">48MP Tứ Lăng Kính</p>
-          <ul class="mt-2 text-xs text-slate-600 space-y-1 font-medium">
-            <li>• Camera chính 48MP Fusion khẩu độ f/1.78</li>
-            <li>• Camera góc siêu rộng 48MP chụp Macro sắc nét</li>
-            <li>• Tiềm vọng Tetraprism 48MP Zoom quang 5x</li>
-            <li>• Nút cảm ứng Camera Control chụp nhanh</li>
-          </ul>
-        </div>
-
-        <!-- Khối 4: Pin & Sạc -->
-        <div class="spec-bento-card">
-          <div class="flex items-center gap-2.5 mb-3 text-emerald-600">
-            <svg class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect width="16" height="10" x="2" y="7" rx="2" ry="2"/><line x1="22" x2="22" y1="11" y2="13"/></svg>
-            <h3 class="text-sm font-extrabold uppercase tracking-wider text-slate-900">Pin &amp; Sạc</h3>
-          </div>
-          <p class="text-lg font-black text-slate-950">33 Giờ Xem Video</p>
-          <ul class="mt-2 text-xs text-slate-600 space-y-1 font-medium">
-            <li>• Sạc nhanh 50% trong vòng 25 phút</li>
-            <li>• Hỗ trợ sạc MagSafe công suất 25W</li>
-            <li>• Chuẩn sạc không dây Qi2 tương thích rộng rãi</li>
-            <li>• Quản lý pin AI thông minh tối ưu tuổi thọ</li>
-          </ul>
-        </div>
-
-      </div>
-
-      <!-- Bảng kẻ sọc mờ (Striped Table) thông số kỹ thuật chi tiết -->
+      <!-- Bảng Thông số kỹ thuật Phân Nhóm Chuyên Biệt (Accordion Groups + Deduplicated) -->
       <div class="rounded-3xl border border-slate-200/80 bg-white overflow-hidden shadow-sm">
-        <div class="px-6 py-4 bg-slate-50/80 border-b border-slate-200/80 flex items-center justify-between">
-          <h3 class="text-sm font-extrabold text-slate-900 uppercase tracking-wider">Thông số kỹ thuật đầy đủ</h3>
-          <span id="pdSku" class="text-xs text-slate-500 font-medium">Mã sản phẩm: A3294 (VN/A)</span>
+        <div class="px-5 sm:px-6 py-4 bg-slate-50/90 border-b border-slate-200/80 flex flex-wrap items-center justify-between gap-3">
+          <div class="flex items-center gap-2.5">
+            <span class="grid h-8 w-8 place-items-center rounded-xl bg-brand-soft text-brand">
+              <svg class="h-[18px] w-[18px]" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"/></svg>
+            </span>
+            <div>
+              <h3 class="text-sm font-extrabold text-slate-900 uppercase tracking-wider">Thông số kỹ thuật theo nhóm</h3>
+              <p id="pdSpecGroupCount" class="text-[11px] font-semibold text-slate-500">Đang chuẩn hóa dữ liệu...</p>
+            </div>
+          </div>
+          <span id="pdSku" class="inline-flex items-center rounded-full bg-white border border-slate-200 px-3 py-1 text-xs text-slate-600 font-bold">SKU: VLU-FLAGSHIP</span>
         </div>
 
-        <div id="pdSpecTable" class="divide-y divide-slate-100 text-sm">
-
-          <div class="spec-table-row">
-            <span class="font-bold text-slate-900 w-1/3">Công nghệ màn hình</span>
-            <span class="text-slate-600 w-2/3">Super Retina XDR OLED, ProMotion 120Hz, HDR10, Dolby Vision, 3000 nits đỉnh</span>
+        <div id="pdSpecTable" class="p-4 sm:p-6 space-y-4">
+          <div id="pdSpecGroupsPrimary" class="pd-spec-groups-grid"></div>
+          <div id="pdSpecGroupsExtra" class="pd-spec-extra-wrap">
+            <div id="pdSpecGroupsExtraGrid" class="pd-spec-groups-grid pt-4"></div>
           </div>
 
-          <div class="spec-table-row">
-            <span class="font-bold text-slate-900 w-1/3">Kích thước màn hình</span>
-            <span class="text-slate-600 w-2/3">6.9 inch (Độ phân giải 2868 x 1320 pixels, mật độ 460 ppi)</span>
+          <div id="pdSpecToggleWrap" class="hidden pt-2 flex justify-center">
+            <button type="button" id="pdSpecToggleAllBtn" aria-expanded="false" class="pd-spec-toggle-btn">
+              <span id="pdSpecToggleLabel">Xem toàn bộ thông số chi tiết</span>
+              <svg class="h-4 w-4 pd-spec-toggle-icon" fill="none" stroke="currentColor" stroke-width="2.4" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/></svg>
+            </button>
           </div>
-
-          <div class="spec-table-row">
-            <span class="font-bold text-slate-900 w-1/3">Chipset (Vi xử lý)</span>
-            <span class="text-slate-600 w-2/3">Apple A20 Pro 2nm 6-core CPU, 6-core GPU, 16-core Neural Engine</span>
-          </div>
-
-          <div class="spec-table-row">
-            <span class="font-bold text-slate-900 w-1/3">Dung lượng bộ nhớ</span>
-            <span class="text-slate-600 w-2/3">256GB / 512GB / 1TB (NVMe tốc độ cao)</span>
-          </div>
-
-          <div class="spec-table-row">
-            <span class="font-bold text-slate-900 w-1/3">Hệ thống Camera sau</span>
-            <span class="text-slate-600 w-2/3">48MP Chính (OIS Sensor-shift) + 48MP Ultra-Wide + 48MP Telephoto Zoom 5x quang học</span>
-          </div>
-
-          <div class="spec-table-row">
-            <span class="font-bold text-slate-900 w-1/3">Camera trước</span>
-            <span class="text-slate-600 w-2/3">12MP TrueDepth với khẩu độ f/1.9, tự động lấy nét PDAF, quay 4K Dolby Vision</span>
-          </div>
-
-          <div class="spec-table-row">
-            <span class="font-bold text-slate-900 w-1/3">Quay video chuyên nghiệp</span>
-            <span class="text-slate-600 w-2/3">4K 120fps Dolby Vision, ProRes 4K 120fps trực tiếp ổ cứng ngoài, Spatial Video không gian</span>
-          </div>
-
-          <div class="spec-table-row">
-            <span class="font-bold text-slate-900 w-1/3">Chất liệu khung &amp; Mặt kính</span>
-            <span class="text-slate-600 w-2/3">Khung Titanium Hàng Không Cấp 5, Kính Ceramic Shield 2.0 chống xước gấp 4 lần</span>
-          </div>
-
-          <div class="spec-table-row">
-            <span class="font-bold text-slate-900 w-1/3">Chuẩn kháng nước &amp; bụi</span>
-            <span class="text-slate-600 w-2/3">IP68 (Độ sâu tối đa 6 mét trong vòng 30 phút theo tiêu chuẩn IEC 60529)</span>
-          </div>
-
-          <div class="spec-table-row">
-            <span class="font-bold text-slate-900 w-1/3">Cổng kết nối</span>
-            <span class="text-slate-600 w-2/3">USB Type-C hỗ trợ chuẩn USB 3 (Tốc độ truyền dữ liệu lên tới 10Gb/s), DisplayPort</span>
-          </div>
-
-          <div class="spec-table-row">
-            <span class="font-bold text-slate-900 w-1/3">Hệ điều hành</span>
-            <span class="text-slate-600 w-2/3">iOS 19 tích hợp hệ thống trí tuệ nhân tạo Apple Intelligence hỗ trợ tiếng Việt toàn diện</span>
-          </div>
-
-          <div class="spec-table-row">
-            <span class="font-bold text-slate-900 w-1/3">Quy cách đóng hộp</span>
-            <span class="text-slate-600 w-2/3">Thân máy iPhone 18 Pro Max, Cáp sạc USB-C bọc dù cao cấp 1m, Tài liệu HDSD, Que lấy SIM</span>
-          </div>
-
         </div>
       </div>
 
     </section>
 
+    <!-- ============================================================
+         PHẦN 3: BÀI VIẾT GIỚI THIỆU & MÔ TẢ CHI TIẾT SẢN PHẨM (EDITORIAL)
+         ============================================================ -->
+    <section id="pdEditorialSection" class="pd-editorial-section mx-auto max-w-7xl px-4 py-10 sm:px-6 sm:py-14 border-t border-slate-200/80">
+      <div class="pd-editorial-card rounded-3xl border border-slate-200/85 bg-white p-6 sm:p-10 shadow-sm">
+        <div class="flex flex-wrap items-end justify-between gap-4 pb-6 border-b border-slate-100">
+          <div>
+            <span class="inline-flex items-center gap-1.5 rounded-full bg-brand-soft px-3 py-1 text-[11px] font-black uppercase tracking-[0.16em] text-brand">
+              Đánh giá chuyên sâu · VLU Editorial
+            </span>
+            <h2 id="pdEditorialTitle" class="text-2xl sm:text-3xl font-extrabold text-slate-950 tracking-tight mt-2">
+              Giới thiệu &amp; Đánh giá chi tiết sản phẩm
+            </h2>
+            <p id="pdEditorialLead" class="text-sm text-slate-500 mt-1.5 max-w-3xl leading-relaxed">
+              Phân tích chi tiết thiết kế, công nghệ cốt lõi, trải nghiệm thực tế và tư vấn lựa chọn phiên bản phù hợp từ chuyên gia VLU FLAGSHIP STORE.
+            </p>
+          </div>
+        </div>
+
+        <!-- Thanh mục lục điều hướng nhanh 7 phần bài viết -->
+        <nav id="pdEditorialNav" aria-label="Mục lục bài viết" class="pd-editorial-toc flex items-center gap-2 overflow-x-auto py-4 no-scrollbar border-b border-slate-100"></nav>
+
+        <!-- Nội dung bài viết tổng hợp 7 chương + ảnh studio thực tế từ SanPham/ -->
+        <div id="pdEditorialBodyWrap" class="relative mt-6">
+          <article id="pdEditorialBody" class="pd-editorial-body is-collapsed space-y-8"></article>
+          <div id="pdEditorialFadeMask" class="pd-editorial-fade-mask" aria-hidden="true"></div>
+        </div>
+
+        <div class="mt-6 flex justify-center">
+          <button type="button" id="pdEditorialToggleBtn" aria-expanded="false" class="pd-editorial-toggle-btn">
+            <span id="pdEditorialToggleLabel">Xem thêm bài viết chi tiết</span>
+            <svg class="h-4 w-4 pd-editorial-toggle-icon" fill="none" stroke="currentColor" stroke-width="2.4" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/></svg>
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================================
+         PHẦN 4: KHU VỰC ĐÁNH GIÁ KHÁCH HÀNG THỰC TẾ (#pdReviewsSection)
+         ============================================================ -->
+    <section id="pdReviewsSection" class="mx-auto max-w-7xl px-4 pb-12 sm:px-6 sm:pb-14">
+      <div class="rounded-3xl border border-slate-200/80 bg-white p-5 sm:p-8 shadow-sm space-y-6">
+
+        <!-- Tiêu đề & Nút Viết đánh giá -->
+        <div class="flex flex-wrap items-center justify-between gap-4 pb-5 border-b border-slate-100">
+          <div>
+            <span class="text-xs font-black uppercase tracking-[0.2em] text-brand">Phản hồi xác thực</span>
+            <h2 class="text-xl sm:text-2xl font-extrabold text-slate-900 mt-1">Đánh giá từ khách hàng thực tế</h2>
+          </div>
+          <div class="flex flex-wrap items-center gap-2.5">
+            <div id="pdReviewsSummaryBadge" class="inline-flex items-center gap-2 rounded-full bg-amber-50 border border-amber-200/80 px-3.5 py-1.5 text-xs font-extrabold text-slate-900">
+              <span>Đang đồng bộ đánh giá...</span>
+            </div>
+            <button type="button" id="pdOpenReviewModalBtn" class="inline-flex items-center gap-2 rounded-full bg-slate-900 px-4 py-2 text-xs font-extrabold text-white shadow-sm hover:bg-brand transition active:scale-95 cursor-pointer">
+              <svg class="h-4 w-4" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931z"/></svg>
+              <span>Viết đánh giá sản phẩm</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Bảng Tổng quan Điểm đánh giá (Rating Summary Card) -->
+        <div id="pdReviewSummaryCard" class="pd-review-summary-card">
+          <div class="pd-review-score-col">
+            <div class="flex items-baseline justify-center gap-1">
+              <span id="pdAvgScoreValue" class="text-4xl sm:text-5xl font-black tracking-tight text-slate-950">0.0</span>
+              <span class="text-base font-bold text-slate-400">/5</span>
+            </div>
+            <div id="pdSummaryStars" class="mt-2 flex items-center justify-center gap-1 text-amber-400" aria-hidden="true"></div>
+            <p id="pdTotalReviewCount" class="mt-2 text-xs font-bold text-slate-500">Chưa có lượt đánh giá</p>
+          </div>
+
+          <div id="pdRatingBreakdown" class="flex-1 space-y-2"></div>
+        </div>
+
+        <!-- Bộ lọc nhanh & Sắp xếp -->
+        <div id="pdReviewControls" class="flex flex-wrap items-center justify-between gap-3 pt-1">
+          <div id="pdReviewFilterBar" class="flex flex-wrap items-center gap-2" role="tablist" aria-label="Lọc đánh giá theo số sao"></div>
+          <div class="flex items-center gap-2 text-xs">
+            <label for="pdReviewSortSelect" class="font-bold text-slate-500 whitespace-nowrap">Sắp xếp:</label>
+            <select id="pdReviewSortSelect" class="rounded-xl border border-slate-200 bg-slate-50 px-3 py-1.5 text-xs font-bold text-slate-800 focus:border-brand focus:outline-none cursor-pointer">
+              <option value="newest">Mới nhất</option>
+              <option value="highest">Điểm cao nhất</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- Danh sách Review Card thực tế -->
+        <div id="pdReviewsList" class="grid grid-cols-1 md:grid-cols-2 gap-4"></div>
+      </div>
+    </section>
+
+    <!-- ============================================================
+         PHẦN 5: HỎI ĐÁP SẢN PHẨM – Q&A & CÂU HỎI THƯỜNG GẶP (#pdQaSection)
+         ============================================================ -->
+    <section id="pdQaSection" class="mx-auto max-w-7xl px-4 pb-12 sm:px-6 sm:pb-14">
+      <div class="rounded-3xl border border-slate-200/80 bg-white p-5 sm:p-8 shadow-sm">
+        <div class="flex flex-wrap items-center justify-between gap-4 pb-5 border-b border-slate-100">
+          <div>
+            <span class="text-xs font-black uppercase tracking-[0.2em] text-brand">Giải đáp trực tiếp</span>
+            <h2 class="text-xl sm:text-2xl font-extrabold text-slate-900 mt-1">Hỏi đáp sản phẩm (Q&amp;A) &amp; Câu hỏi thường gặp</h2>
+          </div>
+          <span id="pdQaCountBadge" class="inline-flex items-center rounded-full bg-slate-100 px-3.5 py-1.5 text-xs font-extrabold text-slate-700">0 câu hỏi</span>
+        </div>
+
+        <div class="mt-6 pd-qa-grid">
+          <!-- Cột Trái: Form đặt câu hỏi & Danh sách Q&A -->
+          <div class="space-y-5 min-w-0">
+            <form id="pdQaForm" class="rounded-2xl border border-slate-200/80 bg-slate-50/70 p-4 sm:p-5 space-y-3.5">
+              <div class="flex flex-wrap items-center justify-between gap-2">
+                <h3 class="text-sm font-extrabold text-slate-900">Đặt câu hỏi về <span id="pdQaProductName" class="text-brand">sản phẩm này</span></h3>
+                <span class="text-[11px] font-semibold text-slate-500">Hỗ trợ từ VLU Flagship Store</span>
+              </div>
+
+              <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                <div>
+                  <label for="pdQaTopicSelect" class="block text-[11px] font-extrabold uppercase tracking-wider text-slate-500 mb-1">Chủ đề câu hỏi</label>
+                  <select id="pdQaTopicSelect" class="w-full rounded-xl border border-slate-200 bg-white px-3 py-2 text-xs font-bold text-slate-800 focus:border-brand focus:outline-none">
+                    <option value="Cấu hình & Hiệu năng">Cấu hình &amp; Hiệu năng</option>
+                    <option value="Dung lượng & Màu sắc">Dung lượng &amp; Màu sắc</option>
+                    <option value="Bảo hành & Đổi trả">Bảo hành &amp; Đổi trả</option>
+                    <option value="Khả năng tương thích">Khả năng tương thích</option>
+                    <option value="Trả góp 0%">Trả góp 0%</option>
+                  </select>
+                </div>
+                <div>
+                  <label for="pdQaAuthorInput" class="block text-[11px] font-extrabold uppercase tracking-wider text-slate-500 mb-1">Tên của bạn</label>
+                  <input id="pdQaAuthorInput" type="text" maxlength="60" placeholder="Nhập họ tên của bạn..." class="w-full rounded-xl border border-slate-200 bg-white px-3 py-2 text-xs font-semibold text-slate-800 focus:border-brand focus:outline-none">
+                </div>
+              </div>
+
+              <div>
+                <label for="pdQaQuestionInput" class="block text-[11px] font-extrabold uppercase tracking-wider text-slate-500 mb-1">Nội dung câu hỏi</label>
+                <textarea id="pdQaQuestionInput" rows="3" minlength="8" required placeholder="Nhập thắc mắc của bạn về hiệu năng, dung lượng, chính sách thu cũ đổi mới hoặc trả góp 0%..." class="w-full rounded-xl border border-slate-200 bg-white px-3.5 py-2.5 text-xs sm:text-sm text-slate-800 focus:border-brand focus:outline-none resize-y"></textarea>
+              </div>
+
+              <div class="flex flex-wrap items-center justify-between gap-2">
+                <p class="text-[11px] text-slate-500">Câu hỏi được lưu gắn trực tiếp với sản phẩm này.</p>
+                <button type="submit" class="inline-flex items-center gap-2 rounded-full bg-brand px-5 py-2 text-xs font-extrabold text-white shadow-sm hover:bg-brand-dark transition active:scale-95 cursor-pointer">
+                  <span>Gửi câu hỏi</span>
+                  <svg class="h-3.5 w-3.5" fill="none" stroke="currentColor" stroke-width="2.4" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M6 12L3.269 3.126A59.768 59.768 0 0121.485 12 59.77 59.77 0 013.27 20.876L5.999 12zm0 0h7.5"/></svg>
+                </button>
+              </div>
+            </form>
+
+            <div id="pdQaList" class="space-y-3.5"></div>
+          </div>
+
+          <!-- Cột Phải: Câu hỏi thường gặp (FAQ Accordion theo danh mục thực tế) -->
+          <aside class="rounded-2xl border border-slate-200/80 bg-slate-50/50 p-4 sm:p-5 space-y-3 min-w-0 h-fit">
+            <div class="pb-2 border-b border-slate-200/70">
+              <span class="text-[11px] font-black uppercase tracking-[0.16em] text-brand">FAQ Chính hãng</span>
+              <h3 class="text-base font-extrabold text-slate-900 mt-0.5">Câu hỏi thường gặp</h3>
+            </div>
+            <div id="pdFaqAccordion" class="space-y-2.5"></div>
+          </aside>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================================
+         PHẦN 6: SẢN PHẨM LIÊN QUAN & GỢI Ý CÙNG PHÂN KHÚC (#pdRelatedSection)
+         ============================================================ -->
+    <section id="pdRelatedSection" class="mx-auto max-w-7xl px-4 pb-12 sm:px-6 sm:pb-14">
+      <div class="flex flex-wrap items-end justify-between gap-4">
+        <div>
+          <span class="text-xs font-black uppercase tracking-[0.2em] text-brand">Gợi ý dành cho bạn</span>
+          <h2 class="text-xl sm:text-2xl font-extrabold text-slate-900 mt-1">Sản phẩm liên quan &amp; Gợi ý cùng phân khúc</h2>
+        </div>
+        <a id="pdRelatedViewAllLink" href="category.html" class="inline-flex items-center gap-1.5 rounded-full border border-slate-200 bg-white px-4 py-2 text-xs font-extrabold text-slate-800 shadow-sm hover:border-brand hover:text-brand transition">
+          <span>Xem tất cả</span>
+          <svg class="h-3.5 w-3.5" fill="none" stroke="currentColor" stroke-width="2.4" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="m9 5 7 7-7 7"/></svg>
+        </a>
+      </div>
+
+      <!-- 3 Tab lọc nhanh -->
+      <div id="pdRelatedTabs" class="mt-5 flex flex-wrap items-center gap-2" role="tablist" aria-label="Lọc sản phẩm liên quan">
+        <button type="button" class="pd-related-tab is-active" data-related-tab="category-brand" role="tab" aria-selected="true">Cùng danh mục &amp; Thương hiệu</button>
+        <button type="button" class="pd-related-tab" data-related-tab="similar-price" role="tab" aria-selected="false">Mức giá tương đương</button>
+        <button type="button" class="pd-related-tab" data-related-tab="same-line" role="tab" aria-selected="false">Phiên bản khác cùng dòng</button>
+      </div>
+
+      <div id="pdRelatedGrid" class="mt-6 grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3.5 sm:gap-5"></div>
+    </section>
+
+    <!-- ============================================================
+         PHẦN 7: SẢN PHẨM ĐÃ XEM GẦN ĐÂY (#pdRecentlyViewedSection - Carousel)
+         Chỉ hiển thị khi có ít nhất 1 sản phẩm khác trong lịch sử đã xem
+         ============================================================ -->
+    <section id="pdRecentlyViewedSection" class="hidden mx-auto max-w-7xl px-4 pb-12 sm:px-6 sm:pb-16">
+      <div class="rounded-3xl border border-slate-200/80 bg-white p-5 sm:p-7 shadow-sm">
+        <div class="flex flex-wrap items-center justify-between gap-4 pb-5 border-b border-slate-100">
+          <div>
+            <span class="text-xs font-black uppercase tracking-[0.2em] text-brand">Lịch sử khám phá</span>
+            <h2 class="text-xl sm:text-2xl font-extrabold text-slate-900 mt-1">Sản phẩm đã xem gần đây</h2>
+          </div>
+          <div class="flex items-center gap-2">
+            <button type="button" id="pdClearRecentBtn" class="rounded-full border border-slate-200 bg-slate-50 px-3.5 py-1.5 text-[11px] font-bold text-slate-600 hover:border-red-300 hover:bg-red-50 hover:text-red-600 transition cursor-pointer">
+              Xóa lịch sử xem
+            </button>
+            <button type="button" id="pdRecentPrevBtn" class="pd-carousel-nav-btn" aria-label="Xem sản phẩm trước">
+              <svg class="h-4 w-4" fill="none" stroke="currentColor" stroke-width="2.4" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="m15 19-7-7 7-7"/></svg>
+            </button>
+            <button type="button" id="pdRecentNextBtn" class="pd-carousel-nav-btn" aria-label="Xem sản phẩm tiếp theo">
+              <svg class="h-4 w-4" fill="none" stroke="currentColor" stroke-width="2.4" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="m9 5 7 7-7 7"/></svg>
+            </button>
+          </div>
+        </div>
+
+        <div id="pdRecentTrack" class="pd-recent-track no-scrollbar mt-5" aria-label="Danh sách sản phẩm đã xem gần đây"></div>
+      </div>
+    </section>
+
   </main>
+
+  <!-- Desktop Floating Quick-Buy Bar (#pdDesktopStickyBar - @media min-width: 1024px) -->
+  <div id="pdDesktopStickyBar" class="pd-desktop-sticky-bar" role="region" aria-label="Thanh mua nhanh trên máy tính" aria-hidden="true">
+    <div class="mx-auto max-w-7xl px-6 h-full flex items-center justify-between gap-4">
+      <div class="flex items-center gap-3.5 min-w-0">
+        <div class="pd-desktop-sticky-thumb-wrap">
+          <img id="pdDesktopStickyThumb" src="frontend/assets/images/placeholders/phone.svg" alt="Sản phẩm" class="pd-desktop-sticky-thumb">
+        </div>
+        <div class="min-w-0">
+          <p id="pdDesktopStickyName" class="text-sm font-extrabold text-slate-950 truncate">iPhone 18 Pro Max</p>
+          <p id="pdDesktopStickyMeta" class="text-xs font-semibold text-slate-500 truncate">Bạc · 256 GB</p>
+        </div>
+      </div>
+
+      <div class="flex items-center gap-3 shrink-0">
+        <div class="text-right">
+          <p id="pdDesktopStickyPrice" class="text-base font-black text-brand leading-tight">40.000.000₫</p>
+          <p id="pdDesktopStickyOldPrice" class="hidden text-[11px] font-semibold text-slate-400 line-through leading-tight"></p>
+        </div>
+        <button type="button" id="pdDesktopStickyWishBtn" data-wish aria-pressed="false" aria-label="Lưu vào yêu thích" title="Lưu yêu thích" class="pd-sticky-wish-btn">
+          <svg class="h-[18px] w-[18px]" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 20s-7-4.4-7-10a4 4 0 0 1 7-2.5A4 4 0 0 1 19 10c0 5.6-7 10-7 10Z"/></svg>
+        </button>
+        <button type="button" id="pdDesktopStickyAddBtn" class="pd-sticky-add-btn">
+          <svg class="h-4 w-4 shrink-0" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M6 7h12l-1 13H7L6 7Z"/><path d="M9 7a3 3 0 0 1 6 0"/></svg>
+          <span>Thêm vào giỏ</span>
+        </button>
+        <button type="button" id="pdDesktopStickyBuyBtn" class="pd-sticky-buy-btn">
+          <span>Mua ngay</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Mobile & Small Tablet Sticky Purchase Bar (#pdMobileStickyBar - @media max-width: 1023px) -->
+  <div id="pdMobileStickyBar" class="pd-mobile-sticky-bar" role="region" aria-label="Thanh mua nhanh trên di động">
+    <div class="pd-mobile-sticky-inner">
+      <div class="min-w-0 flex-1">
+        <p id="pdMobileStickyMeta" class="text-[11px] font-bold text-slate-500 truncate">Bạc · 256 GB</p>
+        <p id="pdMobileStickyPrice" class="text-sm sm:text-base font-black text-brand leading-tight truncate">40.000.000₫</p>
+      </div>
+      <div class="flex items-center gap-1.5 sm:gap-2 shrink-0">
+        <button type="button" id="pdMobileStickyWishBtn" data-wish aria-pressed="false" aria-label="Lưu yêu thích" class="pd-mobile-wish-btn">
+          <svg class="h-[18px] w-[18px]" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 20s-7-4.4-7-10a4 4 0 0 1 7-2.5A4 4 0 0 1 19 10c0 5.6-7 10-7 10Z"/></svg>
+        </button>
+        <button type="button" id="pdMobileStickyAddBtn" class="pd-mobile-add-btn">
+          <svg class="h-4 w-4 shrink-0" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M6 7h12l-1 13H7L6 7Z"/><path d="M9 7a3 3 0 0 1 6 0"/></svg>
+          <span>Thêm vào giỏ</span>
+        </button>
+        <button type="button" id="pdMobileStickyBuyBtn" class="pd-mobile-buy-btn">Mua ngay</button>
+      </div>
+    </div>
+  </div>
 
   <!-- ============================================================
        [FOOTER] ĐỒNG BỘ NGUYÊN BẢN VLU FLAGSHIP STORE
        ============================================================ -->
-  <footer class="mt-12 border-t border-slate-200/80 bg-white">
+  <footer id="site-footer" class="pd-site-footer mt-12 border-t border-slate-200/80 bg-white">
   <div class="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8">
     <div class="grid grid-cols-1 gap-8 border-b border-slate-100 pb-12 md:grid-cols-4">
       <div class="space-y-4 md:col-span-2">
@@ -3869,14 +4074,180 @@
   </div>
 </footer>
 
+  <!-- Policy & Exclusive Perks Detail Modal (#pdPolicyModal) -->
+  <div id="pdPolicyModal" class="pd-policy-modal hidden" role="dialog" aria-modal="true" aria-labelledby="pdPolicyModalTitle" aria-hidden="true">
+    <div id="pdPolicyBackdrop" class="pd-policy-backdrop" aria-hidden="true"></div>
+    <div class="pd-policy-card">
+      <header class="flex items-center justify-between gap-4 pb-3.5 border-b border-slate-100">
+        <div>
+          <span id="pdPolicyModalEyebrow" class="text-[11px] font-black uppercase tracking-[0.16em] text-brand">Chính sách VLU FLAGSHIP</span>
+          <h3 id="pdPolicyModalTitle" class="text-lg font-extrabold text-slate-950 mt-0.5">Chi tiết ưu đãi &amp; dịch vụ</h3>
+        </div>
+        <button type="button" id="pdPolicyCloseBtn" class="grid h-9 w-9 place-items-center rounded-full bg-slate-100 text-slate-600 hover:bg-brand hover:text-white transition cursor-pointer" aria-label="Đóng thông tin chính sách">
+          <svg class="h-[18px] w-[18px]" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24"><path stroke-linecap="round" d="M18 6 6 18M6 6l12 12"/></svg>
+        </button>
+      </header>
+      <div id="pdPolicyModalBody" class="py-4 space-y-3 text-sm text-slate-600 leading-relaxed max-h-[62vh] overflow-y-auto"></div>
+      <footer class="pt-3 border-t border-slate-100 flex justify-end">
+        <button type="button" id="pdPolicyDoneBtn" class="rounded-full bg-slate-900 px-5 py-2 text-xs font-extrabold text-white hover:bg-brand transition cursor-pointer">Đã hiểu</button>
+      </footer>
+    </div>
+  </div>
+
+  <!-- Fullscreen Lightbox Modal Xem ảnh sản phẩm độ phân giải cao -->
+  <div id="galleryLightboxModal" class="pd-lightbox hidden" role="dialog" aria-modal="true" aria-labelledby="lightboxTitle" aria-hidden="true">
+    <div id="lightboxBackdrop" class="pd-lightbox-backdrop" aria-hidden="true"></div>
+    <div class="pd-lightbox-dialog">
+      <header class="pd-lightbox-topbar">
+        <div class="min-w-0">
+          <h2 id="lightboxTitle" class="text-sm sm:text-base font-extrabold text-white truncate">Sản phẩm</h2>
+          <p id="lightboxSubtitle" class="text-xs text-slate-300 truncate">Phiên bản mặc định</p>
+        </div>
+        <div class="flex items-center gap-2 shrink-0">
+          <span id="lightboxCounter" class="pd-lightbox-counter" aria-live="polite">1 / 1</span>
+          <button type="button" id="lightboxZoomToggleBtn" class="pd-lightbox-ctrl-btn" aria-pressed="false" aria-label="Phóng to / thu nhỏ ảnh" title="Phóng to / Thu nhỏ (Z)">
+            <svg class="h-[18px] w-[18px]" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+              <circle cx="11" cy="11" r="7"/><path stroke-linecap="round" d="m21 21-4.3-4.3M11 8v6M8 11h6"/>
+            </svg>
+          </button>
+          <button type="button" id="lightboxCloseBtn" class="pd-lightbox-ctrl-btn pd-lightbox-close" aria-label="Đóng xem ảnh toàn màn hình" title="Đóng (Esc)">
+            <svg class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" viewBox="0 0 24 24">
+              <path d="M18 6 6 18M6 6l12 12"/>
+            </svg>
+          </button>
+        </div>
+      </header>
+
+      <div class="pd-lightbox-body">
+        <button type="button" id="lightboxPrevBtn" class="pd-lightbox-nav pd-lightbox-nav-prev" aria-label="Ảnh trước">
+          <svg class="h-6 w-6" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24">
+            <path d="M15 18l-6-6 6-6"/>
+          </svg>
+        </button>
+
+        <div id="lightboxCanvas" class="pd-lightbox-canvas">
+          <img id="lightboxImg" src="frontend/assets/images/placeholders/phone.svg" alt="Xem ảnh chi tiết" class="pd-lightbox-img">
+        </div>
+
+        <button type="button" id="lightboxNextBtn" class="pd-lightbox-nav pd-lightbox-nav-next" aria-label="Ảnh tiếp theo">
+          <svg class="h-6 w-6" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24">
+            <path d="M9 18l6-6-6-6"/>
+          </svg>
+        </button>
+      </div>
+
+      <footer class="pd-lightbox-footer">
+        <div id="lightboxThumbs" class="pd-lightbox-thumbs no-scrollbar"></div>
+      </footer>
+    </div>
+  </div>
+
+  <!-- Modal Viết đánh giá sản phẩm (#pdReviewModal) -->
+  <div id="pdReviewModal" class="pd-policy-modal hidden" role="dialog" aria-modal="true" aria-labelledby="pdReviewModalTitle" aria-hidden="true">
+    <div id="pdReviewModalBackdrop" class="pd-policy-backdrop" aria-hidden="true"></div>
+    <div class="pd-policy-card pd-review-modal-card">
+      <header class="flex items-start justify-between gap-4 pb-3.5 border-b border-slate-100">
+        <div>
+          <span class="text-[11px] font-black uppercase tracking-[0.16em] text-brand">Đánh giá thực tế VLU</span>
+          <h3 id="pdReviewModalTitle" class="text-lg font-extrabold text-slate-950 mt-0.5">Viết đánh giá sản phẩm</h3>
+          <p id="pdReviewModalSubtitle" class="text-xs font-semibold text-slate-500 mt-0.5"></p>
+        </div>
+        <button type="button" id="pdReviewModalCloseBtn" class="grid h-9 w-9 shrink-0 place-items-center rounded-full bg-slate-100 text-slate-600 hover:bg-brand hover:text-white transition cursor-pointer" aria-label="Đóng khung đánh giá">
+          <svg class="h-[18px] w-[18px]" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24"><path stroke-linecap="round" d="M18 6 6 18M6 6l12 12"/></svg>
+        </button>
+      </header>
+
+      <form id="pdReviewForm" class="py-4 space-y-4 max-h-[70vh] overflow-y-auto pr-1">
+        <div>
+          <span class="block text-xs font-extrabold uppercase tracking-wider text-slate-500 mb-2">Chấm điểm trải nghiệm (1–5 sao)</span>
+          <div id="pdStarPicker" class="pd-star-picker" role="radiogroup" aria-label="Chọn mức đánh giá sao">
+            <button type="button" class="pd-star-pick-btn is-active" data-star-val="1" aria-label="1 sao">★</button>
+            <button type="button" class="pd-star-pick-btn is-active" data-star-val="2" aria-label="2 sao">★</button>
+            <button type="button" class="pd-star-pick-btn is-active" data-star-val="3" aria-label="3 sao">★</button>
+            <button type="button" class="pd-star-pick-btn is-active" data-star-val="4" aria-label="4 sao">★</button>
+            <button type="button" class="pd-star-pick-btn is-active" data-star-val="5" aria-label="5 sao">★</button>
+            <span id="pdStarPickerLabel" class="ml-2 text-xs font-extrabold text-amber-600">5/5 – Tuyệt vời</span>
+          </div>
+          <input type="hidden" id="pdReviewRatingInput" value="5">
+        </div>
+
+        <div>
+          <span class="block text-xs font-extrabold uppercase tracking-wider text-slate-500 mb-2">Tag nhận xét nhanh</span>
+          <div id="pdReviewTagPicker" class="flex flex-wrap gap-2">
+            <label class="pd-review-tag-pill"><input type="checkbox" name="pdReviewTags" value="Hàng chính hãng VLU"><span>Hàng chính hãng VLU</span></label>
+            <label class="pd-review-tag-pill"><input type="checkbox" name="pdReviewTags" value="Giao hàng siêu tốc"><span>Giao hàng siêu tốc</span></label>
+            <label class="pd-review-tag-pill"><input type="checkbox" name="pdReviewTags" value="Đóng gói chắc chắn"><span>Đóng gói chắc chắn</span></label>
+            <label class="pd-review-tag-pill"><input type="checkbox" name="pdReviewTags" value="Hiệu năng mượt mà"><span>Hiệu năng mượt mà</span></label>
+            <label class="pd-review-tag-pill"><input type="checkbox" name="pdReviewTags" value="Pin bền, sạc nhanh"><span>Pin bền, sạc nhanh</span></label>
+            <label class="pd-review-tag-pill"><input type="checkbox" name="pdReviewTags" value="Tư vấn nhiệt tình"><span>Tư vấn nhiệt tình</span></label>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          <div>
+            <label for="pdReviewAuthorInput" class="block text-xs font-extrabold uppercase tracking-wider text-slate-500 mb-1.5">Tên hiển thị</label>
+            <input id="pdReviewAuthorInput" type="text" maxlength="60" required placeholder="Nhập họ tên..." class="w-full rounded-xl border border-slate-200 bg-slate-50 px-3.5 py-2 text-sm font-semibold text-slate-800 focus:border-brand focus:bg-white focus:outline-none">
+          </div>
+          <div class="flex items-end">
+            <div id="pdReviewVerifyHint" class="w-full rounded-xl border border-slate-200 bg-slate-50 px-3.5 py-2 text-[11px] font-semibold text-slate-600">
+              Hệ thống sẽ đối chiếu tự động đơn hàng thực tế trên tài khoản.
+            </div>
+          </div>
+        </div>
+
+        <div>
+          <label for="pdReviewCommentInput" class="block text-xs font-extrabold uppercase tracking-wider text-slate-500 mb-1.5">Nhận xét chi tiết (tối thiểu 5 ký tự)</label>
+          <textarea id="pdReviewCommentInput" rows="3" minlength="5" required placeholder="Chia sẻ cảm nhận thực tế về thiết kế, hiệu năng, pin hoặc dịch vụ giao nhận của VLU Flagship Store..." class="w-full rounded-xl border border-slate-200 bg-slate-50 px-3.5 py-2.5 text-sm text-slate-800 focus:border-brand focus:bg-white focus:outline-none resize-y"></textarea>
+        </div>
+
+        <div>
+          <span class="block text-xs font-extrabold uppercase tracking-wider text-slate-500 mb-1.5">Ảnh thực tế đính kèm (tùy chọn)</span>
+          <div class="pd-upload-dropzone">
+            <label for="pdReviewImageInput" class="inline-flex items-center gap-2 rounded-full bg-white border border-slate-200 px-3.5 py-1.5 text-xs font-bold text-slate-700 hover:border-brand hover:text-brand cursor-pointer transition">
+              <svg class="h-4 w-4" fill="none" stroke="currentColor" stroke-width="2.1" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5m-13.5-9L12 3m0 0l4.5 4.5M12 3v13.5"/></svg>
+              <span>Chọn ảnh PNG, JPG, WebP</span>
+              <input id="pdReviewImageInput" type="file" accept="image/png,image/jpeg,image/webp" class="sr-only">
+            </label>
+            <div id="pdReviewImagePreviewWrap" class="hidden items-center gap-3 mt-3">
+              <img id="pdReviewImagePreview" src="" alt="Xem trước ảnh đánh giá" class="h-20 w-20 rounded-xl object-cover border border-slate-200 bg-white">
+              <button type="button" id="pdReviewRemoveImgBtn" class="text-xs font-bold text-red-600 hover:underline cursor-pointer">Xóa ảnh đính kèm</button>
+            </div>
+          </div>
+        </div>
+
+        <footer class="pt-3 border-t border-slate-100 flex items-center justify-end gap-2.5">
+          <button type="button" id="pdReviewCancelBtn" class="rounded-full border border-slate-200 bg-white px-4 py-2 text-xs font-bold text-slate-700 hover:bg-slate-50 transition cursor-pointer">Hủy</button>
+          <button type="submit" class="rounded-full bg-brand px-5 py-2 text-xs font-extrabold text-white shadow-sm hover:bg-brand-dark transition active:scale-95 cursor-pointer">Gửi đánh giá ngay</button>
+        </footer>
+      </form>
+    </div>
+  </div>
+
+  <!-- Modal Xem nhanh sản phẩm (Quick View - đồng bộ trang chủ) -->
+  <div id="quickViewModal" class="vlu-quickview-backdrop" role="dialog" aria-modal="true" aria-labelledby="qvTitle" aria-hidden="true">
+    <div class="vlu-quickview-dialog p-5 sm:p-7">
+      <div class="flex items-start justify-between gap-4 border-b border-slate-100 pb-4">
+        <div>
+          <span id="qvBrand" class="inline-flex items-center gap-1.5 rounded-full bg-brand-soft px-3 py-1 text-[11px] font-extrabold uppercase tracking-wider text-brand">VLU Flagship</span>
+          <h3 id="qvTitle" class="mt-2 text-xl font-extrabold tracking-tight text-slate-900 sm:text-2xl">Sản phẩm</h3>
+        </div>
+        <button type="button" id="qvCloseBtn" class="grid h-9 w-9 shrink-0 place-items-center rounded-full bg-slate-100 text-slate-600 transition hover:bg-brand hover:text-white" aria-label="Đóng xem nhanh">
+          <svg class="h-4 w-4" fill="none" stroke="currentColor" stroke-width="2.4" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
+        </button>
+      </div>
+      <div id="qvBody" class="mt-5 grid grid-cols-1 gap-6 md:grid-cols-2 md:items-center">
+      </div>
+    </div>
+  </div>
+
   <!-- Toast thông báo Dynamic Island -->
   <div id="toast" role="status" aria-live="polite" class="pointer-events-none fixed bottom-6 left-1/2 z-50 -translate-x-1/2 translate-y-4 rounded-full bg-ink px-5 py-3 text-sm font-semibold text-white opacity-0 shadow-xl"></div>
   <!-- Dữ liệu catalog, menu và image manifest cho Dynamic Product Detail -->
-  <script src="frontend/assets/js/image-manifest.js?v=2026_sync_ui_fix"></script>
-  <script src="frontend/assets/js/products-data.js?v=2026_sync_ui_fix"></script>
-  <script src="frontend/assets/js/catalog-menu.js?v=2026_sync_ui_fix"></script>
+  <script src="frontend/assets/js/image-manifest.js?v=2026_sync_ui_fix_pd5"></script>
+  <script src="frontend/assets/js/products-data.js?v=2026_sync_ui_fix_pd5"></script>
+  <script src="frontend/assets/js/catalog-menu.js?v=2026_sync_ui_fix_pd5"></script>
   <!-- Client Script chung cho Header Mega-Menu & Drawer -->
-  <script src="frontend/assets/js/main.js?v=2026_sync_ui_fix"></script>
-  <script src="frontend/assets/js/product-detail.js?v=2026_sync_ui_fix"></script>
+  <script src="frontend/assets/js/main.js?v=2026_sync_ui_fix_pd5"></script>
+  <script src="frontend/assets/js/product-detail.js?v=2026_sync_ui_fix_pd5"></script>
 </body>
 </html>

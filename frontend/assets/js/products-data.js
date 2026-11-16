@@ -4552,5 +4552,6 @@
   global.VLU_FIND_PRODUCT = findProduct;
   global.VLU_MERGE_ADMIN_PRODUCTS = mergeAdminProducts;
   global.VLU_SYNC_PRODUCTS = function () { return mergeAdminProducts(); };
+  global.VLU_UPGRADE_PRODUCT_IMG = upgradeLegacyProductImagePath;
 
 })(typeof window !== 'undefined' ? window : this);
