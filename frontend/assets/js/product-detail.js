@@ -358,6 +358,9 @@
     renderQaSection(p);
     renderRelatedProductsSection(p, activeRelatedTab);
     renderRecentlyViewedSection(p);
+
+    // 5.14 3D Viewer: chỉ bật nút 3D khi sản phẩm có mô hình 3D thực tế (Phase 1)
+    refresh3DAvailability(p);
   }
 
   // Biến trạng thái Gallery, Zoom, Phiên bản, Tồn kho & Modals
@@ -379,6 +382,672 @@
   function prefersReducedMotion() {
     return Boolean(window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches);
   }
+
+  // ==========================================================================
+  // 3D PRODUCT VIEWER – PHASE 1 + PHASE 2:
+  //   - Chuyển chế độ 3D View <-> Photo Gallery (chỉ hiện khi có model 3D)
+  //   - Đồng bộ màu sắc 2 chiều theo thời gian thực (giữ nguyên góc camera)
+  //   - Tự động xoay (Auto Rotate), góc nhìn chi tiết (Presets) & Toàn màn hình 3D
+  // ==========================================================================
+  var view3D = {
+    mode: 'photo',
+    viewer: null,
+    modelKey: '',
+    modelCfg: null,
+    colorOptions: [],
+    available: false,
+    fullscreen: false,
+    probedKey: '',
+    probedOk: false,
+    probeToken: 0
+  };
+
+  function pd3Id(id) {
+    return document.getElementById(id);
+  }
+
+  function pd3SetHidden(node, hidden) {
+    if (node) node.classList.toggle('pd-mode-hidden', Boolean(hidden));
+  }
+
+  function norm3dToken(v) {
+    return String(v == null ? '' : v).trim().toLowerCase();
+  }
+
+  function resize3DViewerDelayed() {
+    if (!view3D.viewer) return;
+    requestAnimationFrame(function () {
+      if (view3D.viewer) view3D.viewer.resize();
+    });
+    setTimeout(function () {
+      if (view3D.viewer) view3D.viewer.resize();
+    }, 90);
+  }
+
+  function syncFullscreenUI(active, useFallbackOverlay) {
+    view3D.fullscreen = Boolean(active);
+    var stage = pd3Id('product3DStage');
+    var exitBtn = pd3Id('pd3dExitFsBtn');
+    var fsBtn = pd3Id('pd3dFullscreenBtn');
+    if (stage) {
+      stage.classList.toggle('is-3d-fullscreen', Boolean(active && useFallbackOverlay));
+    }
+    if (document.body) {
+      document.body.classList.toggle('pd-3d-fs-open', Boolean(active));
+      if (!lightboxOpen && !reviewModalOpen && !policyModalOpen) {
+        document.body.classList.toggle('overflow-hidden', Boolean(active));
+      }
+    }
+    pd3SetHidden(exitBtn, !active);
+    if (fsBtn) {
+      fsBtn.classList.toggle('is-active', Boolean(active));
+      fsBtn.setAttribute('aria-pressed', active ? 'true' : 'false');
+      fsBtn.setAttribute('title', active ? 'Thoát toàn màn hình (Esc)' : 'Xem toàn màn hình 3D');
+    }
+    resize3DViewerDelayed();
+  }
+
+  function isNativeFullscreenOnStage() {
+    var stage = pd3Id('product3DStage');
+    var fsEl = document.fullscreenElement || document.webkitFullscreenElement || null;
+    return Boolean(stage && fsEl === stage);
+  }
+
+  function set3DFullscreen(enable) {
+    var stage = pd3Id('product3DStage');
+    if (!stage || view3D.mode !== '3d') {
+      syncFullscreenUI(false, false);
+      return;
+    }
+    var wantOpen = Boolean(enable);
+    if (wantOpen) {
+      var req = stage.requestFullscreen || stage.webkitRequestFullscreen;
+      if (typeof req === 'function') {
+        try {
+          var p = req.call(stage);
+          if (p && typeof p.then === 'function') {
+            p.then(function () {
+              syncFullscreenUI(true, false);
+            }).catch(function () {
+              syncFullscreenUI(true, true);
+            });
+            return;
+          }
+          syncFullscreenUI(true, !isNativeFullscreenOnStage());
+          return;
+        } catch (err) {
+          syncFullscreenUI(true, true);
+          return;
+        }
+      }
+      syncFullscreenUI(true, true);
+      return;
+    }
+
+    if (isNativeFullscreenOnStage()) {
+      var exitNative = document.exitFullscreen || document.webkitExitFullscreen;
+      if (typeof exitNative === 'function') {
+        try {
+          var ep = exitNative.call(document);
+          if (ep && typeof ep.then === 'function') {
+            ep.then(function () { syncFullscreenUI(false, false); }).catch(function () { syncFullscreenUI(false, false); });
+            return;
+          }
+        } catch (errExit) {}
+      }
+    }
+    syncFullscreenUI(false, false);
+  }
+
+  function render3DColorStrip(p, modelCfg) {
+    var strip = pd3Id('pd3dColorStrip');
+    if (!strip) return;
+    var opts = (window.VLU_GET_3D_COLOR_OPTIONS && modelCfg)
+      ? window.VLU_GET_3D_COLOR_OPTIONS(p, modelCfg)
+      : [];
+    view3D.colorOptions = opts;
+    if (!opts.length) {
+      strip.innerHTML = '';
+      pd3SetHidden(strip, true);
+      return;
+    }
+    var dotsHtml = opts.map(function (c) {
+      var isAct = (currentColorKey && norm3dToken(c.key) === norm3dToken(currentColorKey))
+        || norm3dToken(c.name) === norm3dToken(currentColor);
+      return '<button type="button" class="pd-3d-color-btn' + (isAct ? ' is-active' : '') + '"'
+        + ' data-3d-color="1"'
+        + ' data-color-name="' + escapeAttr(c.name) + '"'
+        + ' data-color-key="' + escapeAttr(c.key) + '"'
+        + ' style="background-color: ' + escapeAttr(c.hex) + ';"'
+        + ' title="' + escapeAttr(c.name) + '"'
+        + ' aria-label="Chọn màu 3D ' + escapeAttr(c.name) + '"'
+        + ' aria-pressed="' + (isAct ? 'true' : 'false') + '"></button>';
+    }).join('');
+
+    strip.innerHTML = '<div class="pd-3d-color-dots">' + dotsHtml + '</div>'
+      + '<span id="pd3dColorNameLabel" class="pd-3d-color-name">' + escapeHtml(currentColor || opts[0].name) + '</span>';
+    pd3SetHidden(strip, false);
+  }
+
+  function sync3DColorFromSelection(colorName, colorKey) {
+    var nameToUse = colorName || currentColor;
+    var keyToUse = colorKey || currentColorKey;
+    var strip = pd3Id('pd3dColorStrip');
+    if (strip && !strip.classList.contains('pd-mode-hidden')) {
+      var activeMatched = false;
+      strip.querySelectorAll('.pd-3d-color-btn').forEach(function (btn) {
+        var cName = btn.getAttribute('data-color-name') || '';
+        var cKey = btn.getAttribute('data-color-key') || '';
+        var isAct = (keyToUse && cKey && norm3dToken(cKey) === norm3dToken(keyToUse))
+          || norm3dToken(cName) === norm3dToken(nameToUse);
+        if (isAct) activeMatched = true;
+        btn.classList.toggle('is-active', isAct);
+        btn.setAttribute('aria-pressed', isAct ? 'true' : 'false');
+      });
+      var labelEl = pd3Id('pd3dColorNameLabel');
+      if (labelEl && nameToUse) {
+        labelEl.textContent = activeMatched ? nameToUse : (nameToUse + ' (Màu chuẩn)');
+      }
+    }
+
+    if (view3D.viewer && view3D.viewer.isLoaded() && view3D.modelCfg && window.VLU_RESOLVE_3D_COLOR) {
+      var resolved = window.VLU_RESOLVE_3D_COLOR(view3D.modelCfg, nameToUse, keyToUse);
+      if (resolved) {
+        view3D.viewer.setColor(resolved);
+      }
+    }
+  }
+
+  function render3DPresets(presets) {
+    var wrap = pd3Id('pd3dDetailPresets');
+    if (!wrap) return;
+    if (!Array.isArray(presets) || !presets.length) {
+      wrap.innerHTML = '';
+      pd3SetHidden(wrap, true);
+      return;
+    }
+    wrap.innerHTML = presets.map(function (pr, idx) {
+      var isFirst = idx === 0;
+      return '<button type="button" class="pd-3d-preset-btn' + (isFirst ? ' is-active' : '') + '"'
+        + ' data-3d-preset="' + escapeAttr(pr.key) + '"'
+        + ' title="' + escapeAttr(pr.title || pr.label) + '"'
+        + ' aria-pressed="' + (isFirst ? 'true' : 'false') + '">'
+        + escapeHtml(pr.label)
+        + '</button>';
+    }).join('');
+    pd3SetHidden(wrap, false);
+  }
+
+  function sync3DControlStates(state) {
+    state = state || {};
+    var autoBtn = pd3Id('pd3dAutoRotateBtn');
+    if (autoBtn) {
+      var autoOn = Boolean(state.autoRotate);
+      autoBtn.classList.toggle('is-active', autoOn);
+      autoBtn.setAttribute('aria-pressed', autoOn ? 'true' : 'false');
+      autoBtn.setAttribute('title', autoOn ? 'Tạm dừng xoay' : 'Tự động xoay');
+      var autoSpan = autoBtn.querySelector('span');
+      if (autoSpan) autoSpan.textContent = autoOn ? 'Tạm dừng' : 'Xoay';
+    }
+    var presetWrap = pd3Id('pd3dDetailPresets');
+    if (presetWrap) {
+      presetWrap.querySelectorAll('.pd-3d-preset-btn').forEach(function (btn) {
+        var key = btn.getAttribute('data-3d-preset');
+        var isAct = Boolean(state.preset && key === state.preset);
+        btn.classList.toggle('is-active', isAct);
+        btn.setAttribute('aria-pressed', isAct ? 'true' : 'false');
+      });
+    }
+    var hsBtn = pd3Id('pd3dHotspotToggleBtn');
+    if (hsBtn && typeof state.hotspotsVisible === 'boolean') {
+      hsBtn.classList.toggle('is-active', state.hotspotsVisible);
+      hsBtn.setAttribute('aria-pressed', state.hotspotsVisible ? 'true' : 'false');
+    }
+    if (typeof state.explodePct === 'number') {
+      var expBtn = pd3Id('pd3dExplodedBtn');
+      var expPanel = pd3Id('pd3dExplodedPanel');
+      var expBadge = pd3Id('pd3dExplodedBadge');
+      var expSlider = pd3Id('pd3dExplodedSlider');
+      var panelShown = Boolean(expPanel && !expPanel.classList.contains('pd-mode-hidden'));
+      var activeExp = state.explodePct > 0 || panelShown;
+      if (expBtn) {
+        expBtn.classList.toggle('is-active', activeExp);
+        expBtn.setAttribute('aria-pressed', activeExp ? 'true' : 'false');
+      }
+      if (expBadge) expBadge.textContent = state.explodePct + '%';
+      if (expSlider) {
+        if (document.activeElement !== expSlider) expSlider.value = String(state.explodePct);
+        expSlider.style.setProperty('--art-pct', state.explodePct + '%');
+      }
+    }
+  }
+
+  function render3DHotspotCard(hotspot) {
+    var card = pd3Id('pd3dHotspotCard');
+    var titleEl = pd3Id('pd3dHotspotTitle');
+    var descEl = pd3Id('pd3dHotspotDesc');
+    var specsEl = pd3Id('pd3dHotspotSpecs');
+    if (!card) return;
+    if (!hotspot) {
+      pd3SetHidden(card, true);
+      return;
+    }
+    if (titleEl) titleEl.textContent = hotspot.title || 'Chi tiết linh kiện';
+    if (descEl) {
+      descEl.textContent = hotspot.description || '';
+      descEl.classList.toggle('hidden', !hotspot.description);
+    }
+    if (specsEl) {
+      var realSpecs = window.VLU_EXTRACT_HOTSPOT_SPECS
+        ? window.VLU_EXTRACT_HOTSPOT_SPECS(product, hotspot.specKeys)
+        : [];
+      if (realSpecs.length) {
+        specsEl.innerHTML = realSpecs.map(function (s) {
+          return '<div class="pd-3d-hotspot-spec-row">'
+            + '<span class="pd-3d-hotspot-spec-key">' + escapeHtml(s.label) + '</span>'
+            + '<span class="pd-3d-hotspot-spec-val">' + escapeHtml(s.value) + '</span>'
+            + '</div>';
+        }).join('');
+        specsEl.classList.remove('hidden');
+      } else {
+        specsEl.innerHTML = '';
+        specsEl.classList.add('hidden');
+      }
+    }
+    pd3SetHidden(card, false);
+  }
+
+  function sync3DPhase4Visibility(viewer) {
+    var hotspots = (viewer && viewer.getHotspots) ? viewer.getHotspots() : [];
+    var hasHotspots = Array.isArray(hotspots) && hotspots.length > 0;
+    var hasExplode = Boolean(viewer && viewer.supportsExplodedView && viewer.supportsExplodedView());
+    pd3SetHidden(pd3Id('pd3dHotspotToggleBtn'), !hasHotspots);
+    pd3SetHidden(pd3Id('pd3dHotspotLayer'), !hasHotspots);
+    pd3SetHidden(pd3Id('pd3dExplodedBtn'), !hasExplode);
+    pd3SetHidden(pd3Id('pd3dExplodedPanel'), true);
+    render3DHotspotCard(null);
+  }
+
+  function render3DArticulationUI(spec) {
+    var panel = pd3Id('pd3dArticulationPanel');
+    var labelEl = pd3Id('pd3dArticulationLabel');
+    var presetsEl = pd3Id('pd3dArticulationPresets');
+    var sliderEl = pd3Id('pd3dArticulationSlider');
+    if (!panel) return;
+    if (!spec) {
+      pd3SetHidden(panel, true);
+      if (presetsEl) presetsEl.innerHTML = '';
+      return;
+    }
+    if (labelEl) labelEl.textContent = spec.label || 'Tương tác bộ phận';
+    if (sliderEl) {
+      sliderEl.min = String(spec.min);
+      sliderEl.max = String(spec.max);
+      sliderEl.step = String(spec.step || 1);
+      sliderEl.value = String(spec.currentValue);
+    }
+    if (presetsEl) {
+      var prs = Array.isArray(spec.presets) ? spec.presets : [];
+      presetsEl.innerHTML = prs.map(function (pr) {
+        return '<button type="button" class="pd-3d-art-pill" data-3d-art-preset="' + escapeAttr(pr.key) + '" aria-pressed="false">'
+          + escapeHtml(pr.label)
+          + '</button>';
+      }).join('');
+      pd3SetHidden(presetsEl, prs.length === 0);
+    }
+    var span = Math.max(0.0001, spec.max - spec.min);
+    sync3DArticulationState({
+      value: spec.currentValue,
+      t: (spec.currentValue - spec.min) / span,
+      activePresetKey: null,
+      badgeText: spec.badgeText
+    }, spec);
+    pd3SetHidden(panel, false);
+  }
+
+  function sync3DArticulationState(artState, specFallback) {
+    if (!artState) return;
+    var spec = specFallback || (view3D.viewer && view3D.viewer.getArticulationSpec ? view3D.viewer.getArticulationSpec() : null);
+    var badgeEl = pd3Id('pd3dArticulationBadge');
+    var sliderEl = pd3Id('pd3dArticulationSlider');
+    var presetsEl = pd3Id('pd3dArticulationPresets');
+
+    if (badgeEl) badgeEl.textContent = artState.badgeText || String(artState.value);
+    if (sliderEl) {
+      if (document.activeElement !== sliderEl) {
+        sliderEl.value = String(artState.value);
+      }
+      var minVal = spec ? Number(spec.min) : (Number(sliderEl.min) || 0);
+      var maxVal = spec ? Number(spec.max) : (Number(sliderEl.max) || 100);
+      var pct = Math.max(0, Math.min(100, ((Number(artState.value) - minVal) / Math.max(0.0001, maxVal - minVal)) * 100));
+      sliderEl.style.setProperty('--art-pct', pct.toFixed(1) + '%');
+    }
+    if (presetsEl && spec && Array.isArray(spec.presets)) {
+      presetsEl.querySelectorAll('.pd-3d-art-pill').forEach(function (btn) {
+        var k = btn.getAttribute('data-3d-art-preset');
+        var pr = spec.presets.find(function (x) { return x.key === k; });
+        var isAct = (artState.activePresetKey && k === artState.activePresetKey)
+          || (pr && Math.abs(pr.value - Number(artState.value)) <= 1);
+        btn.classList.toggle('is-active', Boolean(isAct));
+        btn.setAttribute('aria-pressed', isAct ? 'true' : 'false');
+      });
+    }
+  }
+
+  function dispose3DViewer() {
+    if (view3D.fullscreen) set3DFullscreen(false);
+    if (view3D.viewer) {
+      try { view3D.viewer.dispose(); } catch (e) {}
+      view3D.viewer = null;
+    }
+    view3D.modelKey = '';
+    var host = pd3Id('product3DCanvasHost');
+    if (host) host.innerHTML = '';
+    var hsLayer = pd3Id('pd3dHotspotLayer');
+    if (hsLayer) hsLayer.innerHTML = '';
+    render3DHotspotCard(null);
+    pd3SetHidden(pd3Id('pd3dDetailPresets'), true);
+    pd3SetHidden(pd3Id('pd3dArticulationPanel'), true);
+    pd3SetHidden(pd3Id('pd3dExplodedPanel'), true);
+    pd3SetHidden(pd3Id('pd3dHotspotToggleBtn'), true);
+    pd3SetHidden(pd3Id('pd3dExplodedBtn'), true);
+  }
+
+  function update3DLoaderProgress(pct, label) {
+    var clamped = Math.max(0, Math.min(100, Math.round(Number(pct) || 0)));
+    var loaderText = pd3Id('product3DLoaderText');
+    var bar = pd3Id('product3DLoaderBar');
+    var pctEl = pd3Id('product3DLoaderPct');
+    if (loaderText) loaderText.textContent = label || ('Đang tải mô hình 3D… ' + clamped + '%');
+    if (bar) bar.style.width = clamped + '%';
+    if (pctEl) pctEl.textContent = clamped + '%';
+  }
+
+  function ensure3DViewer() {
+    var model = window.VLU_GET_MODEL_3D ? window.VLU_GET_MODEL_3D(product) : null;
+    var loaderEl = pd3Id('product3DLoader');
+    var previewEl = pd3Id('product3DLoaderPreview');
+    var errEl = pd3Id('product3DError');
+    var errText = pd3Id('product3DErrorText');
+    if (!model || !window.VLU_3D_VIEWER) {
+      if (errText) errText.textContent = 'Sản phẩm này chưa có mô hình 3D.';
+      pd3SetHidden(loaderEl, true);
+      pd3SetHidden(errEl, false);
+      return;
+    }
+    if (typeof window.VLU_3D_VIEWER.isWebGLAvailable === 'function' && !window.VLU_3D_VIEWER.isWebGLAvailable()) {
+      pd3SetHidden(loaderEl, true);
+      applyViewMode('photo');
+      showToast('Thiết bị hiện chưa hỗ trợ WebGL 3D — đang hiển thị bộ ảnh chi tiết.');
+      return;
+    }
+    view3D.modelCfg = model;
+    render3DColorStrip(product, model);
+
+    var modelIdToken = model.url || model.sketchfabUid || '';
+    var key = String(product.id) + '|' + modelIdToken + '|' + (model.supportsExplodedView ? '1' : '0');
+    if (view3D.viewer && view3D.modelKey === key) {
+      if (view3D.viewer.isLoaded()) {
+        pd3SetHidden(loaderEl, true);
+        sync3DColorFromSelection(currentColor, currentColorKey);
+        view3D.viewer.start();
+        view3D.viewer.resize();
+      }
+      return;
+    }
+    dispose3DViewer();
+    pd3SetHidden(errEl, true);
+    if (previewEl) {
+      var usableCurr = currentImg && currentImg.indexOf('placeholders/') === -1 ? currentImg : '';
+      var activeSrc = usableCurr || (model && model.previewImage) || (product && product.image) || 'frontend/assets/images/placeholders/phone.svg';
+      if (previewEl.getAttribute('src') !== activeSrc) previewEl.setAttribute('src', activeSrc);
+    }
+    var hintEl = pd3Id('product3DHint');
+    if (hintEl) {
+      var baseHint = 'Kéo để xoay 360° · Cuộn hoặc chụm ngón tay để phóng to · Chọn góc chi tiết hoặc nhấn đúp để đặt lại';
+      hintEl.textContent = model.attribution ? (baseHint + ' · ' + model.attribution) : baseHint;
+    }
+    var isCached = Boolean(model.url && typeof window.VLU_3D_VIEWER.isCached === 'function' && window.VLU_3D_VIEWER.isCached(model.url));
+    update3DLoaderProgress(isCached ? 95 : 0, isCached ? 'Đang khởi tạo mô hình từ bộ nhớ đệm…' : 'Đang tải mô hình 3D…');
+    pd3SetHidden(loaderEl, false);
+
+    var viewer = window.VLU_3D_VIEWER.create({
+      host: pd3Id('product3DCanvasHost'),
+      hotspotHost: pd3Id('pd3dHotspotLayer'),
+      model: model,
+      onProgress: function (pct) {
+        if (view3D.viewer === viewer) update3DLoaderProgress(pct);
+      },
+      onReady: function () {
+        if (view3D.viewer !== viewer) return;
+        update3DLoaderProgress(100, 'Hoàn tất mô hình 3D');
+        pd3SetHidden(loaderEl, true);
+        render3DPresets(viewer.getPresets ? viewer.getPresets() : []);
+        render3DArticulationUI(viewer.getArticulationSpec ? viewer.getArticulationSpec() : null);
+        sync3DPhase4Visibility(viewer);
+        sync3DColorFromSelection(currentColor, currentColorKey);
+        if (view3D.mode === '3d') viewer.start();
+      },
+      onStateChange: function (st) {
+        if (view3D.viewer !== viewer) return;
+        sync3DControlStates(st);
+      },
+      onArticulationChange: function (artSt) {
+        if (view3D.viewer !== viewer) return;
+        sync3DArticulationState(artSt);
+      },
+      onHotspotSelect: function (hsObj) {
+        if (view3D.viewer !== viewer) return;
+        render3DHotspotCard(hsObj);
+      },
+      onError: function (err) {
+        if (view3D.viewer !== viewer) return;
+        pd3SetHidden(loaderEl, true);
+        if (err && (err.code === 'WEBGL_UNAVAILABLE' || err.code === 'WEBGL_CONTEXT_LOST')) {
+          dispose3DViewer();
+          applyViewMode('photo');
+          showToast(err.message || 'Không thể khởi tạo WebGL 3D — đã chuyển về Photo Gallery.');
+          return;
+        }
+        if (errText) errText.textContent = (err && err.message) ? err.message : 'Không thể hiển thị mô hình 3D.';
+        pd3SetHidden(errEl, false);
+      }
+    });
+    view3D.viewer = viewer;
+    view3D.modelKey = key;
+    viewer.load().catch(function () { /* lỗi đã xử lý trong onError */ });
+  }
+
+  function applyViewMode(mode) {
+    var want3D = mode === '3d' && view3D.available;
+    if (want3D && window.VLU_3D_VIEWER && typeof window.VLU_3D_VIEWER.isWebGLAvailable === 'function' && !window.VLU_3D_VIEWER.isWebGLAvailable()) {
+      showToast('Trình duyệt hiện chưa hỗ trợ WebGL 3D — đang hiển thị bộ ảnh chi tiết.');
+      want3D = false;
+    }
+    var is3D = want3D;
+    if (!is3D && view3D.fullscreen) {
+      set3DFullscreen(false);
+    }
+    view3D.mode = is3D ? '3d' : 'photo';
+    if (is3D && isVideoActive) toggleVideoMode(false);
+
+    pd3SetHidden(pd3Id('mainImageStage'), is3D);
+    pd3SetHidden(pd3Id('productThumbSection'), is3D);
+    pd3SetHidden(pd3Id('product3DStage'), !is3D);
+    pd3SetHidden(pd3Id('product3DHint'), !is3D);
+
+    var b3 = pd3Id('pdModeBtn3D');
+    var bp = pd3Id('pdModeBtnPhoto');
+    if (b3) { b3.classList.toggle('is-active', is3D); b3.setAttribute('aria-selected', is3D ? 'true' : 'false'); }
+    if (bp) { bp.classList.toggle('is-active', !is3D); bp.setAttribute('aria-selected', is3D ? 'false' : 'true'); }
+
+    if (is3D) {
+      ensure3DViewer();
+    } else {
+      if (view3D.viewer) view3D.viewer.pause();
+      var activeThumb = document.querySelector('#thumbnailStrip .thumb-btn.active');
+      if (activeThumb && typeof activeThumb.scrollIntoView === 'function') {
+        try {
+          activeThumb.scrollIntoView({ behavior: prefersReducedMotion() ? 'auto' : 'smooth', inline: 'nearest', block: 'nearest' });
+        } catch (errScroll) {}
+      }
+    }
+  }
+
+  function mark3DUnavailable() {
+    view3D.available = false;
+    view3D.modelCfg = null;
+    view3D.colorOptions = [];
+    dispose3DViewer();
+    applyViewMode('photo');
+    pd3SetHidden(pd3Id('pdViewModeSwitcher'), true);
+    pd3SetHidden(pd3Id('pd3dColorStrip'), true);
+  }
+
+  function refresh3DAvailability(p) {
+    var model = window.VLU_GET_MODEL_3D ? window.VLU_GET_MODEL_3D(p) : null;
+    var token = ++view3D.probeToken;
+    if (!model || !window.VLU_3D_VIEWER) {
+      view3D.probedKey = '';
+      view3D.probedOk = false;
+      mark3DUnavailable();
+      return;
+    }
+    view3D.modelCfg = model;
+    var modelToken = model.url || model.sketchfabUid || '';
+    var key = String(p.id) + '|' + modelToken + '|' + (model.supportsExplodedView ? '1' : '0');
+    if (view3D.viewer && view3D.modelKey && view3D.modelKey !== key) {
+      dispose3DViewer();
+    }
+
+    function show() {
+      view3D.available = true;
+      render3DColorStrip(p, model);
+      pd3SetHidden(pd3Id('pdViewModeSwitcher'), false);
+      if (view3D.mode === '3d') ensure3DViewer();
+    }
+    if (model.engine === 'sketchfab' && model.sketchfabUid) {
+      view3D.probedKey = key;
+      view3D.probedOk = true;
+      show();
+      return;
+    }
+    if (view3D.probedKey === key) {
+      if (view3D.probedOk) show(); else mark3DUnavailable();
+      return;
+    }
+    var probeFn = typeof window.VLU_PROBE_3D_MODEL === 'function'
+      ? window.VLU_PROBE_3D_MODEL
+      : function (u) {
+          return fetch(u, { method: 'HEAD' }).then(function (r) { return Boolean(r && r.ok); }).catch(function () { return false; });
+        };
+    probeFn(model.url).then(function (ok) {
+      if (token !== view3D.probeToken) return;
+      view3D.probedKey = key;
+      view3D.probedOk = Boolean(ok);
+      if (ok) show(); else mark3DUnavailable();
+    });
+  }
+
+  document.addEventListener('click', function (e) {
+    if (e.target.closest('#pdModeBtn3D')) { applyViewMode('3d'); return; }
+    if (e.target.closest('#pdModeBtnPhoto')) { applyViewMode('photo'); return; }
+
+    var color3dBtn = e.target.closest('[data-3d-color]');
+    if (color3dBtn) {
+      var cName = color3dBtn.getAttribute('data-color-name') || '';
+      var cKey = color3dBtn.getAttribute('data-color-key') || '';
+      var matchedProdColor = (product.colors || []).find(function (c) {
+        return (cKey && norm3dToken(c.key) === norm3dToken(cKey)) || norm3dToken(c.name) === norm3dToken(cName);
+      });
+      var cImg = matchedProdColor ? (matchedProdColor.image || matchedProdColor.img || '') : '';
+      changeColor(cName, cImg, cKey);
+      return;
+    }
+
+    var presetBtn = e.target.closest('[data-3d-preset]');
+    if (presetBtn && view3D.viewer) {
+      view3D.viewer.goToPreset(presetBtn.getAttribute('data-3d-preset'));
+      return;
+    }
+
+    var artPresetBtn = e.target.closest('[data-3d-art-preset]');
+    if (artPresetBtn && view3D.viewer && view3D.viewer.goToArticulationPreset) {
+      view3D.viewer.goToArticulationPreset(artPresetBtn.getAttribute('data-3d-art-preset'));
+      return;
+    }
+
+    var hotspotBtn = e.target.closest('[data-3d-hotspot]');
+    if (hotspotBtn && view3D.viewer && view3D.viewer.focusHotspot) {
+      view3D.viewer.focusHotspot(hotspotBtn.getAttribute('data-3d-hotspot'));
+      return;
+    }
+
+    var actBtn = e.target.closest('[data-3d-action]');
+    if (!actBtn) return;
+    var action = actBtn.getAttribute('data-3d-action');
+    var v = view3D.viewer;
+    if (action === 'gallery') applyViewMode('photo');
+    else if (action === 'fullscreen') set3DFullscreen(!view3D.fullscreen);
+    else if (action === 'fullscreen-exit') set3DFullscreen(false);
+    else if (v && action === 'hotspot-close') v.focusHotspot(null);
+    else if (v && action === 'hotspot-toggle') v.toggleHotspots();
+    else if (v && action === 'exploded-toggle') {
+      var expPanel = pd3Id('pd3dExplodedPanel');
+      var isHidden = expPanel && expPanel.classList.contains('pd-mode-hidden');
+      if (isHidden || (v.getExplodedValue && v.getExplodedValue() === 0)) {
+        pd3SetHidden(expPanel, false);
+        v.setExplodedValue(100, { animate: true });
+      } else {
+        pd3SetHidden(expPanel, true);
+        v.setExplodedValue(0, { animate: true });
+      }
+      sync3DControlStates({
+        autoRotate: v.isAutoRotate(),
+        hotspotsVisible: v.areHotspotsVisible(),
+        explodePct: v.getExplodedValue ? v.getExplodedValue() : 0
+      });
+    } else if (v && action === 'exploded-reset') {
+      v.setExplodedValue(0, { animate: true });
+    } else if (v && action === 'zoom-in') v.zoomIn();
+    else if (v && action === 'zoom-out') v.zoomOut();
+    else if (v && action === 'reset') {
+      pd3SetHidden(pd3Id('pd3dExplodedPanel'), true);
+      render3DHotspotCard(null);
+      v.resetView({ resetParts: true });
+    } else if (v && action === 'auto-rotate' && v.toggleAutoRotate) v.toggleAutoRotate();
+  });
+
+  document.addEventListener('input', function (e) {
+    if (e.target && e.target.id === 'pd3dArticulationSlider' && view3D.viewer && view3D.viewer.setArticulationValue) {
+      view3D.viewer.setArticulationValue(Number(e.target.value), { animate: false });
+      return;
+    }
+    if (e.target && e.target.id === 'pd3dExplodedSlider' && view3D.viewer && view3D.viewer.setExplodedValue) {
+      view3D.viewer.setExplodedValue(Number(e.target.value), { animate: false });
+    }
+  });
+
+  function onFullscreenChange() {
+    var nativeActive = isNativeFullscreenOnStage();
+    var stage = pd3Id('product3DStage');
+    if (nativeActive) {
+      syncFullscreenUI(true, false);
+    } else if (view3D.fullscreen && stage && !stage.classList.contains('is-3d-fullscreen')) {
+      syncFullscreenUI(false, false);
+    }
+  }
+  document.addEventListener('fullscreenchange', onFullscreenChange);
+  document.addEventListener('webkitfullscreenchange', onFullscreenChange);
+
+  document.addEventListener('visibilitychange', function () {
+    if (!view3D.viewer) return;
+    if (document.hidden) view3D.viewer.pause();
+    else if (view3D.mode === '3d' && (!view3D.viewer.isLoaded || view3D.viewer.isLoaded())) view3D.viewer.start();
+  });
+
+  window.addEventListener('pagehide', dispose3DViewer);
+  window.addEventListener('beforeunload', dispose3DViewer);
   var currentColor = (product.colors && product.colors[0] && product.colors[0].name) || 'Mặc định';
   var currentColorKey = (product.colors && product.colors[0] && product.colors[0].key) || 'default';
   var currentColorObj = (product.colors && product.colors[0]) || { name: 'Mặc định', key: 'default' };
@@ -2675,6 +3344,7 @@
       b.setAttribute('aria-checked', active ? 'true' : 'false');
     });
     updatePricingStockAndSkuUI(false);
+    sync3DColorFromSelection(colorName, colorKey);
   }
 
   function setGallerySlide(targetIndex, opts) {
@@ -2754,7 +3424,7 @@
       }
     }
     if (matchedIdx !== -1) {
-      setGallerySlide(matchedIdx, { forceColorSync: true });
+      setGallerySlide(matchedIdx, { forceColorSync: true, scrollThumb: view3D.mode !== '3d' });
     } else {
       var resolvedColorImg = resolveImgUrl(colorImg, product ? product.category : 'phone');
       syncActiveColorState(colorName, resolvedColorImg, colorKey);
@@ -2939,6 +3609,11 @@
     }
 
     document.addEventListener('keydown', function (e) {
+      if (view3D.fullscreen && e.key === 'Escape') {
+        e.preventDefault();
+        set3DFullscreen(false);
+        return;
+      }
       if (reviewModalOpen && e.key === 'Escape') {
         e.preventDefault();
         closeReviewModal();
@@ -3617,12 +4292,18 @@
     if (refreshed) {
       product = refreshed;
       renderProduct(product);
+    } else if (product) {
+      refresh3DAvailability(product);
     }
   }
 
   window.addEventListener('storage', function (e) {
     if (e.key === 'vlu_sync_timestamp' || e.key === 'vlu_admin_products' || e.key === 'vlu_products') {
       onAdminSyncProduct();
+      return;
+    }
+    if (e.key === 'vlu_admin_models_3d') {
+      if (product) refresh3DAvailability(product);
       return;
     }
     if (e.key === 'vlu_user' || (e.key && (e.key.indexOf('vlu_account_') === 0 || e.key.indexOf('vlu_recently_viewed_') === 0 || e.key.indexOf('vlu_product_qa_') === 0 || e.key.indexOf('vlu_orders') === 0))) {

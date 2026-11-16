@@ -4915,3 +4915,878 @@ html, body {
 }
 
 
+
+/* ==========================================================================
+   3D PRODUCT VIEWER – PHASE 1 (Segmented switcher, #product3DStage, Toolbar)
+   ========================================================================== */
+.pd-mode-hidden {
+  display: none !important;
+}
+
+.pd-view-switcher {
+  display: inline-flex;
+  align-self: flex-start;
+  align-items: center;
+  gap: 4px;
+  padding: 4px;
+  border-radius: 9999px;
+  background: rgba(241, 245, 249, 0.95);
+  border: 1px solid rgba(203, 213, 225, 0.8);
+  box-shadow: inset 0 1px 2px rgba(15, 23, 42, 0.05);
+  max-width: 100%;
+}
+
+.pd-view-mode-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  min-height: 38px;
+  padding: 0 16px;
+  border-radius: 9999px;
+  font-size: 13px;
+  font-weight: 800;
+  color: #475569;
+  white-space: nowrap;
+  cursor: pointer;
+  transition: background-color 0.22s ease, color 0.22s ease, box-shadow 0.22s ease;
+}
+
+.pd-view-mode-btn:hover:not(.is-active) {
+  color: #0f172a;
+}
+
+.pd-view-mode-btn.is-active {
+  background: #ffffff;
+  color: #0f172a;
+  box-shadow: 0 2px 8px rgba(15, 23, 42, 0.12);
+}
+
+.pd-view-mode-btn:focus-visible,
+.pd-3d-tool-btn:focus-visible {
+  outline: 2px solid #C8102E;
+  outline-offset: 2px;
+}
+
+.pd-3d-stage {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  border-radius: 24px;
+  overflow: hidden;
+  background: #ffffff;
+  background-image: radial-gradient(circle at 50% 42%, #ffffff 0%, #f8fafc 70%, #eef2f7 100%);
+  border: 1px solid rgba(15, 23, 42, 0.08);
+  box-shadow: 0 18px 44px -16px rgba(15, 23, 42, 0.08), inset 0 1px 0 rgba(255, 255, 255, 0.9);
+  min-width: 0;
+}
+
+@media (max-width: 639px) {
+  .pd-3d-stage {
+    border-radius: 20px;
+  }
+}
+
+.pd-3d-canvas-host {
+  position: absolute;
+  inset: 0;
+}
+
+.pd-3d-canvas {
+  display: block;
+  width: 100%;
+  height: 100%;
+  outline: none;
+  cursor: grab;
+  touch-action: none;
+}
+
+.pd-3d-sf-iframe {
+  display: block;
+  width: 100%;
+  height: 100%;
+  border: 0;
+  background: transparent;
+}
+
+.pd-3d-canvas:active {
+  cursor: grabbing;
+}
+
+.pd-3d-overlay {
+  position: absolute;
+  inset: 0;
+  z-index: 5;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  padding: 24px;
+  overflow: hidden;
+  background: rgba(248, 250, 252, 0.72);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+}
+
+.pd-3d-loader-preview {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  padding: 14%;
+  filter: blur(14px) scale(1.06);
+  opacity: 0.42;
+  pointer-events: none;
+  mix-blend-mode: multiply;
+}
+
+.pd-3d-loader-box {
+  position: relative;
+  z-index: 2;
+  width: min(250px, 100%);
+  padding: 16px 18px;
+  border-radius: 20px;
+  background: rgba(255, 255, 255, 0.88);
+  backdrop-filter: blur(16px) saturate(160%);
+  -webkit-backdrop-filter: blur(16px) saturate(160%);
+  border: 1px solid rgba(255, 255, 255, 0.95);
+  box-shadow: 0 16px 36px -12px rgba(15, 23, 42, 0.18);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 9px;
+  text-align: center;
+}
+
+.pd-3d-progress-track {
+  width: 100%;
+  height: 6px;
+  border-radius: 9999px;
+  background: rgba(148, 163, 184, 0.28);
+  overflow: hidden;
+}
+
+.pd-3d-progress-bar {
+  width: 0%;
+  height: 100%;
+  border-radius: 9999px;
+  background: linear-gradient(90deg, #C8102E 0%, #ef4444 100%);
+  transition: width 0.2s ease;
+}
+
+.pd-3d-loader-pct {
+  font-size: 11px;
+  font-weight: 900;
+  color: #C8102E;
+  font-variant-numeric: tabular-nums;
+}
+
+.pd-3d-spinner {
+  width: 34px;
+  height: 34px;
+  border-radius: 9999px;
+  border: 3px solid rgba(200, 16, 46, 0.18);
+  border-top-color: #C8102E;
+  animation: pd3dSpin 0.8s linear infinite;
+}
+
+@keyframes pd3dSpin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.pd-3d-fallback-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 38px;
+  padding: 0 18px;
+  border-radius: 9999px;
+  background: #0f172a;
+  color: #ffffff;
+  font-size: 12px;
+  font-weight: 800;
+  cursor: pointer;
+  transition: background-color 0.18s ease;
+}
+
+.pd-3d-fallback-btn:hover {
+  background: #C8102E;
+}
+
+/* Phase 2: 3D HUD (Chọn màu 3D, Góc nhìn chi tiết, Toolbar, Fullscreen) */
+.pd-3d-hud-top {
+  position: absolute;
+  top: 12px;
+  left: 12px;
+  right: 12px;
+  z-index: 6;
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 8px;
+  pointer-events: none;
+}
+
+.pd-3d-color-strip {
+  pointer-events: auto;
+  display: inline-flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 6px;
+  max-width: 100%;
+  padding: 5px 11px 5px 7px;
+  border-radius: 9999px;
+  background: rgba(255, 255, 255, 0.82);
+  backdrop-filter: blur(14px) saturate(160%);
+  -webkit-backdrop-filter: blur(14px) saturate(160%);
+  border: 1px solid rgba(255, 255, 255, 0.9);
+  box-shadow: 0 8px 22px -6px rgba(15, 23, 42, 0.14);
+}
+
+.pd-3d-color-dots {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.pd-3d-color-btn {
+  width: 20px;
+  height: 20px;
+  border-radius: 9999px;
+  border: 1.5px solid rgba(15, 23, 42, 0.18);
+  cursor: pointer;
+  flex-shrink: 0;
+  transition: transform 0.16s ease, box-shadow 0.18s ease, border-color 0.18s ease;
+}
+
+.pd-3d-color-btn:hover {
+  transform: scale(1.1);
+}
+
+.pd-3d-color-btn.is-active {
+  border-color: #C8102E;
+  box-shadow: 0 0 0 2px #ffffff, 0 0 0 3.5px #C8102E;
+  transform: scale(1.06);
+}
+
+.pd-3d-color-name {
+  font-size: 11px;
+  font-weight: 800;
+  color: #0f172a;
+  max-width: 150px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.pd-3d-exit-fs-btn {
+  pointer-events: auto;
+  margin-left: auto;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  min-height: 36px;
+  padding: 0 14px;
+  border-radius: 9999px;
+  background: rgba(15, 23, 42, 0.88);
+  color: #ffffff;
+  font-size: 12px;
+  font-weight: 800;
+  box-shadow: 0 10px 24px -6px rgba(15, 23, 42, 0.35);
+  cursor: pointer;
+  transition: background-color 0.18s ease, transform 0.16s ease;
+}
+
+.pd-3d-exit-fs-btn:hover {
+  background: #C8102E;
+}
+
+.pd-3d-hud-bottom {
+  position: absolute;
+  left: 12px;
+  right: 12px;
+  bottom: 12px;
+  z-index: 6;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  pointer-events: none;
+}
+
+.pd-3d-presets {
+  pointer-events: auto;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  max-width: 100%;
+  overflow-x: auto;
+  padding: 4px;
+  border-radius: 9999px;
+  background: rgba(255, 255, 255, 0.72);
+  backdrop-filter: blur(14px) saturate(160%);
+  -webkit-backdrop-filter: blur(14px) saturate(160%);
+  border: 1px solid rgba(255, 255, 255, 0.85);
+  box-shadow: 0 8px 22px -8px rgba(15, 23, 42, 0.16);
+}
+
+.pd-3d-preset-btn {
+  flex: 0 0 auto;
+  min-height: 36px;
+  padding: 0 12px;
+  border-radius: 9999px;
+  font-size: 11px;
+  font-weight: 800;
+  color: #475569;
+  white-space: nowrap;
+  cursor: pointer;
+  transition: background-color 0.18s ease, color 0.18s ease, box-shadow 0.18s ease;
+}
+
+.pd-3d-preset-btn:hover:not(.is-active) {
+  background: rgba(15, 23, 42, 0.06);
+  color: #0f172a;
+}
+
+.pd-3d-preset-btn.is-active {
+  background: #0f172a;
+  color: #ffffff;
+  box-shadow: 0 4px 12px -4px rgba(15, 23, 42, 0.35);
+}
+
+.pd-3d-toolbar {
+  pointer-events: auto;
+  display: inline-flex;
+  align-items: center;
+  flex-wrap: nowrap;
+  overflow-x: auto;
+  gap: 3px;
+  padding: 5px;
+  border-radius: 9999px;
+  background: rgba(255, 255, 255, 0.78);
+  backdrop-filter: blur(16px) saturate(170%);
+  -webkit-backdrop-filter: blur(16px) saturate(170%);
+  border: 1px solid rgba(255, 255, 255, 0.88);
+  box-shadow: 0 10px 28px -8px rgba(15, 23, 42, 0.22);
+  max-width: 100%;
+}
+
+.pd-3d-tool-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  gap: 5px;
+  min-width: 38px;
+  height: 38px;
+  padding: 0 9px;
+  border-radius: 9999px;
+  color: #334155;
+  font-size: 12px;
+  font-weight: 800;
+  white-space: nowrap;
+  cursor: pointer;
+  transition: background-color 0.18s ease, color 0.18s ease, transform 0.16s ease;
+}
+
+.pd-3d-tool-btn:hover {
+  background: rgba(15, 23, 42, 0.08);
+  color: #0f172a;
+}
+
+.pd-3d-tool-btn:active {
+  transform: scale(0.94);
+}
+
+.pd-3d-tool-btn.is-active {
+  background: #C8102E;
+  color: #ffffff;
+  box-shadow: 0 4px 12px -4px rgba(200, 16, 46, 0.45);
+}
+
+.pd-3d-tool-sep {
+  width: 1px;
+  height: 20px;
+  margin: 0 3px;
+  background: rgba(100, 116, 139, 0.28);
+}
+
+.pd-3d-preset-btn:focus-visible,
+.pd-3d-color-btn:focus-visible,
+.pd-3d-exit-fs-btn:focus-visible {
+  outline: 2px solid #C8102E;
+  outline-offset: 2px;
+}
+
+/* Chế độ Toàn màn hình 3D (Native :fullscreen + Fallback .is-3d-fullscreen) */
+body.pd-3d-fs-open .pd-gallery-column,
+.pd-gallery-column:has(.is-3d-fullscreen) {
+  position: static !important;
+  z-index: auto !important;
+  transform: none !important;
+}
+
+.pd-3d-stage.is-3d-fullscreen,
+.pd-3d-stage:fullscreen {
+  position: fixed !important;
+  inset: 0 !important;
+  width: 100vw !important;
+  height: 100dvh !important;
+  max-width: none !important;
+  aspect-ratio: auto !important;
+  border-radius: 0 !important;
+  border: 0 !important;
+  z-index: 220 !important;
+  background: radial-gradient(circle at 50% 42%, #ffffff 0%, #f1f5f9 58%, #e2e8f0 100%) !important;
+}
+
+.pd-3d-stage.is-3d-fullscreen .pd-3d-hud-top,
+.pd-3d-stage:fullscreen .pd-3d-hud-top {
+  top: max(16px, env(safe-area-inset-top, 16px));
+  left: max(16px, env(safe-area-inset-left, 16px));
+  right: max(16px, env(safe-area-inset-right, 16px));
+}
+
+.pd-3d-stage.is-3d-fullscreen .pd-3d-hud-bottom,
+.pd-3d-stage:fullscreen .pd-3d-hud-bottom {
+  bottom: max(18px, env(safe-area-inset-bottom, 18px));
+  left: max(16px, env(safe-area-inset-left, 16px));
+  right: max(16px, env(safe-area-inset-right, 16px));
+}
+
+/* Phase 3: Bảng điều khiển chuyển động bộ phận (#pd3dArticulationPanel) */
+.pd-3d-articulation {
+  pointer-events: auto;
+  width: min(440px, 100%);
+  border-radius: 16px;
+  padding: 9px 12px;
+  background: rgba(255, 255, 255, 0.82);
+  backdrop-filter: blur(16px) saturate(170%);
+  -webkit-backdrop-filter: blur(16px) saturate(170%);
+  border: 1px solid rgba(255, 255, 255, 0.92);
+  box-shadow: 0 10px 26px -10px rgba(15, 23, 42, 0.18);
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.pd-3d-art-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.pd-3d-art-label {
+  font-size: 11px;
+  font-weight: 800;
+  color: #1e293b;
+  letter-spacing: 0.02em;
+}
+
+.pd-3d-art-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 2px 9px;
+  border-radius: 9999px;
+  background: #FEF2F4;
+  border: 1px solid rgba(200, 16, 46, 0.22);
+  color: #C8102E;
+  font-size: 11px;
+  font-weight: 900;
+  font-variant-numeric: tabular-nums;
+}
+
+.pd-3d-art-presets {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  overflow-x: auto;
+  padding-bottom: 1px;
+}
+
+.pd-3d-art-pill {
+  flex: 0 0 auto;
+  min-height: 36px;
+  padding: 0 12px;
+  border-radius: 9999px;
+  border: 1px solid rgba(203, 213, 225, 0.85);
+  background: rgba(255, 255, 255, 0.88);
+  color: #334155;
+  font-size: 11px;
+  font-weight: 700;
+  white-space: nowrap;
+  cursor: pointer;
+  transition: background-color 0.16s ease, color 0.16s ease, border-color 0.16s ease;
+}
+
+.pd-3d-art-pill:hover:not(.is-active) {
+  border-color: rgba(200, 16, 46, 0.4);
+  color: #C8102E;
+}
+
+.pd-3d-art-pill.is-active {
+  background: #C8102E;
+  border-color: #C8102E;
+  color: #ffffff;
+}
+
+.pd-3d-art-slider-row {
+  display: flex;
+  align-items: center;
+  padding: 2px 0;
+}
+
+.pd-3d-art-slider {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 100%;
+  height: 5px;
+  border-radius: 9999px;
+  background: linear-gradient(90deg, #C8102E var(--art-pct, 0%), rgba(148, 163, 184, 0.35) var(--art-pct, 0%));
+  outline: none;
+  cursor: pointer;
+}
+
+.pd-3d-art-slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 16px;
+  height: 16px;
+  border-radius: 9999px;
+  background: #ffffff;
+  border: 2.5px solid #C8102E;
+  box-shadow: 0 2px 6px rgba(15, 23, 42, 0.25);
+  cursor: pointer;
+  transition: transform 0.14s ease;
+}
+
+.pd-3d-art-slider::-webkit-slider-thumb:hover {
+  transform: scale(1.14);
+}
+
+.pd-3d-art-slider::-moz-range-thumb {
+  width: 16px;
+  height: 16px;
+  border-radius: 9999px;
+  background: #ffffff;
+  border: 2.5px solid #C8102E;
+  box-shadow: 0 2px 6px rgba(15, 23, 42, 0.25);
+  cursor: pointer;
+}
+
+.pd-3d-art-pill:focus-visible,
+.pd-3d-art-slider:focus-visible {
+  outline: 2px solid #C8102E;
+  outline-offset: 2px;
+}
+
+/* Phase 4: 3D Hotspot Projection Layer (#pd3dHotspotLayer) & Info Card (#pd3dHotspotCard) */
+.pd-3d-hotspot-layer {
+  position: absolute;
+  inset: 0;
+  z-index: 4;
+  pointer-events: none;
+  overflow: hidden;
+}
+
+.pd-3d-hotspot-dot {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 36px;
+  height: 36px;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  pointer-events: auto;
+  cursor: pointer;
+  display: grid;
+  place-items: center;
+  will-change: transform, opacity;
+  transition: opacity 0.22s ease;
+}
+
+.pd-3d-hotspot-dot.is-clipped {
+  opacity: 0 !important;
+  pointer-events: none !important;
+}
+
+.pd-3d-hotspot-dot.is-occluded {
+  opacity: 0.14;
+}
+
+.pd-3d-hotspot-dot.is-occluded .pd-3d-hotspot-pulse {
+  animation: none;
+  opacity: 0;
+}
+
+.pd-3d-hotspot-core {
+  position: relative;
+  z-index: 2;
+  width: 10px;
+  height: 10px;
+  border-radius: 9999px;
+  background: rgba(255, 255, 255, 0.96);
+  border: 2px solid #0f172a;
+  box-shadow: 0 2px 6px rgba(15, 23, 42, 0.35);
+  transition: transform 0.18s ease, background-color 0.18s ease, border-color 0.18s ease;
+}
+
+.pd-3d-hotspot-pulse {
+  position: absolute;
+  width: 16px;
+  height: 16px;
+  border-radius: 9999px;
+  border: 1.5px solid rgba(15, 23, 42, 0.45);
+  background: transparent;
+  animation: pd3dHotspotPulse 2.4s ease-out infinite;
+}
+
+@keyframes pd3dHotspotPulse {
+  0% {
+    transform: scale(0.8);
+    opacity: 0.65;
+  }
+  70%, 100% {
+    transform: scale(1.75);
+    opacity: 0;
+  }
+}
+
+.pd-3d-hotspot-tip {
+  position: absolute;
+  left: 50%;
+  bottom: calc(100% + 4px);
+  transform: translateX(-50%) translateY(4px);
+  padding: 3px 9px;
+  border-radius: 9999px;
+  background: rgba(15, 23, 42, 0.88);
+  color: #ffffff;
+  font-size: 10.5px;
+  font-weight: 700;
+  white-space: nowrap;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.16s ease, transform 0.16s ease;
+}
+
+.pd-3d-hotspot-dot:hover .pd-3d-hotspot-core,
+.pd-3d-hotspot-dot.is-active .pd-3d-hotspot-core {
+  background: #C8102E;
+  border-color: #ffffff;
+  transform: scale(1.25);
+}
+
+.pd-3d-hotspot-dot:hover .pd-3d-hotspot-tip,
+.pd-3d-hotspot-dot:focus-visible .pd-3d-hotspot-tip,
+.pd-3d-hotspot-dot.is-active .pd-3d-hotspot-tip {
+  opacity: 1;
+  transform: translateX(-50%) translateY(0);
+}
+
+.pd-3d-hotspot-dot:focus-visible {
+  outline: 2px solid #C8102E;
+  outline-offset: 3px;
+  border-radius: 9999px;
+}
+
+.pd-3d-hotspot-card {
+  position: absolute;
+  top: 56px;
+  right: 12px;
+  z-index: 7;
+  width: min(290px, calc(100% - 24px));
+  max-height: calc(100% - 140px);
+  overflow-y: auto;
+  border-radius: 18px;
+  padding: 13px 14px;
+  background: rgba(255, 255, 255, 0.9);
+  backdrop-filter: blur(18px) saturate(170%);
+  -webkit-backdrop-filter: blur(18px) saturate(170%);
+  border: 1px solid rgba(255, 255, 255, 0.95);
+  box-shadow: 0 18px 40px -12px rgba(15, 23, 42, 0.25);
+}
+
+.pd-3d-stage.is-3d-fullscreen .pd-3d-hotspot-card,
+.pd-3d-stage:fullscreen .pd-3d-hotspot-card {
+  top: max(68px, calc(env(safe-area-inset-top, 16px) + 54px));
+  right: max(18px, env(safe-area-inset-right, 18px));
+  width: min(330px, calc(100% - 36px));
+}
+
+.pd-3d-hotspot-close {
+  display: inline-grid;
+  place-items: center;
+  min-width: 36px;
+  min-height: 36px;
+  width: 36px;
+  height: 36px;
+  border-radius: 9999px;
+  background: rgba(15, 23, 42, 0.06);
+  color: #475569;
+  flex-shrink: 0;
+  cursor: pointer;
+  transition: background-color 0.16s ease, color 0.16s ease;
+}
+
+.pd-3d-hotspot-close:hover {
+  background: #C8102E;
+  color: #ffffff;
+}
+
+.pd-3d-hotspot-spec-row {
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
+  font-size: 11px;
+  line-height: 1.4;
+}
+
+.pd-3d-hotspot-spec-key {
+  font-weight: 700;
+  color: #475569;
+  flex-shrink: 0;
+}
+
+.pd-3d-hotspot-spec-val {
+  font-weight: 800;
+  color: #0f172a;
+  text-align: right;
+  overflow-wrap: break-word;
+}
+
+.pd-3d-hint {
+  text-align: center;
+  font-size: 12px;
+  font-weight: 600;
+  line-height: 1.5;
+  color: #64748b;
+  padding: 2px 8px;
+}
+
+/* Phase 5: Responsive đa thiết bị (Desktop 1280px+, Tablet ~820px, Mobile ~390px) */
+@media (max-width: 900px) {
+  .pd-3d-hud-top {
+    top: 10px;
+    left: 10px;
+    right: 10px;
+  }
+  .pd-3d-hud-bottom {
+    left: 10px;
+    right: 10px;
+    bottom: 10px;
+    gap: 6px;
+  }
+  .pd-3d-presets,
+  .pd-3d-toolbar,
+  .pd-3d-art-presets {
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+  }
+  .pd-3d-tool-btn {
+    min-width: 38px;
+    min-height: 36px;
+    height: 38px;
+  }
+  .pd-3d-hotspot-card {
+    top: 56px;
+    right: 10px;
+    width: min(272px, calc(100% - 20px));
+    max-height: calc(100% - 148px);
+  }
+  .pd-3d-art-slider::-webkit-slider-thumb {
+    width: 19px;
+    height: 19px;
+  }
+  .pd-3d-art-slider::-moz-range-thumb {
+    width: 19px;
+    height: 19px;
+  }
+}
+
+@media (max-width: 639px) {
+  .pd-3d-stage {
+    border-radius: 20px;
+  }
+  .pd-3d-articulation {
+    width: 100%;
+    padding: 8px 10px;
+    gap: 6px;
+  }
+  .pd-3d-hotspot-card {
+    top: 54px;
+    left: 10px;
+    right: 10px;
+    width: auto;
+    max-height: 44%;
+    padding: 11px 12px;
+  }
+  .pd-3d-stage.is-3d-fullscreen .pd-3d-hotspot-card,
+  .pd-3d-stage:fullscreen .pd-3d-hotspot-card {
+    top: max(64px, calc(env(safe-area-inset-top, 12px) + 52px));
+    left: 12px;
+    right: 12px;
+    width: auto;
+    max-height: 48dvh;
+  }
+}
+
+@media (max-width: 420px) {
+  .pd-view-mode-btn {
+    min-height: 36px;
+    padding: 0 12px;
+    font-size: 12px;
+  }
+  .pd-3d-tool-text span {
+    display: none;
+  }
+  .pd-3d-toolbar {
+    padding: 4px;
+    gap: 2px;
+  }
+  .pd-3d-tool-btn {
+    min-width: 36px;
+    min-height: 36px;
+    height: 36px;
+    padding: 0 8px;
+  }
+  .pd-3d-preset-btn,
+  .pd-3d-art-pill {
+    min-height: 36px;
+    padding: 0 10px;
+    font-size: 10.5px;
+  }
+  .pd-3d-color-name {
+    max-width: 96px;
+  }
+  .pd-3d-articulation {
+    padding: 7px 9px;
+    gap: 5px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .pd-3d-spinner {
+    animation-duration: 2.4s;
+  }
+  .pd-3d-hotspot-pulse {
+    animation: none;
+  }
+  .pd-view-mode-btn,
+  .pd-3d-tool-btn,
+  .pd-3d-preset-btn,
+  .pd-3d-color-btn,
+  .pd-3d-art-pill,
+  .pd-3d-art-slider::-webkit-slider-thumb,
+  .pd-3d-hotspot-dot,
+  .pd-3d-hotspot-core,
+  .pd-3d-hotspot-tip,
+  .pd-3d-progress-bar {
+    transition: none;
+  }
+}

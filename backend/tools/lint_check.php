@@ -34,7 +34,8 @@ echo "--- 2. KIỂM TRA CÚ PHÁP TẤT CẢ FILE JAVASCRIPT (node -c) ---\n";
 $jsFiles = [];
 foreach ($iter as $file) {
     if ($file->isFile() && $file->getExtension() === 'js') {
-        if (strpos($file->getPathname(), 'node_modules') === false && strpos($file->getPathname(), '.git') === false) {
+        // Bỏ qua thư viện bên thứ ba dạng ES Module (frontend/assets/vendor/three) vì không phải mã nguồn của dự án
+        if (strpos($file->getPathname(), 'node_modules') === false && strpos($file->getPathname(), '.git') === false && strpos($file->getPathname(), DIRECTORY_SEPARATOR . 'vendor' . DIRECTORY_SEPARATOR) === false) {
             $jsFiles[] = $file->getPathname();
         }
     }

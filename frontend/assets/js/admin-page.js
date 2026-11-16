@@ -701,7 +701,7 @@
       }
     });
 
-    // G. Preview ảnh trực tiếp trong Product Form
+    // G. Preview ảnh & kiểm tra đường dẫn mô hình 3D trực tiếp trong Product Form
     var imgInput = document.getElementById('prodModalImage');
     var imgPreview = document.getElementById('prodModalImagePreview');
     if (imgInput && imgPreview) {
@@ -710,6 +710,36 @@
         imgPreview.src = url || 'frontend/assets/images/logo.png';
       });
     }
+
+    function updateModel3DHint() {
+      var urlEl = document.getElementById('prodModalModelUrl');
+      var hasEl = document.getElementById('prodModalHas3D');
+      var hintEl = document.getElementById('prodModalModel3DHint');
+      if (!urlEl || !hintEl) return true;
+      var raw = urlEl.value.trim();
+      var has3D = Boolean(hasEl && hasEl.checked);
+      if (!raw) {
+        hintEl.className = has3D ? 'mt-1 text-[11px] font-bold text-amber-600' : 'mt-1 text-[11px] font-semibold text-slate-500';
+        hintEl.textContent = has3D
+          ? 'Vui lòng nhập đường dẫn tệp .glb / .gltf hợp lệ trong thư mục models3d/.'
+          : 'Đường dẫn an toàn phải nằm trong thư mục models3d/ và có đuôi .glb hoặc .gltf.';
+        return !has3D;
+      }
+      var clean = engine.normalizeModel3DPath(raw);
+      if (!clean) {
+        hintEl.className = 'mt-1 text-[11px] font-bold text-red-600';
+        hintEl.textContent = 'Đường dẫn không hợp lệ: chỉ chấp nhận đường dẫn nội bộ models3d/...(.glb | .gltf).';
+        return false;
+      }
+      hintEl.className = 'mt-1 text-[11px] font-bold text-emerald-600';
+      hintEl.textContent = 'Đường dẫn hợp lệ (' + clean + '). Trình xem 3D sẽ tự động xác minh tệp tồn tại thực tế.';
+      return true;
+    }
+
+    var modelUrlInput = document.getElementById('prodModalModelUrl');
+    var has3DCheckbox = document.getElementById('prodModalHas3D');
+    if (modelUrlInput) modelUrlInput.addEventListener('input', updateModel3DHint);
+    if (has3DCheckbox) has3DCheckbox.addEventListener('change', updateModel3DHint);
 
     // H. Submit Form Sản phẩm
     var productForm = document.getElementById('productForm');
@@ -723,9 +753,18 @@
         var image = document.getElementById('prodModalImage').value.trim();
         var desc = document.getElementById('prodModalDesc').value.trim();
         var stock = document.getElementById('prodModalStock').value;
+        var has3DEl = document.getElementById('prodModalHas3D');
+        var modelUrlEl = document.getElementById('prodModalModelUrl');
+        var sku3DEl = document.getElementById('prodModalSku3D');
+        var exp3DEl = document.getElementById('prodModalExploded3D');
 
         if (!name || !price) {
           alert('Vui lòng nhập Tên sản phẩm và Giá bán!');
+          return;
+        }
+        if (!updateModel3DHint()) {
+          engine.showToast('Đường dẫn mô hình 3D phải nằm trong models3d/ và kết thúc bằng .glb hoặc .gltf!');
+          if (modelUrlEl) modelUrlEl.focus();
           return;
         }
 
@@ -739,12 +778,23 @@
           stock: stock ? parseInt(stock, 10) : 50
         };
 
+        var savedProduct = null;
         if (editingProductId) {
-          engine.updateProduct(editingProductId, prodData);
+          savedProduct = engine.updateProduct(editingProductId, prodData);
           engine.showToast('Cập nhật sản phẩm thành công!');
         } else {
-          engine.addProduct(prodData);
+          savedProduct = engine.addProduct(prodData);
           engine.showToast('Thêm sản phẩm mới thành công!');
+        }
+
+        var targetProdId = (savedProduct && savedProduct.id) || editingProductId;
+        if (targetProdId && typeof engine.saveProduct3DConfig === 'function') {
+          engine.saveProduct3DConfig(targetProdId, {
+            has3D: Boolean(has3DEl && has3DEl.checked),
+            modelUrl: modelUrlEl ? modelUrlEl.value.trim() : '',
+            sku: sku3DEl ? sku3DEl.value.trim() : '',
+            supportsExplodedView: Boolean(exp3DEl && exp3DEl.checked)
+          }, savedProduct && savedProduct.sku);
         }
 
         closeAllModals();
@@ -818,6 +868,24 @@
     }
   }
 
+  function fillProduct3DModalFields(cfg) {
+    var hasEl = document.getElementById('prodModalHas3D');
+    var urlEl = document.getElementById('prodModalModelUrl');
+    var skuEl = document.getElementById('prodModalSku3D');
+    var expEl = document.getElementById('prodModalExploded3D');
+    var hintEl = document.getElementById('prodModalModel3DHint');
+    if (hasEl) hasEl.checked = Boolean(cfg && cfg.has3D);
+    if (urlEl) urlEl.value = (cfg && cfg.modelUrl) ? cfg.modelUrl : '';
+    if (skuEl) skuEl.value = (cfg && cfg.sku) ? cfg.sku : '';
+    if (expEl) expEl.checked = Boolean(cfg && cfg.supportsExplodedView);
+    if (hintEl) {
+      hintEl.className = 'mt-1 text-[11px] font-semibold text-slate-500';
+      hintEl.textContent = (cfg && cfg.modelUrl)
+        ? 'Đường dẫn hợp lệ (' + cfg.modelUrl + '). Trình xem 3D sẽ tự động xác minh tệp tồn tại thực tế.'
+        : 'Đường dẫn an toàn phải nằm trong thư mục models3d/ và có đuôi .glb hoặc .gltf.';
+    }
+  }
+
   function openAddProductModal() {
     editingProductId = null;
     var form = document.getElementById('productForm');
@@ -826,6 +894,7 @@
     if (title) title.textContent = 'Thêm sản phẩm mới';
     var imgPreview = document.getElementById('prodModalImagePreview');
     if (imgPreview) imgPreview.src = 'frontend/assets/images/logo.png';
+    fillProduct3DModalFields(null);
 
     openModal(document.getElementById('productModal'));
   }
@@ -851,6 +920,9 @@
 
     var imgPreview = document.getElementById('prodModalImagePreview');
     if (imgPreview) imgPreview.src = p.image || 'frontend/assets/images/logo.png';
+
+    var cfg3D = typeof engine.getProduct3DConfig === 'function' ? engine.getProduct3DConfig(p.id, p.sku) : null;
+    fillProduct3DModalFields(cfg3D);
 
     openModal(document.getElementById('productModal'));
   }

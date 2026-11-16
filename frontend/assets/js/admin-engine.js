@@ -10,6 +10,7 @@
   var STORAGE_CATEGORIES = 'vlu_admin_categories';
   var STORAGE_ORDERS = 'vlu_orders';
   var STORAGE_USERS = 'vlu_admin_users';
+  var STORAGE_MODELS_3D = 'vlu_admin_models_3d';
 
   // 1. DỮ LIỆU DANH MỤC MẪU BAN ĐẦU (CATEGORIES SEED)
   var DEFAULT_CATEGORIES = [
@@ -375,6 +376,7 @@
         return String(p.id) !== String(id);
       });
       this.saveProducts(filtered);
+      this.removeProduct3DConfig(id);
       if (typeof fetch === 'function') {
         fetch('backend/api/orders.php', {
           method: 'POST',
@@ -388,6 +390,90 @@
     resetProducts: function () {
       this.saveProducts(DEFAULT_PRODUCTS);
       return DEFAULT_PRODUCTS.slice();
+    },
+
+    normalizeModel3DPath: function (rawUrl) {
+      if (typeof window.VLU_NORMALIZE_3D_MODEL_PATH === 'function') {
+        return window.VLU_NORMALIZE_3D_MODEL_PATH(rawUrl);
+      }
+      var u = String(rawUrl == null ? '' : rawUrl).trim().replace(/^\.\//, '');
+      if (!u || /[\r\n\t\u0000-\u001F]/.test(u) || u.indexOf('\\') !== -1) return '';
+      if (/^(?:[a-z][a-z0-9+\-.]*:|\/\/|\/)/i.test(u)) return '';
+      var pathOnly = u.split(/[?#]/)[0];
+      if (pathOnly.split('/').some(function (s) { return s === '..' || s === '.'; })) return '';
+      return /^models3d\/.+\.(?:glb|gltf)$/i.test(pathOnly) ? u : '';
+    },
+
+    getModels3D: function () {
+      if (typeof window.VLU_READ_ADMIN_MODELS_3D === 'function') {
+        return window.VLU_READ_ADMIN_MODELS_3D();
+      }
+      try {
+        var raw = localStorage.getItem(STORAGE_MODELS_3D);
+        var parsed = raw ? JSON.parse(raw) : {};
+        return (parsed && typeof parsed === 'object' && !Array.isArray(parsed)) ? parsed : {};
+      } catch (e) {
+        return {};
+      }
+    },
+
+    saveModels3D: function (map) {
+      try {
+        localStorage.setItem(STORAGE_MODELS_3D, JSON.stringify(map || {}));
+        localStorage.setItem('vlu_sync_timestamp', String(Date.now()));
+        try {
+          if (typeof BroadcastChannel !== 'undefined') {
+            var bc = new BroadcastChannel('vlu_store_sync');
+            bc.postMessage({ type: 'models_3d_updated', timestamp: Date.now() });
+            bc.close();
+          }
+        } catch (eBc) {}
+        this.emitUpdate();
+        return true;
+      } catch (e) {
+        return false;
+      }
+    },
+
+    getProduct3DConfig: function (productId, sku) {
+      if (typeof window.VLU_GET_ADMIN_MODEL_3D === 'function') {
+        return window.VLU_GET_ADMIN_MODEL_3D({ id: productId, sku: sku || '' });
+      }
+      var map = this.getModels3D();
+      var kId = String(productId || '').trim().toLowerCase();
+      var kSku = String(sku || '').trim().toLowerCase();
+      return (kId && map[kId]) || (kSku && map[kSku]) || null;
+    },
+
+    saveProduct3DConfig: function (productId, cfg, sku) {
+      if (!productId || !cfg) return false;
+      var kId = String(productId).trim().toLowerCase();
+      if (!kId) return false;
+      var rawPath = String(cfg.modelUrl || cfg.url || '').trim();
+      var cleanPath = this.normalizeModel3DPath(rawPath);
+      if (rawPath && !cleanPath) return false;
+
+      var map = this.getModels3D();
+      var nextSku = String(cfg.sku || sku || '').trim();
+      var prev = map[kId] || {};
+      map[kId] = Object.assign({}, prev, {
+        productId: String(productId),
+        sku: nextSku,
+        has3D: Boolean(cfg.has3D && cleanPath),
+        modelUrl: cleanPath,
+        supportsExplodedView: Boolean(cfg.supportsExplodedView),
+        updatedAt: new Date().toISOString()
+      });
+      return this.saveModels3D(map);
+    },
+
+    removeProduct3DConfig: function (productId) {
+      if (!productId) return false;
+      var kId = String(productId).trim().toLowerCase();
+      var map = this.getModels3D();
+      if (!map[kId]) return false;
+      delete map[kId];
+      return this.saveModels3D(map);
     },
 
     /* ==========================================================================
