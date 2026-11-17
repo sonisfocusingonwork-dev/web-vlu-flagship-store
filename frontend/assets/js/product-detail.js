@@ -286,6 +286,24 @@
     renderVideoTrigger(p);
     updateGalleryNavControls();
 
+    function resolveDetailSwatchHex(c) {
+      var rawHex = c && c.hex ? String(c.hex).trim() : '';
+      var isStale = !rawHex || /^#(334155|475569|1e293b)$/i.test(rawHex);
+      if (!isStale) return rawHex;
+      if (typeof window.VLU_GET_COLOR_HEX === 'function') {
+        return window.VLU_GET_COLOR_HEX(c && c.name, c && c.key);
+      }
+      return rawHex || '#7D7E80';
+    }
+
+    function isLightDetailSwatch(hex) {
+      if (typeof window.VLU_IS_LIGHT_COLOR === 'function') return window.VLU_IS_LIGHT_COLOR(hex);
+      var m = /^#?([0-9a-f]{6})$/i.exec(String(hex || '').trim());
+      if (!m) return false;
+      var n = parseInt(m[1], 16);
+      return (0.299 * ((n >> 16) & 255) + 0.587 * ((n >> 8) & 255) + 0.114 * (n & 255)) >= 205;
+    }
+
     // 5.7 Swatches Chọn Màu Sắc
     var swatchContainer = document.getElementById('colorSwatches');
     var selectedColorName = document.getElementById('selectedColorName');
@@ -296,12 +314,14 @@
     if (swatchContainer) {
       var swatchesHtml = '';
       (p.colors || []).forEach(function (c, idx) {
-        swatchesHtml += '<button type="button" class="color-swatch-btn' + (idx === 0 ? ' active' : '') + '"'
+        var sHex = resolveDetailSwatchHex(c);
+        var lightCls = isLightDetailSwatch(sHex) ? ' is-light-swatch' : '';
+        swatchesHtml += '<button type="button" class="color-swatch-btn' + (idx === 0 ? ' active' : '') + lightCls + '"'
           + ' data-color-index="' + idx + '"'
           + ' data-color-key="' + escapeAttr(c.key) + '"'
           + ' data-color-name="' + escapeAttr(c.name) + '"'
           + ' data-img="' + escapeAttr(c.image || c.img) + '"'
-          + ' style="background-color: ' + escapeAttr(c.hex) + ';"'
+          + ' style="background-color: ' + escapeAttr(sHex) + ';"'
           + ' title="' + escapeAttr(c.name) + '"'
           + ' aria-label="Chọn màu ' + escapeAttr(c.name) + '"'
           + ' aria-checked="' + (idx === 0 ? 'true' : 'false') + '" role="radio"></button>';
@@ -514,11 +534,13 @@
     var dotsHtml = opts.map(function (c) {
       var isAct = (currentColorKey && norm3dToken(c.key) === norm3dToken(currentColorKey))
         || norm3dToken(c.name) === norm3dToken(currentColor);
-      return '<button type="button" class="pd-3d-color-btn' + (isAct ? ' is-active' : '') + '"'
+      var cHex = c.hex || (typeof window.VLU_GET_COLOR_HEX === 'function' ? window.VLU_GET_COLOR_HEX(c.name, c.key) : '#7D7E80');
+      var isLight = typeof window.VLU_IS_LIGHT_COLOR === 'function' && window.VLU_IS_LIGHT_COLOR(cHex);
+      return '<button type="button" class="pd-3d-color-btn' + (isAct ? ' is-active' : '') + (isLight ? ' is-light-swatch' : '') + '"'
         + ' data-3d-color="1"'
         + ' data-color-name="' + escapeAttr(c.name) + '"'
         + ' data-color-key="' + escapeAttr(c.key) + '"'
-        + ' style="background-color: ' + escapeAttr(c.hex) + ';"'
+        + ' style="background-color: ' + escapeAttr(cHex) + ';"'
         + ' title="' + escapeAttr(c.name) + '"'
         + ' aria-label="Chọn màu 3D ' + escapeAttr(c.name) + '"'
         + ' aria-pressed="' + (isAct ? 'true' : 'false') + '"></button>';
@@ -1955,8 +1977,12 @@
             var cRaw = (c && (c.image || c.img)) || rawImg;
             var cResolved = resolveImgUrl(cRaw, item.category || 'dien-thoai');
             var cName = (c && c.name) || ('Màu ' + (cIdx + 1));
-            var cHex = (c && c.hex) || '#334155';
-            return '<button type="button" class="card-color-swatch' + (cIdx === 0 ? ' is-active' : '') + '" data-card-swatch="' + cIdx + '" data-img="' + escapeAttr(cResolved) + '" data-color-name="' + escapeAttr(cName) + '" title="' + escapeAttr(cName) + '" aria-label="Xem màu ' + escapeAttr(cName) + '" style="background:' + escapeAttr(cHex) + ';"></button>';
+            var rawHex = c && c.hex ? String(c.hex).trim() : '';
+            var cHex = (!rawHex || /^#(334155|475569|1e293b)$/i.test(rawHex)) && typeof window.VLU_GET_COLOR_HEX === 'function'
+              ? window.VLU_GET_COLOR_HEX(cName, c && c.key)
+              : (rawHex || '#7D7E80');
+            var lightCls = (typeof window.VLU_IS_LIGHT_COLOR === 'function' && window.VLU_IS_LIGHT_COLOR(cHex)) ? ' is-light-swatch' : '';
+            return '<button type="button" class="card-color-swatch' + (cIdx === 0 ? ' is-active' : '') + lightCls + '" data-card-swatch="' + cIdx + '" data-img="' + escapeAttr(cResolved) + '" data-color-name="' + escapeAttr(cName) + '" title="' + escapeAttr(cName) + '" aria-label="Xem màu ' + escapeAttr(cName) + '" style="background:' + escapeAttr(cHex) + ';"></button>';
           }).join('')
         + (extraColors > 0 ? '<span class="card-color-more">+' + extraColors + '</span>' : '')
         + '</div>';

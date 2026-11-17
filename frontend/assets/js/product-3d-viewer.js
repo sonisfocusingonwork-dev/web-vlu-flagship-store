@@ -895,7 +895,7 @@
     function buildStudioEnvironment(THREE) {
       var envScene = new THREE.Scene();
       var domeGeo = new THREE.SphereGeometry(24, 24, 16);
-      var domeMat = new THREE.MeshBasicMaterial({ color: 0xf1f5f9, side: THREE.BackSide });
+      var domeMat = new THREE.MeshBasicMaterial({ color: 0xe2e8f0, side: THREE.BackSide });
       envScene.add(new THREE.Mesh(domeGeo, domeMat));
 
       function addSoftbox(w, h, d, x, y, z, rx, ry, rz, colorHex, mul) {
@@ -907,14 +907,20 @@
         envScene.add(panel);
       }
 
-      addSoftbox(12, 0.25, 10, 0, 10, 1, 0, 0, 0, 0xffffff, 2.2);
-      addSoftbox(4.2, 8, 0.25, -7, 4, 6.5, 0.2, 0.65, 0, 0xf8fbff, 2.5);
-      addSoftbox(0.25, 10, 4.5, 9, 1.5, 1.5, 0, 0, 0, 0xffffff, 2.4);
-      addSoftbox(0.25, 10, 4.5, -9, 1.5, -3, 0, 0, 0, 0xf1f5ff, 2.1);
-      addSoftbox(9, 6, 0.25, 2, 5.5, -9.5, -0.35, 0, 0, 0xffffff, 2.1);
-      addSoftbox(16, 0.25, 16, 0, -8, 0, 0, 0, 0, 0xe2e8f0, 1.15);
+      // Vertical studio rim light strips + soft overhead diffused dome + clean dark negative-fill flanks
+      // Tạo ánh kim sắc nét cho khung viền Titan Bạc như ảnh studio Apple mà không cháy sáng
+      addSoftbox(12, 0.25, 10, 0, 10.5, 0, 0, 0, 0, 0xffffff, 1.85);
+      addSoftbox(2.2, 14, 0.25, -8.5, 2, 5.5, 0.1, 0.95, 0, 0xffffff, 2.15);
+      addSoftbox(2.2, 14, 0.25, 8.5, 2, 5.5, 0.1, -0.95, 0, 0xffffff, 1.95);
+      addSoftbox(2.0, 14, 0.25, -8.0, 2, -6.5, -0.1, -0.9, 0, 0xf8fafc, 1.85);
+      addSoftbox(2.0, 14, 0.25, 8.0, 2, -6.5, -0.1, 0.9, 0, 0xf8fafc, 1.65);
+      addSoftbox(10, 7, 0.25, 0, 4.5, 9.8, 0.25, 0, 0, 0xf8fbff, 1.45);
+      addSoftbox(10, 7, 0.25, 0, 4.5, -9.8, -0.25, 0, 0, 0xffffff, 1.55);
+      addSoftbox(1.5, 12, 5.5, 9.8, 0, 0, 0, 0, 0, 0x334155, 0.32);
+      addSoftbox(1.5, 12, 5.5, -9.8, 0, 0, 0, 0, 0, 0x334155, 0.35);
+      addSoftbox(16, 0.25, 16, 0, -8.5, 0, 0, 0, 0, 0x94a3b8, 0.72);
 
-      var tex = pmrem.fromScene(envScene, 0.035).texture;
+      var tex = pmrem.fromScene(envScene, 0.032).texture;
       disposeObject(envScene);
       return tex;
     }
@@ -999,7 +1005,7 @@
       renderer.setClearColor(0x000000, 0);
       renderer.outputColorSpace = THREE.SRGBColorSpace;
       renderer.toneMapping = THREE.ACESFilmicToneMapping;
-      renderer.toneMappingExposure = model.exposure || 1.12;
+      renderer.toneMappingExposure = model.exposure || 1.02;
       renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
       renderer.setSize(s.w, s.h, false);
       var canvas = renderer.domElement;
@@ -1019,18 +1025,18 @@
         envTexture = pmrem.fromScene(new L.RoomEnvironment(), 0.04).texture;
       }
       scene.environment = envTexture;
-      var hemi = new THREE.HemisphereLight(0xffffff, 0xe2e8f0, 0.85);
+      var hemi = new THREE.HemisphereLight(0xffffff, 0xcbd5e1, 0.42);
       scene.add(hemi);
-      var key = new THREE.DirectionalLight(0xffffff, 1.0);
+      var key = new THREE.DirectionalLight(0xffffff, 0.65);
       key.position.set(3, 5, 4);
       scene.add(key);
-      var fill = new THREE.DirectionalLight(0xeef4ff, 0.55);
+      var fill = new THREE.DirectionalLight(0xeef4ff, 0.35);
       fill.position.set(-4, 2, 3.5);
       scene.add(fill);
-      var backKey = new THREE.DirectionalLight(0xffffff, 0.9);
+      var backKey = new THREE.DirectionalLight(0xffffff, 0.52);
       backKey.position.set(-2.5, 4, -4.5);
       scene.add(backKey);
-      var backRim = new THREE.DirectionalLight(0xe2e8f0, 0.5);
+      var backRim = new THREE.DirectionalLight(0xe2e8f0, 0.28);
       backRim.position.set(3.5, 1.5, -3.5);
       scene.add(backRim);
 
@@ -1110,27 +1116,39 @@
       var explicit = Array.isArray(model.explodedParts) ? model.explodedParts : [];
 
       if (explicit.length > 0) {
-        var rootScaleX = root.scale.x || 1;
+        root.updateMatrixWorld(true);
+        var pOrigin = new THREE.Vector3();
+        var worldDelta = new THREE.Vector3();
         root.traverse(function (node) {
           var nName = String(node.name || '').toLowerCase();
           if (!nName) return;
+          // Tránh nhân đôi offset khi glTF Group đa primitive có cả cha lẫn con cùng chứa tên lớp
+          var anc = node.parent;
+          while (anc && anc !== root) {
+            if (anc.userData && anc.userData.__vluExplodeOffset) return;
+            anc = anc.parent;
+          }
           var match = explicit.find(function (pt) {
             return nName.indexOf(pt.meshName) !== -1;
           });
           if (match) {
-            // Đổi từ đơn vị radius hiển thị sang tọa độ cục bộ dưới root
-            var factor = radius / rootScaleX;
+            // Đổi vector từ tọa độ thế giới (hướng chuẩn trước/sau màn hình) sang tọa độ cục bộ của parent bất kể rotationY/scale
+            var pObj = node.parent || root;
+            pObj.getWorldPosition(pOrigin);
+            worldDelta.set(match.offset[0] * radius, match.offset[1] * radius, match.offset[2] * radius);
+            var localDelta = pObj.worldToLocal(pOrigin.clone().add(worldDelta)).sub(pObj.worldToLocal(pOrigin));
             node.userData.__vluExplodeOffset = {
-              x: match.offset[0] * factor,
-              y: match.offset[1] * factor,
-              z: match.offset[2] * factor
+              x: localDelta.x,
+              y: localDelta.y,
+              z: localDelta.z
             };
           }
         });
         return;
       }
 
-      // Tự động phân rã hướng tâm cho các mesh/group con khi supportsExplodedView = true mà chưa khai báo từng offset
+      // Tự động phân rã hướng tâm theo tọa độ thế giới (hỗ trợ cả .glb đa tầng lồng ghép từ Sketchfab/Blender)
+      root.updateMatrixWorld(true);
       var layerNodes = (root.children && root.children.length > 1) ? root.children.slice() : [];
       if (!layerNodes.length) {
         root.traverse(function (o) {
@@ -1139,7 +1157,6 @@
       }
       if (layerNodes.length <= 1) return;
 
-      var invScale = 1 / (root.scale.x || 1);
       var centerBox = new THREE.Box3();
       var partCenter = new THREE.Vector3();
       var count = layerNodes.length;
@@ -1147,17 +1164,20 @@
       layerNodes.forEach(function (node, idx) {
         centerBox.setFromObject(node);
         centerBox.getCenter(partCenter);
-        var dir = partCenter.clone();
-        if (dir.lengthSq() < 0.002) {
+        var worldDelta = partCenter.clone();
+        if (worldDelta.lengthSq() < 0.002) {
           var spread = (idx - (count - 1) / 2);
-          dir.set(spread * 0.14, 0, spread * 0.55);
+          worldDelta.set(spread * 0.14, 0, spread * 0.55);
         } else {
-          dir.normalize().multiplyScalar(0.58 * radius);
+          worldDelta.normalize().multiplyScalar(0.58 * radius);
         }
+        var parentObj = node.parent || root;
+        var originLocal = parentObj.worldToLocal(partCenter.clone());
+        var shiftedLocal = parentObj.worldToLocal(partCenter.clone().add(worldDelta)).sub(originLocal);
         node.userData.__vluExplodeOffset = {
-          x: dir.x * invScale,
-          y: dir.y * invScale,
-          z: dir.z * invScale
+          x: shiftedLocal.x,
+          y: shiftedLocal.y,
+          z: shiftedLocal.z
         };
       });
     }
@@ -1586,29 +1606,123 @@
       return loadingPromise;
     }
 
-    function matchesBody(mesh, mat) {
-      var names = model.bodyMeshes || [];
-      if (!names.length) return false;
-      var meshName = String(mesh.name || '').toLowerCase();
+    var wallpaperCache = {};
+
+    function getScreenWallpaperTexture(THREE, themeKey) {
+      var k = String(themeKey || 'silver').toLowerCase();
+      if (wallpaperCache[k]) return wallpaperCache[k];
+      var canvas = document.createElement('canvas');
+      canvas.width = 384;
+      canvas.height = 768;
+      var ctx = canvas.getContext('2d');
+      var bg = ctx.createLinearGradient(0, 0, canvas.width, canvas.height);
+      if (k === 'black') {
+        bg.addColorStop(0, '#0f1219');
+        bg.addColorStop(0.5, '#1d2433');
+        bg.addColorStop(1, '#0b0d12');
+      } else if (k === 'red') {
+        bg.addColorStop(0, '#3a131b');
+        bg.addColorStop(0.5, '#6d2332');
+        bg.addColorStop(1, '#260b11');
+      } else if (k === 'gray') {
+        bg.addColorStop(0, '#62738c');
+        bg.addColorStop(0.5, '#95a7c1');
+        bg.addColorStop(1, '#49576d');
+      } else {
+        bg.addColorStop(0, '#b9bdc2');
+        bg.addColorStop(0.5, '#e8eaed');
+        bg.addColorStop(1, '#9ca2aa');
+      }
+      ctx.fillStyle = bg;
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+      // Dải sóng cong ánh kim Pro-Ribbon
+      var r1 = ctx.createRadialGradient(canvas.width * 0.25, canvas.height * 0.38, 12, canvas.width * 0.48, canvas.height * 0.45, 290);
+      r1.addColorStop(0, k === 'silver' ? 'rgba(255,255,255,0.68)' : 'rgba(255,255,255,0.28)');
+      r1.addColorStop(0.55, 'rgba(255,255,255,0.08)');
+      r1.addColorStop(1, 'rgba(0,0,0,0.32)');
+      ctx.fillStyle = r1;
+      ctx.beginPath();
+      ctx.moveTo(0, canvas.height * 0.22);
+      ctx.bezierCurveTo(canvas.width * 0.45, canvas.height * 0.10, canvas.width * 0.85, canvas.height * 0.48, canvas.width, canvas.height * 0.36);
+      ctx.lineTo(canvas.width, canvas.height * 0.78);
+      ctx.bezierCurveTo(canvas.width * 0.65, canvas.height * 0.90, canvas.width * 0.25, canvas.height * 0.56, 0, canvas.height * 0.72);
+      ctx.closePath();
+      ctx.fill();
+
+      var tex = new THREE.CanvasTexture(canvas);
+      if (THREE.SRGBColorSpace) tex.colorSpace = THREE.SRGBColorSpace;
+      tex.flipY = false;
+      tex.needsUpdate = true;
+      wallpaperCache[k] = tex;
+      return tex;
+    }
+
+    function matchesNameList(mesh, mat, list) {
+      if (!list || !list.length) return false;
+      var meshName = String((mesh && mesh.name) || '').toLowerCase();
       var matName = String((mat && mat.name) || '').toLowerCase();
-      return names.some(function (n) { return meshName.indexOf(n) !== -1 || (matName && matName.indexOf(n) !== -1); });
+      return list.some(function (n) { return meshName.indexOf(n) !== -1 || (matName && matName.indexOf(n) !== -1); });
     }
 
     function applyMaterialSpec(root, spec) {
+      var THREE = L.THREE;
       root.traverse(function (o) {
         if (!o.isMesh || !o.material) return;
         var isArr = Array.isArray(o.material);
         var list = isArr ? o.material : [o.material];
         var next = list.map(function (mat) {
-          if (!matchesBody(o, mat)) return mat;
+          var isBody = matchesNameList(o, mat, model.bodyMeshes);
+          var isGlass = matchesNameList(o, mat, model.glassMeshes);
+          var isAccent = matchesNameList(o, mat, model.accentMeshes);
+          var isScreen = matchesNameList(o, mat, model.screenMeshes);
+          if (!isBody && !isGlass && !isAccent && !isScreen) return mat;
+
           var m = mat;
           if (!mat.userData || !mat.userData.__vluCloned) {
             m = mat.clone();
-            m.userData = Object.assign({}, mat.userData, { __vluCloned: true });
+            m.userData = Object.assign({}, mat.userData, {
+              __vluCloned: true,
+              __vluOrigMap: mat.map || null
+            });
           }
-          if (m.color && typeof m.color.set === 'function') m.color.set(spec.hex);
-          if (spec.metalness != null && 'metalness' in m) m.metalness = spec.metalness;
-          if (spec.roughness != null && 'roughness' in m) m.roughness = spec.roughness;
+
+          if (isScreen) {
+            var wpTex = getScreenWallpaperTexture(THREE, spec.screenTheme || 'silver');
+            m.map = wpTex;
+            m.emissiveMap = wpTex;
+            if (m.color && typeof m.color.setHex === 'function') m.color.setHex(0xffffff);
+            if (m.emissive && typeof m.emissive.setHex === 'function') m.emissive.setHex(0xffffff);
+            m.emissiveIntensity = 0.28;
+            if ('metalness' in m) m.metalness = 0.04;
+            if ('roughness' in m) m.roughness = 0.14;
+            m.needsUpdate = true;
+            return m;
+          }
+
+          if (spec.clearMap) {
+            m.map = null;
+          } else if (m.userData.__vluOrigMap && !m.map) {
+            m.map = m.userData.__vluOrigMap;
+          }
+
+          if (isAccent) {
+            if (m.color && typeof m.color.set === 'function') m.color.set(spec.accentHex || spec.hex);
+            if (spec.accentMetalness != null && 'metalness' in m) m.metalness = spec.accentMetalness;
+            else if (spec.metalness != null && 'metalness' in m) m.metalness = spec.metalness;
+            if (spec.accentRoughness != null && 'roughness' in m) m.roughness = spec.accentRoughness;
+            else if (spec.roughness != null && 'roughness' in m) m.roughness = spec.roughness;
+          } else if (isGlass) {
+            if (m.color && typeof m.color.set === 'function') m.color.set(spec.glassHex || spec.hex);
+            if (spec.glassMetalness != null && 'metalness' in m) m.metalness = spec.glassMetalness;
+            else if (spec.metalness != null && 'metalness' in m) m.metalness = spec.metalness;
+            if (spec.glassRoughness != null && 'roughness' in m) m.roughness = spec.glassRoughness;
+            else if (spec.roughness != null && 'roughness' in m) m.roughness = spec.roughness;
+          } else {
+            if (m.color && typeof m.color.set === 'function') m.color.set(spec.hex);
+            if (spec.metalness != null && 'metalness' in m) m.metalness = spec.metalness;
+            if (spec.roughness != null && 'roughness' in m) m.roughness = spec.roughness;
+          }
           m.needsUpdate = true;
           return m;
         });
@@ -1856,6 +1970,10 @@
       });
       rootCache = {};
       rootCacheOrder = [];
+      Object.keys(wallpaperCache).forEach(function (wk) {
+        if (wallpaperCache[wk] && typeof wallpaperCache[wk].dispose === 'function') wallpaperCache[wk].dispose();
+      });
+      wallpaperCache = {};
       if (envTexture) envTexture.dispose();
       if (pmrem) pmrem.dispose();
       if (draco) draco.dispose();

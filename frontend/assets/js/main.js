@@ -614,6 +614,24 @@
     '</div>';
   }
 
+  function resolveSwatchHex(c) {
+    var rawHex = c && c.hex ? String(c.hex).trim() : '';
+    var isStale = !rawHex || /^#(334155|475569|1e293b)$/i.test(rawHex);
+    if (!isStale) return rawHex;
+    if (typeof window.VLU_GET_COLOR_HEX === 'function') {
+      return window.VLU_GET_COLOR_HEX(c && c.name, c && c.key);
+    }
+    return rawHex || '#7D7E80';
+  }
+
+  function isLightSwatchHex(hex) {
+    if (typeof window.VLU_IS_LIGHT_COLOR === 'function') return window.VLU_IS_LIGHT_COLOR(hex);
+    var m = /^#?([0-9a-f]{6})$/i.exec(String(hex || '').trim());
+    if (!m) return false;
+    var n = parseInt(m[1], 16);
+    return (0.299 * ((n >> 16) & 255) + 0.587 * ((n >> 8) & 255) + 0.114 * (n & 255)) >= 205;
+  }
+
   function buildProductCardHtml(product, wishlistIds, options) {
     var opts = options || {};
     var badgeType = opts.badgeType || 'NEW';
@@ -656,8 +674,9 @@
             var cRaw = (c && (c.image || c.img)) || rawImg;
             var cResolved = resolveImage(cRaw, product.category);
             var cName = (c && c.name) || ('Màu ' + (cIdx + 1));
-            var cHex = (c && c.hex) || '#334155';
-            return '<button type="button" class="card-color-swatch' + (cIdx === 0 ? ' is-active' : '') + '" data-card-swatch="' + cIdx + '" data-img="' + escapeHtml(cResolved) + '" data-color-name="' + escapeHtml(cName) + '" title="' + escapeHtml(cName) + '" aria-label="Xem màu ' + escapeHtml(cName) + '" style="background:' + escapeHtml(cHex) + ';"></button>';
+            var cHex = resolveSwatchHex(c);
+            var lightCls = isLightSwatchHex(cHex) ? ' is-light-swatch' : '';
+            return '<button type="button" class="card-color-swatch' + (cIdx === 0 ? ' is-active' : '') + lightCls + '" data-card-swatch="' + cIdx + '" data-img="' + escapeHtml(cResolved) + '" data-color-name="' + escapeHtml(cName) + '" title="' + escapeHtml(cName) + '" aria-label="Xem màu ' + escapeHtml(cName) + '" style="background:' + escapeHtml(cHex) + ';"></button>';
           }).join('') +
           (extraColors > 0 ? '<span class="card-color-more">+' + extraColors + '</span>' : '') +
         '</div>';
@@ -1345,7 +1364,9 @@
           '<p class="text-xs font-extrabold uppercase tracking-wider text-slate-500">Màu sắc: <span class="text-slate-900">' + escapeHtml(activeColor.name) + '</span></p>' +
           '<div class="mt-2 flex flex-wrap gap-2">' +
             colors.map(function (c, i) {
-              return '<button type="button" data-qv-color="' + i + '" aria-label="' + escapeHtml(c.name) + '" class="h-8 w-8 rounded-full border-2 transition ' + (i === qvState.colorIdx ? 'border-brand ring-2 ring-brand/25 scale-110' : 'border-white shadow ring-1 ring-slate-300') + '" style="background:' + escapeHtml(c.hex || '#334155') + '"></button>';
+              var qHex = resolveSwatchHex(c);
+              var qLightCls = isLightSwatchHex(qHex) ? ' is-light-swatch' : '';
+              return '<button type="button" data-qv-color="' + i + '" aria-label="' + escapeHtml(c.name) + '" title="' + escapeHtml(c.name) + '" class="qv-color-swatch h-8 w-8 rounded-full border-2 transition ' + qLightCls + (i === qvState.colorIdx ? ' border-brand ring-2 ring-brand/25 scale-110' : ' border-white shadow ring-1 ring-slate-300') + '" style="background:' + escapeHtml(qHex) + '"></button>';
             }).join('') +
           '</div>' +
         '</div>' +

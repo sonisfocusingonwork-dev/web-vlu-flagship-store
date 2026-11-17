@@ -37,29 +37,36 @@
   var MODELS_3D = {
     'iphone-18-pro-max': {
       verified: true,
-      engine: 'sketchfab',
-      sketchfabUid: 'd383a366cc9e464ba4b24e5ddb996866',
+      url: 'models3d/iphone-18-pro-max/base.glb?v=7',
+      draco: true,
+      rotationY: Math.PI,
+      exposure: 1.06,
       previewImage: 'SanPham/DienThoai/Apple/iPhone-18-Pro-Max/iPhone-18-Pro-Max-Bac.png',
       sku: ['IPHONE-18-PRO-MAX'],
       label: 'iPhone 18 Pro Max',
-      attribution: 'Mô hình 3D thật · UnknownOrigin (Sketchfab)',
-      colorSketchfabUids: {
-        'Bạc': 'd383a366cc9e464ba4b24e5ddb996866',
-        'Đen': '8fd804a9b0ea49249de3f1e0450fbc9c',
-        'Đỏ':  '604acc18b5d5455d820a16359b45b003',
-        'Xám': '86dc4a625ae2444c97cf8469a6f6f016'
+      attribution: 'Mô hình 3D thật · Polyman_3D (CC-BY-4.0)',
+      defaultColor: 'Bạc',
+      bodyMeshes: ['eshkpumnvjtrrgg', 'palettematerial001', 'palettematerial002', 'dxcvrucvyhjvxqy', 'xdyijlytyrfjffh'],
+      glassMeshes: ['ozrkkornzkufngd', 'yhcaxngcjwcqtis', 'palettematerial003', 'bcgzxjhoangdtfv'],
+      accentMeshes: ['palettematerial004', 'ppwutntfzjxxcoe'],
+      screenMeshes: ['pijkfzsazmcpeiu'],
+      colorMaterials: {
+        'Bạc': { hex: '#d8dad8', metalness: 0.85, roughness: 0.24, glassHex: '#d4d6d4', glassMetalness: 0.14, glassRoughness: 0.42, accentHex: '#9ba1aa', accentMetalness: 0.92, accentRoughness: 0.16, screenTheme: 'silver', clearMap: true },
+        'Đen': { hex: '#282a2e', metalness: 0.82, roughness: 0.28, glassHex: '#1c1d20', glassMetalness: 0.12, glassRoughness: 0.44, accentHex: '#3f434a', accentMetalness: 0.88, accentRoughness: 0.22, screenTheme: 'black', clearMap: true },
+        'Đỏ':  { hex: '#6e2835', metalness: 0.80, roughness: 0.26, glassHex: '#4f1e28', glassMetalness: 0.12, glassRoughness: 0.42, accentHex: '#963b4d', accentMetalness: 0.90, accentRoughness: 0.20, screenTheme: 'red', clearMap: true },
+        'Xám': { hex: '#8e9db3', metalness: 0.84, roughness: 0.25, glassHex: '#7d8ea6', glassMetalness: 0.14, glassRoughness: 0.42, accentHex: '#5f6f85', accentMetalness: 0.90, accentRoughness: 0.18, screenTheme: 'gray', clearMap: true }
       },
       detailPresets: {
-        'front':       { label: 'Mặt trước',        dir: [0, 0.04, 1],       dist: 0.78, target: [0, 0, 0] },
-        'back-camera': { label: 'Mặt sau & Camera', dir: [0, 0.14, -1],      dist: 0.68, target: [0, 0.36, 0] },
-        'side':        { label: 'Cạnh viền',        dir: [1, 0.06, 0.16],    dist: 0.72, target: [0, 0.04, 0] },
-        'ports':       { label: 'Cổng & Loa',       dir: [0.06, -0.58, 0.85], dist: 0.62, target: [0, -0.68, 0] }
+        'front':       { label: 'Mặt trước',        dir: [0, 0.04, 1],        dist: 0.78, target: [0, 0, 0] },
+        'back-camera': { label: 'Mặt sau & Camera', dir: [0, 0.14, -1],       dist: 0.68, target: [0, 0.42, 0] },
+        'side':        { label: 'Cạnh viền',        dir: [1, 0.06, 0.16],     dist: 0.72, target: [0, 0.04, 0] },
+        'ports':       { label: 'Cổng & Loa',       dir: [0.06, -0.58, 0.85], dist: 0.62, target: [0, -0.78, 0] }
       },
       hotspots: [
         {
           id: 'display',
           title: 'Màn hình OLED 120Hz ProMotion',
-          position: [-0.18, 0.50, 0.06],
+          position: [-0.36, 0.62, 0.085],
           normal: [0, 0, 1],
           cameraPreset: 'front',
           specKeys: ['màn hình', 'vi xử lý'],
@@ -68,7 +75,7 @@
         {
           id: 'chip',
           title: 'Vi xử lý Apple A20 Pro (2nm)',
-          position: [0.18, -0.40, 0.06],
+          position: [0.36, -0.58, 0.085],
           normal: [0, 0, 1],
           cameraPreset: 'front',
           specKeys: ['vi xử lý', 'hệ điều hành'],
@@ -77,23 +84,61 @@
         {
           id: 'camera',
           title: 'Hệ thống Camera Flagship',
-          position: [0.04, 0.48, -0.08],
+          position: [-0.08, 0.80, -0.095],
           normal: [0, 0, -1],
           cameraPreset: 'back-camera',
           specKeys: ['camera'],
-          description: 'Cụm camera toàn chiều ngang gồm 3 ống kính chuyên nghiệp, Flash LED và cảm biến LiDAR.'
+          description: 'Cụm camera chuyên nghiệp gồm 3 ống kính, Flash LED và cảm biến LiDAR.'
         },
         {
           id: 'battery-ports',
           title: 'Pin & Cổng sạc USB-C',
-          position: [0, -0.82, 0.02],
-          normal: [0, -0.85, 0.52],
+          position: [0, -0.98, 0.01],
+          normal: [0, -1, 0.15],
           cameraPreset: 'ports',
           specKeys: ['pin', 'bảo hành'],
           description: 'Cổng kết nối USB-C và hệ thống loa ngoài đặt tại cạnh đáy thân máy.'
         }
       ],
-      supportsExplodedView: false
+      supportsExplodedView: true,
+      explodedParts: [
+        // Lớp 1: Màn hình OLED & Dynamic Island (trượt ra trước +Z)
+        { meshName: 'xXDHkMplTIDAXLN', layerLabel: 'Màn hình OLED', offset: [0, 0, 0.36] },
+        { meshName: 'vELORlCJixqPHsZ', layerLabel: 'Viền màn hình', offset: [0, 0, 0.36] },
+        { meshName: 'DjdhycfQYjKMDyn', layerLabel: 'Dynamic Island', offset: [0, 0, 0.36] },
+        { meshName: 'usFLmqcyrnltBUr', layerLabel: 'Camera trước', offset: [0, 0, 0.36] },
+        { meshName: 'EbQGKrWAqhBHiMv', layerLabel: 'Khung camera trước', offset: [0, 0, 0.36] },
+        // Lớp 2: Khung viền Titan Unibody & Nút bấm (giữ ở tâm)
+        { meshName: 'GuYJryuYunhpphO', layerLabel: 'Khung Titan Unibody', offset: [0, 0, 0] },
+        { meshName: 'buRWvyqhBBgcJFo', layerLabel: 'Vành thân máy', offset: [0, 0, 0] },
+        { meshName: 'MrMmlCAsAxJpYqQ_0', layerLabel: 'Đai sườn máy', offset: [0, 0, 0] },
+        { meshName: 'DjsDkGiopeiEJZK', layerLabel: 'Viền cạnh bên', offset: [0, 0, 0] },
+        { meshName: 'ttmRoLdJipiIOmf', layerLabel: 'Gioăng khung', offset: [0, 0, 0] },
+        { meshName: 'pvdHknDTGDzVpwc', layerLabel: 'Nút bấm hông', offset: [0, 0, 0] },
+        { meshName: 'CfghdUoyzvwzIum', layerLabel: 'Viền nút bấm', offset: [0, 0, 0] },
+        // Lớp 3: Mặt lưng kính mờ & Logo Apple (tách ra sau -Z)
+        { meshName: 'wLfSXtbwRlBrwof', layerLabel: 'Kính lưng mờ', offset: [0, 0, -0.30] },
+        { meshName: 'WJwwVjsahIXbJpU', layerLabel: 'Viền kính lưng', offset: [0, 0, -0.30] },
+        { meshName: 'TakBsdEjEytCAMK', layerLabel: 'Bệ kính sau', offset: [0, 0, -0.30] },
+        { meshName: 'IykfmVvLplTsTEW', layerLabel: 'Logo Apple', offset: [0, 0, -0.30] },
+        { meshName: 'YfrJNXgMvGOAfzz', layerLabel: 'Tấm nền lưng', offset: [0, 0, -0.30] },
+        // Lớp 4: Cụm Camera 3 ống kính, Flash & LiDAR (tách xa ra sau -Z, nhích lên +Y)
+        { meshName: 'EddVrWkqZTlvmci', layerLabel: 'Mặt kính cụm Camera', offset: [0, 0.14, -0.52] },
+        { meshName: 'KSWlaxBcnPDpFCs', layerLabel: 'Thân ống kính Camera', offset: [0, 0.14, -0.52] },
+        { meshName: 'DCLCbjzqejuvsqH', layerLabel: 'Cảm biến LiDAR', offset: [0, 0.14, -0.52] },
+        { meshName: 'CdalkzDVnwgdEhS', layerLabel: 'Cụm thấu kính 3 mắt', offset: [0, 0.14, -0.52] },
+        { meshName: 'NtjcIgolNGgYlCg', layerLabel: 'Vành viền kim loại Camera', offset: [0, 0.14, -0.52] },
+        { meshName: 'pXBNoLiaMwsDHRF', layerLabel: 'Micro thu âm sau', offset: [0, 0.14, -0.52] },
+        { meshName: 'IkoiNqATMVoZFKD', layerLabel: 'Đèn Flash True Tone', offset: [0, 0.14, -0.52] },
+        { meshName: 'rqgRAGHOwnuBypi', layerLabel: 'Kính bảo vệ đèn Flash', offset: [0, 0.14, -0.52] },
+        // Lớp 5: Cụm cổng sạc USB-C & Hệ thống loa đáy (hạ xuống -Y)
+        { meshName: 'wqbHSzWaUxBCwxY_0', layerLabel: 'Khung cổng USB-C', offset: [0, -0.24, 0] },
+        { meshName: 'QvGDcbDApaGssma', layerLabel: 'Vỏ cổng sạc đáy', offset: [0, -0.24, 0] },
+        { meshName: 'vFwJFNASGvEHWhs', layerLabel: 'Chân tiếp xúc USB-C', offset: [0, -0.24, 0] },
+        { meshName: 'evAxFwhaQUwXuua', layerLabel: 'Lõi kết nối USB-C', offset: [0, -0.24, 0] },
+        { meshName: 'USxQiqZgxHbRvqB', layerLabel: 'Cụm loa đáy', offset: [0, -0.24, 0] },
+        { meshName: 'TvgBVmqNmSrFVfW', layerLabel: 'Lưới loa & Ốc đáy', offset: [0, -0.24, 0] }
+      ]
     }
   };
 
@@ -218,7 +263,15 @@
         material: {
           hex: String(spec.hex),
           metalness: spec.metalness == null ? null : clamp01(spec.metalness, null),
-          roughness: spec.roughness == null ? null : clamp01(spec.roughness, null)
+          roughness: spec.roughness == null ? null : clamp01(spec.roughness, null),
+          clearMap: Boolean(spec.clearMap),
+          glassHex: /^#[0-9a-f]{6}$/i.test(String(spec.glassHex || '')) ? String(spec.glassHex) : null,
+          glassMetalness: spec.glassMetalness == null ? null : clamp01(spec.glassMetalness, null),
+          glassRoughness: spec.glassRoughness == null ? null : clamp01(spec.glassRoughness, null),
+          accentHex: /^#[0-9a-f]{6}$/i.test(String(spec.accentHex || '')) ? String(spec.accentHex) : null,
+          accentMetalness: spec.accentMetalness == null ? null : clamp01(spec.accentMetalness, null),
+          accentRoughness: spec.accentRoughness == null ? null : clamp01(spec.accentRoughness, null),
+          screenTheme: spec.screenTheme ? String(spec.screenTheme) : ''
         }
       };
     });
@@ -613,6 +666,9 @@
     if (!isVerified) return null;
 
     var bodyMeshes = (Array.isArray(entry.bodyMeshes) ? entry.bodyMeshes : []).map(norm).filter(Boolean);
+    var glassMeshes = (Array.isArray(entry.glassMeshes) ? entry.glassMeshes : []).map(norm).filter(Boolean);
+    var accentMeshes = (Array.isArray(entry.accentMeshes) ? entry.accentMeshes : []).map(norm).filter(Boolean);
+    var screenMeshes = (Array.isArray(entry.screenMeshes) ? entry.screenMeshes : []).map(norm).filter(Boolean);
     var explodedParts = isSketchfab ? [] : buildExplodedParts(entry.explodedParts);
     var supportsExplodedView = isSketchfab
       ? false
@@ -637,6 +693,9 @@
       exposure: Number(entry.exposure) > 0 ? Number(entry.exposure) : 1.12,
       label: entry.label || product.name || 'Sản phẩm',
       bodyMeshes: bodyMeshes,
+      glassMeshes: glassMeshes,
+      accentMeshes: accentMeshes,
+      screenMeshes: screenMeshes,
       colorModels: buildColorModels(entry.colorModels),
       colorMaterials: buildColorMaterials(entry.colorMaterials, bodyMeshes),
       detailPresets: buildPresets(entry.detailPresets),
@@ -674,10 +733,13 @@
       if (!c) return;
       var res = resolveColor(model, c.name, c.key);
       if (!res) return;
+      var fallbackHex = typeof window.VLU_GET_COLOR_HEX === 'function'
+        ? window.VLU_GET_COLOR_HEX(c.name, c.key)
+        : '#7D7E80';
       out.push({
         name: c.name,
         key: c.key || '',
-        hex: c.hex || (res.material && res.material.hex) || '#94a3b8'
+        hex: c.hex || (res.material && res.material.hex) || fallbackHex
       });
     });
     return out;

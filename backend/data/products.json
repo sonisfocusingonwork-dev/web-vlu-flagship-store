@@ -7,28 +7,28 @@
         "colors": [
             {
                 "name": "Bạc",
-                "hex": "#E2E8F0",
+                "hex": "#E3E4E6",
                 "key": "bac",
                 "image": "SanPham/DienThoai/Apple/iPhone-18-Pro-Max/iPhone-18-Pro-Max-Bac.png",
                 "img": "SanPham/DienThoai/Apple/iPhone-18-Pro-Max/iPhone-18-Pro-Max-Bac.png"
             },
             {
                 "name": "Đen",
-                "hex": "#1D1D1F",
+                "hex": "#1F2024",
                 "key": "den",
                 "image": "SanPham/DienThoai/Apple/iPhone-18-Pro-Max/iPhone-18-Pro-Max-Den.png",
                 "img": "SanPham/DienThoai/Apple/iPhone-18-Pro-Max/iPhone-18-Pro-Max-Den.png"
             },
             {
                 "name": "Đỏ",
-                "hex": "#EF4444",
+                "hex": "#991B1B",
                 "key": "do",
                 "image": "SanPham/DienThoai/Apple/iPhone-18-Pro-Max/iPhone-18-Pro-Max-Do.png",
                 "img": "SanPham/DienThoai/Apple/iPhone-18-Pro-Max/iPhone-18-Pro-Max-Do.png"
             },
             {
                 "name": "Xám",
-                "hex": "#64748B",
+                "hex": "#7D7E80",
                 "key": "xam",
                 "image": "SanPham/DienThoai/Apple/iPhone-18-Pro-Max/iPhone-18-Pro-Max-Xam.png",
                 "img": "SanPham/DienThoai/Apple/iPhone-18-Pro-Max/iPhone-18-Pro-Max-Xam.png"
@@ -43,28 +43,28 @@
         "colors": [
             {
                 "name": "Bạc",
-                "hex": "#E2E8F0",
+                "hex": "#E3E4E6",
                 "key": "bac",
                 "image": "SanPham/DienThoai/Apple/iPhone-18-Pro/iPhone-18-Pro-Bac.jpg",
                 "img": "SanPham/DienThoai/Apple/iPhone-18-Pro/iPhone-18-Pro-Bac.jpg"
             },
             {
                 "name": "Đen",
-                "hex": "#1D1D1F",
+                "hex": "#1F2024",
                 "key": "den",
                 "image": "SanPham/DienThoai/Apple/iPhone-18-Pro/iPhone-18-Pro-Max-Den.jpg",
                 "img": "SanPham/DienThoai/Apple/iPhone-18-Pro/iPhone-18-Pro-Max-Den.jpg"
             },
             {
                 "name": "Đỏ",
-                "hex": "#EF4444",
+                "hex": "#991B1B",
                 "key": "do",
                 "image": "SanPham/DienThoai/Apple/iPhone-18-Pro/iPhone-18-Pro-Max-Do.jpg",
                 "img": "SanPham/DienThoai/Apple/iPhone-18-Pro/iPhone-18-Pro-Max-Do.jpg"
             },
             {
                 "name": "Xám",
-                "hex": "#64748B",
+                "hex": "#7D7E80",
                 "key": "xam",
                 "image": "SanPham/DienThoai/Apple/iPhone-18-Pro/iPhone-18-Pro-Max-Xam.jpg",
                 "img": "SanPham/DienThoai/Apple/iPhone-18-Pro/iPhone-18-Pro-Max-Xam.jpg"
@@ -79,14 +79,14 @@
         "colors": [
             {
                 "name": "Đen",
-                "hex": "#1D1D1F",
+                "hex": "#1F2024",
                 "key": "den",
                 "image": "SanPham/DienThoai/Apple/iPhone-Fold/iPhone-Duo-Den.jpg",
                 "img": "SanPham/DienThoai/Apple/iPhone-Fold/iPhone-Duo-Den.jpg"
             },
             {
                 "name": "Trắng",
-                "hex": "#F8FAFC",
+                "hex": "#F5F5F7",
                 "key": "trang",
                 "image": "SanPham/DienThoai/Apple/iPhone-Fold/iPhone-Duo-Trang.jpg",
                 "img": "SanPham/DienThoai/Apple/iPhone-Fold/iPhone-Duo-Trang.jpg"
@@ -108,7 +108,7 @@
             },
             {
                 "name": "Đen",
-                "hex": "#1D1D1F",
+                "hex": "#1F2024",
                 "key": "den",
                 "image": "SanPham/DienThoai/Apple/iPhone-17-Pro-Max/iPhone-17-Pro-Max-Đen.png",
                 "img": "SanPham/DienThoai/Apple/iPhone-17-Pro-Max/iPhone-17-Pro-Max-Đen.png"
@@ -130,14 +130,14 @@
             },
             {
                 "name": "Tím",
-                "hex": "#A855F7",
+                "hex": "#C4B5FD",
                 "key": "tim",
                 "image": "SanPham/DienThoai/Apple/iPhone-17-Pro/iPhone-17-Pro-Tim.jpg",
                 "img": "SanPham/DienThoai/Apple/iPhone-17-Pro/iPhone-17-Pro-Tim.jpg"
             },
             {
                 "name": "Trắng",
-                "hex": "#F8FAFC",
+                "hex": "#F5F5F7",
                 "key": "trang",
                 "image": "SanPham/DienThoai/Apple/iPhone-17-Pro/iPhone-17-Pro-Trang.jpg",
                 "img": "SanPham/DienThoai/Apple/iPhone-17-Pro/iPhone-17-Pro-Trang.jpg"
@@ -152,29 +152,29 @@
         "colors": [
             {
                 "name": "Đen",
-                "hex": "#1D1D1F",
+                "hex": "#1F2024",
                 "key": "den",
                 "image": "SanPham/DienThoai/Apple/iPhone-17-Air/iPhone-Air-Den.jpg",
                 "img": "SanPham/DienThoai/Apple/iPhone-17-Air/iPhone-Air-Den.jpg"
             },
             {
                 "name": "Kem",
-                "hex": "#F5EEDB",
+                "hex": "#F0E5D3",
                 "key": "kem",
                 "image": "SanPham/DienThoai/Apple/iPhone-17-Air/iPhone-Air-Kem.jpg",
                 "img": "SanPham/DienThoai/Apple/iPhone-17-Air/iPhone-Air-Kem.jpg"
             },
             {
                 "name": "Trắng",
-                "hex": "#F8FAFC",
+                "hex": "#F5F5F7",
                 "key": "trang",
                 "image": "SanPham/DienThoai/Apple/iPhone-17-Air/iPhone-Air-Trang.jpg",
                 "img": "SanPham/DienThoai/Apple/iPhone-17-Air/iPhone-Air-Trang.jpg"
             },
             {
                 "name": "Xanh Dương",
-                "hex": "#3B82F6",
-                "key": "xanh",
+                "hex": "#2563EB",
+                "key": "xanh-duong",
                 "image": "SanPham/DienThoai/Apple/iPhone-17-Air/iPhone-Air-Xanh.jpg",
                 "img": "SanPham/DienThoai/Apple/iPhone-17-Air/iPhone-Air-Xanh.jpg"
             }
@@ -188,35 +188,35 @@
         "colors": [
             {
                 "name": "Đen",
-                "hex": "#1D1D1F",
+                "hex": "#1F2024",
                 "key": "den",
                 "image": "SanPham/DienThoai/Apple/iPhone-17/iPhone-17-Den.jpg",
                 "img": "SanPham/DienThoai/Apple/iPhone-17/iPhone-17-Den.jpg"
             },
             {
                 "name": "Hồng",
-                "hex": "#F472B6",
+                "hex": "#F4A7B9",
                 "key": "hong",
                 "image": "SanPham/DienThoai/Apple/iPhone-17/iPhone-17-Hong.jpg",
                 "img": "SanPham/DienThoai/Apple/iPhone-17/iPhone-17-Hong.jpg"
             },
             {
                 "name": "Trắng",
-                "hex": "#F8FAFC",
+                "hex": "#F5F5F7",
                 "key": "trang",
                 "image": "SanPham/DienThoai/Apple/iPhone-17/iPhone-17-Trang.jpg",
                 "img": "SanPham/DienThoai/Apple/iPhone-17/iPhone-17-Trang.jpg"
             },
             {
                 "name": "Xanh Da Trời",
-                "hex": "#38BDF8",
+                "hex": "#93C5FD",
                 "key": "xanh-da-troi",
                 "image": "SanPham/DienThoai/Apple/iPhone-17/iPhone-17-Xanh Da Troi.jpg",
                 "img": "SanPham/DienThoai/Apple/iPhone-17/iPhone-17-Xanh Da Troi.jpg"
             },
             {
                 "name": "Xanh Lá",
-                "hex": "#10B981",
+                "hex": "#6EE7B7",
                 "key": "xanh-la",
                 "image": "SanPham/DienThoai/Apple/iPhone-17/iPhone-17-Xanh La.jpg",
                 "img": "SanPham/DienThoai/Apple/iPhone-17/iPhone-17-Xanh La.jpg"
@@ -231,28 +231,28 @@
         "colors": [
             {
                 "name": "Trắng",
-                "hex": "#F8FAFC",
+                "hex": "#F5F5F7",
                 "key": "trang",
                 "image": "SanPham/DienThoai/Apple/iPhone-16-Pro-Max/iPhone-16-Pro-Max--Trang.jpg",
                 "img": "SanPham/DienThoai/Apple/iPhone-16-Pro-Max/iPhone-16-Pro-Max--Trang.jpg"
             },
             {
                 "name": "Đen",
-                "hex": "#1D1D1F",
+                "hex": "#1F2024",
                 "key": "den",
                 "image": "SanPham/DienThoai/Apple/iPhone-16-Pro-Max/iPhone-16-Pro-Max-Den.jpg",
                 "img": "SanPham/DienThoai/Apple/iPhone-16-Pro-Max/iPhone-16-Pro-Max-Den.jpg"
             },
             {
                 "name": "Kem",
-                "hex": "#F5EEDB",
+                "hex": "#F0E5D3",
                 "key": "kem",
                 "image": "SanPham/DienThoai/Apple/iPhone-16-Pro-Max/iPhone-16-Pro-Max-Kem.jpg",
                 "img": "SanPham/DienThoai/Apple/iPhone-16-Pro-Max/iPhone-16-Pro-Max-Kem.jpg"
             },
             {
                 "name": "Xám",
-                "hex": "#64748B",
+                "hex": "#7D7E80",
                 "key": "xam",
                 "image": "SanPham/DienThoai/Apple/iPhone-16-Pro-Max/iPhone-16-Pro-Max-Xam.jpg",
                 "img": "SanPham/DienThoai/Apple/iPhone-16-Pro-Max/iPhone-16-Pro-Max-Xam.jpg"
@@ -267,28 +267,28 @@
         "colors": [
             {
                 "name": "Đen",
-                "hex": "#1D1D1F",
+                "hex": "#1F2024",
                 "key": "den",
                 "image": "SanPham/DienThoai/Apple/iPhone-16-Pro/iPhone-16-Pro-Den.jpg",
                 "img": "SanPham/DienThoai/Apple/iPhone-16-Pro/iPhone-16-Pro-Den.jpg"
             },
             {
                 "name": "Kem",
-                "hex": "#F5EEDB",
+                "hex": "#F0E5D3",
                 "key": "kem",
                 "image": "SanPham/DienThoai/Apple/iPhone-16-Pro/iPhone-16-Pro-Kem.jpg",
                 "img": "SanPham/DienThoai/Apple/iPhone-16-Pro/iPhone-16-Pro-Kem.jpg"
             },
             {
                 "name": "Trắng",
-                "hex": "#F8FAFC",
+                "hex": "#F5F5F7",
                 "key": "trang",
                 "image": "SanPham/DienThoai/Apple/iPhone-16-Pro/iPhone-16-Pro-Trang.jpg",
                 "img": "SanPham/DienThoai/Apple/iPhone-16-Pro/iPhone-16-Pro-Trang.jpg"
             },
             {
                 "name": "Xám",
-                "hex": "#64748B",
+                "hex": "#7D7E80",
                 "key": "xam",
                 "image": "SanPham/DienThoai/Apple/iPhone-16-Pro/iPhone-16-Pro-Xam.jpg",
                 "img": "SanPham/DienThoai/Apple/iPhone-16-Pro/iPhone-16-Pro-Xam.jpg"
@@ -303,35 +303,35 @@
         "colors": [
             {
                 "name": "Đen",
-                "hex": "#1D1D1F",
+                "hex": "#1F2024",
                 "key": "den",
                 "image": "SanPham/DienThoai/Apple/iPhone-16-Plus/iPhone-16-Plus-Den.jpg",
                 "img": "SanPham/DienThoai/Apple/iPhone-16-Plus/iPhone-16-Plus-Den.jpg"
             },
             {
                 "name": "Hồng",
-                "hex": "#F472B6",
+                "hex": "#F4A7B9",
                 "key": "hong",
                 "image": "SanPham/DienThoai/Apple/iPhone-16-Plus/iPhone-16-Plus-Hong.jpg",
                 "img": "SanPham/DienThoai/Apple/iPhone-16-Plus/iPhone-16-Plus-Hong.jpg"
             },
             {
                 "name": "Tím",
-                "hex": "#A855F7",
+                "hex": "#C4B5FD",
                 "key": "tim",
                 "image": "SanPham/DienThoai/Apple/iPhone-16-Plus/iPhone-16-Plus-Tim.jpg",
                 "img": "SanPham/DienThoai/Apple/iPhone-16-Plus/iPhone-16-Plus-Tim.jpg"
             },
             {
                 "name": "Trắng",
-                "hex": "#F8FAFC",
+                "hex": "#F5F5F7",
                 "key": "trang",
                 "image": "SanPham/DienThoai/Apple/iPhone-16-Plus/iPhone-16-Plus-Trang.jpg",
                 "img": "SanPham/DienThoai/Apple/iPhone-16-Plus/iPhone-16-Plus-Trang.jpg"
             },
             {
                 "name": "Xanh Lá",
-                "hex": "#10B981",
+                "hex": "#6EE7B7",
                 "key": "xanh-la",
                 "image": "SanPham/DienThoai/Apple/iPhone-16-Plus/iPhone-16-Plus-Xanh La.jpg",
                 "img": "SanPham/DienThoai/Apple/iPhone-16-Plus/iPhone-16-Plus-Xanh La.jpg"
@@ -346,35 +346,35 @@
         "colors": [
             {
                 "name": "Đen",
-                "hex": "#1D1D1F",
+                "hex": "#1F2024",
                 "key": "den",
                 "image": "SanPham/DienThoai/Apple/iPhone-16/iPhone-16-Den.jpg",
                 "img": "SanPham/DienThoai/Apple/iPhone-16/iPhone-16-Den.jpg"
             },
             {
                 "name": "Hồng",
-                "hex": "#F472B6",
+                "hex": "#F4A7B9",
                 "key": "hong",
                 "image": "SanPham/DienThoai/Apple/iPhone-16/iPhone-16-Hong.jpg",
                 "img": "SanPham/DienThoai/Apple/iPhone-16/iPhone-16-Hong.jpg"
             },
             {
                 "name": "Tím",
-                "hex": "#A855F7",
+                "hex": "#C4B5FD",
                 "key": "tim",
                 "image": "SanPham/DienThoai/Apple/iPhone-16/iPhone-16-Tim.jpg",
                 "img": "SanPham/DienThoai/Apple/iPhone-16/iPhone-16-Tim.jpg"
             },
             {
                 "name": "Trắng",
-                "hex": "#F8FAFC",
+                "hex": "#F5F5F7",
                 "key": "trang",
                 "image": "SanPham/DienThoai/Apple/iPhone-16/iPhone-16-Trang.jpg",
                 "img": "SanPham/DienThoai/Apple/iPhone-16/iPhone-16-Trang.jpg"
             },
             {
                 "name": "Xanh Lá",
-                "hex": "#10B981",
+                "hex": "#6EE7B7",
                 "key": "xanh-la",
                 "image": "SanPham/DienThoai/Apple/iPhone-16/iPhone-16-Xanh La.jpg",
                 "img": "SanPham/DienThoai/Apple/iPhone-16/iPhone-16-Xanh La.jpg"
@@ -389,22 +389,22 @@
         "colors": [
             {
                 "name": "Đen",
-                "hex": "#1D1D1F",
+                "hex": "#1F2024",
                 "key": "den",
                 "image": "SanPham/DienThoai/Samsung/Samsung-Galaxy-Z-Fold7/Galaxy-Z-Fold7-Den-clean.png",
                 "img": "SanPham/DienThoai/Samsung/Samsung-Galaxy-Z-Fold7/Galaxy-Z-Fold7-Den-clean.png"
             },
             {
                 "name": "Xám",
-                "hex": "#64748B",
+                "hex": "#7D7E80",
                 "key": "xam",
                 "image": "SanPham/DienThoai/Samsung/Samsung-Galaxy-Z-Fold7/Galaxy-Z-Fold7-Xam.webp",
                 "img": "SanPham/DienThoai/Samsung/Samsung-Galaxy-Z-Fold7/Galaxy-Z-Fold7-Xam.webp"
             },
             {
                 "name": "Xanh Dương",
-                "hex": "#3B82F6",
-                "key": "xanh",
+                "hex": "#2563EB",
+                "key": "xanh-duong",
                 "image": "SanPham/DienThoai/Samsung/Samsung-Galaxy-Z-Fold7/Galaxy-Z-Fold7-Xanh.webp",
                 "img": "SanPham/DienThoai/Samsung/Samsung-Galaxy-Z-Fold7/Galaxy-Z-Fold7-Xanh.webp"
             }
@@ -418,14 +418,14 @@
         "colors": [
             {
                 "name": "Đen",
-                "hex": "#1D1D1F",
+                "hex": "#1F2024",
                 "key": "den",
                 "image": "SanPham/DienThoai/Samsung/Samsung-Galaxy-Z-Flip7/Galaxy-Z-Flip7-Den.webp",
                 "img": "SanPham/DienThoai/Samsung/Samsung-Galaxy-Z-Flip7/Galaxy-Z-Flip7-Den.webp"
             },
             {
                 "name": "Đỏ",
-                "hex": "#EF4444",
+                "hex": "#B91C1C",
                 "key": "do",
                 "image": "SanPham/DienThoai/Samsung/Samsung-Galaxy-Z-Flip7/Galaxy-Z-Flip7-Do.webp",
                 "img": "SanPham/DienThoai/Samsung/Samsung-Galaxy-Z-Flip7/Galaxy-Z-Flip7-Do.webp"
@@ -439,7 +439,7 @@
             },
             {
                 "name": "Xanh Lá",
-                "hex": "#10B981",
+                "hex": "#6EE7B7",
                 "key": "xanh-la",
                 "image": "SanPham/DienThoai/Samsung/Samsung-Galaxy-Z-Flip7/Galaxy-Z-Flip7-Xanh La.webp",
                 "img": "SanPham/DienThoai/Samsung/Samsung-Galaxy-Z-Flip7/Galaxy-Z-Flip7-Xanh La.webp"
@@ -454,28 +454,28 @@
         "colors": [
             {
                 "name": "Đen",
-                "hex": "#1D1D1F",
+                "hex": "#1F2024",
                 "key": "den",
                 "image": "SanPham/DienThoai/Samsung/Samsung-Galaxy-S26-Ultra/Galaxy-S26-Ultra-Den-clean.png",
                 "img": "SanPham/DienThoai/Samsung/Samsung-Galaxy-S26-Ultra/Galaxy-S26-Ultra-Den-clean.png"
             },
             {
                 "name": "Tím",
-                "hex": "#A855F7",
+                "hex": "#C4B5FD",
                 "key": "tim",
                 "image": "SanPham/DienThoai/Samsung/Samsung-Galaxy-S26-Ultra/Galaxy-S26-Ultra-Tim.webp",
                 "img": "SanPham/DienThoai/Samsung/Samsung-Galaxy-S26-Ultra/Galaxy-S26-Ultra-Tim.webp"
             },
             {
                 "name": "Trắng",
-                "hex": "#F8FAFC",
+                "hex": "#F5F5F7",
                 "key": "trang",
                 "image": "SanPham/DienThoai/Samsung/Samsung-Galaxy-S26-Ultra/Galaxy-S26-Ultra-Trang.webp",
                 "img": "SanPham/DienThoai/Samsung/Samsung-Galaxy-S26-Ultra/Galaxy-S26-Ultra-Trang.webp"
             },
             {
                 "name": "Xanh Da Trời",
-                "hex": "#38BDF8",
+                "hex": "#93C5FD",
                 "key": "xanh-da-troi",
                 "image": "SanPham/DienThoai/Samsung/Samsung-Galaxy-S26-Ultra/Galaxy-S26-Ultra-Xanh Da Troi.webp",
                 "img": "SanPham/DienThoai/Samsung/Samsung-Galaxy-S26-Ultra/Galaxy-S26-Ultra-Xanh Da Troi.webp"
@@ -490,21 +490,21 @@
         "colors": [
             {
                 "name": "Đen",
-                "hex": "#1D1D1F",
+                "hex": "#1F2024",
                 "key": "den",
                 "image": "SanPham/DienThoai/Samsung/Samsung-Galaxy-S26-Plus/Galaxy-S26-Plus-Den-clean.png",
                 "img": "SanPham/DienThoai/Samsung/Samsung-Galaxy-S26-Plus/Galaxy-S26-Plus-Den-clean.png"
             },
             {
                 "name": "Tím",
-                "hex": "#A855F7",
+                "hex": "#C4B5FD",
                 "key": "tim",
                 "image": "SanPham/DienThoai/Samsung/Samsung-Galaxy-S26-Plus/Galaxy-S26-Plus-Tim.webp",
                 "img": "SanPham/DienThoai/Samsung/Samsung-Galaxy-S26-Plus/Galaxy-S26-Plus-Tim.webp"
             },
             {
                 "name": "Trắng",
-                "hex": "#F8FAFC",
+                "hex": "#F5F5F7",
                 "key": "trang",
                 "image": "SanPham/DienThoai/Samsung/Samsung-Galaxy-S26-Plus/Galaxy-S26-Plus-Trang.webp",
                 "img": "SanPham/DienThoai/Samsung/Samsung-Galaxy-S26-Plus/Galaxy-S26-Plus-Trang.webp"
@@ -526,28 +526,28 @@
         "colors": [
             {
                 "name": "Đen",
-                "hex": "#1D1D1F",
+                "hex": "#1F2024",
                 "key": "den",
                 "image": "SanPham/DienThoai/Samsung/Samsung-Galaxy-S26/Galaxy-S26-Den-clean.png",
                 "img": "SanPham/DienThoai/Samsung/Samsung-Galaxy-S26/Galaxy-S26-Den-clean.png"
             },
             {
                 "name": "Tím",
-                "hex": "#A855F7",
+                "hex": "#C4B5FD",
                 "key": "tim",
                 "image": "SanPham/DienThoai/Samsung/Samsung-Galaxy-S26/Galaxy-S26-Tim.webp",
                 "img": "SanPham/DienThoai/Samsung/Samsung-Galaxy-S26/Galaxy-S26-Tim.webp"
             },
             {
                 "name": "Trắng",
-                "hex": "#F8FAFC",
+                "hex": "#F5F5F7",
                 "key": "trang",
                 "image": "SanPham/DienThoai/Samsung/Samsung-Galaxy-S26/Galaxy-S26-Trang.webp",
                 "img": "SanPham/DienThoai/Samsung/Samsung-Galaxy-S26/Galaxy-S26-Trang.webp"
             },
             {
                 "name": "Xanh Da Trời",
-                "hex": "#38BDF8",
+                "hex": "#93C5FD",
                 "key": "xanh-da-troi",
                 "image": "SanPham/DienThoai/Samsung/Samsung-Galaxy-S26/Galaxy-S26-Xanh Da Troi.webp",
                 "img": "SanPham/DienThoai/Samsung/Samsung-Galaxy-S26/Galaxy-S26-Xanh Da Troi.webp"
@@ -562,29 +562,29 @@
         "colors": [
             {
                 "name": "Đen",
-                "hex": "#1D1D1F",
+                "hex": "#1F2024",
                 "key": "den",
                 "image": "SanPham/DienThoai/Samsung/Samsung-Galaxy-S25-Ultra/Galaxy-S25-Ultra-Den-clean.png",
                 "img": "SanPham/DienThoai/Samsung/Samsung-Galaxy-S25-Ultra/Galaxy-S25-Ultra-Den-clean.png"
             },
             {
                 "name": "Trắng",
-                "hex": "#F8FAFC",
+                "hex": "#F5F5F7",
                 "key": "trang",
                 "image": "SanPham/DienThoai/Samsung/Samsung-Galaxy-S25-Ultra/Galaxy-S25-Ultra-Trang.webp",
                 "img": "SanPham/DienThoai/Samsung/Samsung-Galaxy-S25-Ultra/Galaxy-S25-Ultra-Trang.webp"
             },
             {
                 "name": "Xám",
-                "hex": "#64748B",
+                "hex": "#7D7E80",
                 "key": "xam",
                 "image": "SanPham/DienThoai/Samsung/Samsung-Galaxy-S25-Ultra/Galaxy-S25-Ultra-Xam.webp",
                 "img": "SanPham/DienThoai/Samsung/Samsung-Galaxy-S25-Ultra/Galaxy-S25-Ultra-Xam.webp"
             },
             {
                 "name": "Xanh Dương",
-                "hex": "#3B82F6",
-                "key": "xanh",
+                "hex": "#2563EB",
+                "key": "xanh-duong",
                 "image": "SanPham/DienThoai/Samsung/Samsung-Galaxy-S25-Ultra/Galaxy-S25-Ultra-Xanh.webp",
                 "img": "SanPham/DienThoai/Samsung/Samsung-Galaxy-S25-Ultra/Galaxy-S25-Ultra-Xanh.webp"
             }
@@ -598,28 +598,28 @@
         "colors": [
             {
                 "name": "Xám",
-                "hex": "#64748B",
+                "hex": "#7D7E80",
                 "key": "xam",
                 "image": "SanPham/DienThoai/Samsung/Samsung-Galaxy-S25-Plus/Galaxy-S25-Plus-Xam.webp",
                 "img": "SanPham/DienThoai/Samsung/Samsung-Galaxy-S25-Plus/Galaxy-S25-Plus-Xam.webp"
             },
             {
                 "name": "Xanh Đậm",
-                "hex": "#1E40AF",
+                "hex": "#1E293B",
                 "key": "xanh-dam",
                 "image": "SanPham/DienThoai/Samsung/Samsung-Galaxy-S25-Plus/Galaxy-S25-Plus-Xanh Dam.webp",
                 "img": "SanPham/DienThoai/Samsung/Samsung-Galaxy-S25-Plus/Galaxy-S25-Plus-Xanh Dam.webp"
             },
             {
                 "name": "Xanh Da Trời",
-                "hex": "#38BDF8",
+                "hex": "#93C5FD",
                 "key": "xanh-da-troi",
                 "image": "SanPham/DienThoai/Samsung/Samsung-Galaxy-S25-Plus/Galaxy-S25-Plus-Xanh Da Troi.webp",
                 "img": "SanPham/DienThoai/Samsung/Samsung-Galaxy-S25-Plus/Galaxy-S25-Plus-Xanh Da Troi.webp"
             },
             {
                 "name": "Xanh Lá",
-                "hex": "#10B981",
+                "hex": "#6EE7B7",
                 "key": "xanh-la",
                 "image": "SanPham/DienThoai/Samsung/Samsung-Galaxy-S25-Plus/Galaxy-S25-Plus-Xanh La.png",
                 "img": "SanPham/DienThoai/Samsung/Samsung-Galaxy-S25-Plus/Galaxy-S25-Plus-Xanh La.png"
@@ -634,22 +634,22 @@
         "colors": [
             {
                 "name": "Bạc",
-                "hex": "#E2E8F0",
+                "hex": "#E3E4E6",
                 "key": "bac",
                 "image": "SanPham/DienThoai/Samsung/Samsung-Galaxy-S25/Galaxy-S25-Bac.webp",
                 "img": "SanPham/DienThoai/Samsung/Samsung-Galaxy-S25/Galaxy-S25-Bac.webp"
             },
             {
                 "name": "Đen",
-                "hex": "#1D1D1F",
+                "hex": "#1F2024",
                 "key": "den",
                 "image": "SanPham/DienThoai/Samsung/Samsung-Galaxy-S25/Galaxy-S25-Den.webp",
                 "img": "SanPham/DienThoai/Samsung/Samsung-Galaxy-S25/Galaxy-S25-Den.webp"
             },
             {
                 "name": "Xanh Dương",
-                "hex": "#3B82F6",
-                "key": "xanh",
+                "hex": "#2563EB",
+                "key": "xanh-duong",
                 "image": "SanPham/DienThoai/Samsung/Samsung-Galaxy-S25/Galaxy-S25-Xanh.webp",
                 "img": "SanPham/DienThoai/Samsung/Samsung-Galaxy-S25/Galaxy-S25-Xanh.webp"
             }
@@ -663,28 +663,28 @@
         "colors": [
             {
                 "name": "Đen",
-                "hex": "#1D1D1F",
+                "hex": "#1F2024",
                 "key": "den",
                 "image": "SanPham/DienThoai/Samsung/Samsung-Galaxy-S25-FE/Galaxy-S25-FE-Den.webp",
                 "img": "SanPham/DienThoai/Samsung/Samsung-Galaxy-S25-FE/Galaxy-S25-FE-Den.webp"
             },
             {
                 "name": "Trắng",
-                "hex": "#F8FAFC",
+                "hex": "#F5F5F7",
                 "key": "trang",
                 "image": "SanPham/DienThoai/Samsung/Samsung-Galaxy-S25-FE/Galaxy-S25-FE-Trang.webp",
                 "img": "SanPham/DienThoai/Samsung/Samsung-Galaxy-S25-FE/Galaxy-S25-FE-Trang.webp"
             },
             {
                 "name": "Xanh Dương",
-                "hex": "#3B82F6",
-                "key": "xanh",
+                "hex": "#2563EB",
+                "key": "xanh-duong",
                 "image": "SanPham/DienThoai/Samsung/Samsung-Galaxy-S25-FE/Galaxy-S25-FE-Xanh.webp",
                 "img": "SanPham/DienThoai/Samsung/Samsung-Galaxy-S25-FE/Galaxy-S25-FE-Xanh.webp"
             },
             {
                 "name": "Xanh Nhạt",
-                "hex": "#7DD3FC",
+                "hex": "#93C5FD",
                 "key": "xanh-nhat",
                 "image": "SanPham/DienThoai/Samsung/Samsung-Galaxy-S25-FE/Galaxy-S25-FE-Xanh Nhat.webp",
                 "img": "SanPham/DienThoai/Samsung/Samsung-Galaxy-S25-FE/Galaxy-S25-FE-Xanh Nhat.webp"
@@ -699,29 +699,29 @@
         "colors": [
             {
                 "name": "Đen",
-                "hex": "#1D1D1F",
+                "hex": "#1F2024",
                 "key": "den",
                 "image": "SanPham/DienThoai/Samsung/Samsung-Galaxy-A56-5G/Galaxy-A56-5G-Den.webp",
                 "img": "SanPham/DienThoai/Samsung/Samsung-Galaxy-A56-5G/Galaxy-A56-5G-Den.webp"
             },
             {
                 "name": "Hồng",
-                "hex": "#F472B6",
+                "hex": "#F4A7B9",
                 "key": "hong",
                 "image": "SanPham/DienThoai/Samsung/Samsung-Galaxy-A56-5G/Galaxy-A56-5G-Hong.webp",
                 "img": "SanPham/DienThoai/Samsung/Samsung-Galaxy-A56-5G/Galaxy-A56-5G-Hong.webp"
             },
             {
                 "name": "Xám",
-                "hex": "#64748B",
+                "hex": "#7D7E80",
                 "key": "xam",
                 "image": "SanPham/DienThoai/Samsung/Samsung-Galaxy-A56-5G/Galaxy-A56-5G-Xam.webp",
                 "img": "SanPham/DienThoai/Samsung/Samsung-Galaxy-A56-5G/Galaxy-A56-5G-Xam.webp"
             },
             {
                 "name": "Xanh Dương",
-                "hex": "#3B82F6",
-                "key": "xanh",
+                "hex": "#2563EB",
+                "key": "xanh-duong",
                 "image": "SanPham/DienThoai/Samsung/Samsung-Galaxy-A56-5G/Galaxy-A56-5G-Xanh.webp",
                 "img": "SanPham/DienThoai/Samsung/Samsung-Galaxy-A56-5G/Galaxy-A56-5G-Xanh.webp"
             }
@@ -735,21 +735,21 @@
         "colors": [
             {
                 "name": "Đen",
-                "hex": "#1D1D1F",
+                "hex": "#1F2024",
                 "key": "den",
                 "image": "SanPham/DienThoai/Samsung/Samsung-Galaxy-A36-5G/Galaxy-A36-5G-Den.webp",
                 "img": "SanPham/DienThoai/Samsung/Samsung-Galaxy-A36-5G/Galaxy-A36-5G-Den.webp"
             },
             {
                 "name": "Trắng",
-                "hex": "#F8FAFC",
+                "hex": "#F5F5F7",
                 "key": "trang",
                 "image": "SanPham/DienThoai/Samsung/Samsung-Galaxy-A36-5G/Galaxy-A36-5G-Trang.webp",
                 "img": "SanPham/DienThoai/Samsung/Samsung-Galaxy-A36-5G/Galaxy-A36-5G-Trang.webp"
             },
             {
                 "name": "Vàng",
-                "hex": "#FBBF24",
+                "hex": "#F3D58D",
                 "key": "vang",
                 "image": "SanPham/DienThoai/Samsung/Samsung-Galaxy-A36-5G/Galaxy-A36-5G-Vang.png",
                 "img": "SanPham/DienThoai/Samsung/Samsung-Galaxy-A36-5G/Galaxy-A36-5G-Vang.png"
@@ -764,22 +764,22 @@
         "colors": [
             {
                 "name": "Đen",
-                "hex": "#1D1D1F",
+                "hex": "#1F2024",
                 "key": "den",
                 "image": "SanPham/DienThoai/Samsung/Samsung-Galaxy-A16-5G/Galaxy-A16-5G-Den.png",
                 "img": "SanPham/DienThoai/Samsung/Samsung-Galaxy-A16-5G/Galaxy-A16-5G-Den.png"
             },
             {
                 "name": "Vàng",
-                "hex": "#FBBF24",
+                "hex": "#F3D58D",
                 "key": "vang",
                 "image": "SanPham/DienThoai/Samsung/Samsung-Galaxy-A16-5G/Galaxy-A16-5G-Vang.png",
                 "img": "SanPham/DienThoai/Samsung/Samsung-Galaxy-A16-5G/Galaxy-A16-5G-Vang.png"
             },
             {
                 "name": "Xanh Dương",
-                "hex": "#3B82F6",
-                "key": "xanh",
+                "hex": "#2563EB",
+                "key": "xanh-duong",
                 "image": "SanPham/DienThoai/Samsung/Samsung-Galaxy-A16-5G/Galaxy-A16-5G-Xanh.png",
                 "img": "SanPham/DienThoai/Samsung/Samsung-Galaxy-A16-5G/Galaxy-A16-5G-Xanh.png"
             }
@@ -792,23 +792,23 @@
         "image": "SanPham/DienThoai/Xiaomi/Xiaomi-15-Ultra/photo_2025-04-16_11-45-37.webp",
         "colors": [
             {
-                "name": "Bản màu 1",
-                "hex": "#475569",
-                "key": "variant-1",
+                "name": "Bạc Đen",
+                "hex": "#D1D5DB",
+                "key": "bac-den",
                 "image": "SanPham/DienThoai/Xiaomi/Xiaomi-15-Ultra/photo_2025-04-16_11-45-37.webp",
                 "img": "SanPham/DienThoai/Xiaomi/Xiaomi-15-Ultra/photo_2025-04-16_11-45-37.webp"
             },
             {
-                "name": "Bản màu 2",
-                "hex": "#475569",
-                "key": "variant-2",
+                "name": "Đen",
+                "hex": "#1F2024",
+                "key": "den",
                 "image": "SanPham/DienThoai/Xiaomi/Xiaomi-15-Ultra/photo_2025-04-16_11-45-51.webp",
                 "img": "SanPham/DienThoai/Xiaomi/Xiaomi-15-Ultra/photo_2025-04-16_11-45-51.webp"
             },
             {
-                "name": "Bản màu 3",
-                "hex": "#475569",
-                "key": "variant-3",
+                "name": "Bạc",
+                "hex": "#E3E4E6",
+                "key": "bac",
                 "image": "SanPham/DienThoai/Xiaomi/Xiaomi-15-Ultra/photo_2025-04-16_11-45-57.webp",
                 "img": "SanPham/DienThoai/Xiaomi/Xiaomi-15-Ultra/photo_2025-04-16_11-45-57.webp"
             }
@@ -822,22 +822,22 @@
         "colors": [
             {
                 "name": "Đen",
-                "hex": "#1D1D1F",
+                "hex": "#1F2024",
                 "key": "den",
                 "image": "SanPham/DienThoai/Xiaomi/Xiaomi-15-Pro/Xiaomi-15-Pro-Den.webp",
                 "img": "SanPham/DienThoai/Xiaomi/Xiaomi-15-Pro/Xiaomi-15-Pro-Den.webp"
             },
             {
                 "name": "Trắng",
-                "hex": "#F8FAFC",
+                "hex": "#F5F5F7",
                 "key": "trang",
                 "image": "SanPham/DienThoai/Xiaomi/Xiaomi-15-Pro/Xiaomi-15-Pro-Trang.webp",
                 "img": "SanPham/DienThoai/Xiaomi/Xiaomi-15-Pro/Xiaomi-15-Pro-Trang.webp"
             },
             {
                 "name": "Xanh Dương",
-                "hex": "#3B82F6",
-                "key": "xanh",
+                "hex": "#2563EB",
+                "key": "xanh-duong",
                 "image": "SanPham/DienThoai/Xiaomi/Xiaomi-15-Pro/Xiaomi-15-Pro-Xanh.webp",
                 "img": "SanPham/DienThoai/Xiaomi/Xiaomi-15-Pro/Xiaomi-15-Pro-Xanh.webp"
             }
@@ -851,22 +851,22 @@
         "colors": [
             {
                 "name": "Đen",
-                "hex": "#1D1D1F",
+                "hex": "#1F2024",
                 "key": "den",
                 "image": "SanPham/DienThoai/Xiaomi/Xiaomi-15/Xiaomi-15-Den.jpg",
                 "img": "SanPham/DienThoai/Xiaomi/Xiaomi-15/Xiaomi-15-Den.jpg"
             },
             {
                 "name": "Tím",
-                "hex": "#A855F7",
+                "hex": "#C4B5FD",
                 "key": "tim",
                 "image": "SanPham/DienThoai/Xiaomi/Xiaomi-15/Xiaomi-15-Tim.jpg",
                 "img": "SanPham/DienThoai/Xiaomi/Xiaomi-15/Xiaomi-15-Tim.jpg"
             },
             {
                 "name": "Xanh Dương",
-                "hex": "#3B82F6",
-                "key": "xanh",
+                "hex": "#2563EB",
+                "key": "xanh-duong",
                 "image": "SanPham/DienThoai/Xiaomi/Xiaomi-15/Xiaomi-15-Xanh.webp",
                 "img": "SanPham/DienThoai/Xiaomi/Xiaomi-15/Xiaomi-15-Xanh.webp"
             }
@@ -879,23 +879,23 @@
         "image": "SanPham/DienThoai/Xiaomi/Xiaomi-MIX-Fold-4/xiaomi-mix-fold-4.webp",
         "colors": [
             {
-                "name": "Bản màu 1",
-                "hex": "#475569",
-                "key": "variant-1",
+                "name": "Vàng",
+                "hex": "#F3D58D",
+                "key": "vang",
                 "image": "SanPham/DienThoai/Xiaomi/Xiaomi-MIX-Fold-4/xiaomi-mix-fold-4.webp",
                 "img": "SanPham/DienThoai/Xiaomi/Xiaomi-MIX-Fold-4/xiaomi-mix-fold-4.webp"
             },
             {
-                "name": "Bản màu 2",
-                "hex": "#475569",
-                "key": "variant-2",
+                "name": "Đen",
+                "hex": "#1F2024",
+                "key": "den",
                 "image": "SanPham/DienThoai/Xiaomi/Xiaomi-MIX-Fold-4/xiaomi-mix-fold-4_1_.png",
                 "img": "SanPham/DienThoai/Xiaomi/Xiaomi-MIX-Fold-4/xiaomi-mix-fold-4_1_.png"
             },
             {
-                "name": "Bản màu 3",
-                "hex": "#475569",
-                "key": "variant-3",
+                "name": "Xám Titan",
+                "hex": "#7D7E80",
+                "key": "xam-titan",
                 "image": "SanPham/DienThoai/Xiaomi/Xiaomi-MIX-Fold-4/xiaomi-mix-fold-4_2_.webp",
                 "img": "SanPham/DienThoai/Xiaomi/Xiaomi-MIX-Fold-4/xiaomi-mix-fold-4_2_.webp"
             }
@@ -908,9 +908,9 @@
         "image": "SanPham/DienThoai/Xiaomi/Xiaomi-MIX-Flip/xiaomi_mi_mix_flip.webp",
         "colors": [
             {
-                "name": "Tiêu chuẩn",
-                "hex": "#1E293B",
-                "key": "standard",
+                "name": "Tím",
+                "hex": "#C4B5FD",
+                "key": "tim",
                 "image": "SanPham/DienThoai/Xiaomi/Xiaomi-MIX-Flip/xiaomi_mi_mix_flip.webp",
                 "img": "SanPham/DienThoai/Xiaomi/Xiaomi-MIX-Flip/xiaomi_mi_mix_flip.webp"
             }
@@ -924,28 +924,28 @@
         "colors": [
             {
                 "name": "Đen",
-                "hex": "#1D1D1F",
+                "hex": "#1F2024",
                 "key": "den",
                 "image": "SanPham/DienThoai/Xiaomi/Redmi-Note-14-Pro-Plus-5G/Redmi-Note-14-Pro-Plus-5G-den.webp",
                 "img": "SanPham/DienThoai/Xiaomi/Redmi-Note-14-Pro-Plus-5G/Redmi-Note-14-Pro-Plus-5G-den.webp"
             },
             {
                 "name": "Tím",
-                "hex": "#A855F7",
+                "hex": "#C4B5FD",
                 "key": "tim",
                 "image": "SanPham/DienThoai/Xiaomi/Redmi-Note-14-Pro-Plus-5G/Redmi-Note-14-Pro-Plus-5G-Tim.webp",
                 "img": "SanPham/DienThoai/Xiaomi/Redmi-Note-14-Pro-Plus-5G/Redmi-Note-14-Pro-Plus-5G-Tim.webp"
             },
             {
                 "name": "Vàng",
-                "hex": "#FBBF24",
+                "hex": "#F3D58D",
                 "key": "vang",
                 "image": "SanPham/DienThoai/Xiaomi/Redmi-Note-14-Pro-Plus-5G/Redmi-Note-14-Pro-Plus-5G-Vang.webp",
                 "img": "SanPham/DienThoai/Xiaomi/Redmi-Note-14-Pro-Plus-5G/Redmi-Note-14-Pro-Plus-5G-Vang.webp"
             },
             {
                 "name": "Xanh Lá",
-                "hex": "#10B981",
+                "hex": "#6EE7B7",
                 "key": "xanh-la",
                 "image": "SanPham/DienThoai/Xiaomi/Redmi-Note-14-Pro-Plus-5G/Redmi-Note-14-Pro-Plus-Xanh La.webp",
                 "img": "SanPham/DienThoai/Xiaomi/Redmi-Note-14-Pro-Plus-5G/Redmi-Note-14-Pro-Plus-Xanh La.webp"
@@ -959,30 +959,30 @@
         "image": "SanPham/DienThoai/Xiaomi/Redmi-Note-14-Pro-5G/xiaomi-redmi-note-14-pro-5g-8gb-256gb_1_.png",
         "colors": [
             {
-                "name": "Bản màu 1",
-                "hex": "#475569",
-                "key": "variant-1",
+                "name": "Xanh Da Trời",
+                "hex": "#93C5FD",
+                "key": "xanh-da-troi",
                 "image": "SanPham/DienThoai/Xiaomi/Redmi-Note-14-Pro-5G/xiaomi-redmi-note-14-pro-5g-8gb-256gb_1_.png",
                 "img": "SanPham/DienThoai/Xiaomi/Redmi-Note-14-Pro-5G/xiaomi-redmi-note-14-pro-5g-8gb-256gb_1_.png"
             },
             {
-                "name": "Bản màu 2",
-                "hex": "#475569",
-                "key": "variant-2",
+                "name": "Xanh Bạc Hà",
+                "hex": "#6EE7B7",
+                "key": "xanh-bac-ha",
                 "image": "SanPham/DienThoai/Xiaomi/Redmi-Note-14-Pro-5G/xiaomi-redmi-note-14-pro-5g-8gb-256gb_2_.png",
                 "img": "SanPham/DienThoai/Xiaomi/Redmi-Note-14-Pro-5G/xiaomi-redmi-note-14-pro-5g-8gb-256gb_2_.png"
             },
             {
-                "name": "Bản màu 3",
-                "hex": "#475569",
-                "key": "variant-3",
+                "name": "Xanh Lá Nhạt",
+                "hex": "#86EFAC",
+                "key": "xanh-la-nhat",
                 "image": "SanPham/DienThoai/Xiaomi/Redmi-Note-14-Pro-5G/xiaomi-redmi-note-14-pro-5g-8gb-256gb_4_.png",
                 "img": "SanPham/DienThoai/Xiaomi/Redmi-Note-14-Pro-5G/xiaomi-redmi-note-14-pro-5g-8gb-256gb_4_.png"
             },
             {
-                "name": "Bản màu 4",
-                "hex": "#475569",
-                "key": "variant-4",
+                "name": "Xanh Ngọc",
+                "hex": "#5EEAD4",
+                "key": "xanh-ngoc",
                 "image": "SanPham/DienThoai/Xiaomi/Redmi-Note-14-Pro-5G/xiaomi-redmi-note-14-pro-5g-8gb-256gb_5_.webp",
                 "img": "SanPham/DienThoai/Xiaomi/Redmi-Note-14-Pro-5G/xiaomi-redmi-note-14-pro-5g-8gb-256gb_5_.webp"
             }
@@ -996,22 +996,22 @@
         "colors": [
             {
                 "name": "Đen",
-                "hex": "#1D1D1F",
+                "hex": "#1F2024",
                 "key": "den",
                 "image": "SanPham/DienThoai/Xiaomi/Redmi-Note-14/Redmi-Note-14-Den.webp",
                 "img": "SanPham/DienThoai/Xiaomi/Redmi-Note-14/Redmi-Note-14-Den.webp"
             },
             {
                 "name": "Vàng",
-                "hex": "#FBBF24",
+                "hex": "#F3D58D",
                 "key": "vang",
                 "image": "SanPham/DienThoai/Xiaomi/Redmi-Note-14/Redmi-Note-14-Vang.png",
                 "img": "SanPham/DienThoai/Xiaomi/Redmi-Note-14/Redmi-Note-14-Vang.png"
             },
             {
                 "name": "Xanh Dương",
-                "hex": "#3B82F6",
-                "key": "xanh",
+                "hex": "#2563EB",
+                "key": "xanh-duong",
                 "image": "SanPham/DienThoai/Xiaomi/Redmi-Note-14/Redmi-Note-14-Xanh.webp",
                 "img": "SanPham/DienThoai/Xiaomi/Redmi-Note-14/Redmi-Note-14-Xanh.webp"
             }
@@ -1025,21 +1025,21 @@
         "colors": [
             {
                 "name": "Đen",
-                "hex": "#1D1D1F",
+                "hex": "#1F2024",
                 "key": "den",
                 "image": "SanPham/DienThoai/Xiaomi/Redmi-K80-Pro/Redmi-K80-Pro-Den.png",
                 "img": "SanPham/DienThoai/Xiaomi/Redmi-K80-Pro/Redmi-K80-Pro-Den.png"
             },
             {
                 "name": "Xanh Đậm",
-                "hex": "#1E40AF",
+                "hex": "#1E293B",
                 "key": "xanh-dam",
                 "image": "SanPham/DienThoai/Xiaomi/Redmi-K80-Pro/Redmi-K80-Pro-Xanh dam.png",
                 "img": "SanPham/DienThoai/Xiaomi/Redmi-K80-Pro/Redmi-K80-Pro-Xanh dam.png"
             },
             {
                 "name": "Xanh Nhạt",
-                "hex": "#7DD3FC",
+                "hex": "#93C5FD",
                 "key": "xanh-nhat",
                 "image": "SanPham/DienThoai/Xiaomi/Redmi-K80-Pro/Redmi-K80-Pro-Xanh nhat.webp",
                 "img": "SanPham/DienThoai/Xiaomi/Redmi-K80-Pro/Redmi-K80-Pro-Xanh nhat.webp"
@@ -1053,9 +1053,9 @@
         "image": "SanPham/DienThoai/Xiaomi/Redmi-K80/dien-thoai-xiaomi-redmi-k80-12gb-256gb-cu-dep.jpg",
         "colors": [
             {
-                "name": "Tiêu chuẩn",
-                "hex": "#1E293B",
-                "key": "standard",
+                "name": "Đen",
+                "hex": "#1F2024",
+                "key": "den",
                 "image": "SanPham/DienThoai/Xiaomi/Redmi-K80/dien-thoai-xiaomi-redmi-k80-12gb-256gb-cu-dep.jpg",
                 "img": "SanPham/DienThoai/Xiaomi/Redmi-K80/dien-thoai-xiaomi-redmi-k80-12gb-256gb-cu-dep.jpg"
             }
@@ -1068,9 +1068,9 @@
         "image": "SanPham/DienThoai/Xiaomi/POCO-F7-Ultra/dien-thoai-xiaomi-poco-f7-ultra.webp",
         "colors": [
             {
-                "name": "Tiêu chuẩn",
-                "hex": "#1E293B",
-                "key": "standard",
+                "name": "Vàng",
+                "hex": "#F3D58D",
+                "key": "vang",
                 "image": "SanPham/DienThoai/Xiaomi/POCO-F7-Ultra/dien-thoai-xiaomi-poco-f7-ultra.webp",
                 "img": "SanPham/DienThoai/Xiaomi/POCO-F7-Ultra/dien-thoai-xiaomi-poco-f7-ultra.webp"
             }
@@ -1083,9 +1083,9 @@
         "image": "SanPham/DienThoai/Xiaomi/POCO-F7-Pro/dien-thoai-xiaomi-poco-f7-pro.webp",
         "colors": [
             {
-                "name": "Tiêu chuẩn",
-                "hex": "#1E293B",
-                "key": "standard",
+                "name": "Bạc",
+                "hex": "#E3E4E6",
+                "key": "bac",
                 "image": "SanPham/DienThoai/Xiaomi/POCO-F7-Pro/dien-thoai-xiaomi-poco-f7-pro.webp",
                 "img": "SanPham/DienThoai/Xiaomi/POCO-F7-Pro/dien-thoai-xiaomi-poco-f7-pro.webp"
             }
@@ -1106,7 +1106,7 @@
             },
             {
                 "name": "Xanh Lá",
-                "hex": "#10B981",
+                "hex": "#6EE7B7",
                 "key": "xanh-la",
                 "image": "SanPham/DienThoai/OPPO/OPPO-Find-X8-Ultra/Find-X8-Ultra-Xanh La.png",
                 "img": "SanPham/DienThoai/OPPO/OPPO-Find-X8-Ultra/Find-X8-Ultra-Xanh La.png"
@@ -1121,28 +1121,28 @@
         "colors": [
             {
                 "name": "Hồng",
-                "hex": "#F472B6",
+                "hex": "#F4A7B9",
                 "key": "hong",
                 "image": "SanPham/DienThoai/OPPO/OPPO-Find-X8-Pro/Find-X8-Pro-Hồng.webp",
                 "img": "SanPham/DienThoai/OPPO/OPPO-Find-X8-Pro/Find-X8-Pro-Hồng.webp"
             },
             {
                 "name": "Trắng",
-                "hex": "#F8FAFC",
+                "hex": "#F5F5F7",
                 "key": "trang",
                 "image": "SanPham/DienThoai/OPPO/OPPO-Find-X8-Pro/Find-X8-Pro-Trắng.png",
                 "img": "SanPham/DienThoai/OPPO/OPPO-Find-X8-Pro/Find-X8-Pro-Trắng.png"
             },
             {
                 "name": "Xanh Dương",
-                "hex": "#3B82F6",
-                "key": "xanh",
+                "hex": "#2563EB",
+                "key": "xanh-duong",
                 "image": "SanPham/DienThoai/OPPO/OPPO-Find-X8-Pro/Find-X8-Pro-Xanh.png",
                 "img": "SanPham/DienThoai/OPPO/OPPO-Find-X8-Pro/Find-X8-Pro-Xanh.png"
             },
             {
                 "name": "Đen",
-                "hex": "#1D1D1F",
+                "hex": "#1F2024",
                 "key": "den",
                 "image": "SanPham/DienThoai/OPPO/OPPO-Find-X8-Pro/Find-X8-Pro-Đen.png",
                 "img": "SanPham/DienThoai/OPPO/OPPO-Find-X8-Pro/Find-X8-Pro-Đen.png"
@@ -1157,14 +1157,14 @@
         "colors": [
             {
                 "name": "Xám",
-                "hex": "#64748B",
+                "hex": "#7D7E80",
                 "key": "xam",
                 "image": "SanPham/DienThoai/OPPO/OPPO-Find-X8/Find-X8-Xám.webp",
                 "img": "SanPham/DienThoai/OPPO/OPPO-Find-X8/Find-X8-Xám.webp"
             },
             {
                 "name": "Đen",
-                "hex": "#1D1D1F",
+                "hex": "#1F2024",
                 "key": "den",
                 "image": "SanPham/DienThoai/OPPO/OPPO-Find-X8/Find-X8-Đen.webp",
                 "img": "SanPham/DienThoai/OPPO/OPPO-Find-X8/Find-X8-Đen.webp"
@@ -1179,14 +1179,14 @@
         "colors": [
             {
                 "name": "Vàng",
-                "hex": "#FBBF24",
+                "hex": "#F3D58D",
                 "key": "vang",
                 "image": "SanPham/DienThoai/OPPO/OPPO-Find-N4/Oppo-Find-N#-Vang.webp",
                 "img": "SanPham/DienThoai/OPPO/OPPO-Find-N4/Oppo-Find-N#-Vang.webp"
             },
             {
                 "name": "Đen",
-                "hex": "#1D1D1F",
+                "hex": "#1F2024",
                 "key": "den",
                 "image": "SanPham/DienThoai/OPPO/OPPO-Find-N4/Oppo-Find-N3-Den.webp",
                 "img": "SanPham/DienThoai/OPPO/OPPO-Find-N4/Oppo-Find-N3-Den.webp"
@@ -1201,14 +1201,14 @@
         "colors": [
             {
                 "name": "Hồng",
-                "hex": "#F472B6",
+                "hex": "#F4A7B9",
                 "key": "hong",
                 "image": "SanPham/DienThoai/OPPO/OPPO-Find-N4-Flip/Oppo-Find-N4-Flip-Hong.webp",
                 "img": "SanPham/DienThoai/OPPO/OPPO-Find-N4-Flip/Oppo-Find-N4-Flip-Hong.webp"
             },
             {
                 "name": "Vàng",
-                "hex": "#FBBF24",
+                "hex": "#F3D58D",
                 "key": "vang",
                 "image": "SanPham/DienThoai/OPPO/OPPO-Find-N4-Flip/Oppo-Find-N4-Flip-Vang.png",
                 "img": "SanPham/DienThoai/OPPO/OPPO-Find-N4-Flip/Oppo-Find-N4-Flip-Vang.png"
@@ -1223,14 +1223,14 @@
         "colors": [
             {
                 "name": "Trắng",
-                "hex": "#F8FAFC",
+                "hex": "#F5F5F7",
                 "key": "trang",
                 "image": "SanPham/DienThoai/OPPO/OPPO-Reno13-Pro-5G/Reno13-Pro-5G-Trắng.webp",
                 "img": "SanPham/DienThoai/OPPO/OPPO-Reno13-Pro-5G/Reno13-Pro-5G-Trắng.webp"
             },
             {
                 "name": "Đen",
-                "hex": "#1D1D1F",
+                "hex": "#1F2024",
                 "key": "den",
                 "image": "SanPham/DienThoai/OPPO/OPPO-Reno13-Pro-5G/Reno13-Pro-5G-Đen.webp",
                 "img": "SanPham/DienThoai/OPPO/OPPO-Reno13-Pro-5G/Reno13-Pro-5G-Đen.webp"
@@ -1245,14 +1245,14 @@
         "colors": [
             {
                 "name": "Tím",
-                "hex": "#A855F7",
+                "hex": "#C4B5FD",
                 "key": "tim",
                 "image": "SanPham/DienThoai/OPPO/OPPO-Reno13-5G/Reno13-5G-Tím.webp",
                 "img": "SanPham/DienThoai/OPPO/OPPO-Reno13-5G/Reno13-5G-Tím.webp"
             },
             {
                 "name": "Đen",
-                "hex": "#1D1D1F",
+                "hex": "#1F2024",
                 "key": "den",
                 "image": "SanPham/DienThoai/OPPO/OPPO-Reno13-5G/Reno13-5G-Đen.webp",
                 "img": "SanPham/DienThoai/OPPO/OPPO-Reno13-5G/Reno13-5G-Đen.webp"
@@ -1267,14 +1267,14 @@
         "colors": [
             {
                 "name": "Đen",
-                "hex": "#1D1D1F",
+                "hex": "#1F2024",
                 "key": "den",
                 "image": "SanPham/DienThoai/OPPO/OPPO-A5-Pro/Oppo-A5-Pro-Den.png",
                 "img": "SanPham/DienThoai/OPPO/OPPO-A5-Pro/Oppo-A5-Pro-Den.png"
             },
             {
                 "name": "Trắng",
-                "hex": "#F8FAFC",
+                "hex": "#F5F5F7",
                 "key": "trang",
                 "image": "SanPham/DienThoai/OPPO/OPPO-A5-Pro/Oppo-A5-Pro-Trang.webp",
                 "img": "SanPham/DienThoai/OPPO/OPPO-A5-Pro/Oppo-A5-Pro-Trang.webp"
@@ -1289,14 +1289,14 @@
         "colors": [
             {
                 "name": "Đen",
-                "hex": "#1D1D1F",
+                "hex": "#1F2024",
                 "key": "den",
                 "image": "SanPham/DienThoai/OPPO/OPPO-A3/Oppo-A3-Den.webp",
                 "img": "SanPham/DienThoai/OPPO/OPPO-A3/Oppo-A3-Den.webp"
             },
             {
                 "name": "Tím",
-                "hex": "#A855F7",
+                "hex": "#C4B5FD",
                 "key": "tim",
                 "image": "SanPham/DienThoai/OPPO/OPPO-A3/Oppo-A3-Tim.webp",
                 "img": "SanPham/DienThoai/OPPO/OPPO-A3/Oppo-A3-Tim.webp"
@@ -1310,9 +1310,9 @@
         "image": "SanPham/DienThoai/vivo/vivo-X200-Ultra/dien-thoai-vivo-x200-ultra.webp",
         "colors": [
             {
-                "name": "Tiêu chuẩn",
-                "hex": "#1E293B",
-                "key": "standard",
+                "name": "Đen",
+                "hex": "#1F2024",
+                "key": "den",
                 "image": "SanPham/DienThoai/vivo/vivo-X200-Ultra/dien-thoai-vivo-x200-ultra.webp",
                 "img": "SanPham/DienThoai/vivo/vivo-X200-Ultra/dien-thoai-vivo-x200-ultra.webp"
             }
@@ -1325,9 +1325,9 @@
         "image": "SanPham/DienThoai/vivo/vivo-X200-Pro/dien-thoai-vivo-x200-pro-mini-5g-16gb-512gb-cu-xuoc-can_1.webp",
         "colors": [
             {
-                "name": "Tiêu chuẩn",
-                "hex": "#1E293B",
-                "key": "standard",
+                "name": "Xám",
+                "hex": "#7D7E80",
+                "key": "xam",
                 "image": "SanPham/DienThoai/vivo/vivo-X200-Pro/dien-thoai-vivo-x200-pro-mini-5g-16gb-512gb-cu-xuoc-can_1.webp",
                 "img": "SanPham/DienThoai/vivo/vivo-X200-Pro/dien-thoai-vivo-x200-pro-mini-5g-16gb-512gb-cu-xuoc-can_1.webp"
             }
@@ -1341,14 +1341,14 @@
         "colors": [
             {
                 "name": "Đen",
-                "hex": "#1D1D1F",
+                "hex": "#1F2024",
                 "key": "den",
                 "image": "SanPham/DienThoai/vivo/vivo-X200/vivo-X200-den.webp",
                 "img": "SanPham/DienThoai/vivo/vivo-X200/vivo-X200-den.webp"
             },
             {
                 "name": "Trắng",
-                "hex": "#F8FAFC",
+                "hex": "#F5F5F7",
                 "key": "trang",
                 "image": "SanPham/DienThoai/vivo/vivo-X200/vivo-X200-Trang.webp",
                 "img": "SanPham/DienThoai/vivo/vivo-X200/vivo-X200-Trang.webp"
@@ -1362,7 +1362,7 @@
             },
             {
                 "name": "Xanh Lá",
-                "hex": "#10B981",
+                "hex": "#6EE7B7",
                 "key": "xanh-la",
                 "image": "SanPham/DienThoai/vivo/vivo-X200/vivo-X200-Xanh Lam.webp",
                 "img": "SanPham/DienThoai/vivo/vivo-X200/vivo-X200-Xanh Lam.webp"
@@ -1376,9 +1376,9 @@
         "image": "SanPham/DienThoai/vivo/vivo-X-Fold4/vivo-X-Fold4.webp",
         "colors": [
             {
-                "name": "Tiêu chuẩn",
-                "hex": "#1E293B",
-                "key": "standard",
+                "name": "Trắng",
+                "hex": "#F5F5F7",
+                "key": "trang",
                 "image": "SanPham/DienThoai/vivo/vivo-X-Fold4/vivo-X-Fold4.webp",
                 "img": "SanPham/DienThoai/vivo/vivo-X-Fold4/vivo-X-Fold4.webp"
             }
@@ -1392,14 +1392,14 @@
         "colors": [
             {
                 "name": "Đen",
-                "hex": "#1D1D1F",
+                "hex": "#1F2024",
                 "key": "den",
                 "image": "SanPham/DienThoai/vivo/vivo-X-Fold3-Pro/vivo-X-Fold3-Pro-Den.png",
                 "img": "SanPham/DienThoai/vivo/vivo-X-Fold3-Pro/vivo-X-Fold3-Pro-Den.png"
             },
             {
                 "name": "Trắng",
-                "hex": "#F8FAFC",
+                "hex": "#F5F5F7",
                 "key": "trang",
                 "image": "SanPham/DienThoai/vivo/vivo-X-Fold3-Pro/vivo-X-Fold3-Pro-Trang.png",
                 "img": "SanPham/DienThoai/vivo/vivo-X-Fold3-Pro/vivo-X-Fold3-Pro-Trang.png"
@@ -1414,14 +1414,14 @@
         "colors": [
             {
                 "name": "Đen",
-                "hex": "#1D1D1F",
+                "hex": "#1F2024",
                 "key": "den",
                 "image": "SanPham/DienThoai/vivo/vivo-V50-Pro/vivo-V50-Pro-Den.webp",
                 "img": "SanPham/DienThoai/vivo/vivo-V50-Pro/vivo-V50-Pro-Den.webp"
             },
             {
                 "name": "Trắng",
-                "hex": "#F8FAFC",
+                "hex": "#F5F5F7",
                 "key": "trang",
                 "image": "SanPham/DienThoai/vivo/vivo-V50-Pro/vivo-V50-Pro-Trang.webp",
                 "img": "SanPham/DienThoai/vivo/vivo-V50-Pro/vivo-V50-Pro-Trang.webp"
@@ -1435,9 +1435,9 @@
         "image": "SanPham/DienThoai/vivo/vivo-V50/vivo-v50.jpg",
         "colors": [
             {
-                "name": "Tiêu chuẩn",
-                "hex": "#1E293B",
-                "key": "standard",
+                "name": "Đỏ Đô",
+                "hex": "#991B1B",
+                "key": "do-do",
                 "image": "SanPham/DienThoai/vivo/vivo-V50/vivo-v50.jpg",
                 "img": "SanPham/DienThoai/vivo/vivo-V50/vivo-v50.jpg"
             }
@@ -1451,21 +1451,21 @@
         "colors": [
             {
                 "name": "Đen",
-                "hex": "#1D1D1F",
+                "hex": "#1F2024",
                 "key": "den",
                 "image": "SanPham/DienThoai/vivo/vivo-V40/vivo-V40-Den.png",
                 "img": "SanPham/DienThoai/vivo/vivo-V40/vivo-V40-Den.png"
             },
             {
                 "name": "Trắng",
-                "hex": "#F8FAFC",
+                "hex": "#F5F5F7",
                 "key": "trang",
                 "image": "SanPham/DienThoai/vivo/vivo-V40/vivo-V40-Trang.webp",
                 "img": "SanPham/DienThoai/vivo/vivo-V40/vivo-V40-Trang.webp"
             },
             {
                 "name": "Xám",
-                "hex": "#64748B",
+                "hex": "#7D7E80",
                 "key": "xam",
                 "image": "SanPham/DienThoai/vivo/vivo-V40/vivo-V40-Xam.webp",
                 "img": "SanPham/DienThoai/vivo/vivo-V40/vivo-V40-Xam.webp"
@@ -1479,30 +1479,30 @@
         "image": "SanPham/Laptop/MacBook/MacBook-Air-M5/01_6_4.png",
         "colors": [
             {
-                "name": "Bản màu 1",
-                "hex": "#475569",
-                "key": "variant-1",
+                "name": "Xanh Da Trời",
+                "hex": "#93C5FD",
+                "key": "xanh-da-troi",
                 "image": "SanPham/Laptop/MacBook/MacBook-Air-M5/01_6_4.png",
                 "img": "SanPham/Laptop/MacBook/MacBook-Air-M5/01_6_4.png"
             },
             {
-                "name": "Bản màu 2",
-                "hex": "#475569",
-                "key": "variant-2",
+                "name": "Bạc",
+                "hex": "#E3E4E6",
+                "key": "bac",
                 "image": "SanPham/Laptop/MacBook/MacBook-Air-M5/02_2_.png",
                 "img": "SanPham/Laptop/MacBook/MacBook-Air-M5/02_2_.png"
             },
             {
-                "name": "Bản màu 3",
-                "hex": "#475569",
-                "key": "variant-3",
+                "name": "Ánh Sao",
+                "hex": "#F0E5D3",
+                "key": "anh-sao",
                 "image": "SanPham/Laptop/MacBook/MacBook-Air-M5/ma883f_1.jpg",
                 "img": "SanPham/Laptop/MacBook/MacBook-Air-M5/ma883f_1.jpg"
             },
             {
-                "name": "Bản màu 4",
-                "hex": "#475569",
-                "key": "variant-4",
+                "name": "Đêm Xanh Thẫm",
+                "hex": "#1E293B",
+                "key": "dem-xanh-tham",
                 "image": "SanPham/Laptop/MacBook/MacBook-Air-M5/macboo_4.jpg",
                 "img": "SanPham/Laptop/MacBook/MacBook-Air-M5/macboo_4.jpg"
             }
@@ -1515,23 +1515,23 @@
         "image": "SanPham/Laptop/MacBook/MacBook-Pro-14-M5/text_ng_n_2__11_1.png",
         "colors": [
             {
-                "name": "Bản màu 1",
-                "hex": "#475569",
-                "key": "variant-1",
+                "name": "Đen Không Gian",
+                "hex": "#1F2024",
+                "key": "den-khong-gian",
                 "image": "SanPham/Laptop/MacBook/MacBook-Pro-14-M5/text_ng_n_2__11_1.png",
                 "img": "SanPham/Laptop/MacBook/MacBook-Pro-14-M5/text_ng_n_2__11_1.png"
             },
             {
-                "name": "Bản màu 2",
-                "hex": "#475569",
-                "key": "variant-2",
+                "name": "Bạc",
+                "hex": "#E3E4E6",
+                "key": "bac",
                 "image": "SanPham/Laptop/MacBook/MacBook-Pro-14-M5/text_ng_n_3__9_1.png",
                 "img": "SanPham/Laptop/MacBook/MacBook-Pro-14-M5/text_ng_n_3__9_1.png"
             },
             {
-                "name": "Bản màu 3",
-                "hex": "#475569",
-                "key": "variant-3",
+                "name": "Xám Không Gian",
+                "hex": "#7D7E80",
+                "key": "xam-khong-gian",
                 "image": "SanPham/Laptop/MacBook/MacBook-Pro-14-M5/text_ng_n_8__10_3_1.png",
                 "img": "SanPham/Laptop/MacBook/MacBook-Pro-14-M5/text_ng_n_8__10_3_1.png"
             }
@@ -1544,23 +1544,23 @@
         "image": "SanPham/Laptop/MacBook/MacBook-Pro-16-M5-Pro/02_1__1.png",
         "colors": [
             {
-                "name": "Bản màu 1",
-                "hex": "#475569",
-                "key": "variant-1",
+                "name": "Đen Không Gian",
+                "hex": "#1F2024",
+                "key": "den-khong-gian",
                 "image": "SanPham/Laptop/MacBook/MacBook-Pro-16-M5-Pro/02_1__1.png",
                 "img": "SanPham/Laptop/MacBook/MacBook-Pro-16-M5-Pro/02_1__1.png"
             },
             {
-                "name": "Bản màu 2",
-                "hex": "#475569",
-                "key": "variant-2",
+                "name": "Bạc",
+                "hex": "#E3E4E6",
+                "key": "bac",
                 "image": "SanPham/Laptop/MacBook/MacBook-Pro-16-M5-Pro/ma2d5a_1_1.jpg",
                 "img": "SanPham/Laptop/MacBook/MacBook-Pro-16-M5-Pro/ma2d5a_1_1.jpg"
             },
             {
-                "name": "Bản màu 3",
-                "hex": "#475569",
-                "key": "variant-3",
+                "name": "Xám Không Gian",
+                "hex": "#7D7E80",
+                "key": "xam-khong-gian",
                 "image": "SanPham/Laptop/MacBook/MacBook-Pro-16-M5-Pro/_en_5_14_1_1_1_1.webp",
                 "img": "SanPham/Laptop/MacBook/MacBook-Pro-16-M5-Pro/_en_5_14_1_1_1_1.webp"
             }
@@ -1573,30 +1573,30 @@
         "image": "SanPham/Laptop/MacBook/MacBook-Pro-16-M5-Max/macbook-pro-16-m5-max.png",
         "colors": [
             {
-                "name": "Bản màu 1",
-                "hex": "#475569",
-                "key": "variant-1",
+                "name": "Đen Không Gian",
+                "hex": "#1F2024",
+                "key": "den-khong-gian",
                 "image": "SanPham/Laptop/MacBook/MacBook-Pro-16-M5-Max/macbook-pro-16-m5-max.png",
                 "img": "SanPham/Laptop/MacBook/MacBook-Pro-16-M5-Max/macbook-pro-16-m5-max.png"
             },
             {
-                "name": "Bản màu 2",
-                "hex": "#475569",
-                "key": "variant-2",
+                "name": "Bạc",
+                "hex": "#E3E4E6",
+                "key": "bac",
                 "image": "SanPham/Laptop/MacBook/MacBook-Pro-16-M5-Max/ma745f_1.webp",
                 "img": "SanPham/Laptop/MacBook/MacBook-Pro-16-M5-Max/ma745f_1.webp"
             },
             {
-                "name": "Bản màu 3",
-                "hex": "#475569",
-                "key": "variant-3",
+                "name": "Xám Không Gian",
+                "hex": "#7D7E80",
+                "key": "xam-khong-gian",
                 "image": "SanPham/Laptop/MacBook/MacBook-Pro-16-M5-Max/macboo_2_17.webp",
                 "img": "SanPham/Laptop/MacBook/MacBook-Pro-16-M5-Max/macboo_2_17.webp"
             },
             {
-                "name": "Bản màu 4",
-                "hex": "#475569",
-                "key": "variant-4",
+                "name": "Titan Tự Nhiên",
+                "hex": "#C5B9A5",
+                "key": "titan-tu-nhien",
                 "image": "SanPham/Laptop/MacBook/MacBook-Pro-16-M5-Max/text_ng_n_1__12_4_1_1_1_1.webp",
                 "img": "SanPham/Laptop/MacBook/MacBook-Pro-16-M5-Max/text_ng_n_1__12_4_1_1_1_1.webp"
             }
@@ -1609,51 +1609,51 @@
         "image": "SanPham/Laptop/Hoc-Tap-Van-Phong/ASUS-Vivobook-S-15/text_ng_n_10__4_17_1_1_1_1.png",
         "colors": [
             {
-                "name": "Bản màu 1",
-                "hex": "#475569",
-                "key": "variant-1",
+                "name": "Bạc",
+                "hex": "#E3E4E6",
+                "key": "bac",
                 "image": "SanPham/Laptop/Hoc-Tap-Van-Phong/ASUS-Vivobook-S-15/text_ng_n_10__4_17_1_1_1_1.png",
                 "img": "SanPham/Laptop/Hoc-Tap-Van-Phong/ASUS-Vivobook-S-15/text_ng_n_10__4_17_1_1_1_1.png"
             },
             {
-                "name": "Bản màu 2",
-                "hex": "#475569",
-                "key": "variant-2",
+                "name": "Bạc Sáng",
+                "hex": "#EDEFF2",
+                "key": "bac-sang",
                 "image": "SanPham/Laptop/Hoc-Tap-Van-Phong/ASUS-Vivobook-S-15/text_ng_n_11__5_29_1_1_1_1.png",
                 "img": "SanPham/Laptop/Hoc-Tap-Van-Phong/ASUS-Vivobook-S-15/text_ng_n_11__5_29_1_1_1_1.png"
             },
             {
-                "name": "Bản màu 3",
-                "hex": "#475569",
-                "key": "variant-3",
+                "name": "Bạc Nhám",
+                "hex": "#D6D8DE",
+                "key": "bac-nham",
                 "image": "SanPham/Laptop/Hoc-Tap-Van-Phong/ASUS-Vivobook-S-15/text_ng_n_12__5_28_1_1_1_1.png",
                 "img": "SanPham/Laptop/Hoc-Tap-Van-Phong/ASUS-Vivobook-S-15/text_ng_n_12__5_28_1_1_1_1.png"
             },
             {
-                "name": "Bản màu 4",
-                "hex": "#475569",
-                "key": "variant-4",
+                "name": "Xám Bạc",
+                "hex": "#C4C8D0",
+                "key": "xam-bac",
                 "image": "SanPham/Laptop/Hoc-Tap-Van-Phong/ASUS-Vivobook-S-15/text_ng_n_13__6_24_1_1_1_1.webp",
                 "img": "SanPham/Laptop/Hoc-Tap-Van-Phong/ASUS-Vivobook-S-15/text_ng_n_13__6_24_1_1_1_1.webp"
             },
             {
-                "name": "Bản màu 5",
-                "hex": "#475569",
-                "key": "variant-5",
+                "name": "Bạc Ánh Kim",
+                "hex": "#DFE2E8",
+                "key": "bac-anh-kim",
                 "image": "SanPham/Laptop/Hoc-Tap-Van-Phong/ASUS-Vivobook-S-15/text_ng_n_15__7_26_1_1_1_1.webp",
                 "img": "SanPham/Laptop/Hoc-Tap-Van-Phong/ASUS-Vivobook-S-15/text_ng_n_15__7_26_1_1_1_1.webp"
             },
             {
-                "name": "Bản màu 6",
-                "hex": "#475569",
-                "key": "variant-6",
+                "name": "Bạc Titan",
+                "hex": "#CED2D9",
+                "key": "bac-titan",
                 "image": "SanPham/Laptop/Hoc-Tap-Van-Phong/ASUS-Vivobook-S-15/text_ng_n_16__5_24_1_1_1_1.png",
                 "img": "SanPham/Laptop/Hoc-Tap-Van-Phong/ASUS-Vivobook-S-15/text_ng_n_16__5_24_1_1_1_1.png"
             },
             {
-                "name": "Bản màu 7",
-                "hex": "#475569",
-                "key": "variant-7",
+                "name": "Xám Nhạt",
+                "hex": "#B8BDC6",
+                "key": "xam-nhat",
                 "image": "SanPham/Laptop/Hoc-Tap-Van-Phong/ASUS-Vivobook-S-15/text_ng_n_17__7_4_1_1_1_1.webp",
                 "img": "SanPham/Laptop/Hoc-Tap-Van-Phong/ASUS-Vivobook-S-15/text_ng_n_17__7_4_1_1_1_1.webp"
             }
@@ -1666,44 +1666,44 @@
         "image": "SanPham/Laptop/Hoc-Tap-Van-Phong/ASUS-Zenbook-S-14/AMRPD25080406VONG0A.jpg",
         "colors": [
             {
-                "name": "Bản màu 1",
-                "hex": "#475569",
-                "key": "variant-1",
+                "name": "Xám Đậm",
+                "hex": "#525459",
+                "key": "xam-dam",
                 "image": "SanPham/Laptop/Hoc-Tap-Van-Phong/ASUS-Zenbook-S-14/AMRPD25080406VONG0A.jpg",
                 "img": "SanPham/Laptop/Hoc-Tap-Van-Phong/ASUS-Zenbook-S-14/AMRPD25080406VONG0A.jpg"
             },
             {
-                "name": "Bản màu 2",
-                "hex": "#475569",
-                "key": "variant-2",
+                "name": "Đen Nhám",
+                "hex": "#2A2C30",
+                "key": "den-nham",
                 "image": "SanPham/Laptop/Hoc-Tap-Van-Phong/ASUS-Zenbook-S-14/AMRPD25080406VOWL99.jpg",
                 "img": "SanPham/Laptop/Hoc-Tap-Van-Phong/ASUS-Zenbook-S-14/AMRPD25080406VOWL99.jpg"
             },
             {
-                "name": "Bản màu 3",
-                "hex": "#475569",
-                "key": "variant-3",
+                "name": "Xám Không Gian",
+                "hex": "#7D7E80",
+                "key": "xam-khong-gian",
                 "image": "SanPham/Laptop/Hoc-Tap-Van-Phong/ASUS-Zenbook-S-14/AMRPD25080406VOZ92D.jpg",
                 "img": "SanPham/Laptop/Hoc-Tap-Van-Phong/ASUS-Zenbook-S-14/AMRPD25080406VOZ92D.jpg"
             },
             {
-                "name": "Bản màu 4",
-                "hex": "#475569",
-                "key": "variant-4",
+                "name": "Đen",
+                "hex": "#1F2024",
+                "key": "den",
                 "image": "SanPham/Laptop/Hoc-Tap-Van-Phong/ASUS-Zenbook-S-14/AMRPD25080406VP2J5C.jpg",
                 "img": "SanPham/Laptop/Hoc-Tap-Van-Phong/ASUS-Zenbook-S-14/AMRPD25080406VP2J5C.jpg"
             },
             {
-                "name": "Bản màu 5",
-                "hex": "#475569",
-                "key": "variant-5",
+                "name": "Xám Than",
+                "hex": "#464950",
+                "key": "xam-than",
                 "image": "SanPham/Laptop/Hoc-Tap-Van-Phong/ASUS-Zenbook-S-14/AMRPS2508040777S7D7.jpg",
                 "img": "SanPham/Laptop/Hoc-Tap-Van-Phong/ASUS-Zenbook-S-14/AMRPS2508040777S7D7.jpg"
             },
             {
-                "name": "Bản màu 6",
-                "hex": "#475569",
-                "key": "variant-6",
+                "name": "Xám Đen",
+                "hex": "#36383E",
+                "key": "xam-den",
                 "image": "SanPham/Laptop/Hoc-Tap-Van-Phong/ASUS-Zenbook-S-14/AMRPS2508040777W291.jpg",
                 "img": "SanPham/Laptop/Hoc-Tap-Van-Phong/ASUS-Zenbook-S-14/AMRPS2508040777W291.jpg"
             }
@@ -1716,51 +1716,51 @@
         "image": "SanPham/Laptop/Gaming/ASUS-ROG-Zephyrus-G14/x_m_2_65.webp",
         "colors": [
             {
-                "name": "Bản màu 1",
-                "hex": "#475569",
-                "key": "variant-1",
+                "name": "Xám Không Gian",
+                "hex": "#7D7E80",
+                "key": "xam-khong-gian",
                 "image": "SanPham/Laptop/Gaming/ASUS-ROG-Zephyrus-G14/x_m_2_65.webp",
                 "img": "SanPham/Laptop/Gaming/ASUS-ROG-Zephyrus-G14/x_m_2_65.webp"
             },
             {
-                "name": "Bản màu 2",
-                "hex": "#475569",
-                "key": "variant-2",
+                "name": "Xám Đậm",
+                "hex": "#5A5D64",
+                "key": "xam-dam",
                 "image": "SanPham/Laptop/Gaming/ASUS-ROG-Zephyrus-G14/x_m_3__35.webp",
                 "img": "SanPham/Laptop/Gaming/ASUS-ROG-Zephyrus-G14/x_m_3__35.webp"
             },
             {
-                "name": "Bản màu 3",
-                "hex": "#475569",
-                "key": "variant-3",
+                "name": "Xám Bạc",
+                "hex": "#94969C",
+                "key": "xam-bac",
                 "image": "SanPham/Laptop/Gaming/ASUS-ROG-Zephyrus-G14/x_m_4__28.png",
                 "img": "SanPham/Laptop/Gaming/ASUS-ROG-Zephyrus-G14/x_m_4__28.png"
             },
             {
-                "name": "Bản màu 4",
-                "hex": "#475569",
-                "key": "variant-4",
+                "name": "Xám Titan",
+                "hex": "#6C6F76",
+                "key": "xam-titan",
                 "image": "SanPham/Laptop/Gaming/ASUS-ROG-Zephyrus-G14/x_m_5__28.png",
                 "img": "SanPham/Laptop/Gaming/ASUS-ROG-Zephyrus-G14/x_m_5__28.png"
             },
             {
-                "name": "Bản màu 5",
-                "hex": "#475569",
-                "key": "variant-5",
+                "name": "Xám Khói",
+                "hex": "#60636A",
+                "key": "xam-khoi",
                 "image": "SanPham/Laptop/Gaming/ASUS-ROG-Zephyrus-G14/x_m_6__20.webp",
                 "img": "SanPham/Laptop/Gaming/ASUS-ROG-Zephyrus-G14/x_m_6__20.webp"
             },
             {
-                "name": "Bản màu 6",
-                "hex": "#475569",
-                "key": "variant-6",
+                "name": "Đen Xám",
+                "hex": "#3A3C42",
+                "key": "den-xam",
                 "image": "SanPham/Laptop/Gaming/ASUS-ROG-Zephyrus-G14/x_m_12__10.png",
                 "img": "SanPham/Laptop/Gaming/ASUS-ROG-Zephyrus-G14/x_m_12__10.png"
             },
             {
-                "name": "Bản màu 7",
-                "hex": "#475569",
-                "key": "variant-7",
+                "name": "Xám Nhạt",
+                "hex": "#878A90",
+                "key": "xam-nhat",
                 "image": "SanPham/Laptop/Gaming/ASUS-ROG-Zephyrus-G14/x_m_13__13.png",
                 "img": "SanPham/Laptop/Gaming/ASUS-ROG-Zephyrus-G14/x_m_13__13.png"
             }
@@ -1773,65 +1773,65 @@
         "image": "SanPham/Laptop/Gaming/ASUS-ROG-Zephyrus-G16/1793773027148_453728186523740223_453728186523740223_d8a51a29162bba852cc8d09a6c4a5f63.jpg",
         "colors": [
             {
-                "name": "Bản màu 1",
-                "hex": "#475569",
-                "key": "variant-1",
+                "name": "Xám Đậm",
+                "hex": "#5A5D64",
+                "key": "xam-dam",
                 "image": "SanPham/Laptop/Gaming/ASUS-ROG-Zephyrus-G16/1793773027148_453728186523740223_453728186523740223_d8a51a29162bba852cc8d09a6c4a5f63.jpg",
                 "img": "SanPham/Laptop/Gaming/ASUS-ROG-Zephyrus-G16/1793773027148_453728186523740223_453728186523740223_d8a51a29162bba852cc8d09a6c4a5f63.jpg"
             },
             {
-                "name": "Bản màu 2",
-                "hex": "#475569",
-                "key": "variant-2",
+                "name": "Xám Không Gian",
+                "hex": "#7D7E80",
+                "key": "xam-khong-gian",
                 "image": "SanPham/Laptop/Gaming/ASUS-ROG-Zephyrus-G16/1793773027186_453728186523740223_453728186523740223_594e6476b762622e04d8cec4f26ffe93.jpg",
                 "img": "SanPham/Laptop/Gaming/ASUS-ROG-Zephyrus-G16/1793773027186_453728186523740223_453728186523740223_594e6476b762622e04d8cec4f26ffe93.jpg"
             },
             {
-                "name": "Bản màu 3",
-                "hex": "#475569",
-                "key": "variant-3",
+                "name": "Xám Titan",
+                "hex": "#6C6F76",
+                "key": "xam-titan",
                 "image": "SanPham/Laptop/Gaming/ASUS-ROG-Zephyrus-G16/1793773027202_453728186523740223_453728186523740223_f8ca1af7892f43c61503cac7a62cec03.jpg",
                 "img": "SanPham/Laptop/Gaming/ASUS-ROG-Zephyrus-G16/1793773027202_453728186523740223_453728186523740223_f8ca1af7892f43c61503cac7a62cec03.jpg"
             },
             {
-                "name": "Bản màu 4",
-                "hex": "#475569",
-                "key": "variant-4",
+                "name": "Xám Khói",
+                "hex": "#52555C",
+                "key": "xam-khoi",
                 "image": "SanPham/Laptop/Gaming/ASUS-ROG-Zephyrus-G16/1793773027217_453728186523740223_453728186523740223_c8240a876cb3ad4167caec3c12db86d1.jpg",
                 "img": "SanPham/Laptop/Gaming/ASUS-ROG-Zephyrus-G16/1793773027217_453728186523740223_453728186523740223_c8240a876cb3ad4167caec3c12db86d1.jpg"
             },
             {
-                "name": "Bản màu 5",
-                "hex": "#475569",
-                "key": "variant-5",
+                "name": "Bạc Xám",
+                "hex": "#9EA1A8",
+                "key": "bac-xam",
                 "image": "SanPham/Laptop/Gaming/ASUS-ROG-Zephyrus-G16/1793773027230_453728186523740223_453728186523740223_8528c0c7fc2c13c61d0d26a034dcdb71.jpg",
                 "img": "SanPham/Laptop/Gaming/ASUS-ROG-Zephyrus-G16/1793773027230_453728186523740223_453728186523740223_8528c0c7fc2c13c61d0d26a034dcdb71.jpg"
             },
             {
-                "name": "Bản màu 6",
-                "hex": "#475569",
-                "key": "variant-6",
+                "name": "Xám Nhạt",
+                "hex": "#8D9096",
+                "key": "xam-nhat",
                 "image": "SanPham/Laptop/Gaming/ASUS-ROG-Zephyrus-G16/1793773027243_453728186523740223_453728186523740223_63f859c4c2bd0a9bd7227da084ba5c3b.jpg",
                 "img": "SanPham/Laptop/Gaming/ASUS-ROG-Zephyrus-G16/1793773027243_453728186523740223_453728186523740223_63f859c4c2bd0a9bd7227da084ba5c3b.jpg"
             },
             {
-                "name": "Bạc",
-                "hex": "#E2E8F0",
-                "key": "bac",
+                "name": "Đen Xám",
+                "hex": "#3A3C42",
+                "key": "den-xam",
                 "image": "SanPham/Laptop/Gaming/ASUS-ROG-Zephyrus-G16/1793773027255_453728186523740223_453728186523740223_272900a1837d30c29a1d669bbacea754.jpg",
                 "img": "SanPham/Laptop/Gaming/ASUS-ROG-Zephyrus-G16/1793773027255_453728186523740223_453728186523740223_272900a1837d30c29a1d669bbacea754.jpg"
             },
             {
-                "name": "Bản màu 8",
-                "hex": "#475569",
-                "key": "variant-8",
+                "name": "Xám Ghi",
+                "hex": "#74777E",
+                "key": "xam-ghi",
                 "image": "SanPham/Laptop/Gaming/ASUS-ROG-Zephyrus-G16/1793773027265_453728186523740223_453728186523740223_0c4a5f29fbc281653398b5a34a9202d4.jpg",
                 "img": "SanPham/Laptop/Gaming/ASUS-ROG-Zephyrus-G16/1793773027265_453728186523740223_453728186523740223_0c4a5f29fbc281653398b5a34a9202d4.jpg"
             },
             {
-                "name": "Bản màu 9",
-                "hex": "#475569",
-                "key": "variant-9",
+                "name": "Xám Bạc",
+                "hex": "#A5A8AE",
+                "key": "xam-bac",
                 "image": "SanPham/Laptop/Gaming/ASUS-ROG-Zephyrus-G16/1793773027276_453728186523740223_453728186523740223_7a29ee6870d777f828ffc08b9b989ac7.jpg",
                 "img": "SanPham/Laptop/Gaming/ASUS-ROG-Zephyrus-G16/1793773027276_453728186523740223_453728186523740223_7a29ee6870d777f828ffc08b9b989ac7.jpg"
             }
@@ -1844,51 +1844,51 @@
         "image": "SanPham/Laptop/Gaming/ASUS-ROG-Strix-G16/sssxs_3__28.webp",
         "colors": [
             {
-                "name": "Bản màu 1",
-                "hex": "#475569",
-                "key": "variant-1",
+                "name": "Đen",
+                "hex": "#1F2024",
+                "key": "den",
                 "image": "SanPham/Laptop/Gaming/ASUS-ROG-Strix-G16/sssxs_3__28.webp",
                 "img": "SanPham/Laptop/Gaming/ASUS-ROG-Strix-G16/sssxs_3__28.webp"
             },
             {
-                "name": "Bản màu 2",
-                "hex": "#475569",
-                "key": "variant-2",
+                "name": "Xám Đậm",
+                "hex": "#4B4E56",
+                "key": "xam-dam",
                 "image": "SanPham/Laptop/Gaming/ASUS-ROG-Strix-G16/sssxs_5__18.webp",
                 "img": "SanPham/Laptop/Gaming/ASUS-ROG-Strix-G16/sssxs_5__18.webp"
             },
             {
-                "name": "Bản màu 3",
-                "hex": "#475569",
-                "key": "variant-3",
+                "name": "Đen Nhám",
+                "hex": "#282A30",
+                "key": "den-nham",
                 "image": "SanPham/Laptop/Gaming/ASUS-ROG-Strix-G16/sssxs_6__17.webp",
                 "img": "SanPham/Laptop/Gaming/ASUS-ROG-Strix-G16/sssxs_6__17.webp"
             },
             {
-                "name": "Bản màu 4",
-                "hex": "#475569",
-                "key": "variant-4",
+                "name": "Xám Titan",
+                "hex": "#5F626A",
+                "key": "xam-titan",
                 "image": "SanPham/Laptop/Gaming/ASUS-ROG-Strix-G16/sssxs_7__19.webp",
                 "img": "SanPham/Laptop/Gaming/ASUS-ROG-Strix-G16/sssxs_7__19.webp"
             },
             {
-                "name": "Bản màu 5",
-                "hex": "#475569",
-                "key": "variant-5",
+                "name": "Đen Xám",
+                "hex": "#34373E",
+                "key": "den-xam",
                 "image": "SanPham/Laptop/Gaming/ASUS-ROG-Strix-G16/sssxs_9__7.webp",
                 "img": "SanPham/Laptop/Gaming/ASUS-ROG-Strix-G16/sssxs_9__7.webp"
             },
             {
-                "name": "Bản màu 6",
-                "hex": "#475569",
-                "key": "variant-6",
+                "name": "Đen Carbon",
+                "hex": "#23252A",
+                "key": "den-carbon",
                 "image": "SanPham/Laptop/Gaming/ASUS-ROG-Strix-G16/sssxs_10__3.webp",
                 "img": "SanPham/Laptop/Gaming/ASUS-ROG-Strix-G16/sssxs_10__3.webp"
             },
             {
-                "name": "Bản màu 7",
-                "hex": "#475569",
-                "key": "variant-7",
+                "name": "Đen Ánh Tím",
+                "hex": "#362F48",
+                "key": "den-anh-tim",
                 "image": "SanPham/Laptop/Gaming/ASUS-ROG-Strix-G16/sssxs_47.webp",
                 "img": "SanPham/Laptop/Gaming/ASUS-ROG-Strix-G16/sssxs_47.webp"
             }
@@ -1901,65 +1901,65 @@
         "image": "SanPham/Laptop/Gaming/ASUS-ROG-Strix-Scar-16/text_ng_n_1__7_8_1.png",
         "colors": [
             {
-                "name": "Bản màu 1",
-                "hex": "#475569",
-                "key": "variant-1",
+                "name": "Đen",
+                "hex": "#1F2024",
+                "key": "den",
                 "image": "SanPham/Laptop/Gaming/ASUS-ROG-Strix-Scar-16/text_ng_n_1__7_8_1.png",
                 "img": "SanPham/Laptop/Gaming/ASUS-ROG-Strix-Scar-16/text_ng_n_1__7_8_1.png"
             },
             {
-                "name": "Bản màu 2",
-                "hex": "#475569",
-                "key": "variant-2",
+                "name": "Đen Nhám",
+                "hex": "#2A2C32",
+                "key": "den-nham",
                 "image": "SanPham/Laptop/Gaming/ASUS-ROG-Strix-Scar-16/text_ng_n_4__7_4_1.png",
                 "img": "SanPham/Laptop/Gaming/ASUS-ROG-Strix-Scar-16/text_ng_n_4__7_4_1.png"
             },
             {
-                "name": "Bản màu 3",
-                "hex": "#475569",
-                "key": "variant-3",
+                "name": "Đen Carbon",
+                "hex": "#1C1D22",
+                "key": "den-carbon",
                 "image": "SanPham/Laptop/Gaming/ASUS-ROG-Strix-Scar-16/text_ng_n_5__8_4_1.png",
                 "img": "SanPham/Laptop/Gaming/ASUS-ROG-Strix-Scar-16/text_ng_n_5__8_4_1.png"
             },
             {
-                "name": "Bản màu 4",
-                "hex": "#475569",
-                "key": "variant-4",
+                "name": "Xám Đen",
+                "hex": "#34373D",
+                "key": "xam-den",
                 "image": "SanPham/Laptop/Gaming/ASUS-ROG-Strix-Scar-16/text_ng_n_6__2_168_1.png",
                 "img": "SanPham/Laptop/Gaming/ASUS-ROG-Strix-Scar-16/text_ng_n_6__2_168_1.png"
             },
             {
-                "name": "Bản màu 5",
-                "hex": "#475569",
-                "key": "variant-5",
+                "name": "Đen Than",
+                "hex": "#25272D",
+                "key": "den-than",
                 "image": "SanPham/Laptop/Gaming/ASUS-ROG-Strix-Scar-16/text_ng_n_7__2_156_1.png",
                 "img": "SanPham/Laptop/Gaming/ASUS-ROG-Strix-Scar-16/text_ng_n_7__2_156_1.png"
             },
             {
-                "name": "Bản màu 6",
-                "hex": "#475569",
-                "key": "variant-6",
+                "name": "Xám Không Gian",
+                "hex": "#4F5259",
+                "key": "xam-khong-gian",
                 "image": "SanPham/Laptop/Gaming/ASUS-ROG-Strix-Scar-16/text_ng_n_9__4_169_1.png",
                 "img": "SanPham/Laptop/Gaming/ASUS-ROG-Strix-Scar-16/text_ng_n_9__4_169_1.png"
             },
             {
-                "name": "Bản màu 7",
-                "hex": "#475569",
-                "key": "variant-7",
+                "name": "Xám Titan",
+                "hex": "#5C5F66",
+                "key": "xam-titan",
                 "image": "SanPham/Laptop/Gaming/ASUS-ROG-Strix-Scar-16/text_ng_n_11__5_128_1.png",
                 "img": "SanPham/Laptop/Gaming/ASUS-ROG-Strix-Scar-16/text_ng_n_11__5_128_1.png"
             },
             {
-                "name": "Bản màu 8",
-                "hex": "#475569",
-                "key": "variant-8",
+                "name": "Đen Xám",
+                "hex": "#3A3D43",
+                "key": "den-xam",
                 "image": "SanPham/Laptop/Gaming/ASUS-ROG-Strix-Scar-16/text_ng_n_13__6_116_1.png",
                 "img": "SanPham/Laptop/Gaming/ASUS-ROG-Strix-Scar-16/text_ng_n_13__6_116_1.png"
             },
             {
-                "name": "Bản màu 9",
-                "hex": "#475569",
-                "key": "variant-9",
+                "name": "Đen Tuyền",
+                "hex": "#18191D",
+                "key": "den-tuyen",
                 "image": "SanPham/Laptop/Gaming/ASUS-ROG-Strix-Scar-16/text_ng_n_14__6_76_1.png",
                 "img": "SanPham/Laptop/Gaming/ASUS-ROG-Strix-Scar-16/text_ng_n_14__6_76_1.png"
             }
@@ -1972,37 +1972,37 @@
         "image": "SanPham/Laptop/Do-Hoa-Sang-Tao/ASUS-ProArt-P16/product-01_2_10_1.webp",
         "colors": [
             {
-                "name": "Bản màu 1",
-                "hex": "#475569",
-                "key": "variant-1",
+                "name": "Đen Nano",
+                "hex": "#1F2024",
+                "key": "den-nano",
                 "image": "SanPham/Laptop/Do-Hoa-Sang-Tao/ASUS-ProArt-P16/product-01_2_10_1.webp",
                 "img": "SanPham/Laptop/Do-Hoa-Sang-Tao/ASUS-ProArt-P16/product-01_2_10_1.webp"
             },
             {
-                "name": "Bản màu 2",
-                "hex": "#475569",
-                "key": "variant-2",
+                "name": "Đen Nhám",
+                "hex": "#27292E",
+                "key": "den-nham",
                 "image": "SanPham/Laptop/Do-Hoa-Sang-Tao/ASUS-ProArt-P16/product-02_2_12_1.webp",
                 "img": "SanPham/Laptop/Do-Hoa-Sang-Tao/ASUS-ProArt-P16/product-02_2_12_1.webp"
             },
             {
-                "name": "Bản màu 3",
-                "hex": "#475569",
-                "key": "variant-3",
+                "name": "Đen Carbon",
+                "hex": "#18191D",
+                "key": "den-carbon",
                 "image": "SanPham/Laptop/Do-Hoa-Sang-Tao/ASUS-ProArt-P16/product-06_2_8_1.webp",
                 "img": "SanPham/Laptop/Do-Hoa-Sang-Tao/ASUS-ProArt-P16/product-06_2_8_1.webp"
             },
             {
-                "name": "Bản màu 4",
-                "hex": "#475569",
-                "key": "variant-4",
+                "name": "Xám Đen",
+                "hex": "#32353B",
+                "key": "xam-den",
                 "image": "SanPham/Laptop/Do-Hoa-Sang-Tao/ASUS-ProArt-P16/product-07_2_6_1.webp",
                 "img": "SanPham/Laptop/Do-Hoa-Sang-Tao/ASUS-ProArt-P16/product-07_2_6_1.webp"
             },
             {
-                "name": "Bản màu 5",
-                "hex": "#475569",
-                "key": "variant-5",
+                "name": "Đen Tuyền",
+                "hex": "#141518",
+                "key": "den-tuyen",
                 "image": "SanPham/Laptop/Do-Hoa-Sang-Tao/ASUS-ProArt-P16/product-09_56_1.webp",
                 "img": "SanPham/Laptop/Do-Hoa-Sang-Tao/ASUS-ProArt-P16/product-09_56_1.webp"
             }
@@ -2015,30 +2015,30 @@
         "image": "SanPham/Laptop/Do-Hoa-Sang-Tao/ASUS-ProArt-PX13/x_m_1__1_114.png",
         "colors": [
             {
-                "name": "Bản màu 1",
-                "hex": "#475569",
-                "key": "variant-1",
+                "name": "Đen Nano",
+                "hex": "#1F2024",
+                "key": "den-nano",
                 "image": "SanPham/Laptop/Do-Hoa-Sang-Tao/ASUS-ProArt-PX13/x_m_1__1_114.png",
                 "img": "SanPham/Laptop/Do-Hoa-Sang-Tao/ASUS-ProArt-PX13/x_m_1__1_114.png"
             },
             {
-                "name": "Bản màu 2",
-                "hex": "#475569",
-                "key": "variant-2",
+                "name": "Đen Nhám",
+                "hex": "#282A30",
+                "key": "den-nham",
                 "image": "SanPham/Laptop/Do-Hoa-Sang-Tao/ASUS-ProArt-PX13/x_m_2_180.png",
                 "img": "SanPham/Laptop/Do-Hoa-Sang-Tao/ASUS-ProArt-PX13/x_m_2_180.png"
             },
             {
-                "name": "Bản màu 3",
-                "hex": "#475569",
-                "key": "variant-3",
+                "name": "Xám Đen",
+                "hex": "#34363D",
+                "key": "xam-den",
                 "image": "SanPham/Laptop/Do-Hoa-Sang-Tao/ASUS-ProArt-PX13/x_m_2__97.png",
                 "img": "SanPham/Laptop/Do-Hoa-Sang-Tao/ASUS-ProArt-PX13/x_m_2__97.png"
             },
             {
-                "name": "Bản màu 4",
-                "hex": "#475569",
-                "key": "variant-4",
+                "name": "Đen Carbon",
+                "hex": "#1B1C21",
+                "key": "den-carbon",
                 "image": "SanPham/Laptop/Do-Hoa-Sang-Tao/ASUS-ProArt-PX13/x_m_5__78.png",
                 "img": "SanPham/Laptop/Do-Hoa-Sang-Tao/ASUS-ProArt-PX13/x_m_5__78.png"
             }
@@ -2051,44 +2051,44 @@
         "image": "SanPham/Laptop/Hoc-Tap-Van-Phong/Lenovo-IdeaPad-Slim-5/x_m_1__1_147.png",
         "colors": [
             {
-                "name": "Bản màu 1",
-                "hex": "#475569",
-                "key": "variant-1",
+                "name": "Bạc",
+                "hex": "#E3E4E6",
+                "key": "bac",
                 "image": "SanPham/Laptop/Hoc-Tap-Van-Phong/Lenovo-IdeaPad-Slim-5/x_m_1__1_147.png",
                 "img": "SanPham/Laptop/Hoc-Tap-Van-Phong/Lenovo-IdeaPad-Slim-5/x_m_1__1_147.png"
             },
             {
-                "name": "Bản màu 2",
-                "hex": "#475569",
-                "key": "variant-2",
+                "name": "Bạc Sáng",
+                "hex": "#EDEFF2",
+                "key": "bac-sang",
                 "image": "SanPham/Laptop/Hoc-Tap-Van-Phong/Lenovo-IdeaPad-Slim-5/x_m_2_243.png",
                 "img": "SanPham/Laptop/Hoc-Tap-Van-Phong/Lenovo-IdeaPad-Slim-5/x_m_2_243.png"
             },
             {
-                "name": "Bản màu 3",
-                "hex": "#475569",
-                "key": "variant-3",
+                "name": "Xám Nhạt",
+                "hex": "#C5C8CE",
+                "key": "xam-nhat",
                 "image": "SanPham/Laptop/Hoc-Tap-Van-Phong/Lenovo-IdeaPad-Slim-5/x_m_2__135.png",
                 "img": "SanPham/Laptop/Hoc-Tap-Van-Phong/Lenovo-IdeaPad-Slim-5/x_m_2__135.png"
             },
             {
-                "name": "Bản màu 4",
-                "hex": "#475569",
-                "key": "variant-4",
+                "name": "Bạc Ánh Kim",
+                "hex": "#D8DCE2",
+                "key": "bac-anh-kim",
                 "image": "SanPham/Laptop/Hoc-Tap-Van-Phong/Lenovo-IdeaPad-Slim-5/x_m_4__121.png",
                 "img": "SanPham/Laptop/Hoc-Tap-Van-Phong/Lenovo-IdeaPad-Slim-5/x_m_4__121.png"
             },
             {
-                "name": "Bản màu 5",
-                "hex": "#475569",
-                "key": "variant-5",
+                "name": "Xám Bạc",
+                "hex": "#B8BCC4",
+                "key": "xam-bac",
                 "image": "SanPham/Laptop/Hoc-Tap-Van-Phong/Lenovo-IdeaPad-Slim-5/x_m_5__109.png",
                 "img": "SanPham/Laptop/Hoc-Tap-Van-Phong/Lenovo-IdeaPad-Slim-5/x_m_5__109.png"
             },
             {
-                "name": "Bản màu 6",
-                "hex": "#475569",
-                "key": "variant-6",
+                "name": "Bạc Ngọc",
+                "hex": "#E0E2E7",
+                "key": "bac-ngoc",
                 "image": "SanPham/Laptop/Hoc-Tap-Van-Phong/Lenovo-IdeaPad-Slim-5/x_m_6__94.png",
                 "img": "SanPham/Laptop/Hoc-Tap-Van-Phong/Lenovo-IdeaPad-Slim-5/x_m_6__94.png"
             }
@@ -2101,37 +2101,37 @@
         "image": "SanPham/Laptop/Gaming/Lenovo-Legion-Pro-7i/VAFJD26102915OCX896.jpg",
         "colors": [
             {
-                "name": "Bản màu 1",
-                "hex": "#475569",
-                "key": "variant-1",
+                "name": "Đen",
+                "hex": "#1F2024",
+                "key": "den",
                 "image": "SanPham/Laptop/Gaming/Lenovo-Legion-Pro-7i/VAFJD26102915OCX896.jpg",
                 "img": "SanPham/Laptop/Gaming/Lenovo-Legion-Pro-7i/VAFJD26102915OCX896.jpg"
             },
             {
-                "name": "Bản màu 2",
-                "hex": "#475569",
-                "key": "variant-2",
+                "name": "Đen Nhám",
+                "hex": "#2A2C32",
+                "key": "den-nham",
                 "image": "SanPham/Laptop/Gaming/Lenovo-Legion-Pro-7i/VAFJD26102915OCZ28B.jpg",
                 "img": "SanPham/Laptop/Gaming/Lenovo-Legion-Pro-7i/VAFJD26102915OCZ28B.jpg"
             },
             {
-                "name": "Bản màu 3",
-                "hex": "#475569",
-                "key": "variant-3",
+                "name": "Xám Đen",
+                "hex": "#383A41",
+                "key": "xam-den",
                 "image": "SanPham/Laptop/Gaming/Lenovo-Legion-Pro-7i/VAFJD26102915OD6FC1.jpg",
                 "img": "SanPham/Laptop/Gaming/Lenovo-Legion-Pro-7i/VAFJD26102915OD6FC1.jpg"
             },
             {
-                "name": "Bản màu 4",
-                "hex": "#475569",
-                "key": "variant-4",
+                "name": "Đen Carbon",
+                "hex": "#23252A",
+                "key": "den-carbon",
                 "image": "SanPham/Laptop/Gaming/Lenovo-Legion-Pro-7i/VAFJD26102915ODQT76.jpg",
                 "img": "SanPham/Laptop/Gaming/Lenovo-Legion-Pro-7i/VAFJD26102915ODQT76.jpg"
             },
             {
-                "name": "Bản màu 5",
-                "hex": "#475569",
-                "key": "variant-5",
+                "name": "Đen Tuyền",
+                "hex": "#18191D",
+                "key": "den-tuyen",
                 "image": "SanPham/Laptop/Gaming/Lenovo-Legion-Pro-7i/VAFJD26102915OKCO35.jpg",
                 "img": "SanPham/Laptop/Gaming/Lenovo-Legion-Pro-7i/VAFJD26102915OKCO35.jpg"
             }
@@ -2144,44 +2144,44 @@
         "image": "SanPham/Laptop/Gaming/Lenovo-Legion-7i/text_ng_n_4__8_101.png",
         "colors": [
             {
-                "name": "Bản màu 1",
-                "hex": "#475569",
-                "key": "variant-1",
+                "name": "Trắng",
+                "hex": "#F5F5F7",
+                "key": "trang",
                 "image": "SanPham/Laptop/Gaming/Lenovo-Legion-7i/text_ng_n_4__8_101.png",
                 "img": "SanPham/Laptop/Gaming/Lenovo-Legion-7i/text_ng_n_4__8_101.png"
             },
             {
-                "name": "Bản màu 2",
-                "hex": "#475569",
-                "key": "variant-2",
+                "name": "Trắng Sáng",
+                "hex": "#FAFAFC",
+                "key": "trang-sang",
                 "image": "SanPham/Laptop/Gaming/Lenovo-Legion-7i/text_ng_n_5__10_89.png",
                 "img": "SanPham/Laptop/Gaming/Lenovo-Legion-7i/text_ng_n_5__10_89.png"
             },
             {
-                "name": "Bản màu 3",
-                "hex": "#475569",
-                "key": "variant-3",
+                "name": "Trắng Bạc",
+                "hex": "#E3E4E6",
+                "key": "trang-bac",
                 "image": "SanPham/Laptop/Gaming/Lenovo-Legion-7i/text_ng_n_6__5_83.webp",
                 "img": "SanPham/Laptop/Gaming/Lenovo-Legion-7i/text_ng_n_6__5_83.webp"
             },
             {
-                "name": "Bản màu 4",
-                "hex": "#475569",
-                "key": "variant-4",
+                "name": "Trắng Ngọc",
+                "hex": "#EFEFF2",
+                "key": "trang-ngoc",
                 "image": "SanPham/Laptop/Gaming/Lenovo-Legion-7i/text_ng_n_7__5_71.png",
                 "img": "SanPham/Laptop/Gaming/Lenovo-Legion-7i/text_ng_n_7__5_71.png"
             },
             {
-                "name": "Bản màu 5",
-                "hex": "#475569",
-                "key": "variant-5",
+                "name": "Trắng Sữa",
+                "hex": "#F1F2F5",
+                "key": "trang-sua",
                 "image": "SanPham/Laptop/Gaming/Lenovo-Legion-7i/text_ng_n_9__9_280.png",
                 "img": "SanPham/Laptop/Gaming/Lenovo-Legion-7i/text_ng_n_9__9_280.png"
             },
             {
-                "name": "Bản màu 6",
-                "hex": "#475569",
-                "key": "variant-6",
+                "name": "Bạc Sáng",
+                "hex": "#E8EAEE",
+                "key": "bac-sang",
                 "image": "SanPham/Laptop/Gaming/Lenovo-Legion-7i/text_ng_n_11__7_195.webp",
                 "img": "SanPham/Laptop/Gaming/Lenovo-Legion-7i/text_ng_n_11__7_195.webp"
             }
@@ -2194,37 +2194,37 @@
         "image": "SanPham/Laptop/Do-Hoa-Sang-Tao/Lenovo-Yoga-Pro-9i/product-03_2_38.webp",
         "colors": [
             {
-                "name": "Bản màu 1",
-                "hex": "#475569",
-                "key": "variant-1",
+                "name": "Xám Không Gian",
+                "hex": "#7D7E80",
+                "key": "xam-khong-gian",
                 "image": "SanPham/Laptop/Do-Hoa-Sang-Tao/Lenovo-Yoga-Pro-9i/product-03_2_38.webp",
                 "img": "SanPham/Laptop/Do-Hoa-Sang-Tao/Lenovo-Yoga-Pro-9i/product-03_2_38.webp"
             },
             {
-                "name": "Bản màu 2",
-                "hex": "#475569",
-                "key": "variant-2",
+                "name": "Xám Đậm",
+                "hex": "#5A5D64",
+                "key": "xam-dam",
                 "image": "SanPham/Laptop/Do-Hoa-Sang-Tao/Lenovo-Yoga-Pro-9i/product-08_1_22.png",
                 "img": "SanPham/Laptop/Do-Hoa-Sang-Tao/Lenovo-Yoga-Pro-9i/product-08_1_22.png"
             },
             {
-                "name": "Bản màu 3",
-                "hex": "#475569",
-                "key": "variant-3",
+                "name": "Đen Xám",
+                "hex": "#3F4248",
+                "key": "den-xam",
                 "image": "SanPham/Laptop/Do-Hoa-Sang-Tao/Lenovo-Yoga-Pro-9i/product-09_72.png",
                 "img": "SanPham/Laptop/Do-Hoa-Sang-Tao/Lenovo-Yoga-Pro-9i/product-09_72.png"
             },
             {
-                "name": "Bản màu 4",
-                "hex": "#475569",
-                "key": "variant-4",
+                "name": "Xám Titan",
+                "hex": "#6D7077",
+                "key": "xam-titan",
                 "image": "SanPham/Laptop/Do-Hoa-Sang-Tao/Lenovo-Yoga-Pro-9i/product-12_43.png",
                 "img": "SanPham/Laptop/Do-Hoa-Sang-Tao/Lenovo-Yoga-Pro-9i/product-12_43.png"
             },
             {
-                "name": "Bản màu 5",
-                "hex": "#475569",
-                "key": "variant-5",
+                "name": "Xám Nhám",
+                "hex": "#4D5057",
+                "key": "xam-nham",
                 "image": "SanPham/Laptop/Do-Hoa-Sang-Tao/Lenovo-Yoga-Pro-9i/product-15_26.png",
                 "img": "SanPham/Laptop/Do-Hoa-Sang-Tao/Lenovo-Yoga-Pro-9i/product-15_26.png"
             }
@@ -2237,30 +2237,30 @@
         "image": "SanPham/Laptop/Hoc-Tap-Van-Phong/HP-OmniBook-7/ssss_1_94.png",
         "colors": [
             {
-                "name": "Bản màu 1",
-                "hex": "#475569",
-                "key": "variant-1",
+                "name": "Bạc",
+                "hex": "#E3E4E6",
+                "key": "bac",
                 "image": "SanPham/Laptop/Hoc-Tap-Van-Phong/HP-OmniBook-7/ssss_1_94.png",
                 "img": "SanPham/Laptop/Hoc-Tap-Van-Phong/HP-OmniBook-7/ssss_1_94.png"
             },
             {
-                "name": "Bản màu 2",
-                "hex": "#475569",
-                "key": "variant-2",
+                "name": "Bạc Sáng",
+                "hex": "#EDEFF2",
+                "key": "bac-sang",
                 "image": "SanPham/Laptop/Hoc-Tap-Van-Phong/HP-OmniBook-7/ssss_2__71.png",
                 "img": "SanPham/Laptop/Hoc-Tap-Van-Phong/HP-OmniBook-7/ssss_2__71.png"
             },
             {
-                "name": "Bản màu 3",
-                "hex": "#475569",
-                "key": "variant-3",
+                "name": "Bạc Nhám",
+                "hex": "#D6D9DF",
+                "key": "bac-nham",
                 "image": "SanPham/Laptop/Hoc-Tap-Van-Phong/HP-OmniBook-7/ssss_3__69.png",
                 "img": "SanPham/Laptop/Hoc-Tap-Van-Phong/HP-OmniBook-7/ssss_3__69.png"
             },
             {
-                "name": "Bản màu 4",
-                "hex": "#475569",
-                "key": "variant-4",
+                "name": "Xám Bạc",
+                "hex": "#C8CCD4",
+                "key": "xam-bac",
                 "image": "SanPham/Laptop/Hoc-Tap-Van-Phong/HP-OmniBook-7/ssss_4__63.png",
                 "img": "SanPham/Laptop/Hoc-Tap-Van-Phong/HP-OmniBook-7/ssss_4__63.png"
             }
@@ -2273,30 +2273,30 @@
         "image": "SanPham/Laptop/Do-Hoa-Sang-Tao/HP-ZBook-Studio-G11/x_m_1__1_74_1.webp",
         "colors": [
             {
-                "name": "Bản màu 1",
-                "hex": "#475569",
-                "key": "variant-1",
+                "name": "Bạc",
+                "hex": "#E3E4E6",
+                "key": "bac",
                 "image": "SanPham/Laptop/Do-Hoa-Sang-Tao/HP-ZBook-Studio-G11/x_m_1__1_74_1.webp",
                 "img": "SanPham/Laptop/Do-Hoa-Sang-Tao/HP-ZBook-Studio-G11/x_m_1__1_74_1.webp"
             },
             {
-                "name": "Bản màu 2",
-                "hex": "#475569",
-                "key": "variant-2",
+                "name": "Bạc Ánh Kim",
+                "hex": "#DCE0E5",
+                "key": "bac-anh-kim",
                 "image": "SanPham/Laptop/Do-Hoa-Sang-Tao/HP-ZBook-Studio-G11/x_m_2_109_1.webp",
                 "img": "SanPham/Laptop/Do-Hoa-Sang-Tao/HP-ZBook-Studio-G11/x_m_2_109_1.webp"
             },
             {
-                "name": "Bản màu 3",
-                "hex": "#475569",
-                "key": "variant-3",
+                "name": "Bạc Sáng",
+                "hex": "#EAECEF",
+                "key": "bac-sang",
                 "image": "SanPham/Laptop/Do-Hoa-Sang-Tao/HP-ZBook-Studio-G11/x_m_3__61_1.webp",
                 "img": "SanPham/Laptop/Do-Hoa-Sang-Tao/HP-ZBook-Studio-G11/x_m_3__61_1.webp"
             },
             {
-                "name": "Bản màu 4",
-                "hex": "#475569",
-                "key": "variant-4",
+                "name": "Xám Bạc",
+                "hex": "#C6CAD2",
+                "key": "xam-bac",
                 "image": "SanPham/Laptop/Do-Hoa-Sang-Tao/HP-ZBook-Studio-G11/x_m_4__53_1.png",
                 "img": "SanPham/Laptop/Do-Hoa-Sang-Tao/HP-ZBook-Studio-G11/x_m_4__53_1.png"
             }
@@ -2309,58 +2309,58 @@
         "image": "SanPham/Laptop/Hoc-Tap-Van-Phong/Acer-Swift-Go-14/x_m_2_36.webp",
         "colors": [
             {
-                "name": "Bản màu 1",
-                "hex": "#475569",
-                "key": "variant-1",
+                "name": "Bạc",
+                "hex": "#E3E4E6",
+                "key": "bac",
                 "image": "SanPham/Laptop/Hoc-Tap-Van-Phong/Acer-Swift-Go-14/x_m_2_36.webp",
                 "img": "SanPham/Laptop/Hoc-Tap-Van-Phong/Acer-Swift-Go-14/x_m_2_36.webp"
             },
             {
-                "name": "Bản màu 2",
-                "hex": "#475569",
-                "key": "variant-2",
+                "name": "Bạc Sáng",
+                "hex": "#EDEFF2",
+                "key": "bac-sang",
                 "image": "SanPham/Laptop/Hoc-Tap-Van-Phong/Acer-Swift-Go-14/x_m_3__13.png",
                 "img": "SanPham/Laptop/Hoc-Tap-Van-Phong/Acer-Swift-Go-14/x_m_3__13.png"
             },
             {
-                "name": "Bản màu 3",
-                "hex": "#475569",
-                "key": "variant-3",
+                "name": "Xám Bạc",
+                "hex": "#C4C8D0",
+                "key": "xam-bac",
                 "image": "SanPham/Laptop/Hoc-Tap-Van-Phong/Acer-Swift-Go-14/x_m_4__7.webp",
                 "img": "SanPham/Laptop/Hoc-Tap-Van-Phong/Acer-Swift-Go-14/x_m_4__7.webp"
             },
             {
-                "name": "Bản màu 4",
-                "hex": "#475569",
-                "key": "variant-4",
+                "name": "Bạc Nhám",
+                "hex": "#D6D9DF",
+                "key": "bac-nham",
                 "image": "SanPham/Laptop/Hoc-Tap-Van-Phong/Acer-Swift-Go-14/x_m_5__4.png",
                 "img": "SanPham/Laptop/Hoc-Tap-Van-Phong/Acer-Swift-Go-14/x_m_5__4.png"
             },
             {
-                "name": "Bản màu 5",
-                "hex": "#475569",
-                "key": "variant-5",
+                "name": "Bạc Ngọc",
+                "hex": "#E0E3E8",
+                "key": "bac-ngoc",
                 "image": "SanPham/Laptop/Hoc-Tap-Van-Phong/Acer-Swift-Go-14/x_m_6__2.webp",
                 "img": "SanPham/Laptop/Hoc-Tap-Van-Phong/Acer-Swift-Go-14/x_m_6__2.webp"
             },
             {
-                "name": "Bản màu 6",
-                "hex": "#475569",
-                "key": "variant-6",
+                "name": "Xám Nhạt",
+                "hex": "#B8BCC4",
+                "key": "xam-nhat",
                 "image": "SanPham/Laptop/Hoc-Tap-Van-Phong/Acer-Swift-Go-14/x_m_7__2.png",
                 "img": "SanPham/Laptop/Hoc-Tap-Van-Phong/Acer-Swift-Go-14/x_m_7__2.png"
             },
             {
-                "name": "Bản màu 7",
-                "hex": "#475569",
-                "key": "variant-7",
+                "name": "Bạc Titan",
+                "hex": "#CED2D9",
+                "key": "bac-titan",
                 "image": "SanPham/Laptop/Hoc-Tap-Van-Phong/Acer-Swift-Go-14/x_m_8__2.webp",
                 "img": "SanPham/Laptop/Hoc-Tap-Van-Phong/Acer-Swift-Go-14/x_m_8__2.webp"
             },
             {
-                "name": "Bản màu 8",
-                "hex": "#475569",
-                "key": "variant-8",
+                "name": "Trắng Bạc",
+                "hex": "#EAECF0",
+                "key": "trang-bac",
                 "image": "SanPham/Laptop/Hoc-Tap-Van-Phong/Acer-Swift-Go-14/x_m_9__2.png",
                 "img": "SanPham/Laptop/Hoc-Tap-Van-Phong/Acer-Swift-Go-14/x_m_9__2.png"
             }
@@ -2373,44 +2373,44 @@
         "image": "SanPham/Laptop/Gaming/Acer-Predator-Helios-Neo-16/sssxs_1__10_1.png",
         "colors": [
             {
-                "name": "Bản màu 1",
-                "hex": "#475569",
-                "key": "variant-1",
+                "name": "Đêm Xanh Thẫm",
+                "hex": "#1E293B",
+                "key": "dem-xanh-tham",
                 "image": "SanPham/Laptop/Gaming/Acer-Predator-Helios-Neo-16/sssxs_1__10_1.png",
                 "img": "SanPham/Laptop/Gaming/Acer-Predator-Helios-Neo-16/sssxs_1__10_1.png"
             },
             {
-                "name": "Bản màu 2",
-                "hex": "#475569",
-                "key": "variant-2",
+                "name": "Đen",
+                "hex": "#1F2024",
+                "key": "den",
                 "image": "SanPham/Laptop/Gaming/Acer-Predator-Helios-Neo-16/sssxs_4__8_1.webp",
                 "img": "SanPham/Laptop/Gaming/Acer-Predator-Helios-Neo-16/sssxs_4__8_1.webp"
             },
             {
-                "name": "Bản màu 3",
-                "hex": "#475569",
-                "key": "variant-3",
+                "name": "Đen Xám",
+                "hex": "#2C303A",
+                "key": "den-xam",
                 "image": "SanPham/Laptop/Gaming/Acer-Predator-Helios-Neo-16/sssxs_5__8_1.webp",
                 "img": "SanPham/Laptop/Gaming/Acer-Predator-Helios-Neo-16/sssxs_5__8_1.webp"
             },
             {
-                "name": "Bản màu 4",
-                "hex": "#475569",
-                "key": "variant-4",
+                "name": "Đen Nhám",
+                "hex": "#24262D",
+                "key": "den-nham",
                 "image": "SanPham/Laptop/Gaming/Acer-Predator-Helios-Neo-16/sssxs_6__7_1.png",
                 "img": "SanPham/Laptop/Gaming/Acer-Predator-Helios-Neo-16/sssxs_6__7_1.png"
             },
             {
-                "name": "Bản màu 5",
-                "hex": "#475569",
-                "key": "variant-5",
+                "name": "Xám Đen",
+                "hex": "#383C46",
+                "key": "xam-den",
                 "image": "SanPham/Laptop/Gaming/Acer-Predator-Helios-Neo-16/sssxs_9__3_1.png",
                 "img": "SanPham/Laptop/Gaming/Acer-Predator-Helios-Neo-16/sssxs_9__3_1.png"
             },
             {
-                "name": "Bản màu 6",
-                "hex": "#475569",
-                "key": "variant-6",
+                "name": "Đen Tuyền",
+                "hex": "#171A21",
+                "key": "den-tuyen",
                 "image": "SanPham/Laptop/Gaming/Acer-Predator-Helios-Neo-16/sssxs_14_1.png",
                 "img": "SanPham/Laptop/Gaming/Acer-Predator-Helios-Neo-16/sssxs_14_1.png"
             }
@@ -2423,37 +2423,37 @@
         "image": "SanPham/Laptop/Gaming/MSI-Vector-16-HX/text_ng_n_15__7_160_1.png",
         "colors": [
             {
-                "name": "Bản màu 1",
-                "hex": "#475569",
-                "key": "variant-1",
+                "name": "Xám Đậm",
+                "hex": "#525459",
+                "key": "xam-dam",
                 "image": "SanPham/Laptop/Gaming/MSI-Vector-16-HX/text_ng_n_15__7_160_1.png",
                 "img": "SanPham/Laptop/Gaming/MSI-Vector-16-HX/text_ng_n_15__7_160_1.png"
             },
             {
-                "name": "Bản màu 2",
-                "hex": "#475569",
-                "key": "variant-2",
+                "name": "Xám Không Gian",
+                "hex": "#7D7E80",
+                "key": "xam-khong-gian",
                 "image": "SanPham/Laptop/Gaming/MSI-Vector-16-HX/text_ng_n_16__6_121_1.png",
                 "img": "SanPham/Laptop/Gaming/MSI-Vector-16-HX/text_ng_n_16__6_121_1.png"
             },
             {
-                "name": "Bản màu 3",
-                "hex": "#475569",
-                "key": "variant-3",
+                "name": "Xám Titan",
+                "hex": "#64676E",
+                "key": "xam-titan",
                 "image": "SanPham/Laptop/Gaming/MSI-Vector-16-HX/text_ng_n_17__8_76_1.png",
                 "img": "SanPham/Laptop/Gaming/MSI-Vector-16-HX/text_ng_n_17__8_76_1.png"
             },
             {
-                "name": "Bản màu 4",
-                "hex": "#475569",
-                "key": "variant-4",
+                "name": "Đen Xám",
+                "hex": "#3D3F45",
+                "key": "den-xam",
                 "image": "SanPham/Laptop/Gaming/MSI-Vector-16-HX/text_ng_n_18__6_60_1.png",
                 "img": "SanPham/Laptop/Gaming/MSI-Vector-16-HX/text_ng_n_18__6_60_1.png"
             },
             {
-                "name": "Bản màu 5",
-                "hex": "#475569",
-                "key": "variant-5",
+                "name": "Đen",
+                "hex": "#1F2024",
+                "key": "den",
                 "image": "SanPham/Laptop/Gaming/MSI-Vector-16-HX/text_ng_n_19__4_62_1.png",
                 "img": "SanPham/Laptop/Gaming/MSI-Vector-16-HX/text_ng_n_19__4_62_1.png"
             }
@@ -2466,23 +2466,23 @@
         "image": "SanPham/Laptop/Do-Hoa-Sang-Tao/MSI-Creator-Z16/_0000_msi-creator-z16-a11uet-217vn-i7_1_.jpg",
         "colors": [
             {
-                "name": "Bản màu 1",
-                "hex": "#475569",
-                "key": "variant-1",
+                "name": "Xám Không Gian",
+                "hex": "#7D7E80",
+                "key": "xam-khong-gian",
                 "image": "SanPham/Laptop/Do-Hoa-Sang-Tao/MSI-Creator-Z16/_0000_msi-creator-z16-a11uet-217vn-i7_1_.jpg",
                 "img": "SanPham/Laptop/Do-Hoa-Sang-Tao/MSI-Creator-Z16/_0000_msi-creator-z16-a11uet-217vn-i7_1_.jpg"
             },
             {
-                "name": "Bản màu 2",
-                "hex": "#475569",
-                "key": "variant-2",
+                "name": "Xám Đậm",
+                "hex": "#63666D",
+                "key": "xam-dam",
                 "image": "SanPham/Laptop/Do-Hoa-Sang-Tao/MSI-Creator-Z16/_0001_msi-creator-z16-a11uet-217vn-i7_2_.jpg",
                 "img": "SanPham/Laptop/Do-Hoa-Sang-Tao/MSI-Creator-Z16/_0001_msi-creator-z16-a11uet-217vn-i7_2_.jpg"
             },
             {
-                "name": "Bản màu 3",
-                "hex": "#475569",
-                "key": "variant-3",
+                "name": "Xám Bạc",
+                "hex": "#96989E",
+                "key": "xam-bac",
                 "image": "SanPham/Laptop/Do-Hoa-Sang-Tao/MSI-Creator-Z16/_0002_msi-creator-z16-a11uet-217vn-i7_3_.jpg",
                 "img": "SanPham/Laptop/Do-Hoa-Sang-Tao/MSI-Creator-Z16/_0002_msi-creator-z16-a11uet-217vn-i7_3_.jpg"
             }
@@ -2495,37 +2495,37 @@
         "image": "SanPham/Laptop/Do-Hoa-Sang-Tao/Dell-XPS-14/text_ng_n_21__4_48.png",
         "colors": [
             {
-                "name": "Bản màu 1",
-                "hex": "#475569",
-                "key": "variant-1",
+                "name": "Xám Không Gian",
+                "hex": "#7D7E80",
+                "key": "xam-khong-gian",
                 "image": "SanPham/Laptop/Do-Hoa-Sang-Tao/Dell-XPS-14/text_ng_n_21__4_48.png",
                 "img": "SanPham/Laptop/Do-Hoa-Sang-Tao/Dell-XPS-14/text_ng_n_21__4_48.png"
             },
             {
-                "name": "Bản màu 2",
-                "hex": "#475569",
-                "key": "variant-2",
+                "name": "Xám Đậm",
+                "hex": "#5E6066",
+                "key": "xam-dam",
                 "image": "SanPham/Laptop/Do-Hoa-Sang-Tao/Dell-XPS-14/text_ng_n_22__4_47.png",
                 "img": "SanPham/Laptop/Do-Hoa-Sang-Tao/Dell-XPS-14/text_ng_n_22__4_47.png"
             },
             {
-                "name": "Bản màu 3",
-                "hex": "#475569",
-                "key": "variant-3",
+                "name": "Xám Khói",
+                "hex": "#6C6E74",
+                "key": "xam-khoi",
                 "image": "SanPham/Laptop/Do-Hoa-Sang-Tao/Dell-XPS-14/text_ng_n_27__8_11.png",
                 "img": "SanPham/Laptop/Do-Hoa-Sang-Tao/Dell-XPS-14/text_ng_n_27__8_11.png"
             },
             {
-                "name": "Bản màu 4",
-                "hex": "#475569",
-                "key": "variant-4",
+                "name": "Đen Xám",
+                "hex": "#4B4E54",
+                "key": "den-xam",
                 "image": "SanPham/Laptop/Do-Hoa-Sang-Tao/Dell-XPS-14/text_ng_n_28__8_21.png",
                 "img": "SanPham/Laptop/Do-Hoa-Sang-Tao/Dell-XPS-14/text_ng_n_28__8_21.png"
             },
             {
-                "name": "Bản màu 5",
-                "hex": "#475569",
-                "key": "variant-5",
+                "name": "Bạc Xám",
+                "hex": "#9EA1A8",
+                "key": "bac-xam",
                 "image": "SanPham/Laptop/Do-Hoa-Sang-Tao/Dell-XPS-14/text_ng_n_29__9_20.png",
                 "img": "SanPham/Laptop/Do-Hoa-Sang-Tao/Dell-XPS-14/text_ng_n_29__9_20.png"
             }
@@ -2538,30 +2538,30 @@
         "image": "SanPham/iPad/Apple/iPad-Pro-M5/ipad-pro-m5-cutout.png",
         "colors": [
             {
-                "name": "Bản màu 1",
-                "hex": "#475569",
-                "key": "variant-1",
+                "name": "Đen Không Gian",
+                "hex": "#1F2024",
+                "key": "den-khong-gian",
                 "image": "SanPham/iPad/Apple/iPad-Pro-M5/ipad-pro-m5-cutout.png",
                 "img": "SanPham/iPad/Apple/iPad-Pro-M5/ipad-pro-m5-cutout.png"
             },
             {
-                "name": "Bản màu 2",
-                "hex": "#475569",
-                "key": "variant-2",
+                "name": "Bạc",
+                "hex": "#E3E4E6",
+                "key": "bac",
                 "image": "SanPham/iPad/Apple/iPad-Pro-M5/ipad_pro_11-in_m5_cellular_silver_pdp_image_position_2__vn-vi_1.webp",
                 "img": "SanPham/iPad/Apple/iPad-Pro-M5/ipad_pro_11-in_m5_cellular_silver_pdp_image_position_2__vn-vi_1.webp"
             },
             {
-                "name": "Bản màu 3",
-                "hex": "#475569",
-                "key": "variant-3",
+                "name": "Đen",
+                "hex": "#27292E",
+                "key": "den",
                 "image": "SanPham/iPad/Apple/iPad-Pro-M5/ipad_pro_13-in_m5_wifi_space_black_pdp_image_position_2__vn-vi_1.webp",
                 "img": "SanPham/iPad/Apple/iPad-Pro-M5/ipad_pro_13-in_m5_wifi_space_black_pdp_image_position_2__vn-vi_1.webp"
             },
             {
-                "name": "Bản màu 4",
-                "hex": "#475569",
-                "key": "variant-4",
+                "name": "Xám Không Gian",
+                "hex": "#7D7E80",
+                "key": "xam-khong-gian",
                 "image": "SanPham/iPad/Apple/iPad-Pro-M5/ipad_pro_13-in_m5_wifi_space_black_pdp_image_position_3__vn-vi.webp",
                 "img": "SanPham/iPad/Apple/iPad-Pro-M5/ipad_pro_13-in_m5_wifi_space_black_pdp_image_position_3__vn-vi.webp"
             }
@@ -2575,28 +2575,28 @@
         "colors": [
             {
                 "name": "Đen",
-                "hex": "#1D1D1F",
+                "hex": "#1F2024",
                 "key": "den",
                 "image": "SanPham/iPad/Apple/iPad-Air-M4/iPad-Air-M4-Den.jpg",
                 "img": "SanPham/iPad/Apple/iPad-Air-M4/iPad-Air-M4-Den.jpg"
             },
             {
                 "name": "Hồng",
-                "hex": "#F472B6",
+                "hex": "#F4A7B9",
                 "key": "hong",
                 "image": "SanPham/iPad/Apple/iPad-Air-M4/iPad-Air-M4-Hong.jpg",
                 "img": "SanPham/iPad/Apple/iPad-Air-M4/iPad-Air-M4-Hong.jpg"
             },
             {
                 "name": "Trắng",
-                "hex": "#F8FAFC",
+                "hex": "#F5F5F7",
                 "key": "trang",
                 "image": "SanPham/iPad/Apple/iPad-Air-M4/iPad-Air-M4-Trang.jpg",
                 "img": "SanPham/iPad/Apple/iPad-Air-M4/iPad-Air-M4-Trang.jpg"
             },
             {
                 "name": "Vàng",
-                "hex": "#FBBF24",
+                "hex": "#F3D58D",
                 "key": "vang",
                 "image": "SanPham/iPad/Apple/iPad-Air-M4/iPad-Air-M4-vang.jpg",
                 "img": "SanPham/iPad/Apple/iPad-Air-M4/iPad-Air-M4-vang.jpg"
@@ -2611,29 +2611,29 @@
         "colors": [
             {
                 "name": "Hồng",
-                "hex": "#F472B6",
+                "hex": "#F4A7B9",
                 "key": "hong",
                 "image": "SanPham/iPad/Apple/iPad-Gen-11-A16/iPad-Gen-11-A16-Hong.webp",
                 "img": "SanPham/iPad/Apple/iPad-Gen-11-A16/iPad-Gen-11-A16-Hong.webp"
             },
             {
                 "name": "Trắng",
-                "hex": "#F8FAFC",
+                "hex": "#F5F5F7",
                 "key": "trang",
                 "image": "SanPham/iPad/Apple/iPad-Gen-11-A16/iPad-Gen-11-A16-Trang.webp",
                 "img": "SanPham/iPad/Apple/iPad-Gen-11-A16/iPad-Gen-11-A16-Trang.webp"
             },
             {
                 "name": "Vàng",
-                "hex": "#FBBF24",
+                "hex": "#F3D58D",
                 "key": "vang",
                 "image": "SanPham/iPad/Apple/iPad-Gen-11-A16/iPad-Gen-11-A16-Vang.webp",
                 "img": "SanPham/iPad/Apple/iPad-Gen-11-A16/iPad-Gen-11-A16-Vang.webp"
             },
             {
                 "name": "Xanh Dương",
-                "hex": "#3B82F6",
-                "key": "xanh",
+                "hex": "#2563EB",
+                "key": "xanh-duong",
                 "image": "SanPham/iPad/Apple/iPad-Gen-11-A16/iPad-Gen-11-A16-Xanh.webp",
                 "img": "SanPham/iPad/Apple/iPad-Gen-11-A16/iPad-Gen-11-A16-Xanh.webp"
             }
@@ -2647,29 +2647,29 @@
         "colors": [
             {
                 "name": "Đen",
-                "hex": "#1D1D1F",
+                "hex": "#1F2024",
                 "key": "den",
                 "image": "SanPham/iPad/Apple/iPad-mini-7-A17-Pro/iPad-mini-7-A17-Pro-Den.jpg",
                 "img": "SanPham/iPad/Apple/iPad-mini-7-A17-Pro/iPad-mini-7-A17-Pro-Den.jpg"
             },
             {
                 "name": "Hồng",
-                "hex": "#F472B6",
+                "hex": "#F4A7B9",
                 "key": "hong",
                 "image": "SanPham/iPad/Apple/iPad-mini-7-A17-Pro/iPad-mini-7-A17-Pro-Hong.jpg",
                 "img": "SanPham/iPad/Apple/iPad-mini-7-A17-Pro/iPad-mini-7-A17-Pro-Hong.jpg"
             },
             {
                 "name": "Trắng",
-                "hex": "#F8FAFC",
+                "hex": "#F5F5F7",
                 "key": "trang",
                 "image": "SanPham/iPad/Apple/iPad-mini-7-A17-Pro/iPad-mini-7-A17-Pro-Trang.jpg",
                 "img": "SanPham/iPad/Apple/iPad-mini-7-A17-Pro/iPad-mini-7-A17-Pro-Trang.jpg"
             },
             {
                 "name": "Xanh Dương",
-                "hex": "#3B82F6",
-                "key": "xanh",
+                "hex": "#2563EB",
+                "key": "xanh-duong",
                 "image": "SanPham/iPad/Apple/iPad-mini-7-A17-Pro/iPad-mini-7-A17-Pro-Xanh.jpg",
                 "img": "SanPham/iPad/Apple/iPad-mini-7-A17-Pro/iPad-mini-7-A17-Pro-Xanh.jpg"
             }
@@ -2683,14 +2683,14 @@
         "colors": [
             {
                 "name": "Đen",
-                "hex": "#1D1D1F",
+                "hex": "#1F2024",
                 "key": "den",
                 "image": "SanPham/iPad/Samsung/Samsung-Galaxy-Tab-S11-Ultra/Samsung-Galaxy-Tab-S11-Ultra-Den.webp",
                 "img": "SanPham/iPad/Samsung/Samsung-Galaxy-Tab-S11-Ultra/Samsung-Galaxy-Tab-S11-Ultra-Den.webp"
             },
             {
                 "name": "Trắng",
-                "hex": "#F8FAFC",
+                "hex": "#F5F5F7",
                 "key": "trang",
                 "image": "SanPham/iPad/Samsung/Samsung-Galaxy-Tab-S11-Ultra/Samsung-Galaxy-Tab-S11-Ultra-Trang.webp",
                 "img": "SanPham/iPad/Samsung/Samsung-Galaxy-Tab-S11-Ultra/Samsung-Galaxy-Tab-S11-Ultra-Trang.webp"
@@ -2704,16 +2704,16 @@
         "image": "SanPham/iPad/Samsung/Samsung-Galaxy-Tab-S11/may-tinh-bang-samsung-galaxy-tab-s11_4_1.webp",
         "colors": [
             {
-                "name": "Bản màu 1",
-                "hex": "#475569",
-                "key": "variant-1",
+                "name": "Bạc",
+                "hex": "#E3E4E6",
+                "key": "bac",
                 "image": "SanPham/iPad/Samsung/Samsung-Galaxy-Tab-S11/may-tinh-bang-samsung-galaxy-tab-s11_4_1.webp",
                 "img": "SanPham/iPad/Samsung/Samsung-Galaxy-Tab-S11/may-tinh-bang-samsung-galaxy-tab-s11_4_1.webp"
             },
             {
-                "name": "Bản màu 2",
-                "hex": "#475569",
-                "key": "variant-2",
+                "name": "Xám",
+                "hex": "#7D7E80",
+                "key": "xam",
                 "image": "SanPham/iPad/Samsung/Samsung-Galaxy-Tab-S11/may-tinh-bang-samsung-galaxy-tab-s11_5_1.webp",
                 "img": "SanPham/iPad/Samsung/Samsung-Galaxy-Tab-S11/may-tinh-bang-samsung-galaxy-tab-s11_5_1.webp"
             }
@@ -2727,22 +2727,22 @@
         "colors": [
             {
                 "name": "Đen",
-                "hex": "#1D1D1F",
+                "hex": "#1F2024",
                 "key": "den",
                 "image": "SanPham/iPad/Samsung/Samsung-Galaxy-Tab-S10-FE-Plus/Samsung-Galaxy-Tab-S10-FE-Plus-Den.webp",
                 "img": "SanPham/iPad/Samsung/Samsung-Galaxy-Tab-S10-FE-Plus/Samsung-Galaxy-Tab-S10-FE-Plus-Den.webp"
             },
             {
                 "name": "Trắng",
-                "hex": "#F8FAFC",
+                "hex": "#F5F5F7",
                 "key": "trang",
                 "image": "SanPham/iPad/Samsung/Samsung-Galaxy-Tab-S10-FE-Plus/Samsung-Galaxy-Tab-S10-FE-Plus-Trang.png",
                 "img": "SanPham/iPad/Samsung/Samsung-Galaxy-Tab-S10-FE-Plus/Samsung-Galaxy-Tab-S10-FE-Plus-Trang.png"
             },
             {
                 "name": "Xanh Dương",
-                "hex": "#3B82F6",
-                "key": "xanh",
+                "hex": "#2563EB",
+                "key": "xanh-duong",
                 "image": "SanPham/iPad/Samsung/Samsung-Galaxy-Tab-S10-FE-Plus/Samsung-Galaxy-Tab-S10-FE-Plus-Xanh.webp",
                 "img": "SanPham/iPad/Samsung/Samsung-Galaxy-Tab-S10-FE-Plus/Samsung-Galaxy-Tab-S10-FE-Plus-Xanh.webp"
             }
@@ -2755,9 +2755,9 @@
         "image": "SanPham/iPad/Xiaomi/Xiaomi-Pad-9-Pro-Max/may-tinh-bang-xiaomi-pad-9-pro-max.webp",
         "colors": [
             {
-                "name": "Tiêu chuẩn",
-                "hex": "#1E293B",
-                "key": "standard",
+                "name": "Xám Không Gian",
+                "hex": "#7D7E80",
+                "key": "xam-khong-gian",
                 "image": "SanPham/iPad/Xiaomi/Xiaomi-Pad-9-Pro-Max/may-tinh-bang-xiaomi-pad-9-pro-max.webp",
                 "img": "SanPham/iPad/Xiaomi/Xiaomi-Pad-9-Pro-Max/may-tinh-bang-xiaomi-pad-9-pro-max.webp"
             }
@@ -2770,9 +2770,9 @@
         "image": "SanPham/iPad/Xiaomi/Xiaomi-Pad-9-Pro/may-tinh-bang-xiaomi-pad-9.webp",
         "colors": [
             {
-                "name": "Tiêu chuẩn",
-                "hex": "#1E293B",
-                "key": "standard",
+                "name": "Xanh Lá",
+                "hex": "#6EE7B7",
+                "key": "xanh-la",
                 "image": "SanPham/iPad/Xiaomi/Xiaomi-Pad-9-Pro/may-tinh-bang-xiaomi-pad-9.webp",
                 "img": "SanPham/iPad/Xiaomi/Xiaomi-Pad-9-Pro/may-tinh-bang-xiaomi-pad-9.webp"
             }
@@ -2786,7 +2786,7 @@
         "colors": [
             {
                 "name": "Đen",
-                "hex": "#1D1D1F",
+                "hex": "#1F2024",
                 "key": "den",
                 "image": "SanPham/iPad/Xiaomi/Xiaomi-Pad-8-Pro/Xiaomi-Pad-8-Pro-Den.webp",
                 "img": "SanPham/iPad/Xiaomi/Xiaomi-Pad-8-Pro/Xiaomi-Pad-8-Pro-Den.webp"
@@ -2800,7 +2800,7 @@
             },
             {
                 "name": "Xanh Lá",
-                "hex": "#10B981",
+                "hex": "#6EE7B7",
                 "key": "xanh-la",
                 "image": "SanPham/iPad/Xiaomi/Xiaomi-Pad-8-Pro/Xiaomi-Pad-8-Pro-Xanh La.webp",
                 "img": "SanPham/iPad/Xiaomi/Xiaomi-Pad-8-Pro/Xiaomi-Pad-8-Pro-Xanh La.webp"
@@ -2814,51 +2814,51 @@
         "image": "SanPham/TaiNghe/Apple/AirPods-Pro-3/airpods-pro-3-cutout.png",
         "colors": [
             {
-                "name": "Bản màu 1",
-                "hex": "#475569",
-                "key": "variant-1",
+                "name": "Trắng",
+                "hex": "#F5F5F7",
+                "key": "trang",
                 "image": "SanPham/TaiNghe/Apple/AirPods-Pro-3/airpods-pro-3-cutout.png",
                 "img": "SanPham/TaiNghe/Apple/AirPods-Pro-3/airpods-pro-3-cutout.png"
             },
             {
-                "name": "Bản màu 2",
-                "hex": "#475569",
-                "key": "variant-2",
+                "name": "Trắng Bạc",
+                "hex": "#E3E4E6",
+                "key": "trang-bac",
                 "image": "SanPham/TaiNghe/Apple/AirPods-Pro-3/airpods_pro_3_sep25_pdp_image_position_2__vn-vi_1.png",
                 "img": "SanPham/TaiNghe/Apple/AirPods-Pro-3/airpods_pro_3_sep25_pdp_image_position_2__vn-vi_1.png"
             },
             {
-                "name": "Bản màu 3",
-                "hex": "#475569",
-                "key": "variant-3",
+                "name": "Trắng Sáng",
+                "hex": "#FAFAFC",
+                "key": "trang-sang",
                 "image": "SanPham/TaiNghe/Apple/AirPods-Pro-3/airpods_pro_3_sep25_pdp_image_position_3__vn-vi_1.png",
                 "img": "SanPham/TaiNghe/Apple/AirPods-Pro-3/airpods_pro_3_sep25_pdp_image_position_3__vn-vi_1.png"
             },
             {
-                "name": "Bản màu 4",
-                "hex": "#475569",
-                "key": "variant-4",
+                "name": "Trắng Ngọc",
+                "hex": "#EFEFF2",
+                "key": "trang-ngoc",
                 "image": "SanPham/TaiNghe/Apple/AirPods-Pro-3/airpods_pro_3_sep25_pdp_image_position_4__vn-vi_1.webp",
                 "img": "SanPham/TaiNghe/Apple/AirPods-Pro-3/airpods_pro_3_sep25_pdp_image_position_4__vn-vi_1.webp"
             },
             {
-                "name": "Bản màu 5",
-                "hex": "#475569",
-                "key": "variant-5",
+                "name": "Trắng Mây",
+                "hex": "#EAECEF",
+                "key": "trang-may",
                 "image": "SanPham/TaiNghe/Apple/AirPods-Pro-3/airpods_pro_3_sep25_pdp_image_position_5__vn-vi_1.webp",
                 "img": "SanPham/TaiNghe/Apple/AirPods-Pro-3/airpods_pro_3_sep25_pdp_image_position_5__vn-vi_1.webp"
             },
             {
-                "name": "Bản màu 6",
-                "hex": "#475569",
-                "key": "variant-6",
+                "name": "Trắng Sữa",
+                "hex": "#F1F2F5",
+                "key": "trang-sua",
                 "image": "SanPham/TaiNghe/Apple/AirPods-Pro-3/airpods_pro_3_sep25_pdp_image_position_7__vn-vi_1.png",
                 "img": "SanPham/TaiNghe/Apple/AirPods-Pro-3/airpods_pro_3_sep25_pdp_image_position_7__vn-vi_1.png"
             },
             {
-                "name": "Bản màu 7",
-                "hex": "#475569",
-                "key": "variant-7",
+                "name": "Trắng Tinh",
+                "hex": "#F8F9FA",
+                "key": "trang-tinh",
                 "image": "SanPham/TaiNghe/Apple/AirPods-Pro-3/airpods_pro_3_sep25_pdp_image_position_8__vn-vi_1.png",
                 "img": "SanPham/TaiNghe/Apple/AirPods-Pro-3/airpods_pro_3_sep25_pdp_image_position_8__vn-vi_1.png"
             }
@@ -2871,37 +2871,37 @@
         "image": "SanPham/TaiNghe/Apple/AirPods-Max-2/tai_nghe_ch_p_tai_ch_ng_n_apple_airpods_max_2.webp",
         "colors": [
             {
-                "name": "Bản màu 1",
-                "hex": "#475569",
-                "key": "variant-1",
+                "name": "Đêm Xanh Thẫm",
+                "hex": "#1E293B",
+                "key": "dem-xanh-tham",
                 "image": "SanPham/TaiNghe/Apple/AirPods-Max-2/tai_nghe_ch_p_tai_ch_ng_n_apple_airpods_max_2.webp",
                 "img": "SanPham/TaiNghe/Apple/AirPods-Max-2/tai_nghe_ch_p_tai_ch_ng_n_apple_airpods_max_2.webp"
             },
             {
-                "name": "Bản màu 2",
-                "hex": "#475569",
-                "key": "variant-2",
+                "name": "Xanh Da Trời",
+                "hex": "#93C5FD",
+                "key": "xanh-da-troi",
                 "image": "SanPham/TaiNghe/Apple/AirPods-Max-2/tai_nghe_ch_p_tai_ch_ng_n_apple_airpods_max_2_1_.webp",
                 "img": "SanPham/TaiNghe/Apple/AirPods-Max-2/tai_nghe_ch_p_tai_ch_ng_n_apple_airpods_max_2_1_.webp"
             },
             {
-                "name": "Bản màu 3",
-                "hex": "#475569",
-                "key": "variant-3",
+                "name": "Cam",
+                "hex": "#F97316",
+                "key": "cam",
                 "image": "SanPham/TaiNghe/Apple/AirPods-Max-2/tai_nghe_ch_p_tai_ch_ng_n_apple_airpods_max_2_2_.webp",
                 "img": "SanPham/TaiNghe/Apple/AirPods-Max-2/tai_nghe_ch_p_tai_ch_ng_n_apple_airpods_max_2_2_.webp"
             },
             {
-                "name": "Bản màu 4",
-                "hex": "#475569",
-                "key": "variant-4",
+                "name": "Tím",
+                "hex": "#C4B5FD",
+                "key": "tim",
                 "image": "SanPham/TaiNghe/Apple/AirPods-Max-2/tai_nghe_ch_p_tai_ch_ng_n_apple_airpods_max_2_3_.webp",
                 "img": "SanPham/TaiNghe/Apple/AirPods-Max-2/tai_nghe_ch_p_tai_ch_ng_n_apple_airpods_max_2_3_.webp"
             },
             {
-                "name": "Bản màu 5",
-                "hex": "#475569",
-                "key": "variant-5",
+                "name": "Ánh Sao",
+                "hex": "#F0E5D3",
+                "key": "anh-sao",
                 "image": "SanPham/TaiNghe/Apple/AirPods-Max-2/tai_nghe_ch_p_tai_ch_ng_n_apple_airpods_max_2026_1__2.webp",
                 "img": "SanPham/TaiNghe/Apple/AirPods-Max-2/tai_nghe_ch_p_tai_ch_ng_n_apple_airpods_max_2026_1__2.webp"
             }
@@ -2914,37 +2914,37 @@
         "image": "SanPham/TaiNghe/Apple/AirPods-4-ANC/airpods-4-1.webp",
         "colors": [
             {
-                "name": "Bản màu 1",
-                "hex": "#475569",
-                "key": "variant-1",
+                "name": "Trắng",
+                "hex": "#F5F5F7",
+                "key": "trang",
                 "image": "SanPham/TaiNghe/Apple/AirPods-4-ANC/airpods-4-1.webp",
                 "img": "SanPham/TaiNghe/Apple/AirPods-4-ANC/airpods-4-1.webp"
             },
             {
-                "name": "Bản màu 2",
-                "hex": "#475569",
-                "key": "variant-2",
+                "name": "Trắng Bạc",
+                "hex": "#E3E4E6",
+                "key": "trang-bac",
                 "image": "SanPham/TaiNghe/Apple/AirPods-4-ANC/airpods-4-2.png",
                 "img": "SanPham/TaiNghe/Apple/AirPods-4-ANC/airpods-4-2.png"
             },
             {
-                "name": "Bản màu 3",
-                "hex": "#475569",
-                "key": "variant-3",
+                "name": "Trắng Sáng",
+                "hex": "#FAFAFC",
+                "key": "trang-sang",
                 "image": "SanPham/TaiNghe/Apple/AirPods-4-ANC/airpods-4-3-3.webp",
                 "img": "SanPham/TaiNghe/Apple/AirPods-4-ANC/airpods-4-3-3.webp"
             },
             {
-                "name": "Bản màu 4",
-                "hex": "#475569",
-                "key": "variant-4",
+                "name": "Trắng Ngọc",
+                "hex": "#EFEFF2",
+                "key": "trang-ngoc",
                 "image": "SanPham/TaiNghe/Apple/AirPods-4-ANC/airpods-4-3-4.webp",
                 "img": "SanPham/TaiNghe/Apple/AirPods-4-ANC/airpods-4-3-4.webp"
             },
             {
-                "name": "Bản màu 5",
-                "hex": "#475569",
-                "key": "variant-5",
+                "name": "Trắng Mây",
+                "hex": "#EAECEF",
+                "key": "trang-may",
                 "image": "SanPham/TaiNghe/Apple/AirPods-4-ANC/airpods_4_pdp_image_position_7__vn-vi.jpg",
                 "img": "SanPham/TaiNghe/Apple/AirPods-4-ANC/airpods_4_pdp_image_position_7__vn-vi.jpg"
             }
@@ -2957,37 +2957,37 @@
         "image": "SanPham/TaiNghe/Apple/AirPods-4/airpods-4-1.webp",
         "colors": [
             {
-                "name": "Bản màu 1",
-                "hex": "#475569",
-                "key": "variant-1",
+                "name": "Trắng",
+                "hex": "#F5F5F7",
+                "key": "trang",
                 "image": "SanPham/TaiNghe/Apple/AirPods-4/airpods-4-1.webp",
                 "img": "SanPham/TaiNghe/Apple/AirPods-4/airpods-4-1.webp"
             },
             {
-                "name": "Bản màu 2",
-                "hex": "#475569",
-                "key": "variant-2",
+                "name": "Trắng Bạc",
+                "hex": "#E3E4E6",
+                "key": "trang-bac",
                 "image": "SanPham/TaiNghe/Apple/AirPods-4/airpods-4-2.png",
                 "img": "SanPham/TaiNghe/Apple/AirPods-4/airpods-4-2.png"
             },
             {
-                "name": "Bản màu 3",
-                "hex": "#475569",
-                "key": "variant-3",
+                "name": "Trắng Sáng",
+                "hex": "#FAFAFC",
+                "key": "trang-sang",
                 "image": "SanPham/TaiNghe/Apple/AirPods-4/airpods-4-3-3.webp",
                 "img": "SanPham/TaiNghe/Apple/AirPods-4/airpods-4-3-3.webp"
             },
             {
-                "name": "Bản màu 4",
-                "hex": "#475569",
-                "key": "variant-4",
+                "name": "Trắng Ngọc",
+                "hex": "#EFEFF2",
+                "key": "trang-ngoc",
                 "image": "SanPham/TaiNghe/Apple/AirPods-4/airpods-4-3-4.webp",
                 "img": "SanPham/TaiNghe/Apple/AirPods-4/airpods-4-3-4.webp"
             },
             {
-                "name": "Bản màu 5",
-                "hex": "#475569",
-                "key": "variant-5",
+                "name": "Trắng Mây",
+                "hex": "#EAECEF",
+                "key": "trang-may",
                 "image": "SanPham/TaiNghe/Apple/AirPods-4/airpods_4_pdp_image_position_7__vn-vi.jpg",
                 "img": "SanPham/TaiNghe/Apple/AirPods-4/airpods_4_pdp_image_position_7__vn-vi.jpg"
             }
@@ -3000,16 +3000,16 @@
         "image": "SanPham/TaiNghe/Samsung/Samsung-Galaxy-Buds4-Pro/61SXWLsmy-L._AC_SL1500_.jpg",
         "colors": [
             {
-                "name": "Bản màu 1",
-                "hex": "#475569",
-                "key": "variant-1",
+                "name": "Đen",
+                "hex": "#1F2024",
+                "key": "den",
                 "image": "SanPham/TaiNghe/Samsung/Samsung-Galaxy-Buds4-Pro/61SXWLsmy-L._AC_SL1500_.jpg",
                 "img": "SanPham/TaiNghe/Samsung/Samsung-Galaxy-Buds4-Pro/61SXWLsmy-L._AC_SL1500_.jpg"
             },
             {
-                "name": "Bản màu 2",
-                "hex": "#475569",
-                "key": "variant-2",
+                "name": "Trắng",
+                "hex": "#F5F5F7",
+                "key": "trang",
                 "image": "SanPham/TaiNghe/Samsung/Samsung-Galaxy-Buds4-Pro/SCOMMRCL-167-Buds4Pro_02_v2.webp",
                 "img": "SanPham/TaiNghe/Samsung/Samsung-Galaxy-Buds4-Pro/SCOMMRCL-167-Buds4Pro_02_v2.webp"
             }
@@ -3022,16 +3022,16 @@
         "image": "SanPham/TaiNghe/Samsung/Samsung-Galaxy-Buds4/51QEHqsjzPL._AC_SL1500_.jpg",
         "colors": [
             {
-                "name": "Bản màu 1",
-                "hex": "#475569",
-                "key": "variant-1",
+                "name": "Xám",
+                "hex": "#7D7E80",
+                "key": "xam",
                 "image": "SanPham/TaiNghe/Samsung/Samsung-Galaxy-Buds4/51QEHqsjzPL._AC_SL1500_.jpg",
                 "img": "SanPham/TaiNghe/Samsung/Samsung-Galaxy-Buds4/51QEHqsjzPL._AC_SL1500_.jpg"
             },
             {
-                "name": "Bản màu 2",
-                "hex": "#475569",
-                "key": "variant-2",
+                "name": "Đen",
+                "hex": "#1F2024",
+                "key": "den",
                 "image": "SanPham/TaiNghe/Samsung/Samsung-Galaxy-Buds4/61kDTK2TgsL._AC_SL1500_.jpg",
                 "img": "SanPham/TaiNghe/Samsung/Samsung-Galaxy-Buds4/61kDTK2TgsL._AC_SL1500_.jpg"
             }
@@ -3044,37 +3044,37 @@
         "image": "SanPham/TaiNghe/Samsung/Samsung-Galaxy-Buds3-FE/51-nqf6rkil.jpg",
         "colors": [
             {
-                "name": "Bản màu 1",
-                "hex": "#475569",
-                "key": "variant-1",
+                "name": "Đen",
+                "hex": "#1F2024",
+                "key": "den",
                 "image": "SanPham/TaiNghe/Samsung/Samsung-Galaxy-Buds3-FE/51-nqf6rkil.jpg",
                 "img": "SanPham/TaiNghe/Samsung/Samsung-Galaxy-Buds3-FE/51-nqf6rkil.jpg"
             },
             {
-                "name": "Bản màu 2",
-                "hex": "#475569",
-                "key": "variant-2",
+                "name": "Đen Nhám",
+                "hex": "#2A2C31",
+                "key": "den-nham",
                 "image": "SanPham/TaiNghe/Samsung/Samsung-Galaxy-Buds3-FE/_www.spigen.com_1_detail_ss000_ra_02_1.jpg",
                 "img": "SanPham/TaiNghe/Samsung/Samsung-Galaxy-Buds3-FE/_www.spigen.com_1_detail_ss000_ra_02_1.jpg"
             },
             {
-                "name": "Bản màu 3",
-                "hex": "#475569",
-                "key": "variant-3",
+                "name": "Xám Đen",
+                "hex": "#383A40",
+                "key": "xam-den",
                 "image": "SanPham/TaiNghe/Samsung/Samsung-Galaxy-Buds3-FE/_www.spigen.com_22_detail_ss000_ra_03_1200x1200.jpg",
                 "img": "SanPham/TaiNghe/Samsung/Samsung-Galaxy-Buds3-FE/_www.spigen.com_22_detail_ss000_ra_03_1200x1200.jpg"
             },
             {
-                "name": "Bản màu 4",
-                "hex": "#475569",
-                "key": "variant-4",
+                "name": "Đen Carbon",
+                "hex": "#23252A",
+                "key": "den-carbon",
                 "image": "SanPham/TaiNghe/Samsung/Samsung-Galaxy-Buds3-FE/_www.spigen.com_34_title_ss000_ra_01_grande_1.jpg",
                 "img": "SanPham/TaiNghe/Samsung/Samsung-Galaxy-Buds3-FE/_www.spigen.com_34_title_ss000_ra_01_grande_1.jpg"
             },
             {
-                "name": "Bản màu 5",
-                "hex": "#475569",
-                "key": "variant-5",
+                "name": "Đen Tuyền",
+                "hex": "#17181B",
+                "key": "den-tuyen",
                 "image": "SanPham/TaiNghe/Samsung/Samsung-Galaxy-Buds3-FE/_www.spigen.com_989_detail_ss000_ra_07.jpg",
                 "img": "SanPham/TaiNghe/Samsung/Samsung-Galaxy-Buds3-FE/_www.spigen.com_989_detail_ss000_ra_07.jpg"
             }
@@ -3087,58 +3087,58 @@
         "image": "SanPham/TaiNghe/JBL/JBL-Tour-Pro-3/tai-nghe-bluetooth-jbl-tour-pro-3-latte.webp",
         "colors": [
             {
-                "name": "Bản màu 1",
-                "hex": "#475569",
-                "key": "variant-1",
+                "name": "Ánh Sao",
+                "hex": "#F0E5D3",
+                "key": "anh-sao",
                 "image": "SanPham/TaiNghe/JBL/JBL-Tour-Pro-3/tai-nghe-bluetooth-jbl-tour-pro-3-latte.webp",
                 "img": "SanPham/TaiNghe/JBL/JBL-Tour-Pro-3/tai-nghe-bluetooth-jbl-tour-pro-3-latte.webp"
             },
             {
-                "name": "Bản màu 2",
-                "hex": "#475569",
-                "key": "variant-2",
+                "name": "Đen",
+                "hex": "#1F2024",
+                "key": "den",
                 "image": "SanPham/TaiNghe/JBL/JBL-Tour-Pro-3/tai-nghe-bluetooth-jbl-tour-pro-3_6__1.webp",
                 "img": "SanPham/TaiNghe/JBL/JBL-Tour-Pro-3/tai-nghe-bluetooth-jbl-tour-pro-3_6__1.webp"
             },
             {
-                "name": "Bản màu 3",
-                "hex": "#475569",
-                "key": "variant-3",
+                "name": "Đen Nhám",
+                "hex": "#282A2F",
+                "key": "den-nham",
                 "image": "SanPham/TaiNghe/JBL/JBL-Tour-Pro-3/tai-nghe-bluetooth-jbl-tour-pro-3_9_.webp",
                 "img": "SanPham/TaiNghe/JBL/JBL-Tour-Pro-3/tai-nghe-bluetooth-jbl-tour-pro-3_9_.webp"
             },
             {
-                "name": "Bản màu 4",
-                "hex": "#475569",
-                "key": "variant-4",
+                "name": "Xám Đen",
+                "hex": "#37393F",
+                "key": "xam-den",
                 "image": "SanPham/TaiNghe/JBL/JBL-Tour-Pro-3/tai-nghe-bluetooth-jbl-tour-pro-3_10_.webp",
                 "img": "SanPham/TaiNghe/JBL/JBL-Tour-Pro-3/tai-nghe-bluetooth-jbl-tour-pro-3_10_.webp"
             },
             {
-                "name": "Bản màu 5",
-                "hex": "#475569",
-                "key": "variant-5",
+                "name": "Đen Carbon",
+                "hex": "#222429",
+                "key": "den-carbon",
                 "image": "SanPham/TaiNghe/JBL/JBL-Tour-Pro-3/tai-nghe-bluetooth-jbl-tour-pro-3_11_.png",
                 "img": "SanPham/TaiNghe/JBL/JBL-Tour-Pro-3/tai-nghe-bluetooth-jbl-tour-pro-3_11_.png"
             },
             {
-                "name": "Bản màu 6",
-                "hex": "#475569",
-                "key": "variant-6",
+                "name": "Đen Tuyền",
+                "hex": "#16171B",
+                "key": "den-tuyen",
                 "image": "SanPham/TaiNghe/JBL/JBL-Tour-Pro-3/tai-nghe-bluetooth-jbl-tour-pro-3_12_.png",
                 "img": "SanPham/TaiNghe/JBL/JBL-Tour-Pro-3/tai-nghe-bluetooth-jbl-tour-pro-3_12_.png"
             },
             {
-                "name": "Bản màu 7",
-                "hex": "#475569",
-                "key": "variant-7",
+                "name": "Đen Xám",
+                "hex": "#303238",
+                "key": "den-xam",
                 "image": "SanPham/TaiNghe/JBL/JBL-Tour-Pro-3/tai-nghe-bluetooth-jbl-tour-pro-3_13_.webp",
                 "img": "SanPham/TaiNghe/JBL/JBL-Tour-Pro-3/tai-nghe-bluetooth-jbl-tour-pro-3_13_.webp"
             },
             {
-                "name": "Bản màu 8",
-                "hex": "#475569",
-                "key": "variant-8",
+                "name": "Xám Titan",
+                "hex": "#50535A",
+                "key": "xam-titan",
                 "image": "SanPham/TaiNghe/JBL/JBL-Tour-Pro-3/tai-nghe-bluetooth-jbl-tour-pro-3_14_.png",
                 "img": "SanPham/TaiNghe/JBL/JBL-Tour-Pro-3/tai-nghe-bluetooth-jbl-tour-pro-3_14_.png"
             }
@@ -3151,51 +3151,51 @@
         "image": "SanPham/TaiNghe/JBL/JBL-Live-Beam-3/image_-_2024-12-18t203627.288.webp",
         "colors": [
             {
-                "name": "Bản màu 1",
-                "hex": "#475569",
-                "key": "variant-1",
+                "name": "Bạc",
+                "hex": "#E3E4E6",
+                "key": "bac",
                 "image": "SanPham/TaiNghe/JBL/JBL-Live-Beam-3/image_-_2024-12-18t203627.288.webp",
                 "img": "SanPham/TaiNghe/JBL/JBL-Live-Beam-3/image_-_2024-12-18t203627.288.webp"
             },
             {
-                "name": "Bản màu 2",
-                "hex": "#475569",
-                "key": "variant-2",
+                "name": "Tím",
+                "hex": "#C4B5FD",
+                "key": "tim",
                 "image": "SanPham/TaiNghe/JBL/JBL-Live-Beam-3/tai-nghe-bluetooth-jbl-live-beam-3-_9__1.png",
                 "img": "SanPham/TaiNghe/JBL/JBL-Live-Beam-3/tai-nghe-bluetooth-jbl-live-beam-3-_9__1.png"
             },
             {
-                "name": "Bản màu 3",
-                "hex": "#475569",
-                "key": "variant-3",
+                "name": "Đen",
+                "hex": "#1F2024",
+                "key": "den",
                 "image": "SanPham/TaiNghe/JBL/JBL-Live-Beam-3/tai-nghe-bluetooth-jbl-live-beam-3-_14__1.png",
                 "img": "SanPham/TaiNghe/JBL/JBL-Live-Beam-3/tai-nghe-bluetooth-jbl-live-beam-3-_14__1.png"
             },
             {
-                "name": "Bản màu 4",
-                "hex": "#475569",
-                "key": "variant-4",
+                "name": "Đen Nhám",
+                "hex": "#292B30",
+                "key": "den-nham",
                 "image": "SanPham/TaiNghe/JBL/JBL-Live-Beam-3/tai-nghe-bluetooth-jbl-live-beam-3-_16__1.png",
                 "img": "SanPham/TaiNghe/JBL/JBL-Live-Beam-3/tai-nghe-bluetooth-jbl-live-beam-3-_16__1.png"
             },
             {
-                "name": "Bản màu 5",
-                "hex": "#475569",
-                "key": "variant-5",
+                "name": "Xám Đen",
+                "hex": "#36383E",
+                "key": "xam-den",
                 "image": "SanPham/TaiNghe/JBL/JBL-Live-Beam-3/tai-nghe-bluetooth-jbl-live-beam-3-_17__1.png",
                 "img": "SanPham/TaiNghe/JBL/JBL-Live-Beam-3/tai-nghe-bluetooth-jbl-live-beam-3-_17__1.png"
             },
             {
-                "name": "Bản màu 6",
-                "hex": "#475569",
-                "key": "variant-6",
+                "name": "Đen Carbon",
+                "hex": "#222429",
+                "key": "den-carbon",
                 "image": "SanPham/TaiNghe/JBL/JBL-Live-Beam-3/tai-nghe-bluetooth-jbl-live-beam-3-_18__1.webp",
                 "img": "SanPham/TaiNghe/JBL/JBL-Live-Beam-3/tai-nghe-bluetooth-jbl-live-beam-3-_18__1.webp"
             },
             {
-                "name": "Bản màu 7",
-                "hex": "#475569",
-                "key": "variant-7",
+                "name": "Đen Tuyền",
+                "hex": "#17181C",
+                "key": "den-tuyen",
                 "image": "SanPham/TaiNghe/JBL/JBL-Live-Beam-3/tai_nghe_bluetooth_true_wireless_jbl_live_beam_3.webp",
                 "img": "SanPham/TaiNghe/JBL/JBL-Live-Beam-3/tai_nghe_bluetooth_true_wireless_jbl_live_beam_3.webp"
             }
@@ -3208,16 +3208,16 @@
         "image": "SanPham/TaiNghe/JBL/JBL-Live-Buds-3/tai-nghe-bluetooth-jbl-live-buds-3-0_1.png",
         "colors": [
             {
-                "name": "Bản màu 1",
-                "hex": "#475569",
-                "key": "variant-1",
+                "name": "Đen",
+                "hex": "#1F2024",
+                "key": "den",
                 "image": "SanPham/TaiNghe/JBL/JBL-Live-Buds-3/tai-nghe-bluetooth-jbl-live-buds-3-0_1.png",
                 "img": "SanPham/TaiNghe/JBL/JBL-Live-Buds-3/tai-nghe-bluetooth-jbl-live-buds-3-0_1.png"
             },
             {
-                "name": "Bản màu 2",
-                "hex": "#475569",
-                "key": "variant-2",
+                "name": "Xám Đen",
+                "hex": "#383B42",
+                "key": "xam-den",
                 "image": "SanPham/TaiNghe/JBL/JBL-Live-Buds-3/tai_nghe_bluetooth_true_wireless_jbl_live_buds_3.png",
                 "img": "SanPham/TaiNghe/JBL/JBL-Live-Buds-3/tai_nghe_bluetooth_true_wireless_jbl_live_buds_3.png"
             }
@@ -3230,65 +3230,65 @@
         "image": "SanPham/Loa/JBL/JBL-Go-5/loa-jbl-go-5--_3_.webp",
         "colors": [
             {
-                "name": "Bản màu 1",
-                "hex": "#475569",
-                "key": "variant-1",
+                "name": "Cam",
+                "hex": "#F97316",
+                "key": "cam",
                 "image": "SanPham/Loa/JBL/JBL-Go-5/loa-jbl-go-5--_3_.webp",
                 "img": "SanPham/Loa/JBL/JBL-Go-5/loa-jbl-go-5--_3_.webp"
             },
             {
-                "name": "Bản màu 2",
-                "hex": "#475569",
-                "key": "variant-2",
+                "name": "Hồng",
+                "hex": "#F4A7B9",
+                "key": "hong",
                 "image": "SanPham/Loa/JBL/JBL-Go-5/loa-jbl-go-5--_4_.webp",
                 "img": "SanPham/Loa/JBL/JBL-Go-5/loa-jbl-go-5--_4_.webp"
             },
             {
-                "name": "Bản màu 3",
-                "hex": "#475569",
-                "key": "variant-3",
+                "name": "Tím Đậm",
+                "hex": "#8B5CF6",
+                "key": "tim-dam",
                 "image": "SanPham/Loa/JBL/JBL-Go-5/loa-jbl-go-5--_5_.webp",
                 "img": "SanPham/Loa/JBL/JBL-Go-5/loa-jbl-go-5--_5_.webp"
             },
             {
-                "name": "Bản màu 4",
-                "hex": "#475569",
-                "key": "variant-4",
+                "name": "Đỏ",
+                "hex": "#B91C1C",
+                "key": "do",
                 "image": "SanPham/Loa/JBL/JBL-Go-5/loa-jbl-go-5--_6_.webp",
                 "img": "SanPham/Loa/JBL/JBL-Go-5/loa-jbl-go-5--_6_.webp"
             },
             {
-                "name": "Bản màu 5",
-                "hex": "#475569",
-                "key": "variant-5",
+                "name": "Xanh Rêu",
+                "hex": "#4D5E3C",
+                "key": "xanh-reu",
                 "image": "SanPham/Loa/JBL/JBL-Go-5/loa-jbl-go-5--_7_.webp",
                 "img": "SanPham/Loa/JBL/JBL-Go-5/loa-jbl-go-5--_7_.webp"
             },
             {
-                "name": "Bản màu 6",
-                "hex": "#475569",
-                "key": "variant-6",
+                "name": "Trắng",
+                "hex": "#F5F5F7",
+                "key": "trang",
                 "image": "SanPham/Loa/JBL/JBL-Go-5/loa-jbl-go-5--_9_.webp",
                 "img": "SanPham/Loa/JBL/JBL-Go-5/loa-jbl-go-5--_9_.webp"
             },
             {
-                "name": "Bản màu 7",
-                "hex": "#475569",
-                "key": "variant-7",
+                "name": "Vàng",
+                "hex": "#F3D58D",
+                "key": "vang",
                 "image": "SanPham/Loa/JBL/JBL-Go-5/loa-jbl-go-5--_10_.png",
                 "img": "SanPham/Loa/JBL/JBL-Go-5/loa-jbl-go-5--_10_.png"
             },
             {
-                "name": "Bản màu 8",
-                "hex": "#475569",
-                "key": "variant-8",
+                "name": "Đen",
+                "hex": "#1F2024",
+                "key": "den",
                 "image": "SanPham/Loa/JBL/JBL-Go-5/loa-jbl-go-5-_1__1.webp",
                 "img": "SanPham/Loa/JBL/JBL-Go-5/loa-jbl-go-5-_1__1.webp"
             },
             {
-                "name": "Bản màu 9",
-                "hex": "#475569",
-                "key": "variant-9",
+                "name": "Đêm Xanh Thẫm",
+                "hex": "#1E293B",
+                "key": "dem-xanh-tham",
                 "image": "SanPham/Loa/JBL/JBL-Go-5/loa-jbl-go-5-_2__1.webp",
                 "img": "SanPham/Loa/JBL/JBL-Go-5/loa-jbl-go-5-_2__1.webp"
             }
@@ -3301,65 +3301,65 @@
         "image": "SanPham/Loa/JBL/JBL-Flip-7/jbl-flip-7-cm.webp",
         "colors": [
             {
-                "name": "Bản màu 1",
-                "hex": "#475569",
-                "key": "variant-1",
+                "name": "Xanh Rêu",
+                "hex": "#4D5E3C",
+                "key": "xanh-reu",
                 "image": "SanPham/Loa/JBL/JBL-Flip-7/jbl-flip-7-cm.webp",
                 "img": "SanPham/Loa/JBL/JBL-Flip-7/jbl-flip-7-cm.webp"
             },
             {
                 "name": "Đen",
-                "hex": "#1D1D1F",
+                "hex": "#1F2024",
                 "key": "den",
                 "image": "SanPham/Loa/JBL/JBL-Flip-7/jbl-flip-7-den-cam.webp",
                 "img": "SanPham/Loa/JBL/JBL-Flip-7/jbl-flip-7-den-cam.webp"
             },
             {
-                "name": "Bản màu 3",
-                "hex": "#475569",
-                "key": "variant-3",
+                "name": "Hồng",
+                "hex": "#F4A7B9",
+                "key": "hong",
                 "image": "SanPham/Loa/JBL/JBL-Flip-7/jbl-flip-7-p.webp",
                 "img": "SanPham/Loa/JBL/JBL-Flip-7/jbl-flip-7-p.webp"
             },
             {
-                "name": "Tím",
-                "hex": "#A855F7",
-                "key": "tim",
+                "name": "Tím Đậm",
+                "hex": "#8B5CF6",
+                "key": "tim-dam",
                 "image": "SanPham/Loa/JBL/JBL-Flip-7/jbl-flip-7-tim.webp",
                 "img": "SanPham/Loa/JBL/JBL-Flip-7/jbl-flip-7-tim.webp"
             },
             {
-                "name": "Vàng",
-                "hex": "#FBBF24",
-                "key": "vang",
+                "name": "Ánh Sao",
+                "hex": "#F0E5D3",
+                "key": "anh-sao",
                 "image": "SanPham/Loa/JBL/JBL-Flip-7/jbl-flip-7-vang-cat.webp",
                 "img": "SanPham/Loa/JBL/JBL-Flip-7/jbl-flip-7-vang-cat.webp"
             },
             {
-                "name": "Bản màu 6",
-                "hex": "#475569",
-                "key": "variant-6",
+                "name": "Trắng",
+                "hex": "#F5F5F7",
+                "key": "trang",
                 "image": "SanPham/Loa/JBL/JBL-Flip-7/loa-bluetooth-jbl-flip-7_11__1.webp",
                 "img": "SanPham/Loa/JBL/JBL-Flip-7/loa-bluetooth-jbl-flip-7_11__1.webp"
             },
             {
-                "name": "Bản màu 7",
-                "hex": "#475569",
-                "key": "variant-7",
+                "name": "Đen Nhám",
+                "hex": "#2C2E33",
+                "key": "den-nham",
                 "image": "SanPham/Loa/JBL/JBL-Flip-7/loa-bluetooth-jbl-flip-7_23__1.webp",
                 "img": "SanPham/Loa/JBL/JBL-Flip-7/loa-bluetooth-jbl-flip-7_23__1.webp"
             },
             {
-                "name": "Bản màu 8",
-                "hex": "#475569",
-                "key": "variant-8",
+                "name": "Đỏ",
+                "hex": "#B91C1C",
+                "key": "do",
                 "image": "SanPham/Loa/JBL/JBL-Flip-7/loa-bluetooth-jbl-flip-7_35__1.webp",
                 "img": "SanPham/Loa/JBL/JBL-Flip-7/loa-bluetooth-jbl-flip-7_35__1.webp"
             },
             {
-                "name": "Bản màu 9",
-                "hex": "#475569",
-                "key": "variant-9",
+                "name": "Xanh Dương",
+                "hex": "#2563EB",
+                "key": "xanh-duong",
                 "image": "SanPham/Loa/JBL/JBL-Flip-7/loa-bluetooth-jbl-flip-7_47__1.webp",
                 "img": "SanPham/Loa/JBL/JBL-Flip-7/loa-bluetooth-jbl-flip-7_47__1.webp"
             }
@@ -3373,64 +3373,64 @@
         "colors": [
             {
                 "name": "Đen",
-                "hex": "#1D1D1F",
+                "hex": "#1F2024",
                 "key": "den",
                 "image": "SanPham/Loa/JBL/JBL-Charge-6/bluetooth-jbl-charge-6-den-cam.webp",
                 "img": "SanPham/Loa/JBL/JBL-Charge-6/bluetooth-jbl-charge-6-den-cam.webp"
             },
             {
-                "name": "Tím",
-                "hex": "#A855F7",
-                "key": "tim",
+                "name": "Tím Đậm",
+                "hex": "#8B5CF6",
+                "key": "tim-dam",
                 "image": "SanPham/Loa/JBL/JBL-Charge-6/bluetooth-jbl-charge-6-tim.webp",
                 "img": "SanPham/Loa/JBL/JBL-Charge-6/bluetooth-jbl-charge-6-tim.webp"
             },
             {
-                "name": "Bản màu 3",
-                "hex": "#475569",
-                "key": "variant-3",
+                "name": "Hồng",
+                "hex": "#F4A7B9",
+                "key": "hong",
                 "image": "SanPham/Loa/JBL/JBL-Charge-6/jbl-charge-6-p.webp",
                 "img": "SanPham/Loa/JBL/JBL-Charge-6/jbl-charge-6-p.webp"
             },
             {
-                "name": "Vàng",
-                "hex": "#FBBF24",
-                "key": "vang",
+                "name": "Ánh Sao",
+                "hex": "#F0E5D3",
+                "key": "anh-sao",
                 "image": "SanPham/Loa/JBL/JBL-Charge-6/jbl-charge-6-vang-cat.webp",
                 "img": "SanPham/Loa/JBL/JBL-Charge-6/jbl-charge-6-vang-cat.webp"
             },
             {
-                "name": "Bản màu 5",
-                "hex": "#475569",
-                "key": "variant-5",
+                "name": "Xanh Rêu",
+                "hex": "#4D5E3C",
+                "key": "xanh-reu",
                 "image": "SanPham/Loa/JBL/JBL-Charge-6/jbl-charge-6.webp",
                 "img": "SanPham/Loa/JBL/JBL-Charge-6/jbl-charge-6.webp"
             },
             {
-                "name": "Bản màu 6",
-                "hex": "#475569",
-                "key": "variant-6",
+                "name": "Trắng",
+                "hex": "#F5F5F7",
+                "key": "trang",
                 "image": "SanPham/Loa/JBL/JBL-Charge-6/loa-bluetooth-jbl-charge-6_2__1.webp",
                 "img": "SanPham/Loa/JBL/JBL-Charge-6/loa-bluetooth-jbl-charge-6_2__1.webp"
             },
             {
-                "name": "Bản màu 7",
-                "hex": "#475569",
-                "key": "variant-7",
+                "name": "Đỏ",
+                "hex": "#B91C1C",
+                "key": "do",
                 "image": "SanPham/Loa/JBL/JBL-Charge-6/loa-bluetooth-jbl-charge-6_16__1.webp",
                 "img": "SanPham/Loa/JBL/JBL-Charge-6/loa-bluetooth-jbl-charge-6_16__1.webp"
             },
             {
-                "name": "Bản màu 8",
-                "hex": "#475569",
-                "key": "variant-8",
+                "name": "Xanh Dương",
+                "hex": "#2563EB",
+                "key": "xanh-duong",
                 "image": "SanPham/Loa/JBL/JBL-Charge-6/loa-bluetooth-jbl-charge-6_27__1.webp",
                 "img": "SanPham/Loa/JBL/JBL-Charge-6/loa-bluetooth-jbl-charge-6_27__1.webp"
             },
             {
-                "name": "Bản màu 9",
-                "hex": "#475569",
-                "key": "variant-9",
+                "name": "Đen Nhám",
+                "hex": "#2C2E33",
+                "key": "den-nham",
                 "image": "SanPham/Loa/JBL/JBL-Charge-6/loa-bluetooth-jbl-charge-6_38__1.webp",
                 "img": "SanPham/Loa/JBL/JBL-Charge-6/loa-bluetooth-jbl-charge-6_38__1.webp"
             }
@@ -3444,22 +3444,22 @@
         "colors": [
             {
                 "name": "Đen",
-                "hex": "#1D1D1F",
+                "hex": "#1F2024",
                 "key": "den",
                 "image": "SanPham/Loa/JBL/JBL-Xtreme-5/loa-bluetooth-jbl-xtreme-5-den_2__1.webp",
                 "img": "SanPham/Loa/JBL/JBL-Xtreme-5/loa-bluetooth-jbl-xtreme-5-den_2__1.webp"
             },
             {
-                "name": "Bản màu 2",
-                "hex": "#475569",
-                "key": "variant-2",
+                "name": "Xanh Dương",
+                "hex": "#2563EB",
+                "key": "xanh-duong",
                 "image": "SanPham/Loa/JBL/JBL-Xtreme-5/loa-bluetooth-jbl-xtreme-5_6__1.webp",
                 "img": "SanPham/Loa/JBL/JBL-Xtreme-5/loa-bluetooth-jbl-xtreme-5_6__1.webp"
             },
             {
-                "name": "Bản màu 3",
-                "hex": "#475569",
-                "key": "variant-3",
+                "name": "Xanh Rêu",
+                "hex": "#4D5E3C",
+                "key": "xanh-reu",
                 "image": "SanPham/Loa/JBL/JBL-Xtreme-5/loa-bluetooth-jbl-xtreme-5_7__1.webp",
                 "img": "SanPham/Loa/JBL/JBL-Xtreme-5/loa-bluetooth-jbl-xtreme-5_7__1.webp"
             }
@@ -3472,30 +3472,30 @@
         "image": "SanPham/Loa/JBL/JBL-Boombox-4/bb6_1.webp",
         "colors": [
             {
-                "name": "Bản màu 1",
-                "hex": "#475569",
-                "key": "variant-1",
+                "name": "Trắng",
+                "hex": "#F5F5F7",
+                "key": "trang",
                 "image": "SanPham/Loa/JBL/JBL-Boombox-4/bb6_1.webp",
                 "img": "SanPham/Loa/JBL/JBL-Boombox-4/bb6_1.webp"
             },
             {
-                "name": "Bản màu 2",
-                "hex": "#475569",
-                "key": "variant-2",
+                "name": "Xanh Dương",
+                "hex": "#2563EB",
+                "key": "xanh-duong",
                 "image": "SanPham/Loa/JBL/JBL-Boombox-4/jbl_boombox_4.webp",
                 "img": "SanPham/Loa/JBL/JBL-Boombox-4/jbl_boombox_4.webp"
             },
             {
-                "name": "Bản màu 3",
-                "hex": "#475569",
-                "key": "variant-3",
+                "name": "Đen",
+                "hex": "#1F2024",
+                "key": "den",
                 "image": "SanPham/Loa/JBL/JBL-Boombox-4/loa-bluetooth-jbl-boombox-4_14__1.png",
                 "img": "SanPham/Loa/JBL/JBL-Boombox-4/loa-bluetooth-jbl-boombox-4_14__1.png"
             },
             {
-                "name": "Bản màu 4",
-                "hex": "#475569",
-                "key": "variant-4",
+                "name": "Xanh Rêu",
+                "hex": "#4D5E3C",
+                "key": "xanh-reu",
                 "image": "SanPham/Loa/JBL/JBL-Boombox-4/loa-bluetooth-jbl-boombox-4_21__1.webp",
                 "img": "SanPham/Loa/JBL/JBL-Boombox-4/loa-bluetooth-jbl-boombox-4_21__1.webp"
             }
@@ -3508,51 +3508,51 @@
         "image": "SanPham/Loa/JBL/JBL-PartyBox-Encore-Essential-2/loa-bluetooth-jbl-partybox-enco-essential-2-kem-2-micro_1_.webp",
         "colors": [
             {
-                "name": "Kem",
-                "hex": "#F5EEDB",
-                "key": "kem",
+                "name": "Đen",
+                "hex": "#1F2024",
+                "key": "den",
                 "image": "SanPham/Loa/JBL/JBL-PartyBox-Encore-Essential-2/loa-bluetooth-jbl-partybox-enco-essential-2-kem-2-micro_1_.webp",
                 "img": "SanPham/Loa/JBL/JBL-PartyBox-Encore-Essential-2/loa-bluetooth-jbl-partybox-enco-essential-2-kem-2-micro_1_.webp"
             },
             {
-                "name": "Kem 2",
-                "hex": "#F5EEDB",
-                "key": "kem-2",
+                "name": "Đen LED Tím",
+                "hex": "#4C3559",
+                "key": "den-led-tim",
                 "image": "SanPham/Loa/JBL/JBL-PartyBox-Encore-Essential-2/loa-bluetooth-jbl-partybox-enco-essential-2-kem-2-micro_2_.png",
                 "img": "SanPham/Loa/JBL/JBL-PartyBox-Encore-Essential-2/loa-bluetooth-jbl-partybox-enco-essential-2-kem-2-micro_2_.png"
             },
             {
-                "name": "Kem 3",
-                "hex": "#F5EEDB",
-                "key": "kem-3",
+                "name": "Đen LED Xanh",
+                "hex": "#244E3D",
+                "key": "den-led-xanh",
                 "image": "SanPham/Loa/JBL/JBL-PartyBox-Encore-Essential-2/loa-bluetooth-jbl-partybox-enco-essential-2-kem-2-micro_3_.png",
                 "img": "SanPham/Loa/JBL/JBL-PartyBox-Encore-Essential-2/loa-bluetooth-jbl-partybox-enco-essential-2-kem-2-micro_3_.png"
             },
             {
-                "name": "Kem 4",
-                "hex": "#F5EEDB",
-                "key": "kem-4",
+                "name": "Đen Nhám",
+                "hex": "#2A2C31",
+                "key": "den-nham",
                 "image": "SanPham/Loa/JBL/JBL-PartyBox-Encore-Essential-2/loa-bluetooth-jbl-partybox-enco-essential-2-kem-2-micro_4_.webp",
                 "img": "SanPham/Loa/JBL/JBL-PartyBox-Encore-Essential-2/loa-bluetooth-jbl-partybox-enco-essential-2-kem-2-micro_4_.webp"
             },
             {
-                "name": "Kem 5",
-                "hex": "#F5EEDB",
-                "key": "kem-5",
+                "name": "Đen Carbon",
+                "hex": "#212328",
+                "key": "den-carbon",
                 "image": "SanPham/Loa/JBL/JBL-PartyBox-Encore-Essential-2/loa-bluetooth-jbl-partybox-enco-essential-2-kem-2-micro_5_.png",
                 "img": "SanPham/Loa/JBL/JBL-PartyBox-Encore-Essential-2/loa-bluetooth-jbl-partybox-enco-essential-2-kem-2-micro_5_.png"
             },
             {
-                "name": "Kem 6",
-                "hex": "#F5EEDB",
-                "key": "kem-6",
+                "name": "Xám Đen",
+                "hex": "#393B42",
+                "key": "xam-den",
                 "image": "SanPham/Loa/JBL/JBL-PartyBox-Encore-Essential-2/loa-bluetooth-jbl-partybox-enco-essential-2-kem-2-micro_6_.webp",
                 "img": "SanPham/Loa/JBL/JBL-PartyBox-Encore-Essential-2/loa-bluetooth-jbl-partybox-enco-essential-2-kem-2-micro_6_.webp"
             },
             {
-                "name": "Kem 7",
-                "hex": "#F5EEDB",
-                "key": "kem-7",
+                "name": "Đen Tuyền",
+                "hex": "#16171A",
+                "key": "den-tuyen",
                 "image": "SanPham/Loa/JBL/JBL-PartyBox-Encore-Essential-2/loa-bluetooth-jbl-partybox-enco-essential-2-kem-2-micro_13_.png",
                 "img": "SanPham/Loa/JBL/JBL-PartyBox-Encore-Essential-2/loa-bluetooth-jbl-partybox-enco-essential-2-kem-2-micro_13_.png"
             }
@@ -3565,44 +3565,44 @@
         "image": "SanPham/Loa/Marshall/Marshall-Emberton-III/emiii.webp",
         "colors": [
             {
-                "name": "Bản màu 1",
-                "hex": "#475569",
-                "key": "variant-1",
+                "name": "Đêm Xanh Thẫm",
+                "hex": "#1E293B",
+                "key": "dem-xanh-tham",
                 "image": "SanPham/Loa/Marshall/Marshall-Emberton-III/emiii.webp",
                 "img": "SanPham/Loa/Marshall/Marshall-Emberton-III/emiii.webp"
             },
             {
-                "name": "Bản màu 2",
-                "hex": "#475569",
-                "key": "variant-2",
+                "name": "Đen",
+                "hex": "#1F2024",
+                "key": "den",
                 "image": "SanPham/Loa/Marshall/Marshall-Emberton-III/loa-bluetooth-marshall-emberton-iii-08_1.webp",
                 "img": "SanPham/Loa/Marshall/Marshall-Emberton-III/loa-bluetooth-marshall-emberton-iii-08_1.webp"
             },
             {
-                "name": "Bản màu 3",
-                "hex": "#475569",
-                "key": "variant-3",
+                "name": "Nâu",
+                "hex": "#78350F",
+                "key": "nau",
                 "image": "SanPham/Loa/Marshall/Marshall-Emberton-III/loa-bluetooth-marshall-emberton-iii-br01.webp",
                 "img": "SanPham/Loa/Marshall/Marshall-Emberton-III/loa-bluetooth-marshall-emberton-iii-br01.webp"
             },
             {
-                "name": "Bản màu 4",
-                "hex": "#475569",
-                "key": "variant-4",
+                "name": "Đen Nhám",
+                "hex": "#2C2E33",
+                "key": "den-nham",
                 "image": "SanPham/Loa/Marshall/Marshall-Emberton-III/marshall_emberton-iii_black_prod.webp",
                 "img": "SanPham/Loa/Marshall/Marshall-Emberton-III/marshall_emberton-iii_black_prod.webp"
             },
             {
-                "name": "Bản màu 5",
-                "hex": "#475569",
-                "key": "variant-5",
+                "name": "Ánh Sao",
+                "hex": "#F0E5D3",
+                "key": "anh-sao",
                 "image": "SanPham/Loa/Marshall/Marshall-Emberton-III/marshall_emberton-iii_cream_prod.webp",
                 "img": "SanPham/Loa/Marshall/Marshall-Emberton-III/marshall_emberton-iii_cream_prod.webp"
             },
             {
-                "name": "Bản màu 6",
-                "hex": "#475569",
-                "key": "variant-6",
+                "name": "Xanh Rêu",
+                "hex": "#5F7159",
+                "key": "xanh-reu",
                 "image": "SanPham/Loa/Marshall/Marshall-Emberton-III/marshall_emberton-iii_sage_produ.webp",
                 "img": "SanPham/Loa/Marshall/Marshall-Emberton-III/marshall_emberton-iii_sage_produ.webp"
             }
@@ -3616,43 +3616,43 @@
         "colors": [
             {
                 "name": "Đen",
-                "hex": "#1D1D1F",
+                "hex": "#1F2024",
                 "key": "den",
                 "image": "SanPham/Loa/Marshall/Marshall-Willen-II/loa-bluetooth-marshall-willen-ii-den.webp",
                 "img": "SanPham/Loa/Marshall/Marshall-Willen-II/loa-bluetooth-marshall-willen-ii-den.webp"
             },
             {
-                "name": "Vàng",
-                "hex": "#FBBF24",
-                "key": "vang",
+                "name": "Ánh Sao",
+                "hex": "#F0E5D3",
+                "key": "anh-sao",
                 "image": "SanPham/Loa/Marshall/Marshall-Willen-II/loa-bluetooth-marshall-willen-ii-vang.jpg",
                 "img": "SanPham/Loa/Marshall/Marshall-Willen-II/loa-bluetooth-marshall-willen-ii-vang.jpg"
             },
             {
-                "name": "Bản màu 3",
-                "hex": "#475569",
-                "key": "variant-3",
+                "name": "Đen Nhám",
+                "hex": "#2C2E33",
+                "key": "den-nham",
                 "image": "SanPham/Loa/Marshall/Marshall-Willen-II/loa-bluetooth-marshall-willen-ii_8_.webp",
                 "img": "SanPham/Loa/Marshall/Marshall-Willen-II/loa-bluetooth-marshall-willen-ii_8_.webp"
             },
             {
-                "name": "Bản màu 4",
-                "hex": "#475569",
-                "key": "variant-4",
+                "name": "Vàng Đen",
+                "hex": "#78664E",
+                "key": "vang-den",
                 "image": "SanPham/Loa/Marshall/Marshall-Willen-II/loa-bluetooth-marshall-willen-ii_11_.webp",
                 "img": "SanPham/Loa/Marshall/Marshall-Willen-II/loa-bluetooth-marshall-willen-ii_11_.webp"
             },
             {
-                "name": "Bản màu 5",
-                "hex": "#475569",
-                "key": "variant-5",
+                "name": "Đen Carbon",
+                "hex": "#23252A",
+                "key": "den-carbon",
                 "image": "SanPham/Loa/Marshall/Marshall-Willen-II/loa-bluetooth-marshall-willen-ii_13_.png",
                 "img": "SanPham/Loa/Marshall/Marshall-Willen-II/loa-bluetooth-marshall-willen-ii_13_.png"
             },
             {
-                "name": "Bản màu 6",
-                "hex": "#475569",
-                "key": "variant-6",
+                "name": "Đen Tuyền",
+                "hex": "#16171B",
+                "key": "den-tuyen",
                 "image": "SanPham/Loa/Marshall/Marshall-Willen-II/loa-bluetooth-marshall-willen-ii_15_.webp",
                 "img": "SanPham/Loa/Marshall/Marshall-Willen-II/loa-bluetooth-marshall-willen-ii_15_.webp"
             }
@@ -3665,44 +3665,44 @@
         "image": "SanPham/Loa/Marshall/Marshall-Kilburn-III/kilburn3-kem.webp",
         "colors": [
             {
-                "name": "Kem",
-                "hex": "#F5EEDB",
-                "key": "kem",
+                "name": "Ánh Sao",
+                "hex": "#F0E5D3",
+                "key": "anh-sao",
                 "image": "SanPham/Loa/Marshall/Marshall-Kilburn-III/kilburn3-kem.webp",
                 "img": "SanPham/Loa/Marshall/Marshall-Kilburn-III/kilburn3-kem.webp"
             },
             {
-                "name": "Bản màu 2",
-                "hex": "#475569",
-                "key": "variant-2",
+                "name": "Đen",
+                "hex": "#1F2024",
+                "key": "den",
                 "image": "SanPham/Loa/Marshall/Marshall-Kilburn-III/loa-bluetooth-marshall-kilburn-iii_10_.webp",
                 "img": "SanPham/Loa/Marshall/Marshall-Kilburn-III/loa-bluetooth-marshall-kilburn-iii_10_.webp"
             },
             {
-                "name": "Bản màu 3",
-                "hex": "#475569",
-                "key": "variant-3",
+                "name": "Đen Vàng Đồng",
+                "hex": "#5E503F",
+                "key": "den-vang-dong",
                 "image": "SanPham/Loa/Marshall/Marshall-Kilburn-III/loa-bluetooth-marshall-kilburn-iii_11_.webp",
                 "img": "SanPham/Loa/Marshall/Marshall-Kilburn-III/loa-bluetooth-marshall-kilburn-iii_11_.webp"
             },
             {
-                "name": "Bản màu 4",
-                "hex": "#475569",
-                "key": "variant-4",
+                "name": "Đen Nhám",
+                "hex": "#2B2D32",
+                "key": "den-nham",
                 "image": "SanPham/Loa/Marshall/Marshall-Kilburn-III/loa-bluetooth-marshall-kilburn-iii_12_.webp",
                 "img": "SanPham/Loa/Marshall/Marshall-Kilburn-III/loa-bluetooth-marshall-kilburn-iii_12_.webp"
             },
             {
-                "name": "Bản màu 5",
-                "hex": "#475569",
-                "key": "variant-5",
+                "name": "Đen Tuyền",
+                "hex": "#17181B",
+                "key": "den-tuyen",
                 "image": "SanPham/Loa/Marshall/Marshall-Kilburn-III/loa-bluetooth-marshall-kilburn-iii_14__1.webp",
                 "img": "SanPham/Loa/Marshall/Marshall-Kilburn-III/loa-bluetooth-marshall-kilburn-iii_14__1.webp"
             },
             {
-                "name": "Bản màu 6",
-                "hex": "#475569",
-                "key": "variant-6",
+                "name": "Nâu",
+                "hex": "#78350F",
+                "key": "nau",
                 "image": "SanPham/Loa/Marshall/Marshall-Kilburn-III/medium-marshall_kilburn-iii_brown_product_base_1_flat.webp",
                 "img": "SanPham/Loa/Marshall/Marshall-Kilburn-III/medium-marshall_kilburn-iii_brown_product_base_1_flat.webp"
             }
@@ -3715,23 +3715,23 @@
         "image": "SanPham/Loa/Marshall/Marshall-Acton-III/marshall_acton_iii_7_1.webp",
         "colors": [
             {
-                "name": "Bản màu 1",
-                "hex": "#475569",
-                "key": "variant-1",
+                "name": "Đen",
+                "hex": "#1F2024",
+                "key": "den",
                 "image": "SanPham/Loa/Marshall/Marshall-Acton-III/marshall_acton_iii_7_1.webp",
                 "img": "SanPham/Loa/Marshall/Marshall-Acton-III/marshall_acton_iii_7_1.webp"
             },
             {
-                "name": "Bản màu 2",
-                "hex": "#475569",
-                "key": "variant-2",
+                "name": "Ánh Sao",
+                "hex": "#F0E5D3",
+                "key": "anh-sao",
                 "image": "SanPham/Loa/Marshall/Marshall-Acton-III/marshall_acton_iii_6_2.webp",
                 "img": "SanPham/Loa/Marshall/Marshall-Acton-III/marshall_acton_iii_6_2.webp"
             },
             {
-                "name": "Bản màu 3",
-                "hex": "#475569",
-                "key": "variant-3",
+                "name": "Đêm Xanh Thẫm",
+                "hex": "#1E293B",
+                "key": "dem-xanh-tham",
                 "image": "SanPham/Loa/Marshall/Marshall-Acton-III/act-iii.webp",
                 "img": "SanPham/Loa/Marshall/Marshall-Acton-III/act-iii.webp"
             },
@@ -3751,44 +3751,44 @@
         "image": "SanPham/Loa/Marshall/Marshall-Stanmore-III/loa-bluetooth-marshall-stanmore-iii-new_10_.webp",
         "colors": [
             {
-                "name": "Bản màu 1",
-                "hex": "#475569",
-                "key": "variant-1",
+                "name": "Đen",
+                "hex": "#1F2024",
+                "key": "den",
                 "image": "SanPham/Loa/Marshall/Marshall-Stanmore-III/loa-bluetooth-marshall-stanmore-iii-new_10_.webp",
                 "img": "SanPham/Loa/Marshall/Marshall-Stanmore-III/loa-bluetooth-marshall-stanmore-iii-new_10_.webp"
             },
             {
-                "name": "Bản màu 2",
-                "hex": "#475569",
-                "key": "variant-2",
+                "name": "Đen Nhám",
+                "hex": "#2B2D32",
+                "key": "den-nham",
                 "image": "SanPham/Loa/Marshall/Marshall-Stanmore-III/loa-bluetooth-marshall-stanmore-iii-new_11_.webp",
                 "img": "SanPham/Loa/Marshall/Marshall-Stanmore-III/loa-bluetooth-marshall-stanmore-iii-new_11_.webp"
             },
             {
-                "name": "Bản màu 3",
-                "hex": "#475569",
-                "key": "variant-3",
+                "name": "Vàng Đen",
+                "hex": "#6B5C47",
+                "key": "vang-den",
                 "image": "SanPham/Loa/Marshall/Marshall-Stanmore-III/loa-bluetooth-marshall-stanmore-iii-new_12_.webp",
                 "img": "SanPham/Loa/Marshall/Marshall-Stanmore-III/loa-bluetooth-marshall-stanmore-iii-new_12_.webp"
             },
             {
-                "name": "Bản màu 4",
-                "hex": "#475569",
-                "key": "variant-4",
+                "name": "Đen Carbon",
+                "hex": "#222429",
+                "key": "den-carbon",
                 "image": "SanPham/Loa/Marshall/Marshall-Stanmore-III/marshall_stanmore_iii_5_1.webp",
                 "img": "SanPham/Loa/Marshall/Marshall-Stanmore-III/marshall_stanmore_iii_5_1.webp"
             },
             {
-                "name": "Bản màu 5",
-                "hex": "#475569",
-                "key": "variant-5",
+                "name": "Ánh Sao",
+                "hex": "#F0E5D3",
+                "key": "anh-sao",
                 "image": "SanPham/Loa/Marshall/Marshall-Stanmore-III/marshall_stanmore_iii_6_1.webp",
                 "img": "SanPham/Loa/Marshall/Marshall-Stanmore-III/marshall_stanmore_iii_6_1.webp"
             },
             {
-                "name": "Bản màu 6",
-                "hex": "#475569",
-                "key": "variant-6",
+                "name": "Nâu",
+                "hex": "#78350F",
+                "key": "nau",
                 "image": "SanPham/Loa/Marshall/Marshall-Stanmore-III/stan3.webp",
                 "img": "SanPham/Loa/Marshall/Marshall-Stanmore-III/stan3.webp"
             }
@@ -3801,9 +3801,9 @@
         "image": "SanPham/Loa/Anker-Soundcore/Soundcore-Boom-2/loa-anker-soundcore-motion-boom-2-se-a3148-1.webp",
         "colors": [
             {
-                "name": "Tiêu chuẩn",
-                "hex": "#1E293B",
-                "key": "standard",
+                "name": "Đen",
+                "hex": "#1F2024",
+                "key": "den",
                 "image": "SanPham/Loa/Anker-Soundcore/Soundcore-Boom-2/loa-anker-soundcore-motion-boom-2-se-a3148-1.webp",
                 "img": "SanPham/Loa/Anker-Soundcore/Soundcore-Boom-2/loa-anker-soundcore-motion-boom-2-se-a3148-1.webp"
             }
@@ -3816,51 +3816,51 @@
         "image": "SanPham/Loa/Anker-Soundcore/Soundcore-Boom-3i/loa-anker-soundcore-boom-go-3i_1_.png",
         "colors": [
             {
-                "name": "Bản màu 1",
-                "hex": "#475569",
-                "key": "variant-1",
+                "name": "Đen",
+                "hex": "#1F2024",
+                "key": "den",
                 "image": "SanPham/Loa/Anker-Soundcore/Soundcore-Boom-3i/loa-anker-soundcore-boom-go-3i_1_.png",
                 "img": "SanPham/Loa/Anker-Soundcore/Soundcore-Boom-3i/loa-anker-soundcore-boom-go-3i_1_.png"
             },
             {
-                "name": "Bản màu 2",
-                "hex": "#475569",
-                "key": "variant-2",
+                "name": "Hồng",
+                "hex": "#F4A7B9",
+                "key": "hong",
                 "image": "SanPham/Loa/Anker-Soundcore/Soundcore-Boom-3i/loa-anker-soundcore-boom-go-3i_7_.png",
                 "img": "SanPham/Loa/Anker-Soundcore/Soundcore-Boom-3i/loa-anker-soundcore-boom-go-3i_7_.png"
             },
             {
-                "name": "Bản màu 3",
-                "hex": "#475569",
-                "key": "variant-3",
+                "name": "Xanh Dương",
+                "hex": "#2563EB",
+                "key": "xanh-duong",
                 "image": "SanPham/Loa/Anker-Soundcore/Soundcore-Boom-3i/loa-anker-soundcore-boom-go-3i_8_.png",
                 "img": "SanPham/Loa/Anker-Soundcore/Soundcore-Boom-3i/loa-anker-soundcore-boom-go-3i_8_.png"
             },
             {
-                "name": "Bản màu 4",
-                "hex": "#475569",
-                "key": "variant-4",
+                "name": "Ánh Sao",
+                "hex": "#F0E5D3",
+                "key": "anh-sao",
                 "image": "SanPham/Loa/Anker-Soundcore/Soundcore-Boom-3i/loa-anker-soundcore-boom-go-3i_9_.webp",
                 "img": "SanPham/Loa/Anker-Soundcore/Soundcore-Boom-3i/loa-anker-soundcore-boom-go-3i_9_.webp"
             },
             {
-                "name": "Bản màu 5",
-                "hex": "#475569",
-                "key": "variant-5",
+                "name": "Đêm Xanh Thẫm",
+                "hex": "#1E293B",
+                "key": "dem-xanh-tham",
                 "image": "SanPham/Loa/Anker-Soundcore/Soundcore-Boom-3i/loa-anker-soundcore-boom-go-3i_11_.png",
                 "img": "SanPham/Loa/Anker-Soundcore/Soundcore-Boom-3i/loa-anker-soundcore-boom-go-3i_11_.png"
             },
             {
-                "name": "Bản màu 6",
-                "hex": "#475569",
-                "key": "variant-6",
+                "name": "Xanh Navy",
+                "hex": "#294661",
+                "key": "xanh-navy",
                 "image": "SanPham/Loa/Anker-Soundcore/Soundcore-Boom-3i/loa-anker-soundcore-boom-go-3i_12_.webp",
                 "img": "SanPham/Loa/Anker-Soundcore/Soundcore-Boom-3i/loa-anker-soundcore-boom-go-3i_12_.webp"
             },
             {
-                "name": "Bản màu 7",
-                "hex": "#475569",
-                "key": "variant-7",
+                "name": "Xanh Da Trời",
+                "hex": "#5C88A8",
+                "key": "xanh-da-troi",
                 "image": "SanPham/Loa/Anker-Soundcore/Soundcore-Boom-3i/loa-anker-soundcore-boom-go-3i_13_.webp",
                 "img": "SanPham/Loa/Anker-Soundcore/Soundcore-Boom-3i/loa-anker-soundcore-boom-go-3i_13_.webp"
             }
@@ -3873,44 +3873,44 @@
         "image": "SanPham/Loa/Anker-Soundcore/Soundcore-Motion-X600/loa-bluetooth-anker-soundcore-motion-x600_1__3.webp",
         "colors": [
             {
-                "name": "Bản màu 1",
-                "hex": "#475569",
-                "key": "variant-1",
+                "name": "Xám Không Gian",
+                "hex": "#52565E",
+                "key": "xam-khong-gian",
                 "image": "SanPham/Loa/Anker-Soundcore/Soundcore-Motion-X600/loa-bluetooth-anker-soundcore-motion-x600_1__3.webp",
                 "img": "SanPham/Loa/Anker-Soundcore/Soundcore-Motion-X600/loa-bluetooth-anker-soundcore-motion-x600_1__3.webp"
             },
             {
-                "name": "Bản màu 2",
-                "hex": "#475569",
-                "key": "variant-2",
+                "name": "Xanh Da Trời",
+                "hex": "#93C5FD",
+                "key": "xanh-da-troi",
                 "image": "SanPham/Loa/Anker-Soundcore/Soundcore-Motion-X600/loa-bluetooth-anker-soundcore-motion-x600_3__2.webp",
                 "img": "SanPham/Loa/Anker-Soundcore/Soundcore-Motion-X600/loa-bluetooth-anker-soundcore-motion-x600_3__2.webp"
             },
             {
-                "name": "Bản màu 3",
-                "hex": "#475569",
-                "key": "variant-3",
+                "name": "Xanh Lá",
+                "hex": "#5B8271",
+                "key": "xanh-la",
                 "image": "SanPham/Loa/Anker-Soundcore/Soundcore-Motion-X600/loa-bluetooth-anker-soundcore-motion-x600_4__2.png",
                 "img": "SanPham/Loa/Anker-Soundcore/Soundcore-Motion-X600/loa-bluetooth-anker-soundcore-motion-x600_4__2.png"
             },
             {
-                "name": "Bản màu 4",
-                "hex": "#475569",
-                "key": "variant-4",
+                "name": "Bạc",
+                "hex": "#C5C8CE",
+                "key": "bac",
                 "image": "SanPham/Loa/Anker-Soundcore/Soundcore-Motion-X600/loa-bluetooth-anker-soundcore-motion-x600_7__2.webp",
                 "img": "SanPham/Loa/Anker-Soundcore/Soundcore-Motion-X600/loa-bluetooth-anker-soundcore-motion-x600_7__2.webp"
             },
             {
-                "name": "Bản màu 5",
-                "hex": "#475569",
-                "key": "variant-5",
+                "name": "Xanh Ngọc",
+                "hex": "#4B7A69",
+                "key": "xanh-ngoc",
                 "image": "SanPham/Loa/Anker-Soundcore/Soundcore-Motion-X600/loa-bluetooth-anker-soundcore-motion-x600_9__3.png",
                 "img": "SanPham/Loa/Anker-Soundcore/Soundcore-Motion-X600/loa-bluetooth-anker-soundcore-motion-x600_9__3.png"
             },
             {
-                "name": "Bản màu 6",
-                "hex": "#475569",
-                "key": "variant-6",
+                "name": "Xanh Dương",
+                "hex": "#5F82A6",
+                "key": "xanh-duong",
                 "image": "SanPham/Loa/Anker-Soundcore/Soundcore-Motion-X600/loa-bluetooth-anker-soundcore-motion-x600_10__3.webp",
                 "img": "SanPham/Loa/Anker-Soundcore/Soundcore-Motion-X600/loa-bluetooth-anker-soundcore-motion-x600_10__3.webp"
             }
@@ -3924,14 +3924,14 @@
         "colors": [
             {
                 "name": "Đen",
-                "hex": "#1D1D1F",
+                "hex": "#1F2024",
                 "key": "den",
                 "image": "SanPham/DongHoDienTu/Apple-Watch/Apple-Watch-Ultra-3/apple-watch-ultra-3-cutout.png",
                 "img": "SanPham/DongHoDienTu/Apple-Watch/Apple-Watch-Ultra-3/apple-watch-ultra-3-cutout.png"
             },
             {
                 "name": "Xám",
-                "hex": "#64748B",
+                "hex": "#7D7E80",
                 "key": "xam",
                 "image": "SanPham/DongHoDienTu/Apple-Watch/Apple-Watch-Ultra-3/Apple-Watch-Ultra-3-xam.jpg",
                 "img": "SanPham/DongHoDienTu/Apple-Watch/Apple-Watch-Ultra-3/Apple-Watch-Ultra-3-xam.jpg"
@@ -3946,21 +3946,21 @@
         "colors": [
             {
                 "name": "Đen",
-                "hex": "#1D1D1F",
+                "hex": "#1F2024",
                 "key": "den",
                 "image": "SanPham/DongHoDienTu/Apple-Watch/Apple-Watch-Series-11/Apple-Watch-Series-11-den.webp",
                 "img": "SanPham/DongHoDienTu/Apple-Watch/Apple-Watch-Series-11/Apple-Watch-Series-11-den.webp"
             },
             {
                 "name": "Trắng",
-                "hex": "#F8FAFC",
+                "hex": "#F5F5F7",
                 "key": "trang",
                 "image": "SanPham/DongHoDienTu/Apple-Watch/Apple-Watch-Series-11/Apple-Watch-Series-11-Trang.webp",
                 "img": "SanPham/DongHoDienTu/Apple-Watch/Apple-Watch-Series-11/Apple-Watch-Series-11-Trang.webp"
             },
             {
                 "name": "Xám",
-                "hex": "#64748B",
+                "hex": "#7D7E80",
                 "key": "xam",
                 "image": "SanPham/DongHoDienTu/Apple-Watch/Apple-Watch-Series-11/Apple-Watch-Series-11-Xam.webp",
                 "img": "SanPham/DongHoDienTu/Apple-Watch/Apple-Watch-Series-11/Apple-Watch-Series-11-Xam.webp"
@@ -3975,14 +3975,14 @@
         "colors": [
             {
                 "name": "Đen",
-                "hex": "#1D1D1F",
+                "hex": "#1F2024",
                 "key": "den",
                 "image": "SanPham/DongHoDienTu/Apple-Watch/Apple-Watch-SE-3/Apple-Watch-SE-3-den.webp",
                 "img": "SanPham/DongHoDienTu/Apple-Watch/Apple-Watch-SE-3/Apple-Watch-SE-3-den.webp"
             },
             {
                 "name": "Trắng",
-                "hex": "#F8FAFC",
+                "hex": "#F5F5F7",
                 "key": "trang",
                 "image": "SanPham/DongHoDienTu/Apple-Watch/Apple-Watch-SE-3/Apple-Watch-SE-3-Trang.webp",
                 "img": "SanPham/DongHoDienTu/Apple-Watch/Apple-Watch-SE-3/Apple-Watch-SE-3-Trang.webp"
@@ -4004,22 +4004,22 @@
             },
             {
                 "name": "Đen",
-                "hex": "#1D1D1F",
+                "hex": "#1F2024",
                 "key": "den",
                 "image": "SanPham/DongHoDienTu/Samsung-Galaxy-Watch/Samsung-Galaxy-Watch-Ultra-2/Galaxy-Watch-Ultra-Den.jpg",
                 "img": "SanPham/DongHoDienTu/Samsung-Galaxy-Watch/Samsung-Galaxy-Watch-Ultra-2/Galaxy-Watch-Ultra-Den.jpg"
             },
             {
                 "name": "Trắng",
-                "hex": "#F8FAFC",
+                "hex": "#F5F5F7",
                 "key": "trang",
                 "image": "SanPham/DongHoDienTu/Samsung-Galaxy-Watch/Samsung-Galaxy-Watch-Ultra-2/Galaxy-Watch-Ultra-Trang.jpg",
                 "img": "SanPham/DongHoDienTu/Samsung-Galaxy-Watch/Samsung-Galaxy-Watch-Ultra-2/Galaxy-Watch-Ultra-Trang.jpg"
             },
             {
                 "name": "Xanh Dương",
-                "hex": "#3B82F6",
-                "key": "xanh",
+                "hex": "#2563EB",
+                "key": "xanh-duong",
                 "image": "SanPham/DongHoDienTu/Samsung-Galaxy-Watch/Samsung-Galaxy-Watch-Ultra-2/Galaxy-Watch-Ultra-Xanh.jpg",
                 "img": "SanPham/DongHoDienTu/Samsung-Galaxy-Watch/Samsung-Galaxy-Watch-Ultra-2/Galaxy-Watch-Ultra-Xanh.jpg"
             }
@@ -4033,14 +4033,14 @@
         "colors": [
             {
                 "name": "Đen",
-                "hex": "#1D1D1F",
+                "hex": "#1F2024",
                 "key": "den",
                 "image": "SanPham/DongHoDienTu/Samsung-Galaxy-Watch/Samsung-Galaxy-Watch-9-Classic/Samsung-Galaxy-Watch-9-Classic-Den.jpg",
                 "img": "SanPham/DongHoDienTu/Samsung-Galaxy-Watch/Samsung-Galaxy-Watch-9-Classic/Samsung-Galaxy-Watch-9-Classic-Den.jpg"
             },
             {
                 "name": "Trắng",
-                "hex": "#F8FAFC",
+                "hex": "#F5F5F7",
                 "key": "trang",
                 "image": "SanPham/DongHoDienTu/Samsung-Galaxy-Watch/Samsung-Galaxy-Watch-9-Classic/Samsung-Galaxy-Watch-9-Classic-Trang.jpg",
                 "img": "SanPham/DongHoDienTu/Samsung-Galaxy-Watch/Samsung-Galaxy-Watch-9-Classic/Samsung-Galaxy-Watch-9-Classic-Trang.jpg"
@@ -4055,21 +4055,21 @@
         "colors": [
             {
                 "name": "Đen",
-                "hex": "#1D1D1F",
+                "hex": "#1F2024",
                 "key": "den",
                 "image": "SanPham/DongHoDienTu/Samsung-Galaxy-Watch/Samsung-Galaxy-Watch-9/Galaxy-Watch-7-Den.jpg",
                 "img": "SanPham/DongHoDienTu/Samsung-Galaxy-Watch/Samsung-Galaxy-Watch-9/Galaxy-Watch-7-Den.jpg"
             },
             {
                 "name": "Trắng",
-                "hex": "#F8FAFC",
+                "hex": "#F5F5F7",
                 "key": "trang",
                 "image": "SanPham/DongHoDienTu/Samsung-Galaxy-Watch/Samsung-Galaxy-Watch-9/Galaxy-Watch-7-Trang.jpg",
                 "img": "SanPham/DongHoDienTu/Samsung-Galaxy-Watch/Samsung-Galaxy-Watch-9/Galaxy-Watch-7-Trang.jpg"
             },
             {
                 "name": "Vàng",
-                "hex": "#FBBF24",
+                "hex": "#F3D58D",
                 "key": "vang",
                 "image": "SanPham/DongHoDienTu/Samsung-Galaxy-Watch/Samsung-Galaxy-Watch-9/Galaxy-Watch-7-vang.jpg",
                 "img": "SanPham/DongHoDienTu/Samsung-Galaxy-Watch/Samsung-Galaxy-Watch-9/Galaxy-Watch-7-vang.jpg"

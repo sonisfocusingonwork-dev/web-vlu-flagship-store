@@ -153,10 +153,12 @@ if (!function_exists('vlu_ensure_database_schema')) {
                 `description` TEXT DEFAULT NULL,
                 `image` VARCHAR(500) DEFAULT NULL,
                 `stock` INT(11) NOT NULL DEFAULT 15,
+                `colors_json` LONGTEXT DEFAULT NULL,
                 `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
                 PRIMARY KEY (`id`)
             ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci");
             vlu_ensure_column($pdo, 'products', 'stock', "INT(11) NOT NULL DEFAULT 15");
+            vlu_ensure_column($pdo, 'products', 'colors_json', "LONGTEXT DEFAULT NULL");
 
             // Tự động kiểm tra và nâng cấp hình ảnh sản phẩm thực tế từ SanPham/ nếu còn lưu placeholder
             try {

@@ -23,40 +23,42 @@ foreach ($manifest as $m) {
     $manifestMap[$m['slug']] = $m;
 }
 
-// Bảng từ điển ánh xạ màu sắc tiếng Việt và mã màu HEX
+// Bảng từ điển ánh xạ màu sắc tiếng Việt và mã màu HEX (khớp VLU_COLOR_HEX_MAP, ưu tiên cụm từ dài)
 $colorDictionary = [
-    'den khong gian' => ['Đen Không Gian', '#1D1D1F', 'den-khong-gian'],
+    'den khong gian' => ['Đen Không Gian', '#1F2024', 'den-khong-gian'],
     'titan tu nhien' => ['Titan Tự Nhiên', '#C5B9A5', 'titan-tu-nhien'],
-    'titan sa mac'   => ['Titan Sa Mạc',   '#C7A382', 'titan-sa-mac'],
-    'titan den'      => ['Titan Đen',      '#3C3B37', 'titan-den'],
-    'titan trang'    => ['Titan Trắng',    '#E3E4E5', 'titan-trang'],
-    'titan xam'      => ['Titan Xám',      '#64748B', 'titan-xam'],
-    'titan xanh'     => ['Titan Xanh',     '#3F5277', 'titan-xanh'],
-    'anh sao'        => ['Ánh Sao',        '#F5EEDB', 'anh-sao'],
-    'xanh da troi'   => ['Xanh Da Trời',   '#38BDF8', 'xanh-da-troi'],
-    'xanh la'        => ['Xanh Lá',        '#10B981', 'xanh-la'],
-    'xanh nhat'      => ['Xanh Nhạt',      '#7DD3FC', 'xanh-nhat'],
-    'xanh dam'       => ['Xanh Đậm',       '#1E40AF', 'xanh-dam'],
+    'titan sa mac'   => ['Titan Sa Mạc',   '#C2A68C', 'titan-sa-mac'],
+    'titan den'      => ['Titan Đen',      '#1F2024', 'titan-den'],
+    'titan trang'    => ['Titan Trắng',    '#F5F5F7', 'titan-trang'],
+    'titan xam'      => ['Titan Xám',      '#7D7E80', 'titan-xam'],
+    'titan xanh'     => ['Titan Xanh',     '#1E293B', 'titan-xanh'],
+    'dem xanh tham'  => ['Đêm Xanh Thẫm',  '#1E293B', 'dem-xanh-tham'],
+    'anh sao'        => ['Ánh Sao',        '#F0E5D3', 'anh-sao'],
+    'xanh da troi'   => ['Xanh Da Trời',   '#93C5FD', 'xanh-da-troi'],
+    'xanh la'        => ['Xanh Lá',        '#6EE7B7', 'xanh-la'],
+    'xanh nhat'      => ['Xanh Da Trời',   '#93C5FD', 'xanh-da-troi'],
+    'xanh dam'       => ['Đêm Xanh Thẫm',  '#1E293B', 'dem-xanh-tham'],
     'xanh duong'     => ['Xanh Dương',     '#2563EB', 'xanh-duong'],
-    'xanh lam'       => ['Xanh Lam',       '#2563EB', 'xanh-lam'],
-    'xanh'           => ['Xanh Dương',     '#3B82F6', 'xanh'],
-    'den'            => ['Đen',            '#1D1D1F', 'den'],
-    'đen'            => ['Đen',            '#1D1D1F', 'den'],
-    'trang'          => ['Trắng',          '#F8FAFC', 'trang'],
-    'trắng'          => ['Trắng',          '#F8FAFC', 'trang'],
-    'bac'            => ['Bạc',            '#E2E8F0', 'bac'],
-    'bạc'            => ['Bạc',            '#E2E8F0', 'bac'],
-    'xam'            => ['Xám',            '#64748B', 'xam'],
-    'xám'            => ['Xám',            '#64748B', 'xam'],
-    'hong'           => ['Hồng',           '#F472B6', 'hong'],
-    'hồng'           => ['Hồng',           '#F472B6', 'hong'],
-    'tim'            => ['Tím',            '#A855F7', 'tim'],
-    'tím'            => ['Tím',            '#A855F7', 'tim'],
-    'vang'           => ['Vàng',           '#FBBF24', 'vang'],
-    'vàng'           => ['Vàng',           '#FBBF24', 'vang'],
-    'kem'            => ['Kem',            '#F5EEDB', 'kem'],
-    'do'             => ['Đỏ',             '#EF4444', 'do'],
-    'đỏ'             => ['Đỏ',             '#EF4444', 'do'],
+    'xanh lam'       => ['Xanh Lá',        '#608A6E', 'xanh-lam'],
+    'xanh'           => ['Xanh Dương',     '#2563EB', 'xanh-duong'],
+    'den'            => ['Đen',            '#1F2024', 'den'],
+    'đen'            => ['Đen',            '#1F2024', 'den'],
+    'trang'          => ['Trắng',          '#F5F5F7', 'trang'],
+    'trắng'          => ['Trắng',          '#F5F5F7', 'trang'],
+    'bac'            => ['Bạc',            '#E3E4E6', 'bac'],
+    'bạc'            => ['Bạc',            '#E3E4E6', 'bac'],
+    'xam'            => ['Xám',            '#7D7E80', 'xam'],
+    'xám'            => ['Xám',            '#7D7E80', 'xam'],
+    'hong'           => ['Hồng',           '#F4A7B9', 'hong'],
+    'hồng'           => ['Hồng',           '#F4A7B9', 'hong'],
+    'tim'            => ['Tím',            '#C4B5FD', 'tim'],
+    'tím'            => ['Tím',            '#C4B5FD', 'tim'],
+    'vang'           => ['Vàng',           '#F3D58D', 'vang'],
+    'vàng'           => ['Vàng',           '#F3D58D', 'vang'],
+    'kem'            => ['Ánh Sao',        '#F0E5D3', 'anh-sao'],
+    'do do'          => ['Đỏ Đô',          '#991B1B', 'do-do'],
+    'do'             => ['Đỏ',             '#B91C1C', 'do'],
+    'đỏ'             => ['Đỏ',             '#B91C1C', 'do'],
     'cam'            => ['Cam',            '#F97316', 'cam'],
     'nau'            => ['Nâu',            '#78350F', 'nau'],
     'nâu'            => ['Nâu',            '#78350F', 'nau']
@@ -78,12 +80,13 @@ foreach ($inv['products'] as &$prod) {
 
     foreach ($folderEntry['images'] as $idx => $imgInfo) {
         $rawColor = mb_strtolower($imgInfo['color']);
+        $cleanTokens = ' ' . trim(preg_replace('/[^a-z0-9\p{L}]+/u', ' ', str_replace(['kem-2-micro', 'kem 2 micro'], '', $rawColor))) . ' ';
         $colorName = '';
-        $colorHex = '#334155';
+        $colorHex = '#7D7E80';
         $colorKey = 'color-' . ($idx + 1);
 
         foreach ($colorDictionary as $kw => $info) {
-            if (str_contains($rawColor, $kw)) {
+            if (str_contains($cleanTokens, ' ' . $kw . ' ')) {
                 $colorName = $info[0];
                 $colorHex = $info[1];
                 $colorKey = $info[2];
@@ -95,11 +98,11 @@ foreach ($inv['products'] as &$prod) {
             if (count($folderEntry['images']) === 1) {
                 $colorName = 'Tiêu chuẩn';
                 $colorKey = 'standard';
-                $colorHex = '#1E293B';
+                $colorHex = '#1F2024';
             } else {
                 $colorName = 'Bản màu ' . ($idx + 1);
                 $colorKey = 'variant-' . ($idx + 1);
-                $colorHex = '#475569';
+                $colorHex = '#7D7E80';
             }
         }
 

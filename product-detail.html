@@ -29,7 +29,7 @@
   </script>
 
   <!-- CSS hệ thống chuẩn Apple 2026 -->
-  <link rel="stylesheet" href="frontend/assets/css/style.css?v=2026_3d_v2_p1_sf">
+  <link rel="stylesheet" href="frontend/assets/css/style.css?v=2026_sync_ui_fix_colors">
 </head>
 
 <body class="bg-[#FBFBFE] font-sans text-ink antialiased">
@@ -3337,9 +3337,9 @@
 <!-- Lớp phủ mờ nền trang (Scrim Blur) NẰM SAU HEADER (z-index 40 < header 50) -->
 <div id="megaScrim" class="mega-scrim" aria-hidden="true"></div>
 <!-- Central Cart Engine 2026 -->
-<script src="frontend/assets/js/cart-engine.js?v=2026_sync_ui_fix_3d5"></script>
+<script src="frontend/assets/js/cart-engine.js?v=2026_sync_ui_fix_colors"></script>
 <!-- Central Auth Engine 2026 -->
-<script src="frontend/assets/js/auth-engine.js?v=2026_sync_ui_fix_3d5"></script>
+<script src="frontend/assets/js/auth-engine.js?v=2026_sync_ui_fix_colors"></script>
 
   <main id="main">
 
@@ -3446,55 +3446,57 @@
             </div>
           </div>
 
-          <!-- Không gian xem mô hình 3D tương tác (cùng tỷ lệ 1:1 với #mainImageStage để CLS = 0) -->
+          <!-- Không gian xem mô hình 3D tương tác (tách riêng vùng canvas & thanh dock dưới để không đè lên sản phẩm) -->
           <div id="product3DStage" class="pd-3d-stage pd-mode-hidden" role="tabpanel" aria-label="Xem mô hình 3D sản phẩm">
-            <div id="product3DCanvasHost" class="pd-3d-canvas-host"></div>
+            <div class="pd-3d-viewport">
+              <div id="product3DCanvasHost" class="pd-3d-canvas-host"></div>
 
-            <!-- Lớp phủ 3D Hotspot chiếu theo tọa độ 3D->2D trực tiếp trên mô hình -->
-            <div id="pd3dHotspotLayer" class="pd-3d-hotspot-layer" aria-label="Điểm thông tin linh kiện 3D"></div>
+              <!-- Lớp phủ 3D Hotspot chiếu theo tọa độ 3D->2D trực tiếp trên mô hình -->
+              <div id="pd3dHotspotLayer" class="pd-3d-hotspot-layer" aria-label="Điểm thông tin linh kiện 3D"></div>
 
-            <!-- Thẻ thông tin linh kiện kính mờ khi bấm vào một 3D Hotspot -->
-            <aside id="pd3dHotspotCard" class="pd-3d-hotspot-card pd-mode-hidden" role="dialog" aria-labelledby="pd3dHotspotTitle">
-              <div class="flex items-start justify-between gap-2">
-                <div class="min-w-0">
-                  <span class="block text-[10px] font-black uppercase tracking-[0.14em] text-brand">Chi tiết linh kiện</span>
-                  <h4 id="pd3dHotspotTitle" class="text-xs sm:text-sm font-extrabold text-slate-950 truncate">Linh kiện</h4>
+              <!-- Thẻ thông tin linh kiện kính mờ khi bấm vào một 3D Hotspot -->
+              <aside id="pd3dHotspotCard" class="pd-3d-hotspot-card pd-mode-hidden" role="dialog" aria-labelledby="pd3dHotspotTitle">
+                <div class="flex items-start justify-between gap-2">
+                  <div class="min-w-0">
+                    <span class="block text-[10px] font-black uppercase tracking-[0.14em] text-brand">Chi tiết linh kiện</span>
+                    <h4 id="pd3dHotspotTitle" class="text-xs sm:text-sm font-extrabold text-slate-950 truncate">Linh kiện</h4>
+                  </div>
+                  <button type="button" id="pd3dHotspotCloseBtn" class="pd-3d-hotspot-close" data-3d-action="hotspot-close" aria-label="Đóng thẻ linh kiện">
+                    <svg class="h-3.5 w-3.5" fill="none" stroke="currentColor" stroke-width="2.4" viewBox="0 0 24 24"><path stroke-linecap="round" d="M18 6 6 18M6 6l12 12"/></svg>
+                  </button>
                 </div>
-                <button type="button" id="pd3dHotspotCloseBtn" class="pd-3d-hotspot-close" data-3d-action="hotspot-close" aria-label="Đóng thẻ linh kiện">
-                  <svg class="h-3.5 w-3.5" fill="none" stroke="currentColor" stroke-width="2.4" viewBox="0 0 24 24"><path stroke-linecap="round" d="M18 6 6 18M6 6l12 12"/></svg>
+                <p id="pd3dHotspotDesc" class="mt-1 text-[11px] leading-relaxed text-slate-600"></p>
+                <div id="pd3dHotspotSpecs" class="mt-2 space-y-1 border-t border-slate-200/70 pt-2"></div>
+              </aside>
+
+              <!-- Thanh HUD trên: Chọn màu sắc 3D trực tiếp & Nút thoát Toàn màn hình -->
+              <div class="pd-3d-hud-top">
+                <div id="pd3dColorStrip" class="pd-3d-color-strip pd-mode-hidden" role="group" aria-label="Chọn màu mô hình 3D"></div>
+                <button type="button" id="pd3dExitFsBtn" class="pd-3d-exit-fs-btn pd-mode-hidden" data-3d-action="fullscreen-exit" aria-label="Thoát toàn màn hình">
+                  <svg class="h-4 w-4 shrink-0" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" viewBox="0 0 24 24"><path d="M18 6 6 18M6 6l12 12"/></svg>
+                  <span>Thoát</span>
                 </button>
               </div>
-              <p id="pd3dHotspotDesc" class="mt-1 text-[11px] leading-relaxed text-slate-600"></p>
-              <div id="pd3dHotspotSpecs" class="mt-2 space-y-1 border-t border-slate-200/70 pt-2"></div>
-            </aside>
 
-            <!-- Thanh HUD trên: Chọn màu sắc 3D trực tiếp & Nút thoát Toàn màn hình -->
-            <div class="pd-3d-hud-top">
-              <div id="pd3dColorStrip" class="pd-3d-color-strip pd-mode-hidden" role="group" aria-label="Chọn màu mô hình 3D"></div>
-              <button type="button" id="pd3dExitFsBtn" class="pd-3d-exit-fs-btn pd-mode-hidden" data-3d-action="fullscreen-exit" aria-label="Thoát toàn màn hình">
-                <svg class="h-4 w-4 shrink-0" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" viewBox="0 0 24 24"><path d="M18 6 6 18M6 6l12 12"/></svg>
-                <span>Thoát</span>
-              </button>
-            </div>
-
-            <div id="product3DLoader" class="pd-3d-overlay pd-mode-hidden" role="status" aria-live="polite">
-              <img id="product3DLoaderPreview" class="pd-3d-loader-preview" src="frontend/assets/images/placeholders/phone.svg" alt="" aria-hidden="true">
-              <div class="pd-3d-loader-box">
-                <span class="pd-3d-spinner" aria-hidden="true"></span>
-                <p id="product3DLoaderText" class="text-xs font-extrabold text-slate-800">Đang tải mô hình 3D…</p>
-                <div class="pd-3d-progress-track" aria-hidden="true">
-                  <div id="product3DLoaderBar" class="pd-3d-progress-bar"></div>
+              <div id="product3DLoader" class="pd-3d-overlay pd-mode-hidden" role="status" aria-live="polite">
+                <img id="product3DLoaderPreview" class="pd-3d-loader-preview" src="frontend/assets/images/placeholders/phone.svg" alt="" aria-hidden="true">
+                <div class="pd-3d-loader-box">
+                  <span class="pd-3d-spinner" aria-hidden="true"></span>
+                  <p id="product3DLoaderText" class="text-xs font-extrabold text-slate-800">Đang tải mô hình 3D…</p>
+                  <div class="pd-3d-progress-track" aria-hidden="true">
+                    <div id="product3DLoaderBar" class="pd-3d-progress-bar"></div>
+                  </div>
+                  <span id="product3DLoaderPct" class="pd-3d-loader-pct">0%</span>
                 </div>
-                <span id="product3DLoaderPct" class="pd-3d-loader-pct">0%</span>
+              </div>
+
+              <div id="product3DError" class="pd-3d-overlay pd-mode-hidden" role="alert">
+                <p id="product3DErrorText" class="max-w-xs text-center text-xs font-semibold text-slate-600">Không thể hiển thị mô hình 3D.</p>
+                <button type="button" class="pd-3d-fallback-btn" data-3d-action="gallery">Quay lại Photo Gallery</button>
               </div>
             </div>
 
-            <div id="product3DError" class="pd-3d-overlay pd-mode-hidden" role="alert">
-              <p id="product3DErrorText" class="max-w-xs text-center text-xs font-semibold text-slate-600">Không thể hiển thị mô hình 3D.</p>
-              <button type="button" class="pd-3d-fallback-btn" data-3d-action="gallery">Quay lại Photo Gallery</button>
-            </div>
-
-            <!-- Thanh HUD dưới: Bảng chuyển động khớp nối, Exploded View, Góc nhìn chi tiết & Thanh công cụ 3D -->
+            <!-- Thanh Dock dưới (tách rời khỏi vùng Canvas 3D): Bóc tách Exploded View, Khớp nối, Góc nhìn & Toolbar -->
             <div class="pd-3d-hud-bottom">
               <div id="pd3dExplodedPanel" class="pd-3d-articulation pd-3d-exploded pd-mode-hidden" role="region" aria-label="Điều khiển chế độ phân rã cấu tạo">
                 <div class="pd-3d-art-head">
@@ -4367,13 +4369,13 @@
   <!-- Toast thông báo Dynamic Island -->
   <div id="toast" role="status" aria-live="polite" class="pointer-events-none fixed bottom-6 left-1/2 z-50 -translate-x-1/2 translate-y-4 rounded-full bg-ink px-5 py-3 text-sm font-semibold text-white opacity-0 shadow-xl"></div>
   <!-- Dữ liệu catalog, menu và image manifest cho Dynamic Product Detail -->
-  <script src="frontend/assets/js/image-manifest.js?v=2026_sync_ui_fix_3d5"></script>
-  <script src="frontend/assets/js/products-data.js?v=2026_sync_ui_fix_3d5"></script>
-  <script src="frontend/assets/js/catalog-menu.js?v=2026_sync_ui_fix_3d5"></script>
+  <script src="frontend/assets/js/image-manifest.js?v=2026_sync_ui_fix_colors"></script>
+  <script src="frontend/assets/js/products-data.js?v=2026_sync_ui_fix_colors"></script>
+  <script src="frontend/assets/js/catalog-menu.js?v=2026_sync_ui_fix_colors"></script>
   <!-- Client Script chung cho Header Mega-Menu & Drawer -->
-  <script src="frontend/assets/js/main.js?v=2026_sync_ui_fix_3d5"></script>
-  <script src="frontend/assets/js/models-3d-registry.js?v=2026_3d_v2_p1_sf"></script>
-  <script src="frontend/assets/js/product-3d-viewer.js?v=2026_3d_v2_p1_sf"></script>
-  <script src="frontend/assets/js/product-detail.js?v=2026_3d_v2_p1_sf"></script>
+  <script src="frontend/assets/js/main.js?v=2026_sync_ui_fix_colors"></script>
+  <script src="frontend/assets/js/models-3d-registry.js?v=2026_sync_ui_fix_colors"></script>
+  <script src="frontend/assets/js/product-3d-viewer.js?v=2026_sync_ui_fix_colors"></script>
+  <script src="frontend/assets/js/product-detail.js?v=2026_sync_ui_fix_colors"></script>
 </body>
 </html>
