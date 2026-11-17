@@ -22,12 +22,14 @@
 
   var STATUS_LABELS = {
     pending: 'Chờ xác nhận',
-    confirmed: 'Đang chuẩn bị',
+    confirmed: 'Đã xác nhận',
+    preparing: 'Đang chuẩn bị',
     processing: 'Đang chuẩn bị',
-    shipping: 'Đang giao',
-    delivering: 'Đang giao',
-    completed: 'Đã giao thành công',
-    delivered: 'Đã giao thành công',
+    handed_over: 'Đã bàn giao vận chuyển',
+    shipping: 'Đang giao hàng',
+    delivering: 'Đang giao hàng',
+    completed: 'Giao thành công',
+    delivered: 'Giao thành công',
     cancelled: 'Đã hủy',
     returned: 'Yêu cầu đổi trả',
     return: 'Yêu cầu đổi trả'
@@ -125,13 +127,50 @@
       { code: 'APPLEVIP', value: 800000, type: 'fixed', minOrder: 10000000, expiresAt: '2026-12-31', source: 'campaign' },
       { code: 'FREESHIP', value: 0, type: 'fixed', minOrder: 0, expiresAt: '2026-12-31', source: 'campaign' }
     ];
+    var adminVouchers = readJson('vlu_admin_vouchers', null);
+    var hasAdminSource = Array.isArray(adminVouchers);
+    var activeAdminVouchers = hasAdminSource
+      ? adminVouchers.filter(function (v) { return v && v.code && !v.deleted && String(v.status || 'active') !== 'inactive'; })
+      : defaults;
+    var activeCodes = {};
     var changed = false;
-    defaults.forEach(function (voucher) {
-      if (!store.vouchers.some(function (item) { return item.code === voucher.code; })) {
-        store.vouchers.push(voucher);
+
+    activeAdminVouchers.forEach(function (voucher) {
+      var code = String(voucher.code).trim().toUpperCase();
+      activeCodes[code] = true;
+      var existing = store.vouchers.find(function (item) { return String(item.code || '').toUpperCase() === code; });
+      if (!existing) {
+        store.vouchers.push({
+          code: code,
+          value: Number(voucher.value) || 0,
+          type: voucher.type || 'fixed',
+          maxDiscount: Number(voucher.maxDiscount) || 0,
+          minOrder: Number(voucher.minOrder) || 0,
+          expiresAt: voucher.expiresAt || '2026-12-31',
+          source: voucher.source || 'store',
+          label: voucher.label || ''
+        });
         changed = true;
+      } else {
+        existing.value = Number(voucher.value) || 0;
+        existing.type = voucher.type || existing.type || 'fixed';
+        existing.maxDiscount = Number(voucher.maxDiscount) || 0;
+        existing.minOrder = Number(voucher.minOrder) || 0;
+        existing.expiresAt = voucher.expiresAt || existing.expiresAt || '2026-12-31';
+        if (voucher.label) existing.label = voucher.label;
       }
     });
+
+    if (hasAdminSource) {
+      var beforeLen = store.vouchers.length;
+      store.vouchers = store.vouchers.filter(function (item) {
+        if (!item) return false;
+        if (item.source === 'points' || store.usedVouchers.indexOf(item.code) !== -1) return true;
+        return Boolean(activeCodes[String(item.code || '').toUpperCase()]);
+      });
+      if (store.vouchers.length !== beforeLen) changed = true;
+    }
+
     store.vouchers.forEach(function (voucher) {
       if (store.usedVouchers.indexOf(voucher.code) !== -1) voucher.status = 'used';
       else if (voucher.expiresAt && new Date(voucher.expiresAt + 'T23:59:59').getTime() < Date.now()) voucher.status = 'expired';
@@ -378,7 +417,7 @@
     var key = String(status || '').toLowerCase();
     if (['completed', 'delivered'].indexOf(key) !== -1) return 'bg-emerald-50 text-emerald-700';
     if (['cancelled', 'returned'].indexOf(key) !== -1) return 'bg-slate-100 text-slate-600';
-    if (['shipping', 'delivering'].indexOf(key) !== -1) return 'bg-blue-50 text-blue-700';
+    if (['handed_over', 'shipping', 'delivering'].indexOf(key) !== -1) return 'bg-blue-50 text-blue-700';
     return 'bg-amber-50 text-amber-700';
   }
 
@@ -390,8 +429,8 @@
     return orders().filter(function (order) {
       if (orderSearch && String(order.id || '').toLowerCase().indexOf(orderSearch.toLowerCase()) === -1) return false;
       var status = String(order.status || '').toLowerCase();
-      if (orderFilter === 'processing' && ['confirmed', 'processing'].indexOf(status) === -1) return false;
-      if (orderFilter === 'shipping' && ['shipping', 'delivering'].indexOf(status) === -1) return false;
+      if (orderFilter === 'processing' && ['confirmed', 'preparing', 'processing'].indexOf(status) === -1) return false;
+      if (orderFilter === 'shipping' && ['handed_over', 'shipping', 'delivering'].indexOf(status) === -1) return false;
       if (orderFilter === 'completed' && ['completed', 'delivered'].indexOf(status) === -1) return false;
       if (orderFilter === 'returned' && ['returned', 'return'].indexOf(status) === -1) return false;
       if (orderFilter !== 'all' && ['processing', 'shipping', 'completed', 'returned'].indexOf(orderFilter) === -1 && status !== orderFilter) return false;
@@ -474,7 +513,7 @@
       return ['completed', 'delivered'].indexOf(String(order.status).toLowerCase()) !== -1;
     });
     var pending = userOrders.filter(function (order) {
-      return ['pending', 'confirmed', 'processing', 'shipping', 'delivering'].indexOf(String(order.status).toLowerCase()) !== -1;
+      return ['pending', 'confirmed', 'preparing', 'processing', 'handed_over', 'shipping', 'delivering'].indexOf(String(order.status).toLowerCase()) !== -1;
     });
     var recentProducts = store.recent.map(catalogProduct).filter(Boolean).slice(0, 4);
     var recommendations = Object.keys(products()).map(catalogProduct).filter(Boolean)
@@ -527,7 +566,7 @@
     var steps = ['pending', 'processing', 'shipping', 'completed'];
     var status = String(order.status || 'pending').toLowerCase();
     var stepIndex = status === 'confirmed' ? 1 : (status === 'delivering' ? 2 : steps.indexOf(status));
-    var canCancel = ['pending', 'confirmed', 'processing'].indexOf(status) !== -1;
+    var canCancel = ['pending', 'confirmed', 'preparing', 'processing'].indexOf(status) !== -1;
     var itemMarkup = items.map(function (item) {
       return '<div class="account-order-product"><img class="account-product-img" src="' + escapeHtml(itemImage(item)) +
         '" alt="" loading="lazy" data-account-product-image><div class="min-w-0 flex-1"><p class="truncate text-xs font-extrabold">' +
@@ -558,13 +597,18 @@
     if (!order) return;
     closeOrderModal();
     var steps = [
-      ['pending', 'Đã tiếp nhận đơn'],
-      ['processing', 'Đang chuẩn bị hàng'],
-      ['shipping', 'Đang vận chuyển'],
-      ['completed', 'Đã giao thành công']
+      ['pending', 'Chờ xác nhận'],
+      ['confirmed', 'Đã xác nhận'],
+      ['preparing', 'Đang chuẩn bị'],
+      ['handed_over', 'Đã bàn giao vận chuyển'],
+      ['shipping', 'Đang giao hàng'],
+      ['completed', 'Giao thành công']
     ];
     var current = String(order.status || 'pending').toLowerCase();
-    var currentIndex = current === 'confirmed' ? 1 : (current === 'delivering' ? 2 : steps.findIndex(function (step) { return step[0] === current; }));
+    if (current === 'processing') current = 'preparing';
+    if (current === 'delivering') current = 'shipping';
+    if (current === 'delivered') current = 'completed';
+    var currentIndex = steps.findIndex(function (step) { return step[0] === current; });
     var progress = currentIndex < 0 ? -1 : currentIndex;
     var timeline = steps.map(function (step, index) {
       return '<li class="account-timeline-step' + (index <= progress ? ' is-complete' : '') + '">' +
@@ -851,14 +895,18 @@
   }
 
   function ticketRow(ticket) {
-    var steps = ['Đã tiếp nhận', 'Đang kiểm tra kỹ thuật', 'Hoàn tất'];
-    var current = Math.max(0, steps.indexOf(ticket.status || steps[0]));
+    var steps = ['Đã tiếp nhận', 'Đang kiểm tra kỹ thuật', 'Đang bảo hành / Đổi mới', 'Hoàn tất'];
+    var curSt = ticket.status || steps[0];
+    var isRejected = curSt === 'Từ chối';
+    var isRefunded = curSt === 'Đã hoàn tiền';
+    var current = isRefunded ? steps.length - 1 : Math.max(0, steps.indexOf(curSt));
     return '<div class="account-list-row"><div><p class="text-xs font-extrabold">' + escapeHtml(ticket.subject) + '</p>' +
       '<p class="mt-1 text-[10px] text-slate-500">' + escapeHtml(ticket.typeLabel || ticket.type) + ' · Đơn ' + escapeHtml(ticket.orderId || '—') +
       ' · ' + dateTimeText(ticket.createdAt) + '</p><p class="account-muted mt-1">' + escapeHtml(ticket.message || '') + '</p>' +
+      (ticket.adminNote ? '<p class="mt-1.5 rounded-lg bg-slate-50 px-2.5 py-1.5 text-[11px] font-semibold text-slate-700">Phản hồi từ VLU: ' + escapeHtml(ticket.adminNote) + '</p>' : '') +
       '<ol class="account-ticket-steps">' + steps.map(function (step, index) {
-        return '<li class="' + (index <= current ? 'is-complete' : '') + '">' + escapeHtml(step) + '</li>';
-      }).join('') + '</ol></div><span class="account-badge">' + escapeHtml(ticket.status || steps[0]) + '</span></div>';
+        return '<li class="' + (!isRejected && index <= current ? 'is-complete' : '') + '">' + escapeHtml(step) + '</li>';
+      }).join('') + '</ol></div><span class="account-badge">' + escapeHtml(curSt) + '</span></div>';
   }
 
   function historyHtml() {

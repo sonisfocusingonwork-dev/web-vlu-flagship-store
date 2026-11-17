@@ -42,17 +42,44 @@ if ($method === 'GET') {
     }
 
     if ($action === 'users') {
+        $jsonUsers = vlu_read_json_file('users.json', []);
+        $jsonByKey = [];
+        foreach ($jsonUsers as $ju) {
+            $uKey = strtolower((string)($ju['username'] ?? ''));
+            $eKey = strtolower((string)($ju['email'] ?? ''));
+            if ($uKey !== '') $jsonByKey['u:' . $uKey] = $ju;
+            if ($eKey !== '') $jsonByKey['e:' . $eKey] = $ju;
+        }
+
         if ($conn !== null) {
             try {
                 $stmt = $conn->query("SELECT id, username, email, fullname, phone, role, created_at FROM users ORDER BY id DESC");
                 $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
-                foreach ($rows as &$r) {
-                    $r['role'] = ((int)$r['role'] === 1 || strtolower((string)$r['role']) === 'admin') ? 1 : 0;
+                $sanitizedRows = [];
+                foreach ($rows as $r) {
+                    $uKey = strtolower((string)($r['username'] ?? ''));
+                    $eKey = strtolower((string)($r['email'] ?? ''));
+                    $meta = $jsonByKey['u:' . $uKey] ?? ($jsonByKey['e:' . $eKey] ?? []);
+                    $isRoot = ((int)($r['id'] ?? 0) === 1 || $uKey === 'admin' || $eKey === 'admin@vluflagship.vn');
+                    $isLocked = !$isRoot && ((($meta['status'] ?? 'active') === 'locked') || !empty($meta['is_locked']));
+                    $sanitizedRows[] = [
+                        'id' => (int)($r['id'] ?? 0),
+                        'username' => (string)($r['username'] ?? ''),
+                        'email' => (string)($r['email'] ?? ''),
+                        'fullname' => (string)($r['fullname'] ?? ''),
+                        'phone' => (string)($r['phone'] ?? ''),
+                        'role' => ($isRoot || (int)($r['role'] ?? 0) === 1 || strtolower((string)($r['role'] ?? '')) === 'admin') ? 1 : 0,
+                        'status' => $isLocked ? 'locked' : 'active',
+                        'is_locked' => $isLocked,
+                        'lock_reason' => $isLocked ? (string)($meta['lock_reason'] ?? '') : '',
+                        'locked_at' => $isLocked ? (string)($meta['locked_at'] ?? '') : '',
+                        'created_at' => (string)($r['created_at'] ?? ''),
+                        'updated_at' => (string)($meta['updated_at'] ?? '')
+                    ];
                 }
-                unset($r);
                 echo json_encode([
                     'success' => true,
-                    'users' => $rows
+                    'users' => $sanitizedRows
                 ], JSON_UNESCAPED_UNICODE);
                 exit;
             } catch (PDOException $e) {
@@ -60,18 +87,26 @@ if ($method === 'GET') {
             }
         }
 
-        // Fallback đọc từ JSON
-        $jsonUsers = vlu_read_json_file('users.json', []);
+        // Fallback đọc từ JSON (tuyệt đối không trả password / password_hash)
         $cleanUsers = [];
         foreach ($jsonUsers as $u) {
+            $uKey = strtolower((string)($u['username'] ?? ''));
+            $eKey = strtolower((string)($u['email'] ?? ''));
+            $isRoot = ((int)($u['id'] ?? 0) === 1 || $uKey === 'admin' || $eKey === 'admin@vluflagship.vn');
+            $isLocked = !$isRoot && ((($u['status'] ?? 'active') === 'locked') || !empty($u['is_locked']));
             $cleanUsers[] = [
                 'id' => (int)($u['id'] ?? 0),
                 'username' => (string)($u['username'] ?? ''),
                 'email' => (string)($u['email'] ?? ''),
                 'fullname' => (string)($u['fullname'] ?? ''),
                 'phone' => (string)($u['phone'] ?? ''),
-                'role' => ((int)($u['role'] ?? 0) === 1 || strtolower((string)($u['username'] ?? '')) === 'admin') ? 1 : 0,
-                'created_at' => (string)($u['created_at'] ?? '')
+                'role' => ($isRoot || (int)($u['role'] ?? 0) === 1 || $uKey === 'admin') ? 1 : 0,
+                'status' => $isLocked ? 'locked' : 'active',
+                'is_locked' => $isLocked,
+                'lock_reason' => $isLocked ? (string)($u['lock_reason'] ?? '') : '',
+                'locked_at' => $isLocked ? (string)($u['locked_at'] ?? '') : '',
+                'created_at' => (string)($u['created_at'] ?? ''),
+                'updated_at' => (string)($u['updated_at'] ?? '')
             ];
         }
         echo json_encode([
@@ -188,12 +223,38 @@ if ($method === 'POST') {
             exit;
         }
 
-        // 1.6. Xác định vai trò Admin (role = 1) hoặc User thường (role = 0)
+        // 1.6. Xác định vai trò Admin (role = 1) hoặc User thường (role = 0) & kiểm tra khóa tài khoản
         $roleRaw = strtolower(trim((string)($user['role'] ?? '0')));
         $uNameRaw = strtolower(trim((string)($user['username'] ?? '')));
         $uEmailRaw = strtolower(trim((string)($user['email'] ?? '')));
-        $isAdmin = ($roleRaw === '1' || $roleRaw === 'admin' || $uNameRaw === 'admin' || $uEmailRaw === 'admin@vluflagship.vn');
+        $isRootAdmin = ((int)($user['id'] ?? 0) === 1 || $uNameRaw === 'admin' || $uEmailRaw === 'admin@vluflagship.vn');
+        $isAdmin = ($isRootAdmin || $roleRaw === '1' || $roleRaw === 'admin');
         $finalRole = $isAdmin ? 1 : 0;
+
+        // Đối chiếu trạng thái khóa trong users.json (đảm bảo đồng bộ khi chỉ bật JSON fallback)
+        $isLocked = (($user['status'] ?? 'active') === 'locked') || !empty($user['is_locked']);
+        if (!$isLocked) {
+            $jsonUsers = vlu_read_json_file('users.json', []);
+            foreach ($jsonUsers as $ju) {
+                $juName = strtolower((string)($ju['username'] ?? ''));
+                $juEmail = strtolower((string)($ju['email'] ?? ''));
+                if (($uNameRaw !== '' && $juName === $uNameRaw) || ($uEmailRaw !== '' && $juEmail === $uEmailRaw)) {
+                    if ((($ju['status'] ?? 'active') === 'locked') || !empty($ju['is_locked'])) {
+                        $isLocked = true;
+                    }
+                    break;
+                }
+            }
+        }
+        if ($isLocked && !$isRootAdmin) {
+            http_response_code(403);
+            echo json_encode([
+                'success' => false,
+                'code' => 'ACCOUNT_LOCKED',
+                'message' => 'Tài khoản của bạn đang tạm khóa, vui lòng liên hệ CSKH VLU Flagship Store.'
+            ], JSON_UNESCAPED_UNICODE);
+            exit;
+        }
 
         $sessionUser = [
             'id' => (int)($user['id'] ?? 1),
@@ -201,7 +262,8 @@ if ($method === 'POST') {
             'email' => (string)($user['email'] ?? ''),
             'fullname' => (string)($user['fullname'] ?: $user['username']),
             'phone' => (string)($user['phone'] ?? ''),
-            'role' => $finalRole
+            'role' => $finalRole,
+            'status' => 'active'
         ];
         $_SESSION['vlu_user'] = $sessionUser;
 
@@ -369,6 +431,110 @@ if ($method === 'POST') {
             'code' => 'REGISTER_SUCCESS',
             'message' => 'Đăng ký tài khoản thành công! Chào mừng ' . $fullname . '.',
             'user' => $newUser
+        ], JSON_UNESCAPED_UNICODE);
+        exit;
+    }
+
+    // =========================================================================
+    // 3. ACTION: ADMIN_UPDATE_USER (Sửa thông tin, Khóa/Mở khóa & Phân quyền)
+    // =========================================================================
+    if ($action === 'admin_update_user') {
+        $targetId = (string)($jsonData['id'] ?? '');
+        $targetUsername = strtolower(trim((string)($jsonData['username'] ?? '')));
+        $nextFullname = isset($jsonData['fullname']) ? trim((string)$jsonData['fullname']) : null;
+        $nextEmail = isset($jsonData['email']) ? trim((string)$jsonData['email']) : null;
+        $nextPhone = isset($jsonData['phone']) ? trim((string)$jsonData['phone']) : null;
+        $nextRole = isset($jsonData['role']) ? (int)$jsonData['role'] : null;
+        $nextStatus = isset($jsonData['status']) ? strtolower(trim((string)$jsonData['status'])) : null;
+        $lockReason = isset($jsonData['lock_reason']) ? trim((string)$jsonData['lock_reason']) : '';
+
+        if ($targetId === '' && $targetUsername === '') {
+            http_response_code(400);
+            echo json_encode([
+                'success' => false,
+                'code' => 'MISSING_USER',
+                'message' => 'Thiếu thông tin định danh tài khoản.'
+            ], JSON_UNESCAPED_UNICODE);
+            exit;
+        }
+
+        $jsonUsers = vlu_read_json_file('users.json', []);
+        $foundIdx = -1;
+        foreach ($jsonUsers as $idx => $ju) {
+            if (($targetId !== '' && (string)($ju['id'] ?? '') === $targetId) ||
+                ($targetUsername !== '' && strtolower((string)($ju['username'] ?? '')) === $targetUsername)) {
+                $foundIdx = $idx;
+                break;
+            }
+        }
+
+        $isTargetRoot = ($targetId === '1' || $targetUsername === 'admin' || $targetUsername === 'admin@vluflagship.vn');
+        if ($foundIdx >= 0) {
+            $cur = $jsonUsers[$foundIdx];
+            if ((int)($cur['id'] ?? 0) === 1 ||
+                strtolower((string)($cur['username'] ?? '')) === 'admin' ||
+                strtolower((string)($cur['email'] ?? '')) === 'admin@vluflagship.vn') {
+                $isTargetRoot = true;
+            }
+        }
+
+        // Bảo vệ tài khoản Quản trị viên gốc
+        if ($isTargetRoot && (($nextStatus === 'locked') || ($nextRole !== null && $nextRole !== 1))) {
+            http_response_code(403);
+            echo json_encode([
+                'success' => false,
+                'code' => 'ROOT_ADMIN_PROTECTED',
+                'message' => 'Không được phép khóa hoặc hạ quyền tài khoản Quản trị viên gốc.'
+            ], JSON_UNESCAPED_UNICODE);
+            exit;
+        }
+
+        if ($conn !== null) {
+            try {
+                $fields = [];
+                $params = [];
+                if ($nextFullname !== null && $nextFullname !== '') { $fields[] = 'fullname = :fullname'; $params[':fullname'] = $nextFullname; }
+                if ($nextEmail !== null && $nextEmail !== '') { $fields[] = 'email = :email'; $params[':email'] = $nextEmail; }
+                if ($nextPhone !== null) { $fields[] = 'phone = :phone'; $params[':phone'] = $nextPhone; }
+                if ($nextRole !== null && !$isTargetRoot) { $fields[] = 'role = :role'; $params[':role'] = ($nextRole === 1 ? 1 : 0); }
+                if (!empty($fields)) {
+                    $where = ($targetId !== '' && ctype_digit($targetId)) ? 'id = :tid' : 'LOWER(username) = LOWER(:tname)';
+                    if ($where === 'id = :tid') $params[':tid'] = (int)$targetId;
+                    else $params[':tname'] = $targetUsername;
+                    $stmtUp = $conn->prepare("UPDATE users SET " . implode(', ', $fields) . " WHERE " . $where);
+                    $stmtUp->execute($params);
+                }
+            } catch (Throwable $e) {}
+        }
+
+        if ($foundIdx >= 0) {
+            if ($nextFullname !== null && $nextFullname !== '') $jsonUsers[$foundIdx]['fullname'] = $nextFullname;
+            if ($nextEmail !== null && $nextEmail !== '') $jsonUsers[$foundIdx]['email'] = $nextEmail;
+            if ($nextPhone !== null) $jsonUsers[$foundIdx]['phone'] = $nextPhone;
+            if ($nextRole !== null && !$isTargetRoot) $jsonUsers[$foundIdx]['role'] = ($nextRole === 1 ? 1 : 0);
+            if ($nextStatus === 'locked' || $nextStatus === 'active') {
+                $jsonUsers[$foundIdx]['status'] = $nextStatus;
+                $jsonUsers[$foundIdx]['is_locked'] = ($nextStatus === 'locked');
+                $jsonUsers[$foundIdx]['lock_reason'] = ($nextStatus === 'locked') ? $lockReason : '';
+                $jsonUsers[$foundIdx]['locked_at'] = ($nextStatus === 'locked') ? date('Y-m-d H:i:s') : '';
+            }
+            $jsonUsers[$foundIdx]['updated_at'] = date('Y-m-d H:i:s');
+            vlu_write_json_file('users.json', $jsonUsers);
+            $updated = $jsonUsers[$foundIdx];
+            unset($updated['password'], $updated['password_hash']);
+            echo json_encode([
+                'success' => true,
+                'code' => 'USER_UPDATED',
+                'user' => $updated,
+                'message' => 'Đã cập nhật tài khoản thành công.'
+            ], JSON_UNESCAPED_UNICODE);
+            exit;
+        }
+
+        echo json_encode([
+            'success' => true,
+            'code' => 'USER_SYNCED',
+            'message' => 'Đã ghi nhận đồng bộ tài khoản.'
         ], JSON_UNESCAPED_UNICODE);
         exit;
     }

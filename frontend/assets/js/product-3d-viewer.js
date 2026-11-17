@@ -408,23 +408,35 @@
       }
     }
 
-    function computeBasis(cam) {
-      var homeEye = cam.position.slice();
+    function computeBasis(cam, zoomFactor) {
+      var origEye = cam.position.slice();
       var homeTarget = cam.target.slice();
-      var v = sub3(homeEye, homeTarget);
-      var homeDist = Math.hypot(v[0], v[1], v[2]) || 1;
+      var v = sub3(origEye, homeTarget);
+      var baseDist = Math.hypot(v[0], v[1], v[2]) || 1;
+      var k = Number(zoomFactor) > 0 ? Number(zoomFactor) : 1;
+      var homeEye = k === 1 ? origEye : add3(homeTarget, mul3(v, k));
+      var homeDist = baseDist * k;
       var hLen = Math.hypot(v[0], v[1]);
       var fwdHoriz = hLen > 1e-4 ? [v[0] / hLen, v[1] / hLen, 0] : [0, -1, 0];
       var right = norm3([-fwdHoriz[1], fwdHoriz[0], 0]);
       return {
         homeEye: homeEye,
         homeTarget: homeTarget,
+        baseDist: baseDist,
         homeDist: homeDist,
-        radiusEst: homeDist * 0.36,
+        radiusEst: baseDist * 0.36,
         fwdHoriz: fwdHoriz,
         right: right,
         up: [0, 0, 1]
       };
+    }
+
+    function applySlotIframeVisibility(iframe, isVisible) {
+      if (!iframe) return;
+      iframe.style.visibility = isVisible ? 'visible' : 'hidden';
+      iframe.style.pointerEvents = isVisible ? 'auto' : 'none';
+      iframe.style.opacity = isVisible ? '1' : '0';
+      iframe.style.zIndex = isVisible ? '1' : '0';
     }
 
     function vecFromNormalized(basis, nv) {
@@ -440,6 +452,7 @@
       var raw = Array.isArray(model.hotspots) ? model.hotspots : [];
       raw.forEach(function (hs) {
         var btn = buildHotspotButtonEl(hs);
+        btn.classList.add('is-clipped');
         hotspotHost.appendChild(btn);
         hotspotItems.push({ raw: hs, el: btn });
       });
@@ -465,7 +478,8 @@
             if (disposed || !res || !res.canvasCoord) return;
             var sx = Number(res.canvasCoord[0]);
             var sy = Number(res.canvasCoord[1]);
-            var clipped = !isFinite(sx) || !isFinite(sy) || sx < -16 || sx > w + 16 || sy < -16 || sy > h + 16;
+            var outOfDepth = Boolean(res.glCoord && res.glCoord.length >= 3 && (res.glCoord[2] < -1 || res.glCoord[2] > 1));
+            var clipped = outOfDepth || !isFinite(sx) || !isFinite(sy) || sx < -16 || sx > w + 16 || sy < -16 || sy > h + 16;
             item.el.classList.toggle('is-clipped', clipped);
             if (!clipped) {
               item.el.style.transform = 'translate3d(' + sx.toFixed(1) + 'px,' + sy.toFixed(1) + 'px,0) translate(-50%,-50%)';
@@ -473,6 +487,14 @@
             }
           });
         });
+      });
+    }
+
+    function scheduleHotspotSync() {
+      [80, 260, 700, 1400].forEach(function (ms) {
+        setTimeout(function () {
+          if (!disposed) projectHotspots();
+        }, ms);
       });
     }
 
@@ -492,7 +514,7 @@
       iframe.setAttribute('allow', 'autoplay; fullscreen; xr-spatial-tracking');
       iframe.setAttribute('allowfullscreen', '');
       iframe.setAttribute('title', 'Mô hình 3D thật ' + (model.label || 'sản phẩm'));
-      if (uid !== activeUid) iframe.style.display = 'none';
+      applySlotIframeVisibility(iframe, uid === activeUid);
       host.appendChild(iframe);
 
       var slot = { uid: uid, iframe: iframe, api: null, ready: false, basis: null, readyPromise: null };
@@ -524,13 +546,27 @@
               api.start();
               api.addEventListener('viewerready', function () {
                 if (disposed) return;
-                api.setBackground({ color: [0.972, 0.980, 0.992] }, function () {});
+                api.setBackground({ color: [1, 1, 1] }, function () {});
+                try {
+                  if (typeof api.getPostProcessing === 'function' && typeof api.setPostProcessing === 'function') {
+                    api.getPostProcessing(function (ppErr, pp) {
+                      if (!ppErr && pp && !disposed) {
+                        api.setPostProcessing(Object.assign({}, pp, { vignetteEnable: false, vignetteAmount: 0 }), function () {});
+                      }
+                    });
+                  }
+                } catch (ePp) {}
                 api.getCameraLookAt(function (err, cam) {
-                  slot.basis = !err && cam ? computeBasis(cam) : {
-                    homeEye: [0, -2, 0.3], homeTarget: [0, 0, 0], homeDist: 2.02, radiusEst: 0.72,
+                  slot.basis = !err && cam ? computeBasis(cam, 1.18) : {
+                    homeEye: [0, -2.36, 0.35], homeTarget: [0, 0, 0], baseDist: 2.02, homeDist: 2.38, radiusEst: 0.72,
                     fwdHoriz: [0, -1, 0], right: [1, 0, 0], up: [0, 0, 1]
                   };
                   slot.ready = true;
+                  if (!err && cam) {
+                    api.setCameraLookAt(slot.basis.homeEye, slot.basis.homeTarget, 0, function () {
+                      if (!disposed && uid === activeUid) projectHotspots();
+                    });
+                  }
                   api.addEventListener('camerastart', function () {
                     if (Date.now() - lastSpinMoveAt > 120 && autoRotateOn) {
                       setAutoRotate(false);
@@ -606,7 +642,7 @@
         }
         if (typeof options.onProgress === 'function') options.onProgress(100);
         if (typeof options.onReady === 'function') options.onReady();
-        setTimeout(projectHotspots, 120);
+        scheduleHotspotSync();
         emitState();
       }).catch(function (err) {
         loadingPromise = null;
@@ -629,9 +665,10 @@
       }
       var preset = buildMergedPresets(model).filter(function (p) { return p.key === key; })[0];
       if (!preset || !preset.dir) return;
+      var refDist = b.baseDist || b.homeDist;
       var target = add3(b.homeTarget, mul3(vecFromNormalized(b, preset.target), b.radiusEst));
       var dirV = norm3(vecFromNormalized(b, preset.dir));
-      var d = Math.max(b.homeDist * 0.42, Math.min(b.homeDist * 2.4, b.homeDist * preset.dist));
+      var d = Math.max(refDist * 0.42, Math.min(refDist * 2.5, refDist * preset.dist));
       activePreset = key;
       slot.api.setCameraLookAt(add3(target, mul3(dirV, d)), target, 0.65, projectHotspots);
       emitState();
@@ -646,7 +683,7 @@
         if (err || !cam || disposed) return;
         var off = sub3(cam.position, cam.target);
         var curLen = Math.hypot(off[0], off[1], off[2]) || b.homeDist;
-        var nextLen = Math.max(b.homeDist * 0.38, Math.min(b.homeDist * 2.4, curLen * factor));
+        var nextLen = Math.max(b.homeDist * 0.34, Math.min(b.homeDist * 2.4, curLen * factor));
         var nextEye = add3(cam.target, mul3(norm3(off), nextLen));
         slot.api.setCameraLookAt(nextEye, cam.target, 0.35, projectHotspots);
       });
@@ -686,23 +723,27 @@
 
       return captureRelPose().then(function (rel) {
         return initUidSlot(nextUid).then(function () {
-          if (token !== colorToken || disposed) return false;
+          var nextSlot = slotMap[nextUid];
+          if (token !== colorToken || disposed) {
+            if (nextSlot && nextSlot.uid !== activeUid && nextSlot.api) {
+              try { nextSlot.api.stop(); } catch (eStop) {}
+            }
+            return false;
+          }
           if (prevSlot) {
-            prevSlot.iframe.style.display = 'none';
+            applySlotIframeVisibility(prevSlot.iframe, false);
             if (prevSlot.api) prevSlot.api.stop();
           }
           activeUid = nextUid;
-          var nextSlot = slotMap[nextUid];
-          nextSlot.iframe.style.display = 'block';
+          applySlotIframeVisibility(nextSlot.iframe, true);
           nextSlot.api.start();
           if (rel && nextSlot.basis) {
             var nb = nextSlot.basis;
             var newTarget = add3(nb.homeTarget, mul3(rel.relTarget, nb.homeDist));
             var newEye = add3(nb.homeTarget, mul3(rel.relEye, nb.homeDist));
             nextSlot.api.setCameraLookAt(newEye, newTarget, 0, projectHotspots);
-          } else {
-            setTimeout(projectHotspots, 90);
           }
+          scheduleHotspotSync();
           return true;
         });
       }).catch(function () { return false; });

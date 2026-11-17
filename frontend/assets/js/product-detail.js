@@ -1452,6 +1452,7 @@
 
         parsed.reviews.forEach(function (rev, idx) {
           if (!rev || !(Number(rev.rating) > 0) || !rev.comment) return;
+          if (rev.hidden === true || String(rev.status || '') === 'hidden') return;
           var revId = String(rev.id || '');
           var matchId = rev.productId === p.id || revId === p.id || revId.slice(-p.id.length - 1) === ':' + p.id;
           var matchName = rev.name && String(rev.name).trim().toLowerCase() === String(p.name).trim().toLowerCase();
@@ -1473,6 +1474,7 @@
             comment: String(rev.comment).trim(),
             tags: Array.isArray(rev.tags) ? rev.tags : [],
             image: rev.image && String(rev.image).trim() ? String(rev.image).trim() : '',
+            adminReply: rev.adminReply || null,
             createdAt: rev.createdAt || '',
             timestamp: rev.createdAt ? (new Date(rev.createdAt).getTime() || 0) : 0,
             isVerifiedBuyer: purchaseCheck.verified,
@@ -1635,6 +1637,7 @@
             return '<span class="rounded-full bg-white border border-slate-200 px-2.5 py-0.5 text-[10px] font-bold text-slate-600">' + escapeHtml(t) + '</span>';
           }).join('') + '</div>' : '')
         + (r.image ? '<div><img src="' + escapeAttr(r.image) + '" alt="Ảnh đánh giá thực tế của ' + escapeAttr(r.reviewerName) + '" class="pd-review-photo" data-zoom-review-img="1" loading="lazy"></div>' : '')
+        + (r.adminReply && r.adminReply.text ? '<div class="pd-qa-answer-box mt-2"><div class="flex flex-wrap items-center justify-between gap-2"><span class="inline-flex items-center gap-1.5 text-xs font-black text-brand"><span class="inline-grid h-5 w-5 place-items-center rounded-md bg-brand text-[10px] font-black text-white">V</span><span>VLU Flagship Store · Quản trị viên</span></span><span class="text-[11px] font-semibold text-slate-400">' + escapeHtml(formatDisplayDate(r.adminReply.repliedAt)) + '</span></div><p class="mt-1.5 text-xs sm:text-[13px] text-slate-700 leading-relaxed">' + escapeHtml(r.adminReply.text) + '</p></div>' : '')
         + '</article>';
     }).join('');
   }
@@ -1842,7 +1845,7 @@
       authorInput.value = ctx.displayName;
     }
 
-    var qaItems = readQaList(p.id);
+    var qaItems = readQaList(p.id).filter(function (q) { return q && !q.hidden; });
     qaItems.sort(function (a, b) {
       return new Date(b.createdAt || 0).getTime() - new Date(a.createdAt || 0).getTime();
     });

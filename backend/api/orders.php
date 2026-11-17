@@ -69,10 +69,16 @@ function vlu_format_order_row(array $row, array $items): array {
         'installment_monthly' => (float)($row['installment_monthly'] ?? 0),
         'subtotal' => (float)($row['subtotal'] ?? 0),
         'discount' => (float)($row['discount'] ?? 0),
+        'shipping_fee' => (float)($row['shipping_fee'] ?? 0),
         'total' => $totalAmount,
         'total_amount' => $totalAmount,
         'status' => (string)($row['status'] ?? 'pending'),
+        'payment_status' => (string)($row['payment_status'] ?? ''),
+        'cancel_reason' => (string)($row['cancel_reason'] ?? ''),
+        'status_history' => (isset($row['status_history']) && is_array($row['status_history'])) ? $row['status_history'] : [],
+        'internal_notes' => (isset($row['internal_notes']) && is_array($row['internal_notes'])) ? $row['internal_notes'] : [],
         'created_at' => (string)($row['created_at'] ?? date('c')),
+        'updated_at' => (string)($row['updated_at'] ?? ''),
         'items' => $items
     ];
 }
@@ -487,11 +493,15 @@ if ($method === 'POST') {
     }
 
     // =========================================================================
-    // 2.2. ACTION: UPDATE STATUS (Cập nhật trạng thái đơn hàng)
+    // 2.2. ACTION: UPDATE STATUS / ORDER METADATA (Cập nhật trạng thái, thanh toán, ghi chú)
     // =========================================================================
-    if ($action === 'update_status') {
+    if ($action === 'update_status' || $action === 'update_order_meta') {
         $orderCode = trim((string)($jsonData['order_id'] ?? ($jsonData['order_code'] ?? '')));
-        $newStatus = trim((string)($jsonData['status'] ?? 'pending'));
+        $newStatus = isset($jsonData['status']) ? trim((string)$jsonData['status']) : '';
+        $paymentStatus = isset($jsonData['payment_status']) ? trim((string)$jsonData['payment_status']) : null;
+        $cancelReason = isset($jsonData['cancel_reason']) ? trim((string)$jsonData['cancel_reason']) : null;
+        $statusHistory = (isset($jsonData['status_history']) && is_array($jsonData['status_history'])) ? $jsonData['status_history'] : null;
+        $internalNotes = (isset($jsonData['internal_notes']) && is_array($jsonData['internal_notes'])) ? $jsonData['internal_notes'] : null;
 
         if ($orderCode === '') {
             http_response_code(400);
@@ -503,7 +513,7 @@ if ($method === 'POST') {
             exit;
         }
 
-        if ($conn !== null) {
+        if ($conn !== null && $newStatus !== '') {
             try {
                 $stmt = $conn->prepare("UPDATE orders SET status = :status WHERE order_code = :code OR id = :id");
                 $stmt->execute([
@@ -518,7 +528,22 @@ if ($method === 'POST') {
         $jsonOrders = vlu_read_json_file('orders.json', []);
         foreach ($jsonOrders as &$jo) {
             if (($jo['order_code'] ?? '') === $orderCode || (string)($jo['id'] ?? '') === $orderCode) {
-                $jo['status'] = $newStatus;
+                if ($newStatus !== '') {
+                    $jo['status'] = $newStatus;
+                }
+                if ($paymentStatus !== null && $paymentStatus !== '') {
+                    $jo['payment_status'] = $paymentStatus;
+                }
+                if ($cancelReason !== null) {
+                    $jo['cancel_reason'] = $cancelReason;
+                }
+                if ($statusHistory !== null) {
+                    $jo['status_history'] = $statusHistory;
+                }
+                if ($internalNotes !== null) {
+                    $jo['internal_notes'] = $internalNotes;
+                }
+                $jo['updated_at'] = date('Y-m-d H:i:s');
                 break;
             }
         }
@@ -530,13 +555,13 @@ if ($method === 'POST') {
             'code' => 'STATUS_UPDATED',
             'order_code' => $orderCode,
             'status' => $newStatus,
-            'message' => 'Đã cập nhật trạng thái đơn hàng thành công.'
+            'message' => 'Đã cập nhật thông tin đơn hàng thành công.'
         ], JSON_UNESCAPED_UNICODE);
         exit;
     }
 
     // =========================================================================
-    // 2.3. ACTION: DELETE ORDER (Xóa đơn hàng)
+    // 2.3. ACTION: DELETE ORDER (Khóa xóa cứng đơn hàng đã phát sinh giao dịch)
     // =========================================================================
     if ($action === 'delete') {
         $orderCode = trim((string)($jsonData['order_id'] ?? ($jsonData['order_code'] ?? '')));
@@ -545,9 +570,25 @@ if ($method === 'POST') {
             echo json_encode([
                 'success' => false,
                 'code' => 'MISSING_ORDER_ID',
-                'message' => 'Thiếu mã đơn hàng cần xóa.'
+                'message' => 'Thiếu mã đơn hàng.'
             ], JSON_UNESCAPED_UNICODE);
             exit;
+        }
+
+        $jsonOrders = vlu_read_json_file('orders.json', []);
+        foreach ($jsonOrders as $jo) {
+            if (($jo['order_code'] ?? '') === $orderCode || (string)($jo['id'] ?? '') === $orderCode) {
+                $hasTx = ((float)($jo['total'] ?? ($jo['total_amount'] ?? 0)) > 0) || !empty($jo['items']);
+                if ($hasTx) {
+                    http_response_code(403);
+                    echo json_encode([
+                        'success' => false,
+                        'code' => 'CANNOT_DELETE_TRANSACTION_ORDER',
+                        'message' => 'Không được phép xóa cứng đơn hàng đã phát sinh giao dịch. Hãy dùng chức năng Hủy đơn có lưu vết lịch sử.'
+                    ], JSON_UNESCAPED_UNICODE);
+                    exit;
+                }
+            }
         }
 
         if ($conn !== null) {
@@ -572,8 +613,7 @@ if ($method === 'POST') {
             }
         }
 
-        // Xóa trong JSON fallback
-        $jsonOrders = vlu_read_json_file('orders.json', []);
+        // Xóa trong JSON fallback nếu không có giao dịch
         $jsonOrders = array_values(array_filter($jsonOrders, function ($jo) use ($orderCode) {
             return ($jo['order_code'] ?? '') !== $orderCode && (string)($jo['id'] ?? '') !== $orderCode;
         }));
@@ -583,7 +623,7 @@ if ($method === 'POST') {
             'success' => true,
             'code' => 'ORDER_DELETED',
             'order_code' => $orderCode,
-            'message' => 'Đã xóa đơn hàng thành công.'
+            'message' => 'Đã xử lý thành công.'
         ], JSON_UNESCAPED_UNICODE);
         exit;
     }
@@ -602,6 +642,7 @@ if ($method === 'POST') {
         $image = trim((string)($prod['image'] ?? 'frontend/assets/images/logo.png'));
         $description = trim((string)($prod['description'] ?? ($name . ' chính hãng tại VLU FLAGSHIP STORE.')));
         $categoryName = (string)($prod['category_name'] ?? '');
+        $categorySlug = trim((string)($prod['category'] ?? ($prod['category_slug'] ?? '')));
 
         if ($name === '') {
             http_response_code(400);
@@ -668,6 +709,7 @@ if ($method === 'POST') {
                 $jp['stock'] = $stock;
                 $jp['description'] = $description;
                 if ($categoryName) $jp['brand'] = $categoryName;
+                if ($categorySlug !== '') $jp['category'] = $categorySlug;
                 $found = true;
                 break;
             }
@@ -686,7 +728,7 @@ if ($method === 'POST') {
                 'stock' => $stock,
                 'description' => $description,
                 'brand' => $categoryName ?: 'Apple',
-                'category' => 'dien-thoai',
+                'category' => $categorySlug !== '' ? $categorySlug : 'dien-thoai',
                 'colors' => [
                     ['name' => 'Tiêu chuẩn', 'hex' => '#334155', 'key' => 'standard', 'image' => $image, 'img' => $image]
                 ]

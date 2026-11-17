@@ -1,0 +1,52 @@
+[
+    {
+        "id": 1,
+        "username": "admin",
+        "password": "$2y$10$FFgHMCCtkTdGJ6HwpjhTvem45BvjQd1KjXLUUPt.oQbycBFcR3PCq",
+        "email": "admin@vluflagship.vn",
+        "fullname": "Quản trị viên VLU",
+        "phone": "02871059999",
+        "role": 1,
+        "created_at": "2026-11-12 17:54:48"
+    },
+    {
+        "id": 2,
+        "username": "nguyenvanan1794503037@vlu.edu.vn",
+        "password": "$2y$10$elCKfEWzaJFPTmj4TUoYp.gYoXvpeIk7ig5NgzotJ.YltspS90rGu",
+        "email": "nguyenvanan1794503037@vlu.edu.vn",
+        "fullname": "Nguyễn Văn An",
+        "phone": "0987654321",
+        "role": 0,
+        "created_at": "2026-11-12 18:03:57"
+    },
+    {
+        "id": 3,
+        "username": "nguyenvanan1794503067@vlu.edu.vn",
+        "password": "$2y$10$v3jbev9kA\/YbYl4zL1FYtO.Kx63RyrlYMfsRKcGJbkPxJSJf3VqO6",
+        "email": "nguyenvanan1794503067@vlu.edu.vn",
+        "fullname": "Nguyễn Văn An",
+        "phone": "0987654321",
+        "role": 0,
+        "created_at": "2026-11-12 18:04:28"
+    },
+    {
+        "id": 4,
+        "username": "nguyenvanan1794503137@vlu.edu.vn",
+        "password": "$2y$10$oNxGINFUZyoaT2.\/3I6Qj.3JzLh9qgZcPjPnAQmw1FtbTM7PYqc9O",
+        "email": "nguyenvanan1794503137@vlu.edu.vn",
+        "fullname": "Nguyễn Văn An",
+        "phone": "0987654321",
+        "role": 0,
+        "created_at": "2026-11-12 18:05:37"
+    },
+    {
+        "id": 5,
+        "username": "tomandjerry@gmail.com",
+        "password": "$2y$10$OUP9oj1W1Cc8q439X40WmetJNS99wZiQYvdxWz\/mZF81YlQegWaoS",
+        "email": "tomandjerry@gmail.com",
+        "fullname": "Nguyễn Thành Tâm",
+        "phone": "0987654321",
+        "role": 0,
+        "created_at": "2026-11-12 18:58:20"
+    }
+]

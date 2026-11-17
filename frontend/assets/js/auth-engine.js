@@ -58,6 +58,47 @@
     } catch (e) {}
   }
 
+  function isProtectedRootAccount(user) {
+    if (!user || typeof user !== 'object') return false;
+    var uname = String(user.username || '').trim().toLowerCase();
+    var email = String(user.email || '').trim().toLowerCase();
+    return Number(user.id) === 1 || uname === 'admin' || email === 'admin@vluflagship.vn';
+  }
+
+  function findStoredAdminUserRecord(identifier) {
+    var clean = String(identifier || '').trim().toLowerCase();
+    if (!clean) return null;
+    try {
+      var sources = ['vlu_admin_users', REGISTERED_USERS_KEY];
+      for (var s = 0; s < sources.length; s++) {
+        var raw = localStorage.getItem(sources[s]);
+        var list = raw ? JSON.parse(raw) : [];
+        if (!Array.isArray(list)) continue;
+        for (var i = 0; i < list.length; i++) {
+          var u = list[i];
+          if (!u) continue;
+          var uName = String(u.username || '').trim().toLowerCase();
+          var uEmail = String(u.email || '').trim().toLowerCase();
+          if (uName === clean || uEmail === clean) return u;
+        }
+      }
+    } catch (e) {}
+    return null;
+  }
+
+  function isUserLockedInStorage(userOrId) {
+    if (!userOrId) return false;
+    if (typeof userOrId === 'object') {
+      if (userOrId.isGuest || isProtectedRootAccount(userOrId)) return false;
+      if (userOrId.status === 'locked' || userOrId.is_locked === true) return true;
+      var rec = findStoredAdminUserRecord(userOrId.username) || findStoredAdminUserRecord(userOrId.email);
+      return Boolean(rec && !isProtectedRootAccount(rec) && (rec.status === 'locked' || rec.is_locked === true));
+    }
+    var byId = findStoredAdminUserRecord(userOrId);
+    if (!byId || isProtectedRootAccount(byId)) return false;
+    return byId.status === 'locked' || byId.is_locked === true;
+  }
+
   /**
    * Xác định tài khoản có quyền Quản trị viên (Admin) hay không.
    * Chấp nhận role === 1 / '1' / 'admin', username === 'admin', email === 'admin@vluflagship.vn'
@@ -116,6 +157,10 @@
         if (!raw) return null;
         var user = JSON.parse(raw);
         if (!(user && typeof user === 'object' && user.username)) return null;
+        if (isUserLockedInStorage(user)) {
+          localStorage.removeItem(STORAGE_KEY);
+          return null;
+        }
         // Chuẩn hóa quyền: Admin luôn là role = 1 (số)
         if (isAdminUser(user) && user.role !== 1) user.role = 1;
         return user;
@@ -255,8 +300,15 @@
       .then(function (result) {
         var data = result.data;
         if (data && data.success) {
-          // Chuẩn hóa quyền Admin (role = 1) ngay khi nhận user từ CSDL
           data.user = data.user || {};
+          if (isUserLockedInStorage(data.user) || isUserLockedInStorage(cleanId)) {
+            return {
+              success: false,
+              code: 'ACCOUNT_LOCKED',
+              message: 'Tài khoản của bạn đang tạm khóa, vui lòng liên hệ CSKH VLU Flagship Store.'
+            };
+          }
+          // Chuẩn hóa quyền Admin (role = 1) ngay khi nhận user từ CSDL
           data.user.role = isAdminUser(data.user) ? 1 : 0;
           // Lưu phiên đăng nhập hợp lệ từ CSDL
           try {
@@ -277,7 +329,7 @@
             user: data.user
           };
         } else {
-          // Backend từ chối: Báo đúng lỗi từ CSDL (Tài khoản không tồn tại hoặc Mật khẩu không chính xác)
+          // Backend từ chối: Báo đúng lỗi từ CSDL (Khóa tài khoản / Không tồn tại / Sai mật khẩu)
           return {
             success: false,
             code: data ? data.code : 'AUTH_FAILED',
@@ -302,6 +354,15 @@
             success: false,
             code: 'USER_NOT_FOUND',
             message: 'Tài khoản không tồn tại, vui lòng đăng ký!'
+          };
+        }
+
+        // 1.5 Kiểm tra tài khoản bị khóa hay không
+        if (isUserLockedInStorage(foundUser) || isUserLockedInStorage(cleanId)) {
+          return {
+            success: false,
+            code: 'ACCOUNT_LOCKED',
+            message: 'Tài khoản của bạn đang tạm khóa, vui lòng liên hệ CSKH VLU Flagship Store.'
           };
         }
 

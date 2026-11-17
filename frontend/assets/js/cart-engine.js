@@ -77,12 +77,40 @@
     }
   };
 
+  function getEffectivePromoMap() {
+    var map = {};
+    try {
+      var raw = localStorage.getItem('vlu_admin_vouchers');
+      if (raw) {
+        var parsed = JSON.parse(raw);
+        if (Array.isArray(parsed)) {
+          parsed.forEach(function (v) {
+            if (!v || !v.code || v.deleted) return;
+            var code = String(v.code).trim().toUpperCase();
+            if (!code || String(v.status || 'active') === 'inactive') return;
+            map[code] = Object.assign({
+              expiresAt: '2026-12-31',
+              status: 'active'
+            }, v, { code: code });
+          });
+          return map;
+        }
+      }
+    } catch (e) {}
+
+    Object.keys(PROMO_CODES).forEach(function (k) {
+      map[k] = Object.assign({ expiresAt: '2026-12-31', status: 'active' }, PROMO_CODES[k]);
+    });
+    return map;
+  }
+
   var CartEngine = {
     getCurrentUserId: getCurrentUserId,
 
     getPromoCodes: function () {
-      return Object.keys(PROMO_CODES).map(function (k) {
-        return Object.assign({ expiresAt: '2026-12-31' }, PROMO_CODES[k]);
+      var map = getEffectivePromoMap();
+      return Object.keys(map).map(function (k) {
+        return map[k];
       });
     },
 
@@ -370,13 +398,32 @@
       }
     },
 
+    getStoreSettings: function () {
+      try {
+        var raw = localStorage.getItem('vlu_admin_settings');
+        if (raw) {
+          var parsed = JSON.parse(raw);
+          if (parsed && typeof parsed === 'object') return parsed;
+        }
+      } catch (e) {}
+      return {
+        storeName: 'VLU FLAGSHIP STORE',
+        hotline: '1900 8868',
+        supportEmail: 'cskh@vluflagship.vn',
+        defaultLowStockThreshold: 5,
+        standardShippingFee: 0,
+        freeShippingThreshold: 2000000
+      };
+    },
+
     /**
      * Áp dụng mã voucher
      */
     applyVoucher: function (code) {
       if (!code) return { success: false, message: 'Vui lòng nhập mã giảm giá!' };
       var cleanCode = code.trim().toUpperCase();
-      var promo = PROMO_CODES[cleanCode];
+      var promoMap = getEffectivePromoMap();
+      var promo = promoMap[cleanCode];
 
       if (!promo && getCurrentUserId() !== 'guest') {
         try {
@@ -394,7 +441,7 @@
               value: Number(ownedVoucher.value) || 0,
               maxDiscount: Number(ownedVoucher.maxDiscount) || 0,
               minOrder: Number(ownedVoucher.minOrder) || 0,
-              label: 'Voucher đổi điểm VLU (-100.000₫)'
+              label: ownedVoucher.label || 'Voucher đổi điểm VLU (-100.000₫)'
             };
           }
         } catch (error) {
@@ -403,7 +450,15 @@
       }
 
       if (!promo) {
-        return { success: false, message: 'Mã "' + cleanCode + '" không hợp lệ hoặc đã hết lượt dùng.' };
+        return { success: false, message: 'Mã "' + cleanCode + '" không hợp lệ, đã tạm ngưng hoặc không tồn tại.' };
+      }
+
+      if (promo.expiresAt && new Date(promo.expiresAt + 'T23:59:59').getTime() < Date.now()) {
+        return { success: false, message: 'Mã "' + cleanCode + '" đã hết hạn sử dụng.' };
+      }
+
+      if (Number(promo.usageLimit) > 0 && Number(promo.usedCount) >= Number(promo.usageLimit)) {
+        return { success: false, message: 'Mã "' + cleanCode + '" đã hết lượt sử dụng theo giới hạn chương trình.' };
       }
 
       var subtotal = this.getSubtotal();
@@ -414,17 +469,42 @@
         };
       }
 
+      // Kiểm tra điều kiện hãng / danh mục nếu voucher có giới hạn
+      var items = this.getCart();
+      var brandF = String(promo.brandFilter || '').trim().toLowerCase();
+      var catF = String(promo.categoryFilter || '').trim().toLowerCase();
+      if ((brandF && brandF !== 'all') || (catF && catF !== 'all')) {
+        var catalog = window.VLU_CATALOG || {};
+        var hasMatchingItem = items.some(function (it) {
+          var prod = (it && catalog[it.id]) || it || {};
+          var pBrand = String(prod.brand || '').toLowerCase();
+          var pCat = String(prod.category || prod.category_slug || '').toLowerCase();
+          var bOk = !brandF || brandF === 'all' || pBrand === brandF;
+          var cOk = !catF || catF === 'all' || pCat === catF;
+          return bOk && cOk;
+        });
+        if (!hasMatchingItem) {
+          return {
+            success: false,
+            message: 'Mã "' + cleanCode + '" chỉ áp dụng cho sản phẩm thuộc nhóm/thương hiệu quy định trong chương trình.'
+          };
+        }
+      }
+
       var discountAmount = 0;
       if (promo.type === 'fixed') {
-        discountAmount = promo.value;
+        discountAmount = Number(promo.value) || 0;
       } else if (promo.type === 'percent') {
-        discountAmount = Math.round(subtotal * (promo.value / 100));
-        if (promo.maxDiscount) discountAmount = Math.min(discountAmount, promo.maxDiscount);
+        discountAmount = Math.round(subtotal * ((Number(promo.value) || 0) / 100));
+        if (promo.maxDiscount) discountAmount = Math.min(discountAmount, Number(promo.maxDiscount));
+      } else if (promo.type === 'freeship') {
+        discountAmount = 0;
       }
 
       var voucherData = {
         code: promo.code,
-        label: promo.label,
+        type: promo.type || 'fixed',
+        label: promo.label || ('Ưu đãi ' + promo.code),
         discount: discountAmount
       };
 
@@ -435,7 +515,9 @@
       this.emitUpdate();
       return {
         success: true,
-        message: 'Áp dụng mã "' + promo.code + '" thành công! Tiết kiệm ' + this.formatVND(discountAmount) + '.',
+        message: promo.type === 'freeship'
+          ? ('Áp dụng mã "' + promo.code + '" thành công! Đơn hàng được miễn phí vận chuyển.')
+          : ('Áp dụng mã "' + promo.code + '" thành công! Tiết kiệm ' + this.formatVND(discountAmount) + '.'),
         voucher: voucherData
       };
     },
@@ -556,7 +638,7 @@
     CartEngine.sanitizeStaleProducts();
     CartEngine.updateBadge();
     window.addEventListener('storage', function (e) {
-      if (e.key === CartEngine.getCartStorageKey() || e.key === CartEngine.getVoucherStorageKey() || e.key === AUTH_STORAGE_KEY) {
+      if (e.key === CartEngine.getCartStorageKey() || e.key === CartEngine.getVoucherStorageKey() || e.key === AUTH_STORAGE_KEY || e.key === 'vlu_admin_vouchers' || e.key === 'vlu_admin_settings') {
         CartEngine.updateBadge();
         CartEngine.emitUpdate();
       }

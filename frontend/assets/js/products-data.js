@@ -4504,7 +4504,7 @@
             if ('img' in item) item.img = fresh.image;
             dirty = true;
           }
-          if (fresh && Array.isArray(fresh.colors)) {
+          if (fresh && Array.isArray(fresh.colors) && !item.colors_edited && !item.is_custom) {
             var needsColorSync = prevSchema !== targetColorSchema
               || isStaleOrGenericColorList(item.colors)
               || JSON.stringify(item.colors) !== JSON.stringify(fresh.colors);
@@ -4550,8 +4550,8 @@
         var apImg = upgradeLegacyProductImagePath(ap.image);
         var existing = findProduct(ap.id || ap.name);
         if (existing) {
-          if (ap.price !== undefined && Number(ap.price) > 0 && existing.basePrice !== Number(ap.price)) {
-            existing.basePrice = Number(ap.price);
+          if (ap.price !== undefined && (Number(ap.price) > 0 || ap.price_edited === true) && existing.basePrice !== Number(ap.price)) {
+            existing.basePrice = Math.max(0, Number(ap.price) || 0);
             changed = true;
           }
           if (ap.old_price !== undefined) {
@@ -4562,9 +4562,13 @@
             existing.name = ap.name;
             changed = true;
           }
+          if (ap.sku && ap.sku !== existing.sku) {
+            existing.sku = ap.sku;
+            changed = true;
+          }
           if (apImg && apImg.indexOf('placeholders/') === -1 && apImg !== existing.image) {
             existing.image = apImg;
-            if (existing.colors && existing.colors[0]) {
+            if (!ap.colors_edited && existing.colors && existing.colors[0]) {
               existing.colors[0].image = apImg;
               existing.colors[0].img = apImg;
             }
@@ -4574,32 +4578,122 @@
             existing.stock = Number(ap.stock);
             changed = true;
           }
+          if (ap.stock_threshold !== undefined) {
+            existing.stock_threshold = Number(ap.stock_threshold) || 5;
+            changed = true;
+          }
           if (ap.status) {
             existing.status = ap.status;
             changed = true;
           }
-          if (ap.description && ap.description !== existing.tagline) {
+          if (ap.description !== undefined && ap.description !== existing.tagline) {
             existing.tagline = ap.description;
             changed = true;
           }
-        } else if (ap.name && Number(ap.price) > 0) {
+          if (ap.colors_edited && Array.isArray(ap.colors) && ap.colors.length) {
+            existing.colors = ap.colors.map(function (c, idx) {
+              var cImg = upgradeLegacyProductImagePath(c.image || c.img) || existing.image;
+              return {
+                name: c.name || ('Màu ' + (idx + 1)),
+                hex: c.hex || getColorHex(c.name, c.key),
+                key: c.key || ('color-' + idx),
+                image: cImg,
+                img: cImg,
+                stock: c.stock !== undefined && c.stock !== '' ? Number(c.stock) : undefined
+              };
+            });
+            changed = true;
+          }
+          if (ap.variants_edited && Array.isArray(ap.variants) && ap.variants.length) {
+            existing.variants = ap.variants.map(function (v) {
+              var outVar = {
+                label: v.label || 'Tiêu chuẩn',
+                delta: Number(v.delta) || 0,
+                discount: v.discount || ''
+              };
+              if (v.stock !== undefined && v.stock !== '') outVar.stock = Number(v.stock);
+              return outVar;
+            });
+            changed = true;
+          }
+          if (ap.variant_stocks && typeof ap.variant_stocks === 'object') {
+            existing.variant_stocks = Object.assign({}, ap.variant_stocks);
+            changed = true;
+          }
+          if ('promoStart' in ap) {
+            existing.promoStart = ap.promoStart || null;
+            changed = true;
+          }
+          if ('promoEnd' in ap) {
+            existing.promoEnd = ap.promoEnd || null;
+            changed = true;
+          }
+          if ('campaignId' in ap) {
+            existing.campaignId = ap.campaignId || null;
+            changed = true;
+          }
+          if (ap.specs_edited && Array.isArray(ap.specs)) {
+            existing.specs = ap.specs.filter(function (pair) { return Array.isArray(pair) && pair[0]; });
+            changed = true;
+          }
+          if (ap.gallery_edited && Array.isArray(ap.extraImages)) {
+            existing.extraImages = ap.extraImages.slice();
+            changed = true;
+          }
+          if (ap.seo && typeof ap.seo === 'object') {
+            existing.seo = ap.seo;
+            changed = true;
+          }
+          var nextCatSlug = ap.category_slug || ap.category;
+          if (nextCatSlug && nextCatSlug !== existing.category) {
+            existing.category = nextCatSlug;
+            changed = true;
+          }
+          var nextBrandName = ap.brand || ap.category_name;
+          if (nextBrandName && nextBrandName !== existing.brand) {
+            existing.brand = nextBrandName;
+            changed = true;
+          }
+        } else if (ap.name && (Number(ap.price) > 0 || ap.is_custom)) {
           // Thêm sản phẩm mới từ Admin vào Catalog
           var newId = ap.id || productSlug(ap.name);
+          var customImg = apImg || 'frontend/assets/images/logo.png';
+          var normColors = (Array.isArray(ap.colors) && ap.colors.length)
+            ? ap.colors.map(function (c, idx) {
+                var ci = upgradeLegacyProductImagePath(c.image || c.img) || customImg;
+                return {
+                  name: c.name || ('Màu ' + (idx + 1)),
+                  hex: c.hex || getColorHex(c.name, c.key),
+                  key: c.key || ('color-' + idx),
+                  image: ci,
+                  img: ci
+                };
+              })
+            : [{ name: 'Mặc định', hex: '#334155', key: 'default', image: customImg, img: customImg }];
+          var normVariants = (Array.isArray(ap.variants) && ap.variants.length)
+            ? ap.variants.map(function (v) {
+                return { label: v.label || 'Tiêu chuẩn', delta: Number(v.delta) || 0, discount: v.discount || '' };
+              })
+            : [{ label: 'Tiêu chuẩn', delta: 0 }];
           CATALOG[newId] = {
             id: newId,
+            sku: ap.sku || String(newId).toUpperCase(),
             name: ap.name,
-            brand: ap.category_name || 'Khác',
-            category: ap.category_slug || 'dien-thoai',
-            basePrice: Number(ap.price) || 0,
+            brand: ap.brand || ap.category_name || 'Khác',
+            category: ap.category_slug || ap.category || 'dien-thoai',
+            basePrice: Math.max(0, Number(ap.price) || 0),
             oldPrice: ap.old_price ? Number(ap.old_price) : null,
-            image: apImg || 'frontend/assets/images/logo.png',
+            image: customImg,
+            extraImages: Array.isArray(ap.extraImages) ? ap.extraImages.slice() : [],
             tagline: ap.description || '',
-            stock: Number(ap.stock) || 15,
+            stock: (ap.stock !== undefined && ap.stock !== null) ? Number(ap.stock) : 15,
+            stock_threshold: ap.stock_threshold !== undefined ? (Number(ap.stock_threshold) || 5) : 5,
             status: ap.status || 'active',
-            colors: [
-              { name: 'Mặc định', hex: '#334155', key: 'default', image: apImg, img: apImg }
-            ],
-            variants: [{ label: 'Tiêu chuẩn', delta: 0 }]
+            colors: normColors,
+            variants: normVariants,
+            specs: Array.isArray(ap.specs) ? ap.specs : [],
+            seo: ap.seo || null,
+            is_custom: true
           };
           changed = true;
         }
