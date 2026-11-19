@@ -1585,10 +1585,16 @@
   function logout() {
     if (window.VLU_AUTH && typeof window.VLU_AUTH.logout === 'function') {
       window.VLU_AUTH.logout();
-    } else {
-      localStorage.removeItem('vlu_user');
+      return;
     }
-    window.location.href = 'index.html';
+    try {
+      localStorage.removeItem('vlu_user');
+    } catch (e) {}
+    if (window.location && typeof window.location.replace === 'function') {
+      window.location.replace('index.html');
+    } else if (window.location) {
+      window.location.href = 'index.html';
+    }
   }
 
   function downloadInvoice(orderId) {
@@ -2310,6 +2316,26 @@
     });
     window.addEventListener('vlu:cart-updated', updateIdentity);
   }
+
+  // Back-button Guard: Chặn quay lại account.html từ bfcache sau khi đã đăng xuất
+  window.addEventListener('pageshow', function (event) {
+    var navEntries = (window.performance && typeof window.performance.getEntriesByType === 'function')
+      ? window.performance.getEntriesByType('navigation')
+      : [];
+    var isBackForward = Boolean(event && event.persisted) ||
+      (navEntries && navEntries[0] && navEntries[0].type === 'back_forward');
+    if (!isBackForward) return;
+
+    var rawUser = null;
+    try { rawUser = localStorage.getItem('vlu_user'); } catch (e) {}
+    if (!rawUser || !getAuthenticatedUser()) {
+      if (window.location && typeof window.location.replace === 'function') {
+        window.location.replace('index.html');
+      } else if (window.location) {
+        window.location.href = 'index.html';
+      }
+    }
+  });
 
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init);
   else init();

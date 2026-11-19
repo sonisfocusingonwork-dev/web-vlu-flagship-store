@@ -621,17 +621,49 @@
     },
 
     /**
-     * Đăng xuất tài khoản và dọn sạch các khóa tạm *_guest
+     * Đăng xuất trung tâm:
+     * 1. Xóa phiên đăng nhập hiện tại (vlu_user) và các trạng thái phiên tạm thời (*_guest, sessionStorage)
+     * 2. Giữ nguyên 100% dữ liệu lịch sử riêng của tài khoản (vlu_cart_${userId}, vlu_orders_${userId}, vlu_account_${userId})
+     * 3. Reset badge giỏ hàng trên Header về trạng thái chưa đăng nhập (0 sản phẩm / giỏ tạm)
+     * 4. Chuyển hướng thẳng về Trang chủ bằng window.location.replace('index.html') (xóa lịch sử trang cũ)
      */
-    logout: function () {
-      localStorage.removeItem(STORAGE_KEY);
+    logout: function (options) {
+      var opts = options && typeof options === 'object' ? options : {};
+      try {
+        localStorage.removeItem(STORAGE_KEY);
+      } catch (e) {}
       cleanupAllGuestKeys();
+      try {
+        if (window.sessionStorage && typeof window.sessionStorage.removeItem === 'function') {
+          window.sessionStorage.removeItem('vlu_admin_session_logged');
+        }
+      } catch (eSess) {}
+
       this.updateHeaderAuth();
       this.emitUpdate(null);
+
       if (window.VLU_CART) {
         if (typeof window.VLU_CART.updateBadge === 'function') window.VLU_CART.updateBadge();
         if (typeof window.VLU_CART.emitUpdate === 'function') window.VLU_CART.emitUpdate();
       }
+      try {
+        var resetCount = (window.VLU_CART && typeof window.VLU_CART.getItemCount === 'function')
+          ? window.VLU_CART.getItemCount()
+          : 0;
+        var badgeEls = document.querySelectorAll('#cartCount, #accountCartCount, .cart-badge-count');
+        Array.prototype.forEach.call(badgeEls, function (el) {
+          el.textContent = String(resetCount);
+        });
+      } catch (eBadge) {}
+
+      if (opts.redirect !== false) {
+        if (window.location && typeof window.location.replace === 'function') {
+          window.location.replace('index.html');
+        } else if (window.location) {
+          window.location.href = 'index.html';
+        }
+      }
+
       return { success: true, message: 'Đã đăng xuất thành công.' };
     },
 
@@ -797,29 +829,21 @@
       });
     }
 
-    // Xử lý nút Đăng xuất trên Header
+    // Xử lý nút Đăng xuất trên Header (Desktop Dropdown) — luôn chuyển thẳng về index.html
     var logoutBtn = document.getElementById('headerLogoutBtn');
     if (logoutBtn) {
       logoutBtn.addEventListener('click', function (e) {
         e.preventDefault();
         AuthEngine.logout();
-        if (window.VLU_CART && typeof window.VLU_CART.showToast === 'function') {
-          window.VLU_CART.showToast('Bạn đã đăng xuất tài khoản thành công.');
-        }
-        // Tải lại trang sau 300ms nếu đang ở trang cá nhân hoặc giữ nguyên
-        setTimeout(function () {
-          window.location.reload();
-        }, 300);
       });
     }
 
-    // Xử lý nút Đăng xuất trên Mobile Drawer
+    // Xử lý nút Đăng xuất trên Mobile Drawer — luôn chuyển thẳng về index.html
     var mobileLogoutBtn = document.getElementById('mobileLogoutBtn');
     if (mobileLogoutBtn) {
       mobileLogoutBtn.addEventListener('click', function (e) {
         e.preventDefault();
         AuthEngine.logout();
-        window.location.reload();
       });
     }
 

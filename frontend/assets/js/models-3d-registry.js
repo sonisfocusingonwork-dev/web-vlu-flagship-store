@@ -37,29 +37,71 @@
   var MODELS_3D = {
     'iphone-18-pro-max': {
       verified: true,
-      engine: 'sketchfab',
-      sketchfabUid: 'd383a366cc9e464ba4b24e5ddb996866',
+      reviewStatus: 'approved',
+      url: 'models3d/apple-iphone-18-pro-max-glacier-2026/source/apple_iphone_18_pro_max_glacier.glb',
+      modelUrl: 'models3d/apple-iphone-18-pro-max-glacier-2026/source/apple_iphone_18_pro_max_glacier.glb',
+      draco: false,
+      scale: 1,
+      rotationY: 0,
+      exposure: 1.08,
       previewImage: 'SanPham/DienThoai/Apple/iPhone-18-Pro-Max/iPhone-18-Pro-Max-Bac.png',
       sku: ['IPHONE-18-PRO-MAX'],
       label: 'iPhone 18 Pro Max',
-      attribution: 'Mô hình 3D iPhone 18 Pro Max · UnknownOrigin (Sketchfab)',
-      colorSketchfabUids: {
-        'Bạc': 'd383a366cc9e464ba4b24e5ddb996866',
-        'Đen': '8fd804a9b0ea49249de3f1e0450fbc9c',
-        'Đỏ':  '604acc18b5d5455d820a16359b45b003',
-        'Xám': '86dc4a625ae2444c97cf8469a6f6f016'
+      attribution: 'Mô hình 3D thực tế iPhone 18 Pro Max (.glb nội bộ VLU Flagship Store)',
+      bodyMeshes: [
+        'colour_blue_side_panel',
+        'colour_blue_aniso',
+        'colour_blue_screws',
+        'colour_blue_side_button_detail',
+        'colour_blue_button_detail_border'
+      ],
+      glassMeshes: [
+        'colour_blue_backpanel'
+      ],
+      accentMeshes: [
+        'colour_blue_antenna',
+        'base_blue_plastic'
+      ],
+      screenMeshes: [],
+      colorModels: {
+        'Đen': 'models3d/apple_iphone_18_pro_max_black_2026.glb',
+        'Đỏ':  'models3d/apple-iphone-18-pro-max-burgundy-2026/source/apple_iphone_18_pro_max_burgundy.glb'
+      },
+      colorMaterials: {
+        'Bạc': {
+          hex: '#E3E4E6',
+          metalness: 0.90,
+          roughness: 0.24,
+          glassHex: '#ECEEF1',
+          glassMetalness: 0.06,
+          glassRoughness: 0.34,
+          accentHex: '#C9CDD3',
+          accentMetalness: 0.15,
+          accentRoughness: 0.55
+        },
+        'Xám': {
+          hex: '#7D7E80',
+          metalness: 0.90,
+          roughness: 0.26,
+          glassHex: '#6D7075',
+          glassMetalness: 0.06,
+          glassRoughness: 0.36,
+          accentHex: '#5F6268',
+          accentMetalness: 0.15,
+          accentRoughness: 0.56
+        }
       },
       detailPresets: {
         'front':       { label: 'Mặt trước',        dir: [0, 0.04, 1],        dist: 0.90, target: [0, 0, 0] },
-        'back-camera': { label: 'Mặt sau & Camera', dir: [0, 0.14, -1],       dist: 0.78, target: [0, 0.34, 0] },
+        'back-camera': { label: 'Mặt sau & Camera', dir: [0, 0.14, -1],       dist: 0.78, target: [0, 0.36, 0] },
         'side':        { label: 'Cạnh viền',        dir: [1, 0.06, 0.16],     dist: 0.84, target: [0, 0.04, 0] },
-        'ports':       { label: 'Cổng & Loa',       dir: [0.06, -0.58, 0.85], dist: 0.72, target: [0, -0.66, 0] }
+        'ports':       { label: 'Cổng & Loa',       dir: [0.06, -0.58, 0.85], dist: 0.72, target: [0, -0.68, 0] }
       },
       hotspots: [
         {
           id: 'display',
           title: 'Màn hình OLED 120Hz ProMotion',
-          position: [-0.18, 0.48, 0.06],
+          position: [-0.16, 0.44, 0.08],
           normal: [0, 0, 1],
           cameraPreset: 'front',
           specKeys: ['màn hình', 'vi xử lý'],
@@ -68,7 +110,7 @@
         {
           id: 'chip',
           title: 'Vi xử lý Apple A20 Pro (2nm)',
-          position: [0.18, -0.36, 0.06],
+          position: [0.16, -0.30, 0.08],
           normal: [0, 0, 1],
           cameraPreset: 'front',
           specKeys: ['vi xử lý', 'hệ điều hành'],
@@ -77,20 +119,124 @@
         {
           id: 'camera',
           title: 'Hệ thống Camera Flagship',
-          position: [0.04, 0.50, -0.08],
+          position: [0.04, 0.56, -0.09],
           normal: [0, 0, -1],
           cameraPreset: 'back-camera',
           specKeys: ['camera'],
-          description: 'Cụm camera ngang toàn chiều rộng gồm 3 ống kính chuyên nghiệp, Flash LED và cảm biến LiDAR.'
+          description: 'Cụm camera sau 3 ống kính chuyên nghiệp, Flash LED và cảm biến LiDAR chính xác cao.'
         },
         {
           id: 'battery-ports',
           title: 'Pin & Cổng sạc USB-C',
-          position: [0, -0.78, 0.02],
+          position: [0, -0.84, 0.02],
           normal: [0, -0.85, 0.52],
           cameraPreset: 'ports',
           specKeys: ['pin', 'bảo hành'],
-          description: 'Cổng kết nối USB-C và hệ thống loa ngoài đặt tại cạnh đáy thân máy.'
+          description: 'Cổng kết nối USB-C và hệ thống loa ngoài đặt đối xứng tại cạnh đáy khung máy.'
+        }
+      ],
+      supportsExplodedView: true,
+      explodedParts: [
+        { meshName: 'front_screen',  offset: [0, 0, 0.72] },
+        { meshName: 'front_panel',   offset: [0, 0, 0.56] },
+        { meshName: 'front_cam_',    offset: [0, 0.06, 0.34] },
+        { meshName: 'front_sensor',  offset: [0, 0.06, 0.34] },
+        { meshName: 'front_speaker', offset: [0, 0.08, 0.34] },
+        { meshName: 'side_button',   offset: [0.24, 0, 0] },
+        { meshName: 'usb_',          offset: [0, -0.26, 0] },
+        { meshName: 'screws',        offset: [0, -0.36, 0] },
+        { meshName: 'back_panel',    offset: [0, 0, -0.46] },
+        { meshName: 'back_logo',     offset: [0, 0, -0.50] },
+        { meshName: 'back_cam_',     offset: [0, 0.08, -0.78] },
+        { meshName: 'back_flash_',   offset: [0, 0.08, -0.78] },
+        { meshName: 'back_ir_glass', offset: [0, 0.08, -0.78] },
+        { meshName: 'back_mic',      offset: [0, 0.08, -0.78] },
+        { meshName: 'gradient',      offset: [0, 0.08, -0.78] }
+      ]
+    },
+    'iphone-fold': {
+      verified: true,
+      reviewStatus: 'approved',
+      url: 'models3d/apple_iphone_duo_fold_night_sky_2026_animated.glb',
+      modelUrl: 'models3d/apple_iphone_duo_fold_night_sky_2026_animated.glb',
+      draco: false,
+      scale: 1,
+      rotationY: 0,
+      exposure: 1.08,
+      previewImage: 'SanPham/DienThoai/Apple/iPhone-Fold/iPhone-Duo-Den.jpg',
+      sku: ['IPHONE-FOLD'],
+      label: 'iPhone Fold',
+      attribution: 'Mô hình 3D thực tế iPhone Fold (.glb nội bộ VLU Flagship Store · Hỗ trợ gập mở bản lề)',
+      colorModels: {
+        'Đen':   'models3d/apple_iphone_duo_fold_night_sky_2026_animated.glb',
+        'Trắng': 'models3d/apple_iphone_duo_fold_star_white_2026_animated.glb'
+      },
+      detailPresets: {
+        'front':        { label: 'Màn hình trong',  dir: [0, 0.04, 1],         dist: 0.94, target: [0, 0, 0] },
+        'outer-screen': { label: 'Màn hình ngoài',  dir: [-0.28, 0.05, -1],    dist: 0.88, target: [-0.36, 0, 0] },
+        'back-camera':  { label: 'Cụm Camera sau',  dir: [0.32, 0.18, -1],     dist: 0.74, target: [0.46, 0.34, 0] },
+        'hinge':        { label: 'Bản lề gập',      dir: [0.36, 0.14, 0.92],   dist: 0.82, target: [0, 0, 0] },
+        'ports':        { label: 'Cổng & Loa',      dir: [-0.15, -0.62, 0.82], dist: 0.76, target: [-0.28, -0.52, 0] }
+      },
+      articulation: {
+        type: 'phone-foldable',
+        label: 'Đóng / Mở bản lề gập',
+        min: 0,
+        max: 100,
+        step: 1,
+        defaultValue: 0,
+        unit: '%',
+        clip: 'open-close',
+        useClip: true,
+        statusBadges: [
+          { max: 12,  text: 'Mở phẳng (180°)' },
+          { max: 39,  text: 'Mở rộng ({value}%)' },
+          { max: 62,  text: 'Flex Mode (90°)' },
+          { max: 89,  text: 'Đang gập ({value}%)' },
+          { max: 100, text: 'Gập gọn (0°)' }
+        ],
+        presets: [
+          { key: 'open',   label: 'Mở hoàn toàn (180°)', value: 0 },
+          { key: 'flex',   label: 'Flex Mode (90°)',     value: 50 },
+          { key: 'folded', label: 'Gập máy (0°)',        value: 100 }
+        ]
+      },
+      hotspots: [
+        {
+          id: 'inner-display',
+          title: 'Màn hình gập OLED chính',
+          position: [-0.36, 0.18, 0.06],
+          normal: [0, 0, 1],
+          cameraPreset: 'front',
+          specKeys: ['màn hình', 'tên máy', 'danh mục'],
+          description: 'Màn hình gập liền mạch rộng mở khi duỗi phẳng 180°, tối ưu trải nghiệm đa nhiệm và giải trí.'
+        },
+        {
+          id: 'hinge',
+          title: 'Cơ chế bản lề gập đa góc độ',
+          position: [0.00, -0.10, 0.06],
+          normal: [0, 0, 1],
+          cameraPreset: 'hinge',
+          specKeys: ['màu sắc', 'thiết kế', 'hãng sản xuất'],
+          description: 'Bản lề cơ khí chính xác cho phép gập mở linh hoạt từ mở phẳng 180°, Flex Mode 90° đến gập gọn 0°.'
+        },
+        {
+          id: 'camera',
+          title: 'Hệ thống Camera kép mặt sau',
+          position: [0.56, 0.42, -0.07],
+          normal: [0, 0, -1],
+          cameraPreset: 'back-camera',
+          specKeys: ['camera', 'hãng sản xuất', 'tên máy'],
+          description: 'Cụm camera kép đặt trên mặt lưng kính mờ đi kèm đèn Flash LED và micro thu âm định hướng.'
+        },
+        {
+          id: 'outer-screen',
+          title: 'Màn hình phụ ngoài & Cổng USB-C',
+          position: [-0.40, 0.00, -0.05],
+          normal: [0, 0, -1],
+          cameraPreset: 'outer-screen',
+          specKeys: ['phiên bản', 'dung lượng', 'danh mục'],
+          description: 'Màn hình phụ bên ngoài thao tác nhanh khi gập máy kết hợp cổng USB-C và loa kép cạnh đáy.'
         }
       ],
       supportsExplodedView: false
@@ -173,6 +319,13 @@
   }
 
   var ADMIN_MODELS_STORAGE_KEY = 'vlu_admin_models_3d';
+  var ADMIN_MODELS_SYNC_VER_KEY = 'vlu_admin_models_3d_sync_ver';
+  var REGISTRY_SYNC_VERSION = '2026_3d_sync_v2';
+
+  function isEntryApproved(entry) {
+    if (!entry || typeof entry !== 'object') return false;
+    return entry.verified === true || norm(entry.reviewStatus) === 'approved';
+  }
 
   /** Chuẩn hoá và kiểm tra an toàn đường dẫn file mô hình 3D nội bộ trong thư mục `models3d/`. */
   function normalizeSafeModelPath(url) {
@@ -438,26 +591,67 @@
     return results.slice(0, 4);
   }
 
+  /** Dọn bản ghi cache cũ/xung đột trong vlu_admin_models_3d khi static MODELS_3D vừa cập nhật file .glb mới. */
+  function reconcileAdminModels3DCache(map) {
+    if (!map || typeof map !== 'object') return false;
+    var dirty = false;
+    Object.keys(map).forEach(function (k) {
+      var item = map[k];
+      if (!item || typeof item !== 'object') {
+        delete map[k];
+        dirty = true;
+        return;
+      }
+      var probeProd = { id: item.productId || item.id || k, sku: item.sku || '' };
+      var staticEntry = findStaticEntry(probeProd);
+      var staticUrl = staticEntry ? normalizeSafeModelPath(staticEntry.modelUrl || staticEntry.url || '') : '';
+      var itemUrl = normalizeSafeModelPath(item.modelUrl || item.url || '');
+
+      // Nếu static registry đã có mô hình .glb mới đã duyệt mà cache cũ đang tắt, rỗng hoặc trỏ đường dẫn cũ -> xóa bản ghi cũ
+      if (staticEntry && staticUrl && isEntryApproved(staticEntry)) {
+        if (item.has3D === false || !itemUrl || norm(itemUrl) !== norm(staticUrl)) {
+          delete map[k];
+          dirty = true;
+          return;
+        }
+      }
+      // Nếu cache admin khai báo has3D nhưng đường dẫn không hợp lệ -> xóa
+      if (item.has3D === true && !itemUrl) {
+        delete map[k];
+        dirty = true;
+      }
+    });
+    return dirty;
+  }
+
   function readAdminModels3D() {
     var out = {};
     try {
       if (!window.localStorage) return out;
       var raw = window.localStorage.getItem(ADMIN_MODELS_STORAGE_KEY);
-      if (!raw) return out;
-      var parsed = JSON.parse(raw);
-      if (Array.isArray(parsed)) {
-        parsed.forEach(function (item) {
-          if (!item || typeof item !== 'object') return;
-          var key = norm(item.productId || item.id || item.sku);
-          if (key) out[key] = item;
-        });
-      } else if (parsed && typeof parsed === 'object') {
-        Object.keys(parsed).forEach(function (k) {
-          var item = parsed[k];
-          if (!item || typeof item !== 'object') return;
-          var cleanKey = norm(k);
-          if (cleanKey) out[cleanKey] = item;
-        });
+      if (raw) {
+        var parsed = JSON.parse(raw);
+        if (Array.isArray(parsed)) {
+          parsed.forEach(function (item) {
+            if (!item || typeof item !== 'object') return;
+            var key = norm(item.productId || item.id || item.sku);
+            if (key) out[key] = item;
+          });
+        } else if (parsed && typeof parsed === 'object') {
+          Object.keys(parsed).forEach(function (k) {
+            var item = parsed[k];
+            if (!item || typeof item !== 'object') return;
+            var cleanKey = norm(k);
+            if (cleanKey) out[cleanKey] = item;
+          });
+        }
+      }
+      if (window.localStorage.getItem(ADMIN_MODELS_SYNC_VER_KEY) !== REGISTRY_SYNC_VERSION) {
+        var changed = reconcileAdminModels3DCache(out);
+        if (changed) {
+          window.localStorage.setItem(ADMIN_MODELS_STORAGE_KEY, JSON.stringify(out));
+        }
+        window.localStorage.setItem(ADMIN_MODELS_SYNC_VER_KEY, REGISTRY_SYNC_VERSION);
       }
     } catch (e) {}
     return out;
@@ -520,11 +714,15 @@
     var has3D = adminEntry && typeof adminEntry.has3D === 'boolean'
       ? adminEntry.has3D
       : Boolean(staticEntry && staticEntry.has3D !== false && isSafeLocalUrl(rawUrl));
+    var isVerified = (adminEntry && (typeof adminEntry.verified === 'boolean' || adminEntry.reviewStatus))
+      ? isEntryApproved(adminEntry)
+      : isEntryApproved(staticEntry);
     return {
       productId: String((adminEntry && adminEntry.productId) || prod.id || ''),
       sku: String((adminEntry && adminEntry.sku) || prod.sku || prod.baseSku || ''),
       has3D: has3D,
-      verified: Boolean((adminEntry && typeof adminEntry.verified === 'boolean') ? adminEntry.verified : (staticEntry && staticEntry.verified === true)),
+      verified: Boolean(isVerified),
+      reviewStatus: isVerified ? 'approved' : 'draft',
       modelUrl: normalizeSafeModelPath(rawUrl) || String(rawUrl || '').trim(),
       previewImage: String(merged.previewImage || ''),
       supportsExplodedView: Boolean(merged.supportsExplodedView === true || (Array.isArray(merged.explodedParts) && merged.explodedParts.length > 0))
@@ -539,11 +737,13 @@
     var hasValidUrl = Boolean(safeUrl);
     if ((cfg.modelUrl || cfg.url) && !hasValidUrl) return false;
     var map = readAdminModels3D();
+    var approvedFlag = Boolean((cfg.verified === true || norm(cfg.reviewStatus) === 'approved') && hasValidUrl);
     map[idKey] = {
       productId: String(productId),
       sku: cfg.sku ? String(cfg.sku).trim() : '',
       has3D: Boolean(cfg.has3D && hasValidUrl),
-      verified: Boolean(cfg.verified === true && hasValidUrl),
+      verified: approvedFlag,
+      reviewStatus: approvedFlag ? 'approved' : 'draft',
       modelUrl: safeUrl,
       supportsExplodedView: Boolean(cfg.supportsExplodedView),
       updatedAt: new Date().toISOString()
@@ -615,9 +815,9 @@
     var isSketchfab = Boolean(sfUid && !cleanUrl);
     if (!cleanUrl && !isSketchfab) return null;
 
-    var isVerified = (adminEntry && typeof adminEntry.verified === 'boolean')
-      ? adminEntry.verified === true
-      : Boolean(base && base.verified === true);
+    var isVerified = (adminEntry && (typeof adminEntry.verified === 'boolean' || adminEntry.reviewStatus))
+      ? isEntryApproved(adminEntry)
+      : isEntryApproved(base);
     if (!isVerified) return null;
 
     var bodyMeshes = (Array.isArray(entry.bodyMeshes) ? entry.bodyMeshes : []).map(norm).filter(Boolean);
@@ -634,10 +834,12 @@
     return {
       engine: isSketchfab ? 'sketchfab' : 'glb',
       url: cleanUrl,
+      modelUrl: cleanUrl,
       sketchfabUid: sfUid,
       colorSketchfabUids: buildColorSketchfabUids(entry.colorSketchfabUids),
       attribution: entry.attribution ? String(entry.attribution) : '',
       verified: true,
+      reviewStatus: 'approved',
       previewImage: String(entry.previewImage || product.image || ''),
       has3D: true,
       sku: String((adminEntry && adminEntry.sku) || product.sku || product.baseSku || ''),

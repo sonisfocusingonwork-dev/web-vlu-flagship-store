@@ -1136,15 +1136,17 @@
       if (!product) return false;
       var kId = String(product.id || '').trim().toLowerCase();
       var kSku = String(product.sku || '').trim().toLowerCase();
-      try {
-        var rawMap = localStorage.getItem(STORAGE_MODELS_3D);
-        var adminMap = rawMap ? JSON.parse(rawMap) : {};
-        var directAdmin = (adminMap && typeof adminMap === 'object') ? ((kId && adminMap[kId]) || (kSku && adminMap[kSku])) : null;
-        if (directAdmin) {
-          if (directAdmin.has3D === false) return false;
-          if (directAdmin.has3D && directAdmin.modelUrl) return true;
+      // Đọc qua getModels3D() để tự động dọn cache cũ/xung đột trong vlu_admin_models_3d
+      var adminMap = this.getModels3D();
+      var directAdmin = (adminMap && typeof adminMap === 'object') ? ((kId && adminMap[kId]) || (kSku && adminMap[kSku])) : null;
+      if (directAdmin) {
+        if (directAdmin.has3D === false) return false;
+        if (directAdmin.has3D && this.normalizeModel3DPath(directAdmin.modelUrl || directAdmin.url)) {
+          if (typeof directAdmin.verified === 'boolean') return directAdmin.verified === true;
+          if (directAdmin.reviewStatus) return String(directAdmin.reviewStatus).toLowerCase() === 'approved';
+          return true;
         }
-      } catch (eAdmin3D) {}
+      }
       if (typeof window.VLU_GET_MODEL_3D === 'function') {
         try {
           if (window.VLU_GET_MODEL_3D(product)) return true;
@@ -1152,7 +1154,8 @@
       }
       var staticMap = window.VLU_MODELS_3D || {};
       var staticEntry = staticMap[product.id];
-      return Boolean(staticEntry && staticEntry.verified === true && (staticEntry.sketchfabUid || staticEntry.modelUrl || staticEntry.url));
+      var staticApproved = Boolean(staticEntry && (staticEntry.verified === true || String(staticEntry.reviewStatus || '').toLowerCase() === 'approved'));
+      return Boolean(staticApproved && (staticEntry.sketchfabUid || this.normalizeModel3DPath(staticEntry.modelUrl || staticEntry.url)));
     },
 
     saveProducts: function (list, silent) {
@@ -1565,10 +1568,16 @@
       var map = this.getModels3D();
       var nextSku = String(cfg.sku || sku || '').trim();
       var prev = map[kId] || {};
+      var isEnabled = Boolean(cfg.has3D && cleanPath);
+      var isApproved = typeof cfg.verified === 'boolean'
+        ? Boolean(cfg.verified && isEnabled)
+        : (cfg.reviewStatus ? (String(cfg.reviewStatus).toLowerCase() === 'approved' && isEnabled) : isEnabled);
       map[kId] = Object.assign({}, prev, {
         productId: String(productId),
         sku: nextSku,
-        has3D: Boolean(cfg.has3D && cleanPath),
+        has3D: isEnabled,
+        verified: isApproved,
+        reviewStatus: isApproved ? 'approved' : 'draft',
         modelUrl: cleanPath,
         supportsExplodedView: Boolean(cfg.supportsExplodedView),
         updatedAt: new Date().toISOString()

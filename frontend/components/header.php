@@ -425,4 +425,4 @@ foreach ($catalogInventory['categories'] as $category) {
 <!-- Central Cart Engine 2026 -->
 <script src="frontend/assets/js/cart-engine.js?v=2026_sync_ui_fix_p4_v2"></script>
 <!-- Central Auth Engine 2026 -->
-<script src="frontend/assets/js/auth-engine.js?v=2026_sync_ui_fix_p4_v2"></script>
+<script src="frontend/assets/js/auth-engine.js?v=2026_sync_ui_fix_logout_v2"></script>

@@ -216,12 +216,24 @@
       }
     } catch (eBc) {}
 
-    // 5. Đăng xuất Admin (Sidebar & Header Dropdown)
+    // 5. Đăng xuất Admin (Sidebar & Header Dropdown) — dùng chung hàm chuẩn AuthEngine.logout() về index.html
     function handleAdminLogout(e) {
       if (e) e.preventDefault();
-      if (window.VLU_AUTH) window.VLU_AUTH.logout();
-      else localStorage.removeItem('vlu_user');
-      window.location.href = 'login.html';
+      if (window.VLU_AUTH && typeof window.VLU_AUTH.logout === 'function') {
+        window.VLU_AUTH.logout();
+        return;
+      }
+      try {
+        localStorage.removeItem('vlu_user');
+        if (window.sessionStorage && typeof window.sessionStorage.removeItem === 'function') {
+          window.sessionStorage.removeItem('vlu_admin_session_logged');
+        }
+      } catch (err) {}
+      if (window.location && typeof window.location.replace === 'function') {
+        window.location.replace('index.html');
+      } else if (window.location) {
+        window.location.href = 'index.html';
+      }
     }
     var btnLogout = document.getElementById('adminLogoutBtn');
     var headerLogout = document.getElementById('headerAdminLogoutBtn');
@@ -2035,6 +2047,10 @@
       var isHidden = p.status === 'hidden';
       var isChecked = Boolean(selectedProductIds[String(p.id)]);
       var has3D = typeof engine.hasEffective3D === 'function' ? engine.hasEffective3D(p) : false;
+      var cfg3D = (has3D && typeof engine.getProduct3DConfig === 'function') ? engine.getProduct3DConfig(p.id, p.sku) : null;
+      var badge3DTitle = cfg3D && cfg3D.modelUrl
+        ? ('Mô hình 3D đã kiểm duyệt: ' + cfg3D.modelUrl + (cfg3D.supportsExplodedView ? ' · Hỗ trợ Tách lớp' : ''))
+        : 'Mô hình 3D đã kiểm duyệt';
       var price = Number(p.price) || 0;
       var oldPrice = Number(p.old_price) || 0;
       var discountPct = (price > 0 && oldPrice > price) ? Math.round(((oldPrice - price) / oldPrice) * 100) : 0;
@@ -2047,7 +2063,7 @@
             '<div class="min-w-0">' +
               '<div class="flex items-center gap-1.5">' +
                 '<button type="button" class="btn-preview-product text-left font-bold hover:text-brand transition line-clamp-1" data-id="' + escapeHtml(p.id) + '">' + escapeHtml(p.name) + '</button>' +
-                (has3D ? '<span class="vlu-badge vlu-badge-info !py-0 !px-1.5 !text-[10px]">3D</span>' : '') +
+                (has3D ? '<span class="vlu-badge vlu-badge-info !py-0 !px-1.5 !text-[10px] shrink-0" title="' + escapeHtml(badge3DTitle) + '">3D Đã duyệt</span>' : '') +
               '</div>' +
               (p.description ? '<p class="text-[11px] line-clamp-1 mt-0.5" style="color: var(--admin-text-secondary);">' + escapeHtml(p.description) + '</p>' : '') +
             '</div>' +
@@ -6855,6 +6871,30 @@
       closeAllModals(true);
       closeHeaderPopovers();
       document.body.classList.remove('admin-sidebar-mobile-open');
+    }
+  });
+
+  // Back-button Guard: Chặn quay lại admin.html từ bfcache sau khi đã đăng xuất hoặc mất quyền Admin
+  window.addEventListener('pageshow', function (event) {
+    var navEntries = (window.performance && typeof window.performance.getEntriesByType === 'function')
+      ? window.performance.getEntriesByType('navigation')
+      : [];
+    var isBackForward = Boolean(event && event.persisted) ||
+      (navEntries && navEntries[0] && navEntries[0].type === 'back_forward');
+    if (!isBackForward) return;
+
+    var rawUser = null;
+    try { rawUser = localStorage.getItem('vlu_user'); } catch (e) {}
+    var auth = (window.VLU_ADMIN && typeof window.VLU_ADMIN.checkAuth === 'function')
+      ? window.VLU_ADMIN.checkAuth()
+      : { isAuthorized: false };
+
+    if (!rawUser || !auth.isAuthorized) {
+      if (window.location && typeof window.location.replace === 'function') {
+        window.location.replace('index.html');
+      } else if (window.location) {
+        window.location.href = 'index.html';
+      }
     }
   });
 
