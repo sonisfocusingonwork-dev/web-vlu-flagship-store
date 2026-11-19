@@ -58,6 +58,48 @@
     } catch (e) {}
   }
 
+  function isGuestOrInvalidUser(user) {
+    if (!user || typeof user !== 'object') return true;
+    if (user.isGuest === true) return true;
+    var idStr = String(user.id == null ? '' : user.id).trim().toLowerCase();
+    var uname = String(user.username || '').trim().toLowerCase();
+    var email = String(user.email || '').trim().toLowerCase();
+    if (idStr === 'guest' || uname === 'guest' || email === 'guest@vluflagship.vn') return true;
+    var numId = Number(user.id);
+    if (!Number.isFinite(numId) || numId <= 0) return true;
+    return false;
+  }
+
+  function cleanupGuestSessionData() {
+    try {
+      localStorage.removeItem('vlu_orders_guest');
+      localStorage.removeItem('vlu_account_guest');
+    } catch (e) {}
+  }
+
+  function cleanupAllGuestKeys() {
+    try {
+      var keysToRemove = [
+        'vlu_cart_guest',
+        'vlu_cart_voucher_guest',
+        'vlu_pending_voucher_guest',
+        'vlu_orders_guest',
+        'vlu_account_guest',
+        'vlu_recently_viewed_guest',
+        'vlu_recent_sync_sig_guest'
+      ];
+      for (var i = 0; i < localStorage.length; i++) {
+        var k = localStorage.key(i);
+        if (k && /_guest$/i.test(k) && keysToRemove.indexOf(k) === -1) {
+          keysToRemove.push(k);
+        }
+      }
+      keysToRemove.forEach(function (k) {
+        localStorage.removeItem(k);
+      });
+    } catch (e) {}
+  }
+
   function isProtectedRootAccount(user) {
     if (!user || typeof user !== 'object') return false;
     var uname = String(user.username || '').trim().toLowerCase();
@@ -145,22 +187,30 @@
   var AuthEngine = {
     getRegisteredUsers: getRegisteredUsers,
     isAdminUser: isAdminUser,
+    isGuestOrInvalidUser: isGuestOrInvalidUser,
     getPostLoginUrl: resolvePostLoginUrl,
     getPageUrl: getPageUrl,
 
     /**
-     * Lấy thông tin người dùng hiện tại đang đăng nhập
+     * Lấy thông tin người dùng hiện tại đang đăng nhập (chỉ chấp nhận tài khoản thực trong SQL)
      */
     getUser: function () {
       try {
         var raw = localStorage.getItem(STORAGE_KEY);
         if (!raw) return null;
         var user = JSON.parse(raw);
-        if (!(user && typeof user === 'object' && user.username)) return null;
+        if (isGuestOrInvalidUser(user)) {
+          localStorage.removeItem(STORAGE_KEY);
+          cleanupGuestSessionData();
+          return null;
+        }
+        if (!(user && typeof user === 'object' && (user.username || user.email))) return null;
         if (isUserLockedInStorage(user)) {
           localStorage.removeItem(STORAGE_KEY);
           return null;
         }
+        user.id = Number(user.id);
+        delete user.isGuest;
         // Chuẩn hóa quyền: Admin luôn là role = 1 (số)
         if (isAdminUser(user) && user.role !== 1) user.role = 1;
         return user;
@@ -171,95 +221,124 @@
     },
 
     /**
-     * Kiểm tra trạng thái đã đăng nhập hay chưa
+     * Kiểm tra trạng thái đã đăng nhập tài khoản thực hay chưa
      */
     isLoggedIn: function () {
       return this.getUser() !== null;
     },
 
     /**
-     * Tự động kích hoạt Tài khoản Khách (Silent Guest Login - Không cần nhập username/password)
-     * Chuyển tiếp liền mạch toàn bộ giỏ hàng tạm sang phiên khách và cập nhật thông tin nếu có
+     * Vô hiệu hóa auto-login Guest: Xóa mọi phiên ảo guest nếu tồn tại và trả về tài khoản thực (hoặc null)
      */
-    ensureGuestSession: function (customInfo) {
-      var existing = this.getUser();
-      if (existing) {
-        if (existing.isGuest && customInfo && typeof customInfo === 'object') {
-          var updated = false;
-          if (customInfo.fullname && customInfo.fullname.trim()) {
-            existing.fullname = customInfo.fullname.trim();
-            updated = true;
-          }
-          if (customInfo.phone && customInfo.phone.trim()) {
-            existing.phone = customInfo.phone.trim();
-            updated = true;
-          }
-          if (customInfo.email && customInfo.email.trim()) {
-            existing.email = customInfo.email.trim();
-            updated = true;
-          }
-          if (updated) {
-            try {
-              localStorage.setItem(STORAGE_KEY, JSON.stringify(existing));
-              var guestAccount = JSON.parse(localStorage.getItem('vlu_account_guest') || '{}');
-              if (!guestAccount || typeof guestAccount !== 'object' || Array.isArray(guestAccount)) guestAccount = {};
-              guestAccount.profile = Object.assign({}, guestAccount.profile || {}, {
-                fullname: existing.fullname,
-                phone: existing.phone,
-                email: existing.email
-              });
-              localStorage.setItem('vlu_account_guest', JSON.stringify(guestAccount));
-            } catch (e) {}
-            this.updateHeaderAuth();
-            this.emitUpdate(existing);
-          }
-        }
-        return existing;
-      }
-
-      // Chuyển tiếp giỏ hàng tạm (vlu_cart hoặc vlu_cart_guest) để không mất bất kỳ sản phẩm nào
-      try {
-        var guestCartRaw = localStorage.getItem('vlu_cart_guest');
-        var legacyCartRaw = localStorage.getItem('vlu_cart');
-        var guestCart = guestCartRaw ? JSON.parse(guestCartRaw) : [];
-        var legacyCart = legacyCartRaw ? JSON.parse(legacyCartRaw) : [];
-        if ((!Array.isArray(guestCart) || guestCart.length === 0) && Array.isArray(legacyCart) && legacyCart.length > 0) {
-          localStorage.setItem('vlu_cart_guest', JSON.stringify(legacyCart));
-        }
-      } catch (cartErr) {}
-
-      var guestUser = {
-        id: 'guest',
-        username: 'guest',
-        email: (customInfo && customInfo.email && customInfo.email.trim()) ? customInfo.email.trim() : 'guest@vluflagship.vn',
-        fullname: (customInfo && customInfo.fullname && customInfo.fullname.trim()) ? customInfo.fullname.trim() : 'Khách vãng lai (Guest)',
-        phone: (customInfo && customInfo.phone && customInfo.phone.trim()) ? customInfo.phone.trim() : '',
-        role: 0,
-        isGuest: true,
-        loginAt: new Date().toISOString()
-      };
-
-      try {
-        localStorage.setItem(STORAGE_KEY, JSON.stringify(guestUser));
-        var accountStore = JSON.parse(localStorage.getItem('vlu_account_guest') || '{}');
-        if (!accountStore || typeof accountStore !== 'object' || Array.isArray(accountStore)) accountStore = {};
-        accountStore.profile = Object.assign({}, accountStore.profile || {}, {
-          fullname: guestUser.fullname,
-          phone: guestUser.phone,
-          email: guestUser.email
-        });
-        localStorage.setItem('vlu_account_guest', JSON.stringify(accountStore));
-      } catch (e) {
-        console.error('[AuthEngine] Lỗi khởi tạo phiên Tài khoản Khách:', e);
-      }
-
-      this.updateHeaderAuth();
-      this.emitUpdate(guestUser);
-      return guestUser;
+    ensureGuestSession: function () {
+      cleanupGuestSessionData();
+      return this.getUser();
     },
 
-    loginAsGuest: function (customInfo) {
-      return this.ensureGuestSession(customInfo);
+    loginAsGuest: function () {
+      cleanupGuestSessionData();
+      return this.getUser();
+    },
+
+    /**
+     * Kế thừa & gộp toàn bộ sản phẩm từ giỏ hàng tạm (vlu_cart_guest) sang giỏ riêng của tài khoản SQL (vlu_cart_${user.id})
+     */
+    mergeGuestCartToUser: function (user) {
+      if (isGuestOrInvalidUser(user)) return [];
+      var numericId = String(Number(user.id));
+      var targetCartKey = 'vlu_cart_' + numericId;
+      var targetVoucherKey = 'vlu_cart_voucher_' + numericId;
+      var targetPendingVoucherKey = 'vlu_pending_voucher_' + numericId;
+
+      var guestKeys = ['vlu_cart_guest', 'vlu_cart'];
+      var rawIdent = String(user.username || user.email || '').trim().toLowerCase().replace(/[^a-z0-9._@-]+/g, '_');
+      if (rawIdent && rawIdent !== numericId) {
+        guestKeys.push('vlu_cart_' + rawIdent);
+      }
+
+      var merged = [];
+      try {
+        var existingRaw = localStorage.getItem(targetCartKey);
+        var existingParsed = existingRaw ? JSON.parse(existingRaw) : [];
+        if (Array.isArray(existingParsed)) {
+          merged = existingParsed.slice();
+        }
+      } catch (e1) {
+        merged = [];
+      }
+
+      guestKeys.forEach(function (srcKey) {
+        try {
+          var srcRaw = localStorage.getItem(srcKey);
+          if (!srcRaw) return;
+          var srcItems = JSON.parse(srcRaw);
+          if (!Array.isArray(srcItems) || srcItems.length === 0) return;
+
+          srcItems.forEach(function (item) {
+            if (!item || !item.name) return;
+            var id = item.id || (item.name || '').toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
+            var color = (item.color || 'Mặc định').trim();
+            var variant = (item.variant || 'Tiêu chuẩn').trim();
+            var qty = Math.max(1, parseInt(item.quantity, 10) || 1);
+            var price = parseInt(item.price, 10) || 0;
+
+            var matched = null;
+            for (var i = 0; i < merged.length; i++) {
+              var cur = merged[i];
+              if (cur && cur.id === id && (cur.color || 'Mặc định') === color && (cur.variant || 'Tiêu chuẩn') === variant) {
+                matched = cur;
+                break;
+              }
+            }
+            if (matched) {
+              matched.quantity = (parseInt(matched.quantity, 10) || 0) + qty;
+              if (price > 0) matched.price = price;
+              if (item.oldPrice) matched.oldPrice = parseInt(item.oldPrice, 10) || matched.oldPrice;
+              if (item.image) matched.image = item.image;
+              if (item.category) matched.category = item.category;
+            } else {
+              merged.push({
+                id: id,
+                name: item.name,
+                category: item.category || '',
+                color: color,
+                variant: variant,
+                price: price,
+                oldPrice: item.oldPrice ? parseInt(item.oldPrice, 10) : null,
+                image: item.image || 'frontend/assets/images/logo.png',
+                quantity: qty
+              });
+            }
+          });
+        } catch (e2) {}
+      });
+
+      try {
+        localStorage.setItem(targetCartKey, JSON.stringify(merged));
+        if (!localStorage.getItem(targetVoucherKey)) {
+          var gVoucher = localStorage.getItem('vlu_cart_voucher_guest') || localStorage.getItem('vlu_cart_voucher');
+          if (gVoucher) localStorage.setItem(targetVoucherKey, gVoucher);
+        }
+        if (!localStorage.getItem(targetPendingVoucherKey)) {
+          var gPending = localStorage.getItem('vlu_pending_voucher_guest');
+          if (gPending) localStorage.setItem(targetPendingVoucherKey, gPending);
+        }
+        localStorage.removeItem('vlu_cart_guest');
+        localStorage.removeItem('vlu_cart');
+        localStorage.removeItem('vlu_cart_voucher_guest');
+        localStorage.removeItem('vlu_cart_voucher');
+        localStorage.removeItem('vlu_pending_voucher_guest');
+        if (rawIdent && rawIdent !== numericId) {
+          localStorage.removeItem('vlu_cart_' + rawIdent);
+        }
+        cleanupGuestSessionData();
+      } catch (e3) {}
+
+      if (window.VLU_CART) {
+        if (typeof window.VLU_CART.updateBadge === 'function') window.VLU_CART.updateBadge();
+        if (typeof window.VLU_CART.emitUpdate === 'function') window.VLU_CART.emitUpdate();
+      }
+      return merged;
     },
 
     /**
@@ -277,6 +356,13 @@
       }
 
       var cleanId = identifier.trim().toLowerCase();
+      if (cleanId === 'guest' || cleanId === 'guest@vluflagship.vn') {
+        return Promise.resolve({
+          success: false,
+          code: 'GUEST_LOGIN_FORBIDDEN',
+          message: 'Tài khoản Guest không hợp lệ. Vui lòng đăng ký hoặc đăng nhập tài khoản thành viên!'
+        });
+      }
 
       // Bước 1: Thử gọi API Backend MySQL trực tiếp
       var apiEndpoint = 'backend/api/auth.php';
@@ -301,6 +387,13 @@
         var data = result.data;
         if (data && data.success) {
           data.user = data.user || {};
+          if (isGuestOrInvalidUser(data.user)) {
+            return {
+              success: false,
+              code: 'INVALID_ACCOUNT',
+              message: 'Tài khoản không hợp lệ!'
+            };
+          }
           if (isUserLockedInStorage(data.user) || isUserLockedInStorage(cleanId)) {
             return {
               success: false,
@@ -308,8 +401,10 @@
               message: 'Tài khoản của bạn đang tạm khóa, vui lòng liên hệ CSKH VLU Flagship Store.'
             };
           }
-          // Chuẩn hóa quyền Admin (role = 1) ngay khi nhận user từ CSDL
+          // Chuẩn hóa ID số và quyền Admin (role = 1) ngay khi nhận user từ CSDL
+          data.user.id = Number(data.user.id);
           data.user.role = isAdminUser(data.user) ? 1 : 0;
+          delete data.user.isGuest;
           // Lưu phiên đăng nhập hợp lệ từ CSDL
           try {
             localStorage.setItem(STORAGE_KEY, JSON.stringify(data.user));
@@ -321,6 +416,7 @@
           } catch (e) {
             console.error('[AuthEngine] Lỗi lưu tài khoản:', e);
           }
+          self.mergeGuestCartToUser(data.user);
           self.updateHeaderAuth();
           self.emitUpdate(data.user);
           return {
@@ -377,7 +473,7 @@
 
         // Đăng nhập thành công với tài khoản đã đăng ký hợp lệ
         var loggedUser = {
-          id: foundUser.id || 1,
+          id: Number(foundUser.id) > 0 ? Number(foundUser.id) : 1,
           username: foundUser.username || cleanId,
           email: foundUser.email || cleanId,
           fullname: foundUser.fullname || 'Người dùng VLU',
@@ -397,6 +493,7 @@
           console.error('[AuthEngine] Lỗi lưu tài khoản:', e);
         }
 
+        self.mergeGuestCartToUser(loggedUser);
         self.updateHeaderAuth();
         self.emitUpdate(loggedUser);
 
@@ -422,6 +519,13 @@
       }
 
       var cleanEmail = data.email.trim().toLowerCase();
+      if (cleanEmail === 'guest' || cleanEmail === 'guest@vluflagship.vn') {
+        return Promise.resolve({
+          success: false,
+          code: 'INVALID_EMAIL',
+          message: 'Email này không được phép đăng ký!'
+        });
+      }
       var isAdmin = (cleanEmail === 'admin@vluflagship.vn');
 
       var newUser = {
@@ -455,19 +559,31 @@
       .then(function (apiRes) {
         if (apiRes && apiRes.success) {
           if (apiRes.user) {
-            newUser.id = apiRes.user.id || newUser.id;
-            newUser.role = apiRes.user.role != null ? apiRes.user.role : newUser.role;
+            newUser.id = Number(apiRes.user.id) > 0 ? Number(apiRes.user.id) : newUser.id;
+            newUser.username = apiRes.user.username || newUser.username;
+            newUser.role = apiRes.user.role != null ? Number(apiRes.user.role) : newUser.role;
           }
+          var sessionUser = {
+            id: Number(newUser.id),
+            username: newUser.username,
+            email: newUser.email,
+            fullname: newUser.fullname,
+            phone: newUser.phone,
+            role: newUser.role,
+            status: 'active',
+            registeredAt: newUser.registeredAt
+          };
           addRegisteredUser(newUser);
           try {
-            localStorage.setItem(STORAGE_KEY, JSON.stringify(newUser));
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(sessionUser));
           } catch (e) {}
+          self.mergeGuestCartToUser(sessionUser);
           self.updateHeaderAuth();
-          self.emitUpdate(newUser);
+          self.emitUpdate(sessionUser);
           return {
             success: true,
             message: apiRes.message || 'Đăng ký tài khoản thành công! Bạn đã được tự động đăng nhập.',
-            user: newUser
+            user: sessionUser
           };
         } else {
           return {
@@ -479,27 +595,43 @@
       })
       .catch(function () {
         // Fallback an toàn khi mạng offline hoàn toàn
+        var offlineSessionUser = {
+          id: Number(newUser.id),
+          username: newUser.username,
+          email: newUser.email,
+          fullname: newUser.fullname,
+          phone: newUser.phone,
+          role: newUser.role,
+          status: 'active',
+          registeredAt: newUser.registeredAt
+        };
         addRegisteredUser(newUser);
         try {
-          localStorage.setItem(STORAGE_KEY, JSON.stringify(newUser));
+          localStorage.setItem(STORAGE_KEY, JSON.stringify(offlineSessionUser));
         } catch (e) {}
+        self.mergeGuestCartToUser(offlineSessionUser);
         self.updateHeaderAuth();
-        self.emitUpdate(newUser);
+        self.emitUpdate(offlineSessionUser);
         return {
           success: true,
           message: 'Đăng ký tài khoản thành công! Bạn đã được tự động đăng nhập.',
-          user: newUser
+          user: offlineSessionUser
         };
       });
     },
 
     /**
-     * Đăng xuất tài khoản
+     * Đăng xuất tài khoản và dọn sạch các khóa tạm *_guest
      */
     logout: function () {
       localStorage.removeItem(STORAGE_KEY);
+      cleanupAllGuestKeys();
       this.updateHeaderAuth();
       this.emitUpdate(null);
+      if (window.VLU_CART) {
+        if (typeof window.VLU_CART.updateBadge === 'function') window.VLU_CART.updateBadge();
+        if (typeof window.VLU_CART.emitUpdate === 'function') window.VLU_CART.emitUpdate();
+      }
       return { success: true, message: 'Đã đăng xuất thành công.' };
     },
 
@@ -712,6 +844,9 @@
   window.addEventListener('load', function () {
     AuthEngine.updateHeaderAuth();
   });
+
+  // Tự động dọn phiên ảo guest nếu còn tồn đọng trong localStorage ngay khi tải script
+  AuthEngine.getUser();
 
   // Đưa AuthEngine ra toàn cục
   window.VLU_AUTH = AuthEngine;

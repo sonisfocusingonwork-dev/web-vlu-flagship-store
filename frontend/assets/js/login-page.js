@@ -15,6 +15,17 @@
   var loginErrorMsg = document.getElementById('loginErrorMsg');
   var btnLoginSubmit = document.getElementById('btnLoginSubmit');
 
+  // Truyền tiếp tham số ?next= sang link Đăng ký ngay nếu có
+  try {
+    var initNextParam = new URLSearchParams(window.location.search).get('next') || '';
+    if (initNextParam) {
+      var registerLink = document.querySelector('a[href^="register.html"]');
+      if (registerLink) {
+        registerLink.setAttribute('href', 'register.html?next=' + encodeURIComponent(initNextParam));
+      }
+    }
+  } catch (e) {}
+
   // Nạp lại username nếu đã từng chọn "Ghi nhớ đăng nhập"
   try {
     var savedUsername = localStorage.getItem('vlu_remember_username');
@@ -71,6 +82,9 @@
           }
           // Phân luồng sau đăng nhập: Admin -> Dashboard (admin.php/html), User -> trang chủ hoặc ?next=
           var loggedUser = res.user || (window.VLU_AUTH && window.VLU_AUTH.getUser ? window.VLU_AUTH.getUser() : null);
+          if (window.VLU_AUTH && typeof window.VLU_AUTH.mergeGuestCartToUser === 'function' && loggedUser) {
+            window.VLU_AUTH.mergeGuestCartToUser(loggedUser);
+          }
           var nextParam = '';
           try { nextParam = new URLSearchParams(window.location.search).get('next') || ''; } catch (err) {}
           var targetUrl = resolveTargetUrl(loggedUser, nextParam);

@@ -308,7 +308,7 @@
       }
     });
 
-    // Nút Tiến hành thanh toán: Tự động kích hoạt Tài khoản Khách (Silent Guest Login) nếu chưa đăng nhập
+    // Nút Tiến hành thanh toán: Bắt buộc đăng nhập / đăng ký tài khoản SQL mới được thanh toán
     if (checkoutBtn) {
       checkoutBtn.setAttribute('href', 'checkout.html');
       checkoutBtn.addEventListener('click', function (e) {
@@ -318,8 +318,23 @@
           e.preventDefault();
           return;
         }
-        if (window.VLU_AUTH && typeof window.VLU_AUTH.ensureGuestSession === 'function') {
-          window.VLU_AUTH.ensureGuestSession();
+        var user = (window.VLU_AUTH && typeof window.VLU_AUTH.getUser === 'function')
+          ? window.VLU_AUTH.getUser()
+          : null;
+        var isValidUser = Boolean(user && !user.isGuest && String(user.id || '').toLowerCase() !== 'guest' && Number(user.id) > 0);
+        if (!isValidUser) {
+          e.preventDefault();
+          try {
+            if (!localStorage.getItem('vlu_cart_guest')) {
+              localStorage.setItem('vlu_cart_guest', JSON.stringify(items));
+            }
+          } catch (errSave) {}
+          if (engine && typeof engine.showToast === 'function') {
+            engine.showToast('Vui lòng đăng nhập hoặc đăng ký tài khoản để tiến hành thanh toán!', true);
+          } else {
+            alert('Vui lòng đăng nhập hoặc đăng ký tài khoản để tiến hành thanh toán!');
+          }
+          window.location.href = 'login.html?next=checkout.html';
         }
       });
     }

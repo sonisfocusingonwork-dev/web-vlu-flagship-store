@@ -76,17 +76,55 @@
     });
   }
 
+  function getAuthenticatedUser() {
+    var user = null;
+    if (window.VLU_AUTH && typeof window.VLU_AUTH.getUser === 'function') {
+      user = window.VLU_AUTH.getUser();
+    } else {
+      try { user = JSON.parse(localStorage.getItem('vlu_user') || 'null'); } catch (e) { user = null; }
+    }
+    if (!user || typeof user !== 'object') return null;
+    if (user.isGuest === true) return null;
+    var idStr = String(user.id == null ? '' : user.id).trim().toLowerCase();
+    var uname = String(user.username || '').trim().toLowerCase();
+    var email = String(user.email || '').trim().toLowerCase();
+    if (idStr === 'guest' || uname === 'guest' || email === 'guest@vluflagship.vn') return null;
+    var numId = Number(user.id);
+    if (!Number.isFinite(numId) || numId <= 0) return null;
+    return user;
+  }
+
+  function redirectGuestToLogin() {
+    try {
+      localStorage.removeItem('vlu_orders_guest');
+      localStorage.removeItem('vlu_account_guest');
+    } catch (e) {}
+    if (window.location && typeof window.location.replace === 'function') {
+      window.location.replace('login.html?next=checkout.html');
+    } else {
+      window.location.href = 'login.html?next=checkout.html';
+    }
+  }
+
   function prefillSavedAddress() {
     try {
-      var user = JSON.parse(localStorage.getItem('vlu_user') || 'null');
-      if (!user || !(user.username || user.email || user.id)) return;
-      var identity = String(user.username || user.email || user.id).trim().toLowerCase().replace(/[^a-z0-9._@-]+/g, '_');
-      var account = JSON.parse(localStorage.getItem('vlu_account_' + identity) || '{}');
+      var user = getAuthenticatedUser();
+      if (!user) return;
+      var userIdKey = String(Number(user.id));
+      var legacyIdentity = String(user.username || user.email || user.id).trim().toLowerCase().replace(/[^a-z0-9._@-]+/g, '_');
+      var account = JSON.parse(localStorage.getItem('vlu_account_' + userIdKey) || 'null');
+      if (!account && legacyIdentity && legacyIdentity !== userIdKey) {
+        account = JSON.parse(localStorage.getItem('vlu_account_' + legacyIdentity) || '{}');
+      }
+      account = account || {};
       if (user.fullname && document.getElementById('checkoutFullname')) {
         document.getElementById('checkoutFullname').value = user.fullname;
       }
       if (user.phone && document.getElementById('checkoutPhone')) {
         document.getElementById('checkoutPhone').value = user.phone;
+      }
+      if (user.email && document.getElementById('checkoutEmail')) {
+        document.getElementById('checkoutEmail').value = user.email;
       }
       var addresses = account && Array.isArray(account.addresses) ? account.addresses : [];
       var address = addresses.find(function (item) { return item.default; });
@@ -113,25 +151,18 @@
       if (district) district.value = address.district || '';
       if (line) line.value = [address.street, address.ward].filter(Boolean).join(', ') || address.address || '';
     } catch (error) {
-      console.warn('[Checkout] Tidak dapat điền địa chỉ mặc định từ hồ sơ:', error);
+      console.warn('[Checkout] Không thể điền địa chỉ mặc định từ hồ sơ:', error);
     }
   }
 
   function saveOrderToAccount(order) {
     try {
-      var user = (window.VLU_AUTH && typeof window.VLU_AUTH.ensureGuestSession === 'function')
-        ? window.VLU_AUTH.ensureGuestSession({
-            fullname: order.customer_name,
-            phone: order.customer_phone,
-            email: order.customer_email
-          })
-        : JSON.parse(localStorage.getItem('vlu_user') || 'null');
+      var user = getAuthenticatedUser();
+      if (!user) return;
+      var userIdKey = String(Number(user.id));
 
-      var identity = (user && (user.username || user.email || user.id)) || order.user_id || 'guest';
-      var normalized = String(identity).trim().toLowerCase().replace(/[^a-z0-9._@-]+/g, '_') || 'guest';
-
-      // 1. Lưu vào vlu_orders_<userId>
-      var userOrdersKey = 'vlu_orders_' + normalized;
+      // 1. Lưu vào vlu_orders_${user.id}
+      var userOrdersKey = 'vlu_orders_' + userIdKey;
       var userOrdersList = [];
       try {
         userOrdersList = JSON.parse(localStorage.getItem(userOrdersKey) || '[]');
@@ -145,8 +176,8 @@
       userOrdersList.unshift(order);
       localStorage.setItem(userOrdersKey, JSON.stringify(userOrdersList));
 
-      // 2. Lưu vào vlu_account_<userId>
-      var key = 'vlu_account_' + normalized;
+      // 2. Lưu vào vlu_account_${user.id}
+      var key = 'vlu_account_' + userIdKey;
       var account = JSON.parse(localStorage.getItem(key) || '{}');
       if (!account || typeof account !== 'object' || Array.isArray(account)) account = {};
       if (!Array.isArray(account.orders)) account.orders = [];
@@ -155,11 +186,11 @@
       });
       account.orders.unshift(order);
 
-      // Đồng bộ họ tên & SĐT người nhận vào hồ sơ nếu là Tài khoản Khách hoặc chưa có
+      // Đồng bộ hồ sơ người dùng theo tài khoản đã đăng nhập
       account.profile = Object.assign({}, account.profile || {}, {
-        fullname: (account.profile && account.profile.fullname && !user.isGuest) ? account.profile.fullname : (order.customer_name || (user && user.fullname) || 'Khách vãng lai (Guest)'),
-        phone: (account.profile && account.profile.phone && !user.isGuest) ? account.profile.phone : (order.customer_phone || (user && user.phone) || ''),
-        email: (account.profile && account.profile.email && !user.isGuest) ? account.profile.email : (order.customer_email || (user && user.email) || '')
+        fullname: (account.profile && account.profile.fullname) ? account.profile.fullname : (order.customer_name || user.fullname || ''),
+        phone: (account.profile && account.profile.phone) ? account.profile.phone : (order.customer_phone || user.phone || ''),
+        email: (account.profile && account.profile.email) ? account.profile.email : (order.customer_email || user.email || '')
       });
 
       if (!Array.isArray(account.notifications)) account.notifications = [];
@@ -268,10 +299,16 @@
 
   // Khởi động các tương tác trang Checkout
   function initCheckoutPage() {
-    // Tự động kích hoạt Tài khoản Khách (Silent Guest Login) nếu người dùng chưa đăng nhập
-    if (window.VLU_AUTH && typeof window.VLU_AUTH.ensureGuestSession === 'function') {
-      window.VLU_AUTH.ensureGuestSession();
+    // Chặn truy cập nếu chưa đăng nhập tài khoản thực (không tự tạo phiên Guest)
+    if (!getAuthenticatedUser()) {
+      redirectGuestToLogin();
+      return;
     }
+    window.addEventListener('storage', function (e) {
+      if (e.key === 'vlu_user' && !getAuthenticatedUser()) {
+        redirectGuestToLogin();
+      }
+    });
     prefillSavedAddress();
     renderOrderReview();
 
@@ -496,23 +533,22 @@
         if (successPaymentMethod) successPaymentMethod.textContent = selectedMethodLabel;
         if (successTotalAmount) successTotalAmount.textContent = finalTotal;
 
-        // Tự động lưu đơn hàng vào vlu_orders, vlu_orders_<userId> và vlu_account_<userId>
+        // Tự động lưu đơn hàng vào vlu_orders, vlu_orders_${user.id} và vlu_account_${user.id}
+        var activeAuthUser = getAuthenticatedUser();
+        if (!activeAuthUser) {
+          alert('Vui lòng đăng nhập tài khoản trước khi đặt hàng!');
+          redirectGuestToLogin();
+          return;
+        }
         try {
-          // Đồng bộ Họ tên & SĐT vào phiên Tài khoản Khách (hoặc khởi tạo nếu chưa có)
-          if (window.VLU_AUTH && typeof window.VLU_AUTH.ensureGuestSession === 'function') {
-            window.VLU_AUTH.ensureGuestSession({
-              fullname: fullname,
-              phone: phone,
-              email: email
-            });
-          }
-
-          var resolvedUserId = engine.getCurrentUserId ? engine.getCurrentUserId() : 'guest';
+          var numericUserId = Number(activeAuthUser.id);
+          var userIdentity = String(activeAuthUser.username || activeAuthUser.email || numericUserId).trim().toLowerCase();
           var newOrderRecord = {
             id: currentOrderId,
+            order_code: currentOrderId,
             customer_name: fullname,
             customer_phone: phone,
-            customer_email: email || '',
+            customer_email: email || activeAuthUser.email || '',
             customer_address: fullAddress,
             shipping_method: shippingMethod,
             store_location: shippingMethod === 'pickup' ? selectedStore : '',
@@ -522,7 +558,9 @@
             voucher_code: engine.getVoucher() ? engine.getVoucher().code : '',
             installment_term: installmentTerm,
             installment_monthly: installmentTerm ? Math.ceil(engine.getTotal() / Number(installmentTerm)) : 0,
-            user_id: resolvedUserId,
+            user_id: numericUserId,
+            db_user_id: numericUserId,
+            user_identity: userIdentity,
             items: cart.map(function (it) {
               return {
                 id: it.id,
@@ -553,14 +591,11 @@
 
           // Đồng bộ lưu đơn hàng & chi tiết đơn hàng vào bảng orders / order_details trong MySQL qua API
           if (typeof fetch === 'function') {
-            var activeAuthUser = (window.VLU_AUTH && typeof window.VLU_AUTH.getUser === 'function')
-              ? window.VLU_AUTH.getUser()
-              : null;
             var sqlOrderPayload = Object.assign({}, newOrderRecord, {
               order_code: newOrderRecord.id,
-              db_user_id: activeAuthUser && !activeAuthUser.isGuest && Number(activeAuthUser.id) > 0
-                ? Number(activeAuthUser.id)
-                : null
+              user_id: numericUserId,
+              db_user_id: numericUserId,
+              user_identity: userIdentity
             });
             fetch('backend/api/orders.php', {
               method: 'POST',
@@ -581,21 +616,15 @@
         }
 
         // Xóa giỏ hàng chuẩn hóa theo đúng yêu cầu:
-        // CHỈ ĐƯỢC XÓA key giỏ hàng của user đó (ví dụ vlu_cart_userId), TUYỆT ĐỐI KHÔNG dùng localStorage.clear()
-        // hay xóa key vlu_user chứa thông tin phiên đăng nhập hiện tại.
+        // CHỈ ĐƯỢC XÓA key giỏ hàng của user đó (vlu_cart_${user.id}), TUYỆT ĐỐI KHÔNG xóa vlu_user
         try {
-          var currentUser = (window.VLU_AUTH && typeof window.VLU_AUTH.getUser === 'function')
-            ? window.VLU_AUTH.getUser()
-            : JSON.parse(localStorage.getItem('vlu_user') || 'null');
+          var currentUser = getAuthenticatedUser();
+          var normalizedCartId = currentUser ? String(Number(currentUser.id)) : '';
 
-          var currentId = currentUser && (currentUser.username || currentUser.email || currentUser.id);
-          var normalizedCartId = currentId
-            ? String(currentId).trim().toLowerCase().replace(/[^a-z0-9._@-]+/g, '_')
-            : 'guest';
-
-          // Chỉ xóa đúng key giỏ hàng và voucher của tài khoản hiện tại
-          localStorage.removeItem('vlu_cart_' + normalizedCartId);
-          localStorage.removeItem('vlu_cart_voucher_' + normalizedCartId);
+          if (normalizedCartId) {
+            localStorage.removeItem('vlu_cart_' + normalizedCartId);
+            localStorage.removeItem('vlu_cart_voucher_' + normalizedCartId);
+          }
           localStorage.removeItem('vlu_cart'); // xóa legacy fallback nếu có
           localStorage.removeItem('vlu_cart_voucher');
 

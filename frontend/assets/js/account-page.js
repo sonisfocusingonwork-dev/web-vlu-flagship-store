@@ -20,20 +20,44 @@
     { id: 'logout', icon: '↪', label: 'Đăng xuất', subtitle: 'Kết thúc phiên tài khoản hiện tại.' }
   ];
 
+  var ORDER_PIPELINE_STEPS = [
+    { key: 'pending', label: 'Chờ xác nhận' },
+    { key: 'confirmed', label: 'Đã xác nhận' },
+    { key: 'preparing', label: 'Đang chuẩn bị' },
+    { key: 'handed_over', label: 'Đã bàn giao vận chuyển' },
+    { key: 'shipping', label: 'Đang giao hàng' },
+    { key: 'completed', label: 'Giao thành công' }
+  ];
+
   var STATUS_LABELS = {
     pending: 'Chờ xác nhận',
     confirmed: 'Đã xác nhận',
     preparing: 'Đang chuẩn bị',
     processing: 'Đang chuẩn bị',
     handed_over: 'Đã bàn giao vận chuyển',
+    handedover: 'Đã bàn giao vận chuyển',
+    dispatched: 'Đã bàn giao vận chuyển',
     shipping: 'Đang giao hàng',
     delivering: 'Đang giao hàng',
     completed: 'Giao thành công',
     delivered: 'Giao thành công',
     cancelled: 'Đã hủy',
+    canceled: 'Đã hủy',
     returned: 'Yêu cầu đổi trả',
     return: 'Yêu cầu đổi trả'
   };
+
+  var STATUS_RANK = {
+    pending: 1,
+    confirmed: 2,
+    preparing: 3,
+    handed_over: 4,
+    shipping: 5,
+    completed: 6,
+    cancelled: 7,
+    returned: 7
+  };
+
   var STATUS_TABS = [
     ['all', 'Tất cả'],
     ['pending', 'Chờ xác nhận'],
@@ -54,6 +78,7 @@
   var addressFormOpen = false;
   var addressEditIndex = -1;
   var selectedOrder = '';
+  var lastBackendSyncAt = 0;
   var compareSearch = '';
   var historyFilter = { day: '', month: '', year: '' };
   var warrantyFormOpen = false;
@@ -64,16 +89,193 @@
   var voucherFilter = 'available';
   var notificationFilter = 'all';
 
+  function normalizeOrderKey(code) {
+    return String(code == null ? '' : code).replace(/^#+/, '').trim().toUpperCase();
+  }
+
+  function formatOrderCode(code) {
+    var key = normalizeOrderKey(code);
+    return key ? ('#' + key) : '';
+  }
+
+  function normalizeOrderStatus(status) {
+    var s = String(status || 'pending').trim().toLowerCase();
+    if (s === 'confirmed') return 'confirmed';
+    if (s === 'preparing' || s === 'processing') return 'preparing';
+    if (s === 'handed_over' || s === 'handedover' || s === 'dispatched') return 'handed_over';
+    if (s === 'shipping' || s === 'delivering') return 'shipping';
+    if (s === 'completed' || s === 'delivered') return 'completed';
+    if (s === 'cancelled' || s === 'canceled') return 'cancelled';
+    if (s === 'returned' || s === 'return') return 'returned';
+    return 'pending';
+  }
+
+  function getStatusRank(status) {
+    return STATUS_RANK[normalizeOrderStatus(status)] || 1;
+  }
+
+  function parseTimestampMs(value) {
+    if (!value) return 0;
+    if (value instanceof Date) return Number.isNaN(value.getTime()) ? 0 : value.getTime();
+    var str = String(value).trim();
+    if (!str) return 0;
+    if (/^\d{4}-\d{2}-\d{2} \d{2}:\d{2}/.test(str)) {
+      str = str.replace(' ', 'T');
+    } else if (/^\d{4}-\d{2}-\d{2}$/.test(str)) {
+      str = str + 'T00:00:00';
+    }
+    var ms = new Date(str).getTime();
+    return Number.isNaN(ms) ? 0 : ms;
+  }
+
+  function normalizeOrderRecord(order) {
+    if (!order || typeof order !== 'object') return null;
+    var formattedCode = formatOrderCode(order.order_code || order.id);
+    if (!formattedCode) return null;
+    var normStatus = normalizeOrderStatus(order.status);
+    var copy = Object.assign({}, order);
+    if (typeof order.id === 'number' && !copy.db_id) {
+      copy.db_id = order.id;
+    }
+    copy.id = formattedCode;
+    copy.order_code = formattedCode;
+    copy.status = normStatus;
+    copy.payment_status = String(order.payment_status || (normStatus === 'completed' ? 'paid' : 'pending'));
+    copy.cancel_reason = String(order.cancel_reason || '');
+    copy.status_history = Array.isArray(order.status_history) ? order.status_history.slice() : [];
+    copy.items = Array.isArray(order.items) ? order.items.slice() : [];
+    return copy;
+  }
+
+  function mergeStatusHistories(histA, histB) {
+    var combined = [];
+    var seen = {};
+    [histA, histB].forEach(function (list) {
+      if (!Array.isArray(list)) return;
+      list.forEach(function (ev) {
+        if (!ev || typeof ev !== 'object' || !ev.status) return;
+        var norm = normalizeOrderStatus(ev.status);
+        var key = norm + '|' + String(ev.timestamp || '');
+        if (seen[key]) return;
+        seen[key] = true;
+        combined.push(Object.assign({}, ev, { status: norm }));
+      });
+    });
+    combined.sort(function (a, b) {
+      return parseTimestampMs(a.timestamp) - parseTimestampMs(b.timestamp);
+    });
+    return combined;
+  }
+
+  function mergeOrderRecords(existing, incoming, incomingFromServer) {
+    var a = normalizeOrderRecord(existing);
+    var b = normalizeOrderRecord(incoming);
+    if (!a) return b;
+    if (!b) return a;
+
+    var rankA = getStatusRank(a.status);
+    var rankB = getStatusRank(b.status);
+    var updA = parseTimestampMs(a.updated_at);
+    var updB = parseTimestampMs(b.updated_at);
+    var tsA = parseTimestampMs(a.updated_at || a.created_at);
+    var tsB = parseTimestampMs(b.updated_at || b.created_at);
+
+    var incomingWins = false;
+    if (rankB > rankA) {
+      incomingWins = true;
+    } else if (rankA > rankB) {
+      incomingWins = false;
+    } else if (updB > updA) {
+      incomingWins = true;
+    } else if (updA > updB) {
+      incomingWins = false;
+    } else if (tsB > tsA) {
+      incomingWins = true;
+    } else if (tsA > tsB) {
+      incomingWins = false;
+    } else {
+      incomingWins = Boolean(incomingFromServer);
+    }
+
+    var winner = incomingWins ? b : a;
+    var loser = incomingWins ? a : b;
+    var canonicalCode = formatOrderCode(winner.order_code || winner.id || loser.order_code || loser.id);
+    var mergedUpdatedAt = updB >= updA
+      ? (b.updated_at || a.updated_at || winner.created_at || loser.created_at || '')
+      : (a.updated_at || b.updated_at || winner.created_at || loser.created_at || '');
+
+    var merged = Object.assign({}, loser, winner, {
+      id: canonicalCode,
+      order_code: canonicalCode,
+      db_id: winner.db_id || loser.db_id || 0,
+      status: normalizeOrderStatus(winner.status),
+      payment_status: winner.payment_status || loser.payment_status || (normalizeOrderStatus(winner.status) === 'completed' ? 'paid' : 'pending'),
+      cancel_reason: winner.cancel_reason || loser.cancel_reason || '',
+      status_history: mergeStatusHistories(loser.status_history, winner.status_history),
+      items: (Array.isArray(winner.items) && winner.items.length) ? winner.items : (Array.isArray(loser.items) ? loser.items : []),
+      updated_at: mergedUpdatedAt
+    });
+    return merged;
+  }
+
   function escapeHtml(value) {
     return String(value == null ? '' : value).replace(/[&<>"']/g, function (char) {
       return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[char];
     });
   }
 
+  function getAuthenticatedUser() {
+    var user = null;
+    if (window.VLU_AUTH && typeof window.VLU_AUTH.getUser === 'function') {
+      user = window.VLU_AUTH.getUser();
+    } else {
+      user = readJson('vlu_user', null);
+    }
+    if (!user || typeof user !== 'object') return null;
+    if (user.isGuest === true) return null;
+    var idStr = String(user.id == null ? '' : user.id).trim().toLowerCase();
+    var uname = String(user.username || '').trim().toLowerCase();
+    var email = String(user.email || '').trim().toLowerCase();
+    if (idStr === 'guest' || uname === 'guest' || email === 'guest@vluflagship.vn') return null;
+    var numId = Number(user.id);
+    if (!Number.isFinite(numId) || numId <= 0) return null;
+    return user;
+  }
+
+  function redirectGuestToLogin() {
+    try {
+      localStorage.removeItem('vlu_orders_guest');
+      localStorage.removeItem('vlu_account_guest');
+    } catch (e) {}
+    if (window.location && typeof window.location.replace === 'function') {
+      window.location.replace('login.html?next=account.html');
+    } else {
+      window.location.href = 'login.html?next=account.html';
+    }
+  }
+
   function currentIdentity(user) {
-    var identity = user && (user.username || user.email || user.id);
-    if (!identity) return 'guest';
-    return String(identity).trim().toLowerCase().replace(/[^a-z0-9._@-]+/g, '_') || 'guest';
+    if (!user || user.isGuest) return '';
+    var numId = Number(user.id);
+    if (!Number.isFinite(numId) || numId <= 0) return '';
+    return String(numId);
+  }
+
+  function isOrderOwnedByUser(order, user) {
+    if (!order || !user) return false;
+    var uid = currentIdentity(user);
+    if (!uid) return false;
+    var rawOrderUid = String(order.user_id == null ? '' : order.user_id).trim().toLowerCase();
+    var rawDbUid = order.db_user_id != null ? String(order.db_user_id).trim().toLowerCase() : '';
+    var rawOrderIdent = String(order.user_identity == null ? '' : order.user_identity).trim().toLowerCase();
+    if (rawOrderUid === 'guest' || rawOrderIdent === 'guest') return false;
+    if (rawOrderUid === '' && rawDbUid === '' && rawOrderIdent === '') return false;
+    if (rawOrderUid === uid || rawDbUid === uid) return true;
+    var uname = String(user.username || '').trim().toLowerCase();
+    var uemail = String(user.email || '').trim().toLowerCase();
+    if (uname && (rawOrderUid === uname || rawOrderIdent === uname)) return true;
+    if (uemail && (rawOrderUid === uemail || rawOrderIdent === uemail)) return true;
+    return false;
   }
 
   function readJson(key, fallback) {
@@ -190,10 +392,12 @@
   function reconcilePoints() {
     var changed = false;
     orders().forEach(function (order) {
-      if (['completed', 'delivered'].indexOf(String(order.status || '').toLowerCase()) === -1) return;
-      var source = 'order:' + order.id;
-      if (!store.pointLedger.some(function (entry) { return entry.source === source; })) {
-        awardPoints(source, Math.floor((Number(order.total) || 0) / 100000), 'Mua hàng ' + order.id);
+      if (normalizeOrderStatus(order.status) !== 'completed') return;
+      var formattedId = formatOrderCode(order.order_code || order.id);
+      var source = 'order:' + formattedId;
+      var altSource = 'order:' + normalizeOrderKey(formattedId);
+      if (!store.pointLedger.some(function (entry) { return entry.source === source || entry.source === altSource || entry.source === ('order:' + order.id); })) {
+        awardPoints(source, Math.floor((Number(order.total) || 0) / 100000), 'Mua hàng ' + formattedId);
         changed = true;
       }
     });
@@ -324,84 +528,158 @@
     };
   }
 
-  function syncUserOrders() {
+  function persistMergedOrdersToStorage(mergedList) {
     var identity = currentIdentity(currentUser);
-    var isGuest = !currentUser || Boolean(currentUser.isGuest) || identity === 'guest';
+    if (!identity) return;
+    try {
+      localStorage.setItem('vlu_orders_' + identity, JSON.stringify(mergedList));
+    } catch (e) {}
+
+    try {
+      var globalOrders = readJson('vlu_orders', []);
+      if (!Array.isArray(globalOrders)) globalOrders = [];
+      var updatedGlobal = globalOrders.slice();
+      mergedList.forEach(function (ord) {
+        var key = normalizeOrderKey(ord.order_code || ord.id);
+        if (!key) return;
+        var gIdx = updatedGlobal.findIndex(function (g) {
+          return g && normalizeOrderKey(g.order_code || g.id) === key;
+        });
+        if (gIdx === -1) {
+          updatedGlobal.unshift(ord);
+        } else {
+          updatedGlobal[gIdx] = mergeOrderRecords(updatedGlobal[gIdx], ord, true);
+        }
+      });
+      localStorage.setItem('vlu_orders', JSON.stringify(updatedGlobal));
+    } catch (eGlobal) {}
+
+    if (store) {
+      store.orders = mergedList;
+      saveStore();
+    }
+  }
+
+  function orderStateSignature(list) {
+    if (!Array.isArray(list)) return '';
+    return list.map(function (o) {
+      if (!o) return '';
+      return normalizeOrderKey(o.order_code || o.id) + ':' + normalizeOrderStatus(o.status) + ':' + String(o.updated_at || '') + ':' + String(o.cancel_reason || '');
+    }).join('|');
+  }
+
+  function syncUserOrders(serverOrders, persistBack) {
+    var identity = currentIdentity(currentUser);
+    if (!identity) {
+      if (store) store.orders = [];
+      return [];
+    }
     var accountOrders = Array.isArray(store && store.orders) ? store.orders : [];
     var userSpecificOrders = readJson('vlu_orders_' + identity, []);
     var globalOrders = readJson('vlu_orders', []);
-    var mergedMap = {};
-    var mergedList = [];
+    var prevAccountSig = orderStateSignature(accountOrders);
+    var prevUserOrdersSig = orderStateSignature(userSpecificOrders);
 
-    function addOrderIfMatch(order, isTrusted) {
-      if (!order || !order.id) return;
-      var orderUser = String(order.user_id || 'guest').trim().toLowerCase().replace(/[^a-z0-9._@-]+/g, '_') || 'guest';
-      if (!isTrusted) {
-        if (isGuest) {
-          if (orderUser !== 'guest' && orderUser !== identity && order.user_id && order.user_id !== '0') return;
-        } else {
-          if (orderUser !== identity) return;
-        }
-      }
-      var idKey = String(order.order_code || order.id);
+    var mergedMap = {};
+    var orderKeys = [];
+
+    function mergeIfOwned(order, isFromServer) {
+      if (!order || typeof order !== 'object') return;
+      if (!isOrderOwnedByUser(order, currentUser)) return;
+      var norm = normalizeOrderRecord(order);
+      if (!norm) return;
+      var idKey = normalizeOrderKey(norm.order_code || norm.id);
+      if (!idKey) return;
       if (!mergedMap[idKey]) {
-        mergedMap[idKey] = true;
-        mergedList.push(order);
+        mergedMap[idKey] = norm;
+        orderKeys.push(idKey);
+      } else {
+        mergedMap[idKey] = mergeOrderRecords(mergedMap[idKey], norm, isFromServer);
       }
     }
 
-    if (Array.isArray(accountOrders)) accountOrders.forEach(function (o) { addOrderIfMatch(o, true); });
-    if (Array.isArray(userSpecificOrders)) userSpecificOrders.forEach(function (o) { addOrderIfMatch(o, true); });
-    if (Array.isArray(globalOrders)) globalOrders.forEach(function (o) { addOrderIfMatch(o, false); });
+    // Hợp nhất toàn bộ nguồn dữ liệu theo độ ưu tiên tiến trình trạng thái + updated_at mới nhất
+    if (Array.isArray(accountOrders)) accountOrders.forEach(function (o) { mergeIfOwned(o, false); });
+    if (Array.isArray(userSpecificOrders)) userSpecificOrders.forEach(function (o) { mergeIfOwned(o, false); });
+    if (Array.isArray(globalOrders)) globalOrders.forEach(function (o) { mergeIfOwned(o, false); });
+    if (Array.isArray(serverOrders)) serverOrders.forEach(function (o) { mergeIfOwned(o, true); });
 
+    var mergedList = orderKeys.map(function (k) { return mergedMap[k]; });
     mergedList.sort(function (a, b) {
-      return new Date(b.created_at || 0).getTime() - new Date(a.created_at || 0).getTime();
+      return parseTimestampMs(b.created_at) - parseTimestampMs(a.created_at);
     });
 
     if (store) {
       store.orders = mergedList;
     }
+
+    var nextSig = orderStateSignature(mergedList);
+    if (persistBack === true || nextSig !== prevAccountSig || nextSig !== prevUserOrdersSig) {
+      persistMergedOrdersToStorage(mergedList);
+    }
     return mergedList;
   }
 
-  function fetchOrdersFromBackend() {
-    if (typeof fetch !== 'function' || !currentUser) return;
+  function fetchOrdersFromBackend(options) {
+    var opts = options && typeof options === 'object' ? options : {};
+    if (typeof fetch !== 'function' || !currentUser) {
+      return Promise.resolve(syncUserOrders());
+    }
     var identity = currentIdentity(currentUser);
-    fetch('backend/api/orders.php?action=list&user_id=' + encodeURIComponent(identity), {
+    if (!identity) {
+      return Promise.resolve([]);
+    }
+    var now = Date.now();
+    if (!opts.force && lastBackendSyncAt && (now - lastBackendSyncAt) < 1200) {
+      return Promise.resolve(syncUserOrders());
+    }
+    lastBackendSyncAt = now;
+
+    var userIdentParam = String(currentUser.username || currentUser.email || '').trim().toLowerCase();
+    var listUrl = 'backend/api/orders.php?action=list&user_id=' + encodeURIComponent(identity) +
+      '&user_identity=' + encodeURIComponent(userIdentParam) + '&_t=' + now;
+
+    return fetch(listUrl, {
       method: 'GET',
+      cache: 'no-store',
       headers: { 'Accept': 'application/json' }
     })
       .then(function (res) { return res.json(); })
       .then(function (data) {
-        if (!data || !data.success || !Array.isArray(data.orders) || !data.orders.length) return;
-        var globalOrders = readJson('vlu_orders', []);
-        if (!Array.isArray(globalOrders)) globalOrders = [];
-        var userSpecificOrders = readJson('vlu_orders_' + identity, []);
-        if (!Array.isArray(userSpecificOrders)) userSpecificOrders = [];
-
-        data.orders.forEach(function (sqlOrder) {
-          if (!sqlOrder || !sqlOrder.id) return;
-          var gIdx = globalOrders.findIndex(function (o) { return o && String(o.id) === String(sqlOrder.id); });
-          if (gIdx === -1) globalOrders.unshift(sqlOrder);
-          else globalOrders[gIdx] = Object.assign({}, globalOrders[gIdx], sqlOrder);
-
-          var uIdx = userSpecificOrders.findIndex(function (o) { return o && String(o.id) === String(sqlOrder.id); });
-          if (uIdx === -1) userSpecificOrders.unshift(sqlOrder);
-          else userSpecificOrders[uIdx] = Object.assign({}, userSpecificOrders[uIdx], sqlOrder);
+        var serverOrders = (data && data.success && Array.isArray(data.orders)) ? data.orders : [];
+        var targetKey = opts.orderCode ? normalizeOrderKey(opts.orderCode) : '';
+        var hasTargetInList = !targetKey || serverOrders.some(function (o) {
+          return o && normalizeOrderKey(o.order_code || o.id) === targetKey;
         });
 
-        try {
-          localStorage.setItem('vlu_orders', JSON.stringify(globalOrders));
-          localStorage.setItem('vlu_orders_' + identity, JSON.stringify(userSpecificOrders));
-        } catch (e) {}
-
-        syncUserOrders();
-        saveStore();
+        if (targetKey && !hasTargetInList) {
+          var singleUrl = 'backend/api/orders.php?action=list&order_code=' + encodeURIComponent(targetKey) + '&_t=' + Date.now();
+          return fetch(singleUrl, {
+            method: 'GET',
+            cache: 'no-store',
+            headers: { 'Accept': 'application/json' }
+          })
+            .then(function (r2) { return r2.json(); })
+            .then(function (d2) {
+              if (d2 && d2.success && Array.isArray(d2.orders) && d2.orders.length) {
+                serverOrders = serverOrders.concat(d2.orders);
+              }
+              return serverOrders;
+            })
+            .catch(function () { return serverOrders; });
+        }
+        return serverOrders;
+      })
+      .then(function (serverOrders) {
+        var mergedList = syncUserOrders(serverOrders, true);
         reconcilePoints();
         render();
+        refreshOpenOrderModal();
+        return mergedList;
       })
       .catch(function () {
-        // Fallback giữ nguyên dữ liệu localStorage khi offline
+        // Fallback giữ nguyên dữ liệu localStorage đã hợp nhất khi offline
+        return syncUserOrders();
       });
   }
 
@@ -410,14 +688,19 @@
   }
 
   function statusLabel(status) {
-    return STATUS_LABELS[String(status || '').toLowerCase()] || (status || 'Chưa cập nhật');
+    var norm = normalizeOrderStatus(status);
+    return STATUS_LABELS[norm] || STATUS_LABELS[String(status || '').toLowerCase()] || 'Chờ xác nhận';
   }
 
   function statusClass(status) {
-    var key = String(status || '').toLowerCase();
-    if (['completed', 'delivered'].indexOf(key) !== -1) return 'bg-emerald-50 text-emerald-700';
-    if (['cancelled', 'returned'].indexOf(key) !== -1) return 'bg-slate-100 text-slate-600';
-    if (['handed_over', 'shipping', 'delivering'].indexOf(key) !== -1) return 'bg-blue-50 text-blue-700';
+    var key = normalizeOrderStatus(status);
+    if (key === 'completed') return 'bg-emerald-50 text-emerald-700';
+    if (key === 'cancelled') return 'bg-red-50 text-red-700';
+    if (key === 'returned') return 'bg-slate-100 text-slate-600';
+    if (key === 'shipping') return 'bg-sky-50 text-sky-700';
+    if (key === 'handed_over') return 'bg-purple-50 text-purple-700';
+    if (key === 'preparing') return 'bg-indigo-50 text-indigo-700';
+    if (key === 'confirmed') return 'bg-blue-50 text-blue-700';
     return 'bg-amber-50 text-amber-700';
   }
 
@@ -427,17 +710,23 @@
 
   function filteredOrders() {
     return orders().filter(function (order) {
-      if (orderSearch && String(order.id || '').toLowerCase().indexOf(orderSearch.toLowerCase()) === -1) return false;
-      var status = String(order.status || '').toLowerCase();
-      if (orderFilter === 'processing' && ['confirmed', 'preparing', 'processing'].indexOf(status) === -1) return false;
-      if (orderFilter === 'shipping' && ['handed_over', 'shipping', 'delivering'].indexOf(status) === -1) return false;
-      if (orderFilter === 'completed' && ['completed', 'delivered'].indexOf(status) === -1) return false;
-      if (orderFilter === 'returned' && ['returned', 'return'].indexOf(status) === -1) return false;
+      if (orderSearch) {
+        var qKey = normalizeOrderKey(orderSearch).toLowerCase();
+        var qRaw = String(orderSearch).trim().toLowerCase();
+        var ordCode = formatOrderCode(order.order_code || order.id).toLowerCase();
+        var ordKey = normalizeOrderKey(order.order_code || order.id).toLowerCase();
+        if (ordCode.indexOf(qRaw) === -1 && ordKey.indexOf(qKey) === -1) return false;
+      }
+      var status = normalizeOrderStatus(order.status);
+      if (orderFilter === 'processing' && ['confirmed', 'preparing'].indexOf(status) === -1) return false;
+      if (orderFilter === 'shipping' && ['handed_over', 'shipping'].indexOf(status) === -1) return false;
+      if (orderFilter === 'completed' && status !== 'completed') return false;
+      if (orderFilter === 'returned' && status !== 'returned') return false;
       if (orderFilter !== 'all' && ['processing', 'shipping', 'completed', 'returned'].indexOf(orderFilter) === -1 && status !== orderFilter) return false;
       if (orderDateFilter !== 'all') {
         var days = Number(orderDateFilter);
-        var createdAt = new Date(order.created_at || 0).getTime();
-        if (!days || !Number.isFinite(createdAt) || Date.now() - createdAt > days * 86400000) return false;
+        var createdAt = parseTimestampMs(order.created_at);
+        if (!days || !createdAt || Date.now() - createdAt > days * 86400000) return false;
       }
       return true;
     });
@@ -510,10 +799,10 @@
   function overviewHtml() {
     var userOrders = orders();
     var done = userOrders.filter(function (order) {
-      return ['completed', 'delivered'].indexOf(String(order.status).toLowerCase()) !== -1;
+      return normalizeOrderStatus(order.status) === 'completed';
     });
     var pending = userOrders.filter(function (order) {
-      return ['pending', 'confirmed', 'preparing', 'processing', 'handed_over', 'shipping', 'delivering'].indexOf(String(order.status).toLowerCase()) !== -1;
+      return ['pending', 'confirmed', 'preparing', 'handed_over', 'shipping'].indexOf(normalizeOrderStatus(order.status)) !== -1;
     });
     var recentProducts = store.recent.map(catalogProduct).filter(Boolean).slice(0, 4);
     var recommendations = Object.keys(products()).map(catalogProduct).filter(Boolean)
@@ -561,22 +850,20 @@
   }
 
   function orderRow(order) {
-    var id = String(order.id || '');
+    var displayCode = formatOrderCode(order.order_code || order.id);
     var items = orderItems(order);
-    var steps = ['pending', 'processing', 'shipping', 'completed'];
-    var status = String(order.status || 'pending').toLowerCase();
-    var stepIndex = status === 'confirmed' ? 1 : (status === 'delivering' ? 2 : steps.indexOf(status));
-    var canCancel = ['pending', 'confirmed', 'preparing', 'processing'].indexOf(status) !== -1;
+    var status = normalizeOrderStatus(order.status);
+    var canCancel = ['pending', 'confirmed', 'preparing'].indexOf(status) !== -1;
     var itemMarkup = items.map(function (item) {
       return '<div class="account-order-product"><img class="account-product-img" src="' + escapeHtml(itemImage(item)) +
         '" alt="" loading="lazy" data-account-product-image><div class="min-w-0 flex-1"><p class="truncate text-xs font-extrabold">' +
         escapeHtml(item.name) + '</p><p class="mt-1 text-[10px] text-slate-500">' + escapeHtml(item.color || 'Mặc định') +
-        ' · ' + escapeHtml(item.variant || 'Tiêu chuẩn') + ' · ×' + escapeHtml(item.quantity || 1) +
+        ' · ' + escapeHtml(item.variant || item.storage || 'Tiêu chuẩn') + ' · ×' + escapeHtml(item.quantity || 1) +
         '</p></div><strong class="shrink-0 text-xs">' + money((Number(item.price) || 0) * (Number(item.quantity) || 1)) + '</strong></div>';
     }).join('');
-    return '<article class="account-order-card"><div class="flex flex-wrap items-start justify-between gap-3">' +
-      '<div class="min-w-0"><div class="flex flex-wrap items-center gap-2"><strong class="text-sm text-slate-900">#' +
-      escapeHtml(id) + '</strong><span class="account-badge ' + statusClass(status) + '">' + escapeHtml(statusLabel(status)) +
+    return '<article class="account-order-card" data-order-code="' + escapeHtml(displayCode) + '"><div class="flex flex-wrap items-start justify-between gap-3">' +
+      '<div class="min-w-0"><div class="flex flex-wrap items-center gap-2"><strong class="text-sm text-slate-900">' +
+      escapeHtml(displayCode) + '</strong><span class="account-badge ' + statusClass(status) + '">' + escapeHtml(statusLabel(status)) +
       '</span></div><p class="account-muted mt-1">Ngày đặt ' + dateText(order.created_at) + '</p></div>' +
       '<div class="text-right"><span class="account-eyebrow">TỔNG THANH TOÁN</span><p class="text-sm font-black text-brand">' +
       money(order.total) + '</p></div></div>' +
@@ -585,66 +872,126 @@
       (order.shipping_method === 'pickup' ? 'Nhận tại cửa hàng VLU' : 'Giao tận nơi') + '</strong>' +
       (order.store_location ? ' · ' + escapeHtml(order.store_location) : '') + '</p><p>Thanh toán: <strong class="text-slate-700">' +
       escapeHtml(order.payment_method || 'Chưa cập nhật') + '</strong></p></div>' +
+      (status === 'cancelled' && order.cancel_reason ? '<div class="mt-3 rounded-xl border border-red-200 bg-red-50/70 px-3 py-2 text-[11px] font-semibold text-red-700">Lý do hủy: ' + escapeHtml(order.cancel_reason) + '</div>' : '') +
       '<div class="mt-4 flex flex-wrap justify-end gap-2"><button class="account-button" data-action="order-detail" data-id="' +
-      escapeHtml(id) + '">Xem chi tiết</button>' +
-      (canCancel ? '<button class="account-button account-button-danger" data-action="cancel-order" data-id="' + escapeHtml(id) + '">Hủy đơn hàng</button>' : '') +
-      (['completed', 'delivered'].indexOf(status) !== -1 ? '<button class="account-button" data-action="review-order" data-id="' + escapeHtml(id) + '">Đánh giá</button>' : '') +
-      '<button class="account-button account-button-primary" data-action="buy-again" data-id="' + escapeHtml(id) + '">Mua lại</button></div></article>';
+      escapeHtml(displayCode) + '">Xem chi tiết</button>' +
+      (canCancel ? '<button class="account-button account-button-danger" data-action="cancel-order" data-id="' + escapeHtml(displayCode) + '">Hủy đơn hàng</button>' : '') +
+      (status === 'completed' ? '<button class="account-button" data-action="review-order" data-id="' + escapeHtml(displayCode) + '">Đánh giá</button>' : '') +
+      '<button class="account-button account-button-primary" data-action="buy-again" data-id="' + escapeHtml(displayCode) + '">Mua lại</button></div></article>';
   }
 
-  function openOrderModal(orderId) {
-    var order = orders().find(function (entry) { return String(entry.id) === String(orderId); });
-    if (!order) return;
-    closeOrderModal();
-    var steps = [
-      ['pending', 'Chờ xác nhận'],
-      ['confirmed', 'Đã xác nhận'],
-      ['preparing', 'Đang chuẩn bị'],
-      ['handed_over', 'Đã bàn giao vận chuyển'],
-      ['shipping', 'Đang giao hàng'],
-      ['completed', 'Giao thành công']
-    ];
-    var current = String(order.status || 'pending').toLowerCase();
-    if (current === 'processing') current = 'preparing';
-    if (current === 'delivering') current = 'shipping';
-    if (current === 'delivered') current = 'completed';
-    var currentIndex = steps.findIndex(function (step) { return step[0] === current; });
-    var progress = currentIndex < 0 ? -1 : currentIndex;
-    var timeline = steps.map(function (step, index) {
-      return '<li class="account-timeline-step' + (index <= progress ? ' is-complete' : '') + '">' +
-        '<span class="account-timeline-dot"></span><span>' + step[1] + '</span></li>';
+  function buildOrderModalMarkup(order) {
+    var displayCode = formatOrderCode(order.order_code || order.id);
+    var current = normalizeOrderStatus(order.status);
+    var isCancelled = current === 'cancelled';
+    var isReturned = current === 'returned';
+    var currentIndex = ORDER_PIPELINE_STEPS.findIndex(function (step) { return step.key === current; });
+    var historyStatuses = {};
+    if (Array.isArray(order.status_history)) {
+      order.status_history.forEach(function (ev) {
+        if (ev && ev.status) historyStatuses[normalizeOrderStatus(ev.status)] = true;
+      });
+    }
+
+    var timeline = ORDER_PIPELINE_STEPS.map(function (step, index) {
+      var stepCls = 'account-timeline-step';
+      var dotInner = '';
+      if (isCancelled || isReturned) {
+        if (historyStatuses[step.key]) {
+          stepCls += ' is-complete is-cancelled-past';
+          dotInner = '✓';
+        } else {
+          stepCls += ' is-cancelled';
+        }
+      } else if (currentIndex >= 0) {
+        if (index < currentIndex) {
+          stepCls += ' is-complete';
+          dotInner = '✓';
+        } else if (index === currentIndex) {
+          stepCls += ' is-active';
+          dotInner = '<span class="account-timeline-dot-core" aria-hidden="true"></span>';
+        } else {
+          stepCls += ' is-upcoming';
+        }
+      }
+      return '<li class="' + stepCls + '" data-step-key="' + escapeHtml(step.key) + '" data-step-index="' + (index + 1) + '">' +
+        '<span class="account-timeline-dot" aria-hidden="true">' + dotInner + '</span>' +
+        '<span class="account-timeline-label">' + escapeHtml(step.label) + '</span></li>';
     }).join('');
+
+    var cancelBannerHtml = isCancelled
+      ? '<div class="account-cancel-banner" role="alert"><strong>Đơn hàng đã bị hủy</strong><p>Lý do hủy: ' +
+        escapeHtml(order.cancel_reason || 'Đơn hàng đã được hủy theo yêu cầu.') + '</p></div>'
+      : '';
+
     var items = orderItems(order).map(function (item) {
       return '<div class="account-order-product"><img class="account-product-img" src="' + escapeHtml(itemImage(item)) +
         '" alt="" data-account-product-image><div class="min-w-0 flex-1"><p class="text-xs font-extrabold">' +
         escapeHtml(item.name) + '</p><p class="account-muted">' + escapeHtml(item.color || 'Mặc định') + ' · ' +
-        escapeHtml(item.variant || 'Tiêu chuẩn') + ' · ×' + escapeHtml(item.quantity || 1) +
+        escapeHtml(item.variant || item.storage || 'Tiêu chuẩn') + ' · ×' + escapeHtml(item.quantity || 1) +
         '</p></div><strong class="text-xs">' + money((Number(item.price) || 0) * (Number(item.quantity) || 1)) + '</strong></div>';
     }).join('');
-    var modal = document.createElement('div');
-    modal.id = 'accountOrderModal';
-    modal.className = 'account-modal-backdrop';
-    modal.innerHTML = '<section class="account-modal" role="dialog" aria-modal="true" aria-labelledby="orderModalTitle">' +
-      '<div class="flex items-start justify-between gap-3"><div><p class="account-eyebrow">CHI TIẾT ĐƠN HÀNG</p><h2 id="orderModalTitle" class="mt-1 text-lg font-black">#' +
-      escapeHtml(order.id) + '</h2><p class="account-muted mt-1">' + dateText(order.created_at) + '</p></div>' +
+
+    return '<section class="account-modal account-modal-order" role="dialog" aria-modal="true" aria-labelledby="orderModalTitle">' +
+      '<div class="flex items-start justify-between gap-3"><div><p class="account-eyebrow">CHI TIẾT ĐƠN HÀNG</p>' +
+      '<div class="mt-1 flex flex-wrap items-center gap-2"><h2 id="orderModalTitle" class="text-lg font-black">' +
+      escapeHtml(displayCode) + '</h2><span class="account-badge ' + statusClass(current) + '">' + escapeHtml(statusLabel(current)) +
+      '</span></div><p class="account-muted mt-1">' + dateText(order.created_at) +
+      (order.updated_at ? ' · Cập nhật ' + dateTimeText(order.updated_at) : '') + '</p></div>' +
       '<button class="account-modal-close" type="button" data-action="close-order-modal" aria-label="Đóng">×</button></div>' +
-      '<div class="mt-5"><h3 class="account-card-title">Theo dõi trạng thái · ' + escapeHtml(statusLabel(current)) + '</h3>' +
-      '<ol class="account-timeline">' + timeline + '</ol></div><div class="mt-5"><h3 class="account-card-title">Sản phẩm</h3>' +
-      '<div class="mt-2 divide-y divide-slate-100">' + items + '</div></div>' +
+      '<div class="mt-5"><h3 class="account-card-title" data-order-status-heading>Theo dõi trạng thái · ' + escapeHtml(statusLabel(current)) + '</h3>' +
+      '<div class="account-timeline-wrap"><ol class="account-timeline" data-current-status="' + escapeHtml(current) +
+      '" data-current-step="' + (currentIndex >= 0 ? (currentIndex + 1) : 0) + '">' + timeline + '</ol></div>' +
+      cancelBannerHtml + '</div><div class="mt-5"><h3 class="account-card-title">Sản phẩm</h3>' +
+      '<div class="mt-2 divide-y divide-slate-100">' + (items || '<p class="account-muted py-2">Không có thông tin sản phẩm.</p>') + '</div></div>' +
       '<div class="mt-5 grid gap-2 rounded-2xl bg-slate-50 p-4 text-xs sm:grid-cols-2"><p>Người nhận: <strong>' +
       escapeHtml(order.customer_name || '—') + '</strong></p><p>Điện thoại: <strong>' + escapeHtml(order.customer_phone || '—') +
       '</strong></p><p>Hình thức nhận: <strong>' + (order.shipping_method === 'pickup' ? 'Nhận tại cửa hàng VLU' : 'Giao tận nơi') +
       '</strong></p><p>Thanh toán: <strong>' + escapeHtml(order.payment_method || '—') + '</strong></p><p class="sm:col-span-2">Địa chỉ: <strong>' +
       escapeHtml(order.customer_address || order.store_location || '—') + '</strong></p><p class="sm:col-span-2 text-right text-base font-black text-brand">Tổng: ' +
       money(order.total) + '</p></div></section>';
+  }
+
+  function refreshOpenOrderModal() {
+    if (!selectedOrder) return;
+    var modal = document.getElementById('accountOrderModal');
+    if (!modal) return;
+    var targetKey = normalizeOrderKey(selectedOrder);
+    var latestOrder = orders().find(function (entry) {
+      return entry && normalizeOrderKey(entry.order_code || entry.id) === targetKey;
+    });
+    if (!latestOrder) return;
+    modal.innerHTML = buildOrderModalMarkup(latestOrder);
+  }
+
+  function openOrderModal(orderId) {
+    var targetKey = normalizeOrderKey(orderId);
+    var order = orders().find(function (entry) {
+      return entry && normalizeOrderKey(entry.order_code || entry.id) === targetKey;
+    });
+    if (!order) return;
+    closeOrderModal();
+    selectedOrder = formatOrderCode(order.order_code || order.id);
+
+    var modal = document.createElement('div');
+    modal.id = 'accountOrderModal';
+    modal.className = 'account-modal-backdrop';
+    modal.innerHTML = buildOrderModalMarkup(order);
     modal.addEventListener('click', function (event) {
-      if (event.target === modal || event.target.closest('[data-action="close-order-modal"]')) closeOrderModal();
+      if (event.target === modal || (event.target.closest && event.target.closest('[data-action="close-order-modal"]'))) {
+        closeOrderModal();
+      }
     });
     document.body.appendChild(modal);
-    modal.querySelector('[data-action="close-order-modal"]').focus();
+    var closeBtn = modal.querySelector('[data-action="close-order-modal"]');
+    if (closeBtn && typeof closeBtn.focus === 'function') closeBtn.focus();
+
+    // Đồng bộ nhanh ngay lập tức với backend/api/orders.php để cập nhật trạng thái thực tế mới nhất
+    fetchOrdersFromBackend({ force: true, orderCode: selectedOrder });
   }
 
   function closeOrderModal() {
+    selectedOrder = '';
     var modal = document.getElementById('accountOrderModal');
     if (modal) modal.remove();
   }
@@ -849,7 +1196,7 @@
   function warrantyHtml() {
     var list = [];
     orders().filter(function (order) {
-      return ['completed', 'delivered'].indexOf(String(order.status).toLowerCase()) !== -1;
+      return normalizeOrderStatus(order.status) === 'completed';
     }).forEach(function (order) {
       orderItems(order).forEach(function (item) {
         var start = new Date(order.created_at || Date.now());
@@ -862,27 +1209,29 @@
       '<div class="mb-3"><h3 class="account-card-title">Tạo yêu cầu bảo hành / đổi trả</h3><p class="account-muted mt-1">Yêu cầu được lưu riêng trên thiết bị và cần cửa hàng xác nhận tiếp nhận.</p></div>' +
       '<div class="grid gap-3 sm:grid-cols-2"><label class="account-field"><span>Sản phẩm và đơn hàng</span><select class="account-select" name="purchase" required><option value="">Chọn sản phẩm đã giao</option>' +
       list.map(function (entry) {
-        var value = String(entry.order.id) + '::' + String(entry.item.id || entry.item.name);
+        var code = formatOrderCode(entry.order.order_code || entry.order.id);
+        var value = code + '::' + String(entry.item.id || entry.item.name);
         return '<option value="' + escapeHtml(value) + '"' + (value === warrantySelectedPurchase ? ' selected' : '') + '>' +
-          escapeHtml(entry.item.name + ' · ' + entry.order.id) + '</option>';
+          escapeHtml(entry.item.name + ' · ' + code) + '</option>';
       }).join('') + '</select></label><label class="account-field"><span>Loại yêu cầu</span><select class="account-select" name="requestType">' +
       option('warranty', 'Bảo hành lỗi kỹ thuật', warrantyRequestType) + option('return', 'Đổi trả 1-1', warrantyRequestType) +
       '</select></label><label class="account-field sm:col-span-2"><span>Mô tả chi tiết tình trạng máy</span><textarea class="account-textarea" name="message" required minlength="10" placeholder="Mô tả lỗi hoặc tình trạng sản phẩm..."></textarea></label>' +
       '</div><div class="mt-3 flex justify-end gap-2"><button type="button" class="account-button" data-action="close-warranty-form">Đóng</button>' +
       '<button class="account-button account-button-primary" type="submit">Gửi yêu cầu</button></div></form>' : '';
     var cards = list.length ? '<div class="account-warranty-grid">' + list.map(function (entry) {
+      var code = formatOrderCode(entry.order.order_code || entry.order.id);
       var product = catalogProduct(entry.item.id);
       var image = product ? product.image : itemImage(entry.item);
       var progress = Math.max(0, Math.min(100, Math.round(entry.remaining / 365 * 100)));
       return '<article class="account-warranty-card"><div class="flex items-start gap-3"><img class="account-warranty-image" src="' +
         escapeHtml(image) + '" alt="' + escapeHtml(entry.item.name) + '" data-account-product-image><div class="min-w-0 flex-1"><span class="account-eyebrow">BẢO HÀNH ĐIỆN TỬ · 12 THÁNG</span>' +
-        '<h3 class="mt-1 text-sm font-black">' + escapeHtml(entry.item.name) + '</h3><p class="account-muted mt-1">Đơn ' + escapeHtml(entry.order.id) + '</p></div></div>' +
+        '<h3 class="mt-1 text-sm font-black">' + escapeHtml(entry.item.name) + '</h3><p class="account-muted mt-1">Đơn ' + escapeHtml(code) + '</p></div></div>' +
         '<div class="account-warranty-dates"><span>Bắt đầu<strong>' + dateText(entry.start) + '</strong></span><span>Hết hạn<strong>' + dateText(entry.expiry) + '</strong></span></div>' +
         '<div class="account-progress-track"><span style="width:' + progress + '%"></span></div><p class="account-muted mt-1">' +
         (entry.remaining ? 'Còn ' + entry.remaining + ' ngày bảo hành' : 'Đã hết thời hạn bảo hành 12 tháng theo ngày đặt ghi nhận') + '</p>' +
         '<div class="mt-3 flex flex-wrap gap-2"><button class="account-button account-button-primary" data-action="warranty-request" data-type="warranty" data-order="' +
-        escapeHtml(entry.order.id) + '" data-item="' + escapeHtml(entry.item.id || entry.item.name) + '">Gửi yêu cầu bảo hành</button>' +
-        '<button class="account-button" data-action="warranty-request" data-type="return" data-order="' + escapeHtml(entry.order.id) +
+        escapeHtml(code) + '" data-item="' + escapeHtml(entry.item.id || entry.item.name) + '">Gửi yêu cầu bảo hành</button>' +
+        '<button class="account-button" data-action="warranty-request" data-type="return" data-order="' + escapeHtml(code) +
         '" data-item="' + escapeHtml(entry.item.id || entry.item.name) + '">Gửi yêu cầu đổi trả</button></div></article>';
     }).join('') + '</div>' : emptyState('⌑', 'Sản phẩm đã giao thành công sẽ hiển thị tại đây.');
     var tickets = store.tickets.filter(function (ticket) { return ticket.type === 'warranty' || ticket.type === 'return'; });
@@ -900,8 +1249,9 @@
     var isRejected = curSt === 'Từ chối';
     var isRefunded = curSt === 'Đã hoàn tiền';
     var current = isRefunded ? steps.length - 1 : Math.max(0, steps.indexOf(curSt));
+    var ticketOrderCode = ticket.orderId ? formatOrderCode(ticket.orderId) : '—';
     return '<div class="account-list-row"><div><p class="text-xs font-extrabold">' + escapeHtml(ticket.subject) + '</p>' +
-      '<p class="mt-1 text-[10px] text-slate-500">' + escapeHtml(ticket.typeLabel || ticket.type) + ' · Đơn ' + escapeHtml(ticket.orderId || '—') +
+      '<p class="mt-1 text-[10px] text-slate-500">' + escapeHtml(ticket.typeLabel || ticket.type) + ' · Đơn ' + escapeHtml(ticketOrderCode) +
       ' · ' + dateTimeText(ticket.createdAt) + '</p><p class="account-muted mt-1">' + escapeHtml(ticket.message || '') + '</p>' +
       (ticket.adminNote ? '<p class="mt-1.5 rounded-lg bg-slate-50 px-2.5 py-1.5 text-[11px] font-semibold text-slate-700">Phản hồi từ VLU: ' + escapeHtml(ticket.adminNote) + '</p>' : '') +
       '<ol class="account-ticket-steps">' + steps.map(function (step, index) {
@@ -914,7 +1264,7 @@
     if (historyFilter.day) list = list.filter(function (order) { return String(order.created_at || '').slice(0, 10) === historyFilter.day; });
     if (historyFilter.month) list = list.filter(function (order) { return String(order.created_at || '').slice(0, 7) === historyFilter.month; });
     if (historyFilter.year) list = list.filter(function (order) { return String(order.created_at || '').slice(0, 4) === historyFilter.year; });
-    var completed = orders().filter(function (order) { return ['completed', 'delivered'].indexOf(String(order.status).toLowerCase()) !== -1; });
+    var completed = orders().filter(function (order) { return normalizeOrderStatus(order.status) === 'completed'; });
     var total = completed.reduce(function (sum, order) { return sum + (Number(order.total) || 0); }, 0);
     var itemCount = completed.reduce(function (sum, order) {
       return sum + orderItems(order).reduce(function (count, item) { return count + (Number(item.quantity) || 1); }, 0);
@@ -927,22 +1277,24 @@
       '<div class="flex items-end gap-2"><button class="account-button account-button-primary" type="submit">Tra cứu</button><button class="account-button" type="button" data-action="clear-history-filter">Xóa lọc</button></div></form>' +
       '<div class="mt-5 account-table-wrap"><table class="account-table"><thead><tr><th>Mã đơn</th><th>Ngày</th><th>Sản phẩm</th><th>Thanh toán</th><th>Tổng</th><th></th></tr></thead><tbody>' +
       (list.length ? list.map(function (order) {
-        return '<tr><td>#' + escapeHtml(order.id) + '</td><td>' + dateText(order.created_at) + '</td><td>' +
+        var displayCode = formatOrderCode(order.order_code || order.id);
+        return '<tr><td>' + escapeHtml(displayCode) + '</td><td>' + dateText(order.created_at) + '</td><td>' +
           escapeHtml(orderItems(order).map(function (item) { return item.name; }).join(', ') || '—') + '</td><td>' +
           escapeHtml(order.payment_method || '—') + '</td><td><strong>' + money(order.total) + '</strong></td><td>' +
-          '<button class="account-button" data-action="order-detail" data-id="' + escapeHtml(order.id) + '">Chi tiết</button> ' +
-          '<button class="account-button" data-action="download-invoice" data-id="' + escapeHtml(order.id) + '">Tải hóa đơn</button> ' +
-          '<button class="account-button" data-action="buy-again" data-id="' + escapeHtml(order.id) + '">Mua lại</button></td></tr>';
+          '<button class="account-button" data-action="order-detail" data-id="' + escapeHtml(displayCode) + '">Chi tiết</button> ' +
+          '<button class="account-button" data-action="download-invoice" data-id="' + escapeHtml(displayCode) + '">Tải hóa đơn</button> ' +
+          '<button class="account-button" data-action="buy-again" data-id="' + escapeHtml(displayCode) + '">Mua lại</button></td></tr>';
       }).join('') : '<tr><td colspan="6">' + emptyState('↻', 'Chưa có lịch sử mua sắm.') + '</td></tr>') + '</tbody></table></div></section>';
   }
 
   function reviewsHtml() {
     var eligible = [];
     orders().filter(function (order) {
-      return ['completed', 'delivered'].indexOf(String(order.status).toLowerCase()) !== -1;
+      return normalizeOrderStatus(order.status) === 'completed';
     }).forEach(function (order) {
+      var displayCode = formatOrderCode(order.order_code || order.id);
       orderItems(order).forEach(function (item) {
-        eligible.push({ id: String(order.id) + ':' + String(item.id || item.name), orderId: order.id, productId: item.id, name: item.name, image: item.image });
+        eligible.push({ id: displayCode + ':' + String(item.id || item.name), orderId: displayCode, productId: item.id, name: item.name, image: item.image });
       });
     });
     var pending = eligible.filter(function (item) {
@@ -1181,12 +1533,16 @@
     document.getElementById('accountSidebar').classList.remove('is-open');
     document.getElementById('mobileNavToggle').setAttribute('aria-expanded', 'false');
     render();
+    if (['overview', 'orders', 'history', 'warranty', 'reviews'].indexOf(id) !== -1) {
+      fetchOrdersFromBackend({ force: id === 'orders' });
+    }
   }
 
   function saveOrders(list) {
     var identity = currentIdentity(currentUser);
+    if (!identity) return false;
     var userFiltered = list.filter(function (order) {
-      return String(order.user_id || 'guest') === identity;
+      return isOrderOwnedByUser(order, currentUser);
     });
     try {
       localStorage.setItem('vlu_orders', JSON.stringify(list));
@@ -1236,14 +1592,16 @@
   }
 
   function downloadInvoice(orderId) {
-    var order = orders().find(function (entry) { return String(entry.id) === String(orderId); });
+    var targetKey = normalizeOrderKey(orderId);
+    var order = orders().find(function (entry) { return entry && normalizeOrderKey(entry.order_code || entry.id) === targetKey; });
     if (!order) return;
     closeInvoiceModal();
-    var paid = ['completed', 'delivered'].indexOf(String(order.status || '').toLowerCase()) !== -1;
+    var displayCode = formatOrderCode(order.order_code || order.id);
+    var paid = normalizeOrderStatus(order.status) === 'completed' || String(order.payment_status || '').toLowerCase() === 'paid';
     var items = orderItems(order).map(function (item) {
       var quantity = Number(item.quantity) || 1;
       var price = Number(item.price) || 0;
-      return '<tr><td>' + escapeHtml(item.name) + '<br><small>' + escapeHtml(item.color || '') + ' ' + escapeHtml(item.variant || '') +
+      return '<tr><td>' + escapeHtml(item.name) + '<br><small>' + escapeHtml(item.color || '') + ' ' + escapeHtml(item.variant || item.storage || '') +
         '</small></td><td>' + quantity + '</td><td>' + money(price) + '</td><td>' + money(price * quantity) + '</td></tr>';
     }).join('');
     var modal = document.createElement('div');
@@ -1253,7 +1611,7 @@
       '<button class="account-button" type="button" data-action="close-invoice">Đóng</button><button class="account-button account-button-primary" type="button" data-action="print-invoice">In / Lưu PDF</button></div>' +
       '<article class="account-invoice-paper"><header class="account-invoice-header"><img src="frontend/assets/images/logo.png" alt="VLU FLAGSHIP STORE"><div><strong>VLU FLAGSHIP STORE</strong><span>BẢNG KÊ ĐƠN HÀNG</span></div>' +
       '<span class="account-invoice-status' + (paid ? ' is-paid' : '') + '">' + (paid ? 'ĐÃ THANH TOÁN' : 'ĐANG XỬ LÝ') + '</span></header>' +
-      '<h2 id="invoiceTitle">Thông tin giao dịch</h2><div class="account-invoice-info"><p>Mã đơn<strong>' + escapeHtml(order.id) + '</strong></p>' +
+      '<h2 id="invoiceTitle">Thông tin giao dịch</h2><div class="account-invoice-info"><p>Mã đơn<strong>' + escapeHtml(displayCode) + '</strong></p>' +
       '<p>Thời gian đặt<strong>' + dateTimeText(order.created_at) + '</strong></p><p>Người nhận<strong>' + escapeHtml(order.customer_name || profileName()) + '</strong></p>' +
       '<p>Điện thoại<strong>' + escapeHtml(order.customer_phone || currentUser.phone || '—') + '</strong></p><p>Thanh toán<strong>' +
       escapeHtml(order.payment_method || '—') + '</strong></p><p>Nhận hàng<strong>' + escapeHtml(order.customer_address || order.store_location || '—') + '</strong></p></div>' +
@@ -1436,26 +1794,52 @@
       }
       if (action === 'cancel-order') {
         if (!window.confirm('Hủy đơn hàng? Chỉ đơn đang chờ xác nhận/đang chuẩn bị có thể hủy.')) return;
-        var all = readJson('vlu_orders', []);
-        var identity = currentIdentity(currentUser);
-        var order = all.find(function (entry) { return String(entry.id) === id && String(entry.user_id || 'guest') === identity; });
-        if (order && ['pending', 'confirmed', 'processing'].indexOf(String(order.status).toLowerCase()) !== -1) {
-          order.status = 'cancelled';
+        var cancelKey = normalizeOrderKey(id);
+        var currentOrder = orders().find(function (entry) {
+          return entry && normalizeOrderKey(entry.order_code || entry.id) === cancelKey;
+        });
+        if (currentOrder && ['pending', 'confirmed', 'preparing'].indexOf(normalizeOrderStatus(currentOrder.status)) !== -1) {
+          var cancelCode = formatOrderCode(currentOrder.order_code || currentOrder.id);
+          var nowIso = new Date().toISOString();
+          var all = readJson('vlu_orders', []);
+          if (!Array.isArray(all)) all = [];
+          var gIdx = all.findIndex(function (entry) {
+            return entry && normalizeOrderKey(entry.order_code || entry.id) === cancelKey && isOrderOwnedByUser(entry, currentUser);
+          });
+          var updatedCancelOrder = Object.assign({}, currentOrder, {
+            id: cancelCode,
+            order_code: cancelCode,
+            status: 'cancelled',
+            cancel_reason: currentOrder.cancel_reason || 'Khách hàng chủ động hủy đơn',
+            updated_at: nowIso
+          });
+          if (gIdx === -1) all.unshift(updatedCancelOrder);
+          else all[gIdx] = updatedCancelOrder;
+
           if (saveOrders(all)) {
             if (typeof fetch === 'function') {
               fetch('backend/api/orders.php', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
-                body: JSON.stringify({ action: 'update_status', order_id: id, status: 'cancelled' })
+                body: JSON.stringify({
+                  action: 'update_status',
+                  order_id: cancelCode,
+                  order_code: cancelCode,
+                  status: 'cancelled',
+                  cancel_reason: updatedCancelOrder.cancel_reason,
+                  actor: profileName()
+                })
               }).catch(function () {});
             }
             notify('Đơn hàng đã được đánh dấu hủy thành công.');
             render();
+            refreshOpenOrderModal();
           }
         } else notify('Đơn hàng này không còn ở trạng thái có thể hủy.', true);
       }
       if (action === 'buy-again') {
-        var order = orders().find(function (entry) { return String(entry.id) === id; });
+        var buyKey = normalizeOrderKey(id);
+        var order = orders().find(function (entry) { return entry && normalizeOrderKey(entry.order_code || entry.id) === buyKey; });
         if (!order) return;
         var addedCount = 0;
         orderItems(order).forEach(function (item) {
@@ -1525,14 +1909,18 @@
       }
       if (action === 'request-delete' && window.confirm('Xóa toàn bộ dữ liệu riêng của tài khoản này trên trình duyệt hiện tại? Không thể hoàn tác.')) {
         try {
+          var delIdentity = currentIdentity(currentUser);
           localStorage.removeItem(userKey);
-          localStorage.removeItem('vlu_cart_' + currentIdentity(currentUser));
-          localStorage.removeItem('vlu_cart_voucher_' + currentIdentity(currentUser));
-          localStorage.removeItem('vlu_pending_voucher_' + currentIdentity(currentUser));
+          if (delIdentity) {
+            localStorage.removeItem('vlu_orders_' + delIdentity);
+            localStorage.removeItem('vlu_cart_' + delIdentity);
+            localStorage.removeItem('vlu_cart_voucher_' + delIdentity);
+            localStorage.removeItem('vlu_pending_voucher_' + delIdentity);
+          }
           var allOrders = readJson('vlu_orders', []);
           if (Array.isArray(allOrders)) {
             localStorage.setItem('vlu_orders', JSON.stringify(allOrders.filter(function (order) {
-              return String(order.user_id || '') !== currentIdentity(currentUser);
+              return !isOrderOwnedByUser(order, currentUser);
             })));
           }
           logout();
@@ -1656,9 +2044,10 @@
         var separator = purchaseKey.indexOf('::');
         var purchaseOrderId = separator === -1 ? '' : purchaseKey.slice(0, separator);
         var purchaseItemId = separator === -1 ? '' : purchaseKey.slice(separator + 2);
+        var purchaseOrderKey = normalizeOrderKey(purchaseOrderId);
         var purchaseOrder = orders().find(function (order) {
-          return String(order.id) === purchaseOrderId &&
-            ['completed', 'delivered'].indexOf(String(order.status).toLowerCase()) !== -1;
+          return normalizeOrderKey(order.order_code || order.id) === purchaseOrderKey &&
+            normalizeOrderStatus(order.status) === 'completed';
         });
         var purchasedItem = purchaseOrder && orderItems(purchaseOrder).find(function (item) {
           return String(item.id || item.name) === purchaseItemId;
@@ -1668,19 +2057,20 @@
         if (!purchaseOrder || !purchasedItem) return notify('Vui lòng chọn sản phẩm từ đơn đã giao.', true);
         if (requestMessage.length < 10) return notify('Mô tả tình trạng cần tối thiểu 10 ký tự.', true);
         var isReturn = requestType === 'return';
+        var purchaseCode = formatOrderCode(purchaseOrder.order_code || purchaseOrder.id);
         store.tickets.push({
           id: (isReturn ? 'R-' : 'W-') + Date.now(),
           type: isReturn ? 'return' : 'warranty',
           typeLabel: isReturn ? 'Đổi trả 1-1' : 'Bảo hành lỗi kỹ thuật',
           subject: (isReturn ? 'Yêu cầu đổi trả: ' : 'Yêu cầu bảo hành: ') + purchasedItem.name,
-          orderId: purchaseOrder.id,
+          orderId: purchaseCode,
           itemId: purchasedItem.id || purchasedItem.name,
           message: requestMessage,
           status: 'Đã tiếp nhận',
           createdAt: new Date().toISOString()
         });
         addNotification('warranty', isReturn ? 'Đã gửi yêu cầu đổi trả' : 'Đã gửi yêu cầu bảo hành',
-          'Yêu cầu cho đơn ' + purchaseOrder.id + ' đã được lưu trên thiết bị.');
+          'Yêu cầu cho đơn ' + purchaseCode + ' đã được lưu trên thiết bị.');
         warrantyFormOpen = false;
         warrantySelectedPurchase = '';
         if (saveStore()) { render(); notify('Yêu cầu đã được lưu trên thiết bị; vui lòng liên hệ cửa hàng để xác nhận tiếp nhận.'); }
@@ -1701,9 +2091,6 @@
           gender: String(formData.get('gender') || '')
         });
 
-        document.addEventListener('keydown', function (event) {
-          if (event.key === 'Escape') closeOrderModal();
-        });
         try {
           localStorage.setItem('vlu_user', JSON.stringify(currentUser));
           if (!saveStore()) return;
@@ -1819,6 +2206,13 @@
       var notificationButton = event.target.closest('[data-notification-filter]');
       if (notificationButton) { notificationFilter = notificationButton.dataset.notificationFilter; render(); }
     });
+
+    document.addEventListener('keydown', function (event) {
+      if (event.key === 'Escape') {
+        closeOrderModal();
+        closeInvoiceModal();
+      }
+    });
   }
 
   function recordCurrentProduct() {
@@ -1829,26 +2223,27 @@
     saveStore();
   }
 
+  window.VLU_ACCOUNT_SYNC = {
+    ORDER_PIPELINE_STEPS: ORDER_PIPELINE_STEPS,
+    STATUS_LABELS: STATUS_LABELS,
+    STATUS_RANK: STATUS_RANK,
+    normalizeOrderKey: normalizeOrderKey,
+    formatOrderCode: formatOrderCode,
+    normalizeOrderStatus: normalizeOrderStatus,
+    getStatusRank: getStatusRank,
+    mergeOrderRecords: mergeOrderRecords,
+    syncUserOrders: syncUserOrders,
+    fetchOrdersFromBackend: fetchOrdersFromBackend,
+    openOrderModal: openOrderModal,
+    closeOrderModal: closeOrderModal,
+    getOrders: orders
+  };
+
   function init() {
-    currentUser = readJson('vlu_user', null);
-    if (!currentUser || !currentUser.username) {
-      if (window.VLU_AUTH && typeof window.VLU_AUTH.ensureGuestSession === 'function') {
-        currentUser = window.VLU_AUTH.ensureGuestSession();
-      } else {
-        currentUser = {
-          id: 'guest',
-          username: 'guest',
-          email: 'guest@vluflagship.vn',
-          fullname: 'Khách vãng lai (Guest)',
-          phone: '',
-          role: 0,
-          isGuest: true,
-          loginAt: new Date().toISOString()
-        };
-        try {
-          localStorage.setItem('vlu_user', JSON.stringify(currentUser));
-        } catch (e) {}
-      }
+    currentUser = getAuthenticatedUser();
+    if (!currentUser) {
+      redirectGuestToLogin();
+      return;
     }
     userKey = 'vlu_account_' + currentIdentity(currentUser);
     store = normalizeStore(readJson(userKey, {}));
@@ -1863,14 +2258,13 @@
     recordCurrentProduct();
     render();
     bindEvents();
-    fetchOrdersFromBackend();
+    fetchOrdersFromBackend({ force: true });
     window.addEventListener('storage', function (event) {
       if (event.key === 'vlu_user') {
-        currentUser = readJson('vlu_user', null);
+        currentUser = getAuthenticatedUser();
         if (!currentUser) {
-          if (window.VLU_AUTH && typeof window.VLU_AUTH.ensureGuestSession === 'function') {
-            currentUser = window.VLU_AUTH.ensureGuestSession();
-          }
+          redirectGuestToLogin();
+          return;
         }
         var currentId = currentIdentity(currentUser);
         if (currentId !== userKey.replace(/^vlu_account_/, '')) {
@@ -1878,11 +2272,14 @@
           store = normalizeStore(readJson(userKey, {}));
           syncUserOrders();
           render();
+          fetchOrdersFromBackend({ force: true });
         }
       }
-      if (event.key === 'vlu_orders' || (event.key && event.key.indexOf('vlu_orders_') === 0)) {
+      if (event.key === 'vlu_orders' || (event.key && event.key.indexOf('vlu_orders_') === 0) || event.key === 'vlu_sync_timestamp') {
         syncUserOrders();
+        reconcilePoints();
         render();
+        refreshOpenOrderModal();
       }
       if (event.key === userKey) {
         store = normalizeStore(readJson(userKey, {}));
@@ -1890,7 +2287,22 @@
         if (store.profile.avatar) currentUser.avatar = store.profile.avatar;
         reconcilePoints();
         render();
+        refreshOpenOrderModal();
       }
+    });
+    try {
+      if (typeof BroadcastChannel !== 'undefined') {
+        var bc = new BroadcastChannel('vlu_store_sync');
+        bc.onmessage = function () {
+          fetchOrdersFromBackend({ force: true });
+        };
+      }
+    } catch (eBc) {}
+    window.addEventListener('focus', function () {
+      fetchOrdersFromBackend();
+    });
+    document.addEventListener('visibilitychange', function () {
+      if (!document.hidden) fetchOrdersFromBackend();
     });
     window.addEventListener('popstate', function () {
       activeTab = new URLSearchParams(window.location.search).get('tab') || 'overview';

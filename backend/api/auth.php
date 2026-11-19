@@ -17,7 +17,7 @@ require_once dirname(__DIR__) . '/config/db.php';
 
 // Khởi tạo session PHP nếu cần
 if (session_status() === PHP_SESSION_NONE) {
-    session_start();
+    @session_start();
 }
 
 $response = [
@@ -29,6 +29,9 @@ $response = [
 $method = $_SERVER['REQUEST_METHOD'] ?? 'GET';
 
 if ($method === 'GET') {
+    if (empty($_GET) && !empty($_SERVER['QUERY_STRING'])) {
+        parse_str($_SERVER['QUERY_STRING'], $_GET);
+    }
     $action = $_GET['action'] ?? 'status';
 
     if ($action === 'status') {
@@ -118,8 +121,11 @@ if ($method === 'GET') {
 }
 
 if ($method === 'POST') {
-    // Đọc payload từ form-data hoặc JSON raw
+    // Đọc payload từ form-data hoặc JSON raw (hỗ trợ cả CLI stdin)
     $rawInput = file_get_contents('php://input');
+    if (($rawInput === '' || $rawInput === false) && PHP_SAPI === 'cli') {
+        $rawInput = file_get_contents('php://stdin');
+    }
     $jsonData = json_decode((string)$rawInput, true);
     if (!is_array($jsonData)) {
         $jsonData = [];
@@ -139,6 +145,15 @@ if ($method === 'POST') {
                 'success' => false,
                 'code' => 'EMPTY_CREDENTIALS',
                 'message' => 'Vui lòng nhập đầy đủ Email/Tên đăng nhập và Mật khẩu!'
+            ], JSON_UNESCAPED_UNICODE);
+            exit;
+        }
+        if (strtolower($identifier) === 'guest' || strtolower($identifier) === 'guest@vluflagship.vn') {
+            http_response_code(403);
+            echo json_encode([
+                'success' => false,
+                'code' => 'GUEST_LOGIN_FORBIDDEN',
+                'message' => 'Không hỗ trợ đăng nhập tài khoản Guest. Vui lòng đăng nhập hoặc đăng ký tài khoản chính thức!'
             ], JSON_UNESCAPED_UNICODE);
             exit;
         }
@@ -309,13 +324,15 @@ if ($method === 'POST') {
             exit;
         }
 
-        // 2.3. Validate Email
-        if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+        // 2.3. Validate Email & chặn định danh guest
+        if (!filter_var($email, FILTER_VALIDATE_EMAIL) ||
+            strtolower($email) === 'guest@vluflagship.vn' ||
+            strtolower($regUsername) === 'guest') {
             http_response_code(400);
             echo json_encode([
                 'success' => false,
                 'code' => 'INVALID_EMAIL',
-                'message' => 'Địa chỉ Email không đúng định dạng!'
+                'message' => 'Địa chỉ Email hoặc Tên đăng nhập không hợp lệ!'
             ], JSON_UNESCAPED_UNICODE);
             exit;
         }
@@ -394,7 +411,7 @@ if ($method === 'POST') {
 
         // Luôn lưu bản sao vào JSON fallback để dự phòng
         $jsonUsers = vlu_read_json_file('users.json', []);
-        if ($newId === null) {
+        if ($newId === null || $newId <= 0) {
             $maxId = 0;
             foreach ($jsonUsers as $ju) {
                 if (isset($ju['id']) && (int)$ju['id'] > $maxId) {

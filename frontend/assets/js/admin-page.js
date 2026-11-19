@@ -100,6 +100,21 @@
     });
   }
 
+  function normalizeOrderKey(code) {
+    if (window.VLU_ADMIN && typeof window.VLU_ADMIN.normalizeOrderKey === 'function') {
+      return window.VLU_ADMIN.normalizeOrderKey(code);
+    }
+    return String(code == null ? '' : code).replace(/^#+/, '').trim().toUpperCase();
+  }
+
+  function formatOrderCode(code) {
+    if (window.VLU_ADMIN && typeof window.VLU_ADMIN.formatOrderCode === 'function') {
+      return window.VLU_ADMIN.formatOrderCode(code);
+    }
+    var key = normalizeOrderKey(code);
+    return key ? ('#' + key) : '';
+  }
+
   function safeImage(url, category) {
     var resolver = window.resolveProductImageUrl || function (u) { return u; };
     return resolver(url || 'frontend/assets/images/logo.png', category || 'phone');
@@ -491,9 +506,10 @@
       if (res.orders.length) {
         html += '<div class="px-3.5 py-2 text-[10px] font-extrabold uppercase tracking-wider border-y border-slate-100" style="color: var(--admin-text-secondary); background: var(--admin-bg-sub);">Đơn hàng (' + res.orders.length + ')</div>';
         res.orders.forEach(function (o) {
-          html += '<button type="button" class="gs-item-order w-full px-3.5 py-2.5 flex items-center justify-between gap-3 hover:bg-slate-50 dark:hover:bg-slate-800/50 transition text-left" data-id="' + escapeHtml(o.id) + '">' +
+          var ordCode = formatOrderCode(o.order_code || o.id);
+          html += '<button type="button" class="gs-item-order w-full px-3.5 py-2.5 flex items-center justify-between gap-3 hover:bg-slate-50 dark:hover:bg-slate-800/50 transition text-left" data-id="' + escapeHtml(ordCode) + '">' +
             '<div class="min-w-0">' +
-              '<p class="text-xs font-bold font-mono text-brand">' + escapeHtml(o.id) + '</p>' +
+              '<p class="text-xs font-bold font-mono text-brand">' + escapeHtml(ordCode) + '</p>' +
               '<p class="text-[11px] truncate" style="color: var(--admin-text-secondary);">' + escapeHtml(o.customer_name) + ' · ' + escapeHtml(o.customer_phone) + '</p>' +
             '</div>' +
             '<span class="text-xs font-bold shrink-0" style="color: var(--admin-text-primary);">' + escapeHtml(engine.formatVND(o.total)) + '</span>' +
@@ -1646,13 +1662,14 @@
     }
 
     recentTbody.innerHTML = orders.map(function (o) {
+      var ordCode = formatOrderCode(o.order_code || o.id);
       return '<tr>' +
-        '<td class="font-mono font-bold text-xs">' + escapeHtml(o.id) + '</td>' +
+        '<td class="font-mono font-bold text-xs">' + escapeHtml(ordCode) + '</td>' +
         '<td class="font-semibold">' + escapeHtml(o.customer_name) + '</td>' +
         '<td class="text-xs whitespace-nowrap" style="color: var(--admin-text-secondary);">' + escapeHtml(engine.formatDate(o.created_at)) + '</td>' +
         '<td class="font-extrabold text-brand tabular-nums whitespace-nowrap">' + escapeHtml(engine.formatVND(o.total)) + '</td>' +
         '<td>' + engine.getStatusBadge(o.status) + '</td>' +
-        '<td class="text-right"><button type="button" class="btn-view-order vlu-btn vlu-btn-secondary vlu-btn-sm" data-id="' + escapeHtml(o.id) + '">Xem</button></td>' +
+        '<td class="text-right"><button type="button" class="btn-view-order vlu-btn vlu-btn-secondary vlu-btn-sm" data-id="' + escapeHtml(ordCode) + '">Xem</button></td>' +
       '</tr>';
     }).join('');
   }
@@ -2725,8 +2742,10 @@
   function printOrderInvoice(orderId) {
     var engine = window.VLU_ADMIN;
     if (!engine) return;
-    var o = engine.getOrders().find(function (item) { return String(item.id) === String(orderId); });
+    var targetKey = normalizeOrderKey(orderId);
+    var o = engine.getOrders().find(function (item) { return item && normalizeOrderKey(item.order_code || item.id) === targetKey; });
     if (!o) return;
+    var ordCode = formatOrderCode(o.order_code || o.id);
     var payStatus = engine.resolveOrderPaymentStatus(o);
     var shipFee = Number(o.shipping_fee) || 0;
     var itemsHtml = (o.items || []).map(function (it, idx) {
@@ -2743,11 +2762,11 @@
       '</tr>';
     }).join('');
 
-    var html = '<!DOCTYPE html><html lang="vi"><head><meta charset="utf-8"><title>Hóa đơn ' + escapeHtml(o.id) + ' - VLU FLAGSHIP STORE</title>' +
+    var html = '<!DOCTYPE html><html lang="vi"><head><meta charset="utf-8"><title>Hóa đơn ' + escapeHtml(ordCode) + ' - VLU FLAGSHIP STORE</title>' +
       '<style>body{font-family:Arial,sans-serif;color:#172033;padding:28px;max-width:820px;margin:0 auto;}h1{color:#D10D32;margin:0 0 4px;font-size:20px;}table{width:100%;border-collapse:collapse;margin:16px 0;}th,td{border:1px solid #e2e8f0;padding:8px 10px;font-size:13px;}th{background:#f8fafc;text-align:left;}.meta{display:grid;grid-template-columns:1fr 1fr;gap:10px;background:#f8fafc;padding:12px;border-radius:8px;margin:14px 0;font-size:13px;}.totals{width:300px;margin-left:auto;font-size:13px;}.totals div{display:flex;justify-content:space-between;padding:4px 0;}.grand{border-top:2px solid #151B2B;margin-top:6px;padding-top:8px;font-size:16px;font-weight:700;color:#D10D32;}@media print{.no-print{display:none;}}</style></head><body>' +
       '<div style="display:flex;justify-content:space-between;align-items:flex-start;border-bottom:2px solid #D10D32;padding-bottom:12px;">' +
         '<div><h1>VLU FLAGSHIP STORE</h1><div style="font-size:12px;color:#64748b;">Hóa đơn bán hàng điện tử · Premium Retail</div></div>' +
-        '<div style="text-align:right;"><strong>Mã đơn: #' + escapeHtml(o.id) + '</strong><div style="font-size:12px;">Ngày đặt: ' + escapeHtml(engine.formatDateTime ? engine.formatDateTime(o.created_at) : engine.formatDate(o.created_at)) + '</div><div style="font-size:12px;">Trạng thái: ' + escapeHtml(engine.getOrderStatusLabel(o.status)) + '</div></div>' +
+        '<div style="text-align:right;"><strong>Mã đơn: ' + escapeHtml(ordCode) + '</strong><div style="font-size:12px;">Ngày đặt: ' + escapeHtml(engine.formatDateTime ? engine.formatDateTime(o.created_at) : engine.formatDate(o.created_at)) + '</div><div style="font-size:12px;">Trạng thái: ' + escapeHtml(engine.getOrderStatusLabel(o.status)) + '</div></div>' +
       '</div>' +
       '<div class="meta">' +
         '<div><strong>Khách hàng:</strong> ' + escapeHtml(o.customer_name) + '<br><strong>SĐT:</strong> ' + escapeHtml(o.customer_phone) + '<br><strong>Email:</strong> ' + escapeHtml(o.customer_email || '--') + '</div>' +
@@ -2804,6 +2823,7 @@
     }
 
     tbody.innerHTML = slice.map(function (o) {
+      var ordCode = formatOrderCode(o.order_code || o.id);
       var st = engine.normalizeOrderStatus(o.status);
       var paySt = engine.resolveOrderPaymentStatus(o);
       var isGuest = isGuestOrderRecord(o);
@@ -2813,8 +2833,8 @@
       var addr = String(o.customer_address || '').trim();
       var isPickup = addr.toLowerCase().indexOf('nhận tại cửa hàng') !== -1;
 
-      return '<tr data-id="' + escapeHtml(o.id) + '">' +
-        '<td class="font-mono font-bold text-xs whitespace-nowrap">' + escapeHtml(o.id) + '</td>' +
+      return '<tr data-id="' + escapeHtml(ordCode) + '">' +
+        '<td class="font-mono font-bold text-xs whitespace-nowrap">' + escapeHtml(ordCode) + '</td>' +
         '<td class="text-xs whitespace-nowrap font-mono" style="color: var(--admin-text-secondary);">' + escapeHtml(engine.formatDateTime ? engine.formatDateTime(o.created_at) : engine.formatDate(o.created_at)) + '</td>' +
         '<td>' +
           '<div class="flex flex-col gap-0.5">' +
@@ -2832,10 +2852,10 @@
         '<td class="whitespace-nowrap">' + engine.getStatusBadge(st) + '</td>' +
         '<td class="text-right whitespace-nowrap">' +
           '<div class="inline-flex items-center gap-1">' +
-            '<button type="button" class="btn-view-order vlu-btn vlu-btn-secondary vlu-btn-sm !px-2.5 !py-1" data-id="' + escapeHtml(o.id) + '" title="Xem chi tiết &amp; Timeline">Chi tiết</button>' +
-            (nextForward ? '<button type="button" class="btn-advance-order vlu-btn vlu-btn-navy vlu-btn-sm !px-2.5 !py-1" data-id="' + escapeHtml(o.id) + '" data-next="' + escapeHtml(nextForward) + '" title="Chuyển sang: ' + escapeHtml(engine.getOrderStatusLabel(nextForward)) + '">→ ' + escapeHtml(engine.getOrderStatusLabel(nextForward)) + '</button>' : '') +
-            (canCancel ? '<button type="button" class="btn-cancel-order p-1.5 rounded-lg text-slate-400 hover:text-red-600 hover:bg-red-50 transition" data-id="' + escapeHtml(o.id) + '" title="Hủy đơn hàng"><svg class="h-4 w-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg></button>' : '') +
-            '<button type="button" class="btn-print-order p-1.5 rounded-lg text-slate-500 hover:text-brand hover:bg-brand-soft transition" data-id="' + escapeHtml(o.id) + '" title="In hóa đơn"><svg class="h-4 w-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M6.72 13.829c-.24.03-.48.062-.72.096m.72-.096a42.415 42.415 0 0110.56 0m-10.56 0L6.34 18m10.94-4.171c.24.03.48.062.72.096m-.72-.096L17.66 18m0 0l.229 2.523a1.125 1.125 0 01-1.12 1.227H7.231c-.662 0-1.18-.568-1.12-1.227L6.34 18m11.318 0h1.091A2.25 2.25 0 0021 15.75V9.456c0-1.081-.768-2.015-1.837-2.175a48.055 48.055 0 00-1.913-.247M6.34 18H5.25A2.25 2.25 0 013 15.75V9.456c0-1.081.768-2.015 1.837-2.175a48.041 48.041 0 011.913-.247m10.5 0a48.536 48.536 0 00-10.5 0m10.5 0V3.375c0-.621-.504-1.125-1.125-1.125h-8.25c-.621 0-1.125.504-1.125 1.125v3.659"/></svg></button>' +
+            '<button type="button" class="btn-view-order vlu-btn vlu-btn-secondary vlu-btn-sm !px-2.5 !py-1" data-id="' + escapeHtml(ordCode) + '" title="Xem chi tiết &amp; Timeline">Chi tiết</button>' +
+            (nextForward ? '<button type="button" class="btn-advance-order vlu-btn vlu-btn-navy vlu-btn-sm !px-2.5 !py-1" data-id="' + escapeHtml(ordCode) + '" data-next="' + escapeHtml(nextForward) + '" title="Chuyển sang: ' + escapeHtml(engine.getOrderStatusLabel(nextForward)) + '">→ ' + escapeHtml(engine.getOrderStatusLabel(nextForward)) + '</button>' : '') +
+            (canCancel ? '<button type="button" class="btn-cancel-order p-1.5 rounded-lg text-slate-400 hover:text-red-600 hover:bg-red-50 transition" data-id="' + escapeHtml(ordCode) + '" title="Hủy đơn hàng"><svg class="h-4 w-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg></button>' : '') +
+            '<button type="button" class="btn-print-order p-1.5 rounded-lg text-slate-500 hover:text-brand hover:bg-brand-soft transition" data-id="' + escapeHtml(ordCode) + '" title="In hóa đơn"><svg class="h-4 w-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M6.72 13.829c-.24.03-.48.062-.72.096m.72-.096a42.415 42.415 0 0110.56 0m-10.56 0L6.34 18m10.94-4.171c.24.03.48.062.72.096m-.72-.096L17.66 18m0 0l.229 2.523a1.125 1.125 0 01-1.12 1.227H7.231c-.662 0-1.18-.568-1.12-1.227L6.34 18m11.318 0h1.091A2.25 2.25 0 0021 15.75V9.456c0-1.081-.768-2.015-1.837-2.175a48.055 48.055 0 00-1.913-.247M6.34 18H5.25A2.25 2.25 0 013 15.75V9.456c0-1.081.768-2.015 1.837-2.175a48.041 48.041 0 011.913-.247m10.5 0a48.536 48.536 0 00-10.5 0m10.5 0V3.375c0-.621-.504-1.125-1.125-1.125h-8.25c-.621 0-1.125.504-1.125 1.125v3.659"/></svg></button>' +
           '</div>' +
         '</td>' +
       '</tr>';
@@ -2906,9 +2926,10 @@
     }
 
     tbody.innerHTML = slice.map(function (o) {
+      var ordCode = formatOrderCode(o.order_code || o.id);
       var paySt = engine.resolveOrderPaymentStatus(o);
       return '<tr>' +
-        '<td><p class="font-mono font-bold text-xs">' + escapeHtml(o.id) + '</p>' + (o.payment_ref ? '<p class="text-[10px] font-mono text-emerald-600">Ref: ' + escapeHtml(o.payment_ref) + '</p>' : '') + '</td>' +
+        '<td><p class="font-mono font-bold text-xs">' + escapeHtml(ordCode) + '</p>' + (o.payment_ref ? '<p class="text-[10px] font-mono text-emerald-600">Ref: ' + escapeHtml(o.payment_ref) + '</p>' : '') + '</td>' +
         '<td class="font-semibold text-xs">' + escapeHtml(o.customer_name) + '</td>' +
         '<td class="text-xs">' + escapeHtml(o.payment_method || 'COD') + '</td>' +
         '<td>' + (o.voucher_code ? '<span class="vlu-badge vlu-badge-brand font-mono">' + escapeHtml(o.voucher_code) + '</span>' : '<span class="text-slate-400">--</span>') + '</td>' +
@@ -2918,8 +2939,8 @@
         '<td class="text-xs font-mono whitespace-nowrap" style="color: var(--admin-text-secondary);">' + escapeHtml(engine.formatDate(o.created_at)) + '</td>' +
         '<td class="text-right whitespace-nowrap">' +
           '<div class="inline-flex items-center gap-1">' +
-            (paySt !== 'paid' ? '<button type="button" class="btn-reconcile-payment vlu-btn vlu-btn-navy vlu-btn-sm !px-2.5 !py-1" data-id="' + escapeHtml(o.id) + '" data-status="paid">Xác nhận thu tiền</button>' : '') +
-            '<button type="button" class="btn-view-order vlu-btn vlu-btn-secondary vlu-btn-sm !px-2.5 !py-1" data-id="' + escapeHtml(o.id) + '">Chi tiết</button>' +
+            (paySt !== 'paid' ? '<button type="button" class="btn-reconcile-payment vlu-btn vlu-btn-navy vlu-btn-sm !px-2.5 !py-1" data-id="' + escapeHtml(ordCode) + '" data-status="paid">Xác nhận thu tiền</button>' : '') +
+            '<button type="button" class="btn-view-order vlu-btn vlu-btn-secondary vlu-btn-sm !px-2.5 !py-1" data-id="' + escapeHtml(ordCode) + '">Chi tiết</button>' +
           '</div>' +
         '</td>' +
       '</tr>';
@@ -4258,8 +4279,8 @@
         if (!resAdv.ok) {
           engine.showToast(resAdv.message || 'Không thể chuyển trạng thái đơn hàng.', true);
         } else {
-          engine.showToast('Đơn ' + oIdAdv + ' đã chuyển sang "' + engine.getOrderStatusLabel(nextStAdv) + '".');
-          if (currentViewingOrderId && String(currentViewingOrderId) === String(oIdAdv)) {
+          engine.showToast('Đơn ' + formatOrderCode(oIdAdv) + ' đã chuyển sang "' + engine.getOrderStatusLabel(nextStAdv) + '".');
+          if (currentViewingOrderId && normalizeOrderKey(currentViewingOrderId) === normalizeOrderKey(oIdAdv)) {
             openOrderDetailModal(oIdAdv);
           }
         }
@@ -4430,11 +4451,11 @@
           if (reasonEl) reasonEl.focus();
           return;
         }
-        var targetId = pendingCancelOrderId;
+        var targetId = formatOrderCode(pendingCancelOrderId);
         pendingCancelOrderId = null;
         closeModalById('orderCancelReasonModal');
         engine.showToast('Đã hủy đơn hàng ' + targetId + ' với lý do ghi nhận.');
-        if (currentViewingOrderId && String(currentViewingOrderId) === String(targetId)) {
+        if (currentViewingOrderId && normalizeOrderKey(currentViewingOrderId) === normalizeOrderKey(targetId)) {
           openOrderDetailModal(targetId);
         }
       });
@@ -6168,17 +6189,19 @@
   function openCancelOrderModal(orderId) {
     var engine = window.VLU_ADMIN;
     if (!engine) return;
-    var o = engine.getOrders().find(function (item) { return String(item.id) === String(orderId); });
+    var targetKey = normalizeOrderKey(orderId);
+    var o = engine.getOrders().find(function (item) { return item && normalizeOrderKey(item.order_code || item.id) === targetKey; });
     if (!o) return;
     var curSt = engine.normalizeOrderStatus(o.status);
     if (!engine.canTransitionOrderStatus(curSt, 'cancelled')) {
       engine.showToast('Không thể hủy đơn ở trạng thái "' + engine.getOrderStatusLabel(curSt) + '".', true);
       return;
     }
-    pendingCancelOrderId = o.id;
+    var ordCode = formatOrderCode(o.order_code || o.id);
+    pendingCancelOrderId = ordCode;
     var idLabel = document.getElementById('cancelModalOrderId');
     var reasonEl = document.getElementById('cancelOrderReasonInput');
-    if (idLabel) idLabel.textContent = '#' + o.id;
+    if (idLabel) idLabel.textContent = ordCode;
     if (reasonEl) reasonEl.value = '';
     openModal(document.getElementById('orderCancelReasonModal'));
   }
@@ -6187,16 +6210,18 @@
     var engine = window.VLU_ADMIN;
     if (!engine) return;
     var orders = engine.getOrders();
-    var o = orders.find(function (item) { return String(item.id) === String(orderId) || String(item.order_code || '') === String(orderId); });
+    var targetKey = normalizeOrderKey(orderId);
+    var o = orders.find(function (item) { return item && normalizeOrderKey(item.order_code || item.id) === targetKey; });
     if (!o) return;
 
-    currentViewingOrderId = o.id;
+    var ordCode = formatOrderCode(o.order_code || o.id);
+    currentViewingOrderId = ordCode;
     var curNorm = engine.normalizeOrderStatus(o.status);
     var payStatus = engine.resolveOrderPaymentStatus(o);
     var isGuest = isGuestOrderRecord(o);
     var shipFee = Number(o.shipping_fee) || 0;
 
-    document.getElementById('detailModalOrderId').textContent = '#' + o.id;
+    document.getElementById('detailModalOrderId').textContent = ordCode;
     var statusBadgeEl = document.getElementById('detailModalStatusBadge');
     if (statusBadgeEl) statusBadgeEl.innerHTML = engine.getStatusBadge(curNorm);
     var custBadgeEl = document.getElementById('detailModalCustomerBadge');
@@ -6327,7 +6352,7 @@
     if (quickActionsEl) {
       if (forwardNext.length) {
         quickActionsEl.innerHTML = '<span class="text-xs font-bold">Bước kế tiếp:</span>' + forwardNext.map(function (st) {
-          return '<button type="button" class="btn-advance-order vlu-btn vlu-btn-primary vlu-btn-sm" data-id="' + escapeHtml(o.id) + '" data-next="' + escapeHtml(st) + '">→ ' + escapeHtml(engine.getOrderStatusLabel(st)) + '</button>';
+          return '<button type="button" class="btn-advance-order vlu-btn vlu-btn-primary vlu-btn-sm" data-id="' + escapeHtml(ordCode) + '" data-next="' + escapeHtml(st) + '">→ ' + escapeHtml(engine.getOrderStatusLabel(st)) + '</button>';
         }).join('');
       } else {
         quickActionsEl.innerHTML = '<span class="vlu-badge vlu-badge-neutral">Trạng thái cuối đã khóa — không thể chuyển tiếp hoặc quay lui</span>';
@@ -6423,7 +6448,7 @@
       itemsEl.innerHTML = profile.purchasedItems.length ? profile.purchasedItems.map(function (it) {
         return '<div class="flex items-center gap-2.5 p-2 rounded-xl bg-white dark:bg-slate-900/40 border border-slate-200/70">' +
           '<img src="' + escapeHtml(safeImage(it.image)) + '" class="h-9 w-9 rounded-lg object-contain bg-white border border-slate-100 p-0.5 shrink-0" onerror="this.onerror=null;this.src=\'frontend/assets/images/placeholders/phone.svg\';">' +
-          '<div class="flex-1 min-w-0"><p class="font-bold truncate">' + escapeHtml(it.name) + '</p><p class="text-[10px] font-mono" style="color: var(--admin-text-secondary);">Đơn #' + escapeHtml(it.orderId) + ' · x' + escapeHtml(it.quantity) + ' · ' + escapeHtml(engine.formatVND(it.price)) + '</p></div>' +
+          '<div class="flex-1 min-w-0"><p class="font-bold truncate">' + escapeHtml(it.name) + '</p><p class="text-[10px] font-mono" style="color: var(--admin-text-secondary);">Đơn ' + escapeHtml(formatOrderCode(it.orderId)) + ' · x' + escapeHtml(it.quantity) + ' · ' + escapeHtml(engine.formatVND(it.price)) + '</p></div>' +
         '</div>';
       }).join('') : '<p class="italic" style="color: var(--admin-text-secondary);">Khách hàng chưa có sản phẩm mua thành công.</p>';
     }
@@ -6431,9 +6456,10 @@
     var ordBody = document.getElementById('c360OrdersList');
     if (ordBody) {
       ordBody.innerHTML = profile.orders.length ? profile.orders.map(function (o) {
+        var ordCode = formatOrderCode(o.order_code || o.id);
         var paySt = engine.resolveOrderPaymentStatus(o);
         return '<tr class="border-b border-slate-100">' +
-          '<td class="py-2 px-3"><button type="button" class="c360-open-order font-mono font-bold text-brand hover:underline" data-id="' + escapeHtml(o.id) + '">#' + escapeHtml(o.id) + '</button></td>' +
+          '<td class="py-2 px-3"><button type="button" class="c360-open-order font-mono font-bold text-brand hover:underline" data-id="' + escapeHtml(ordCode) + '">' + escapeHtml(ordCode) + '</button></td>' +
           '<td class="py-2 px-3 font-mono" style="color: var(--admin-text-secondary);">' + escapeHtml(engine.formatDate(o.created_at)) + '</td>' +
           '<td class="py-2 px-3">' + escapeHtml(o.payment_method || 'COD') + '</td>' +
           '<td class="py-2 px-3">' + getPaymentStatusBadgeHtml(paySt) + '</td>' +

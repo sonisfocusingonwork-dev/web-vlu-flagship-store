@@ -209,6 +209,10 @@ if (!function_exists('vlu_ensure_database_schema')) {
                 `total_amount` DECIMAL(15,2) NOT NULL DEFAULT 0.00,
                 `total` DECIMAL(15,2) NOT NULL DEFAULT 0.00,
                 `status` VARCHAR(30) NOT NULL DEFAULT 'pending',
+                `payment_status` VARCHAR(30) DEFAULT 'pending',
+                `cancel_reason` TEXT DEFAULT NULL,
+                `status_history` LONGTEXT DEFAULT NULL,
+                `internal_notes` LONGTEXT DEFAULT NULL,
                 `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
                 `updated_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
                 PRIMARY KEY (`id`),
@@ -228,6 +232,11 @@ if (!function_exists('vlu_ensure_database_schema')) {
             vlu_ensure_column($pdo, 'orders', 'store_location', "VARCHAR(255) DEFAULT NULL");
             vlu_ensure_column($pdo, 'orders', 'payment_key', "VARCHAR(50) DEFAULT 'cod'");
             vlu_ensure_column($pdo, 'orders', 'voucher_code', "VARCHAR(50) DEFAULT NULL");
+            vlu_ensure_column($pdo, 'orders', 'payment_status', "VARCHAR(30) DEFAULT 'pending'");
+            vlu_ensure_column($pdo, 'orders', 'cancel_reason', "TEXT DEFAULT NULL");
+            vlu_ensure_column($pdo, 'orders', 'status_history', "LONGTEXT DEFAULT NULL");
+            vlu_ensure_column($pdo, 'orders', 'internal_notes', "LONGTEXT DEFAULT NULL");
+            vlu_ensure_column($pdo, 'orders', 'updated_at', "TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP");
 
             // 4. Khởi tạo & đảm bảo bảng `order_details`
             $pdo->exec("CREATE TABLE IF NOT EXISTS `order_details` (

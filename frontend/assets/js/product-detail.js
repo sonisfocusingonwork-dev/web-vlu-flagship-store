@@ -91,10 +91,20 @@
   }
 
   function getAuthContext() {
-    var user = null;
-    try { user = JSON.parse(localStorage.getItem('vlu_user') || 'null'); } catch (e) {}
-    var rawIdentity = user && (user.username || user.email || user.id);
-    var userId = normalizeAccountIdentity(rawIdentity);
+    var user = (window.VLU_AUTH && typeof window.VLU_AUTH.getUser === 'function')
+      ? window.VLU_AUTH.getUser()
+      : null;
+    if (!user) {
+      try { user = JSON.parse(localStorage.getItem('vlu_user') || 'null'); } catch (e) {}
+    }
+    var isInvalid = !user || typeof user !== 'object' || Boolean(user.isGuest) ||
+      String(user.id || '').trim().toLowerCase() === 'guest' ||
+      String(user.username || '').trim().toLowerCase() === 'guest' ||
+      !(Number(user.id) > 0);
+    if (isInvalid) {
+      user = null;
+    }
+    var userId = user ? String(Number(user.id)) : 'guest';
     var accountKey = 'vlu_account_' + userId;
     var accountData = {};
     try { accountData = JSON.parse(localStorage.getItem(accountKey) || '{}') || {}; } catch (e) {}
@@ -108,7 +118,7 @@
       userId: userId,
       accountKey: accountKey,
       accountData: accountData,
-      isLoggedIn: Boolean(rawIdentity && !(user && user.isGuest)),
+      isLoggedIn: Boolean(user),
       isAdmin: isAdmin,
       displayName: displayName,
       avatar: avatar,
@@ -3719,13 +3729,6 @@
     }
 
     var safeQty = Math.max(1, Math.min(currentQuantity, av.maxQty || 99));
-    if (isBuyNow) {
-      try {
-        if (window.VLU_AUTH && typeof window.VLU_AUTH.ensureGuestSession === 'function') {
-          window.VLU_AUTH.ensureGuestSession();
-        }
-      } catch (errAuth) {}
-    }
 
     var itemPayload = {
       id: product.id,
@@ -3763,6 +3766,19 @@
     }
 
     if (isBuyNow) {
+      var activeUser = (window.VLU_AUTH && typeof window.VLU_AUTH.getUser === 'function')
+        ? window.VLU_AUTH.getUser()
+        : null;
+      var isValidUser = Boolean(activeUser && !activeUser.isGuest && String(activeUser.id || '').toLowerCase() !== 'guest' && Number(activeUser.id) > 0);
+      if (!isValidUser) {
+        if (window.VLU_CART && typeof window.VLU_CART.showToast === 'function') {
+          window.VLU_CART.showToast('Vui lòng đăng nhập hoặc đăng ký tài khoản để thanh toán đơn hàng!', true);
+        } else {
+          showToast('Vui lòng đăng nhập hoặc đăng ký tài khoản để thanh toán đơn hàng!');
+        }
+        window.location.href = 'login.html?next=checkout.html';
+        return;
+      }
       window.location.href = 'checkout.html';
     }
   }
@@ -4122,12 +4138,6 @@
         showToast('Nội dung nhận xét cần tối thiểu 5 ký tự.');
         return;
       }
-
-      try {
-        if (!localStorage.getItem('vlu_user') && window.VLU_AUTH && typeof window.VLU_AUTH.ensureGuestSession === 'function') {
-          window.VLU_AUTH.ensureGuestSession();
-        }
-      } catch (errAuth) {}
 
       var ctx = getAuthContext();
       var authorName = String((authorInput && authorInput.value) || '').trim() || ctx.displayName || 'Khách hàng VLU';

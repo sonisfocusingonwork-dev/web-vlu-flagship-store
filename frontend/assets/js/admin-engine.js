@@ -47,7 +47,7 @@
   var ORDER_PIPELINE_STEPS = [
     { key: 'pending', label: 'Chờ xác nhận', shortLabel: 'Chờ XN', badgeClass: 'vlu-badge-warning' },
     { key: 'confirmed', label: 'Đã xác nhận', shortLabel: 'Đã XN', badgeClass: 'vlu-badge-info' },
-    { key: 'preparing', label: 'Đang chuẩn bị hàng', shortLabel: 'Chuẩn bị', badgeClass: 'vlu-badge-indigo' },
+    { key: 'preparing', label: 'Đang chuẩn bị', shortLabel: 'Chuẩn bị', badgeClass: 'vlu-badge-indigo' },
     { key: 'handed_over', label: 'Đã bàn giao vận chuyển', shortLabel: 'Bàn giao', badgeClass: 'vlu-badge-purple' },
     { key: 'shipping', label: 'Đang giao hàng', shortLabel: 'Đang giao', badgeClass: 'vlu-badge-sky' },
     { key: 'completed', label: 'Giao thành công', shortLabel: 'Hoàn thành', badgeClass: 'vlu-badge-success' }
@@ -56,13 +56,134 @@
   var ORDER_STATUS_LABELS = {
     pending: 'Chờ xác nhận',
     confirmed: 'Đã xác nhận',
-    preparing: 'Đang chuẩn bị hàng',
+    preparing: 'Đang chuẩn bị',
     handed_over: 'Đã bàn giao vận chuyển',
     shipping: 'Đang giao hàng',
     completed: 'Giao thành công',
     cancelled: 'Đã hủy',
     returned: 'Hoàn trả'
   };
+
+  var ORDER_STATUS_RANK = {
+    pending: 1,
+    confirmed: 2,
+    preparing: 3,
+    handed_over: 4,
+    shipping: 5,
+    completed: 6,
+    cancelled: 7,
+    returned: 7
+  };
+
+  function normalizeOrderKey(code) {
+    return String(code == null ? '' : code).replace(/^#+/, '').trim().toUpperCase();
+  }
+
+  function formatOrderCode(code) {
+    var key = normalizeOrderKey(code);
+    return key ? ('#' + key) : '';
+  }
+
+  function normalizeOrderStatusHelper(status) {
+    var s = String(status || 'pending').trim().toLowerCase();
+    if (s === 'confirmed') return 'confirmed';
+    if (s === 'preparing' || s === 'processing') return 'preparing';
+    if (s === 'handed_over' || s === 'handedover' || s === 'dispatched') return 'handed_over';
+    if (s === 'shipping' || s === 'delivering') return 'shipping';
+    if (s === 'completed' || s === 'delivered') return 'completed';
+    if (s === 'cancelled' || s === 'canceled') return 'cancelled';
+    if (s === 'returned' || s === 'return') return 'returned';
+    return 'pending';
+  }
+
+  function getOrderStatusRank(status) {
+    return ORDER_STATUS_RANK[normalizeOrderStatusHelper(status)] || 1;
+  }
+
+  function parseOrderTimestampMs(val) {
+    var d = parseDateSafe(val);
+    return d ? d.getTime() : 0;
+  }
+
+  function mergeOrderHistories(histA, histB) {
+    var out = [];
+    var seen = {};
+    [histA, histB].forEach(function (arr) {
+      if (!Array.isArray(arr)) return;
+      arr.forEach(function (ev) {
+        if (!ev || typeof ev !== 'object' || !ev.status) return;
+        var norm = normalizeOrderStatusHelper(ev.status);
+        var key = norm + '|' + String(ev.timestamp || '');
+        if (seen[key]) return;
+        seen[key] = true;
+        out.push(Object.assign({}, ev, { status: norm }));
+      });
+    });
+    out.sort(function (a, b) {
+      return parseOrderTimestampMs(a.timestamp) - parseOrderTimestampMs(b.timestamp);
+    });
+    return out;
+  }
+
+  function normalizeOrderRecord(order) {
+    if (!order || typeof order !== 'object') return null;
+    var canonicalCode = formatOrderCode(order.order_code || order.id);
+    if (!canonicalCode) return null;
+    var copy = Object.assign({}, order);
+    if (typeof order.id === 'number' && !copy.db_id) {
+      copy.db_id = order.id;
+    }
+    copy.id = canonicalCode;
+    copy.order_code = canonicalCode;
+    copy.status = normalizeOrderStatusHelper(order.status);
+    return copy;
+  }
+
+  function mergeOrderRecords(existing, incoming, preferIncomingOnTie) {
+    var a = normalizeOrderRecord(existing);
+    var b = normalizeOrderRecord(incoming);
+    if (!a) return b;
+    if (!b) return a;
+
+    var rankA = getOrderStatusRank(a.status);
+    var rankB = getOrderStatusRank(b.status);
+    var updA = parseOrderTimestampMs(a.updated_at);
+    var updB = parseOrderTimestampMs(b.updated_at);
+    var tsA = parseOrderTimestampMs(a.updated_at || a.created_at);
+    var tsB = parseOrderTimestampMs(b.updated_at || b.created_at);
+
+    var incomingWins = false;
+    if (rankB > rankA) incomingWins = true;
+    else if (rankA > rankB) incomingWins = false;
+    else if (updB > updA) incomingWins = true;
+    else if (updA > updB) incomingWins = false;
+    else if (tsB > tsA) incomingWins = true;
+    else if (tsA > tsB) incomingWins = false;
+    else incomingWins = Boolean(preferIncomingOnTie);
+
+    var winner = incomingWins ? b : a;
+    var loser = incomingWins ? a : b;
+    var canonicalCode = formatOrderCode(winner.order_code || winner.id || loser.order_code || loser.id);
+    var mergedUpdatedAt = updB >= updA
+      ? (b.updated_at || a.updated_at || winner.created_at || loser.created_at || '')
+      : (a.updated_at || b.updated_at || winner.created_at || loser.created_at || '');
+
+    return Object.assign({}, loser, winner, {
+      id: canonicalCode,
+      order_code: canonicalCode,
+      db_id: winner.db_id || loser.db_id || 0,
+      status: normalizeOrderStatusHelper(winner.status),
+      payment_status: winner.payment_status || loser.payment_status || (normalizeOrderStatusHelper(winner.status) === 'completed' ? 'paid' : 'pending'),
+      cancel_reason: winner.cancel_reason || loser.cancel_reason || '',
+      shipping_fee: winner.shipping_fee !== undefined ? winner.shipping_fee : loser.shipping_fee,
+      status_history: mergeOrderHistories(loser.status_history, winner.status_history),
+      internal_notes: (Array.isArray(winner.internal_notes) && winner.internal_notes.length >= (Array.isArray(loser.internal_notes) ? loser.internal_notes.length : 0))
+        ? winner.internal_notes
+        : (Array.isArray(loser.internal_notes) ? loser.internal_notes : []),
+      items: (Array.isArray(winner.items) && winner.items.length) ? winner.items : (Array.isArray(loser.items) ? loser.items : []),
+      updated_at: mergedUpdatedAt
+    });
+  }
 
   var ORDER_STATUS_TRANSITIONS = {
     pending: ['confirmed', 'cancelled'],
@@ -402,6 +523,8 @@
     toLocalDateKey: toLocalDateKey,
     normalizeText: normalizeText,
     slugify: slugify,
+    normalizeOrderKey: normalizeOrderKey,
+    formatOrderCode: formatOrderCode,
 
     /* ==========================================================================
        0. PHÂN QUYỀN ADMIN (ROLE === 1 HOẶC admin@vluflagship.vn)
@@ -1613,24 +1736,30 @@
     getOrders: function () {
       try {
         var raw = localStorage.getItem(STORAGE_ORDERS);
-        var list = [];
+        var seedList = [];
         if (raw) {
-          list = JSON.parse(raw);
-          if (!Array.isArray(list)) list = [];
+          seedList = JSON.parse(raw);
+          if (!Array.isArray(seedList)) seedList = [];
         }
 
+        var mergedMap = {};
+        var orderedKeys = [];
+
         function mergeOrderRecord(uo) {
-          if (!uo) return;
-          var code = String(uo.order_code || uo.id || '').trim();
-          if (!code) return;
-          var existsIdx = list.findIndex(function (ex) {
-            var exCode = String((ex && (ex.order_code || ex.id)) || '').trim();
-            return exCode === code || (uo.id && String(ex && ex.id) === String(uo.id));
-          });
-          if (existsIdx === -1) {
-            list.push(uo);
+          if (!uo || typeof uo !== 'object') return;
+          var norm = normalizeOrderRecord(uo);
+          if (!norm) return;
+          var key = normalizeOrderKey(norm.order_code || norm.id);
+          if (!key) return;
+          if (!mergedMap[key]) {
+            mergedMap[key] = norm;
+            orderedKeys.push(key);
+          } else {
+            mergedMap[key] = mergeOrderRecords(mergedMap[key], norm, false);
           }
         }
+
+        seedList.forEach(mergeOrderRecord);
 
         // Quét đơn hàng thực tế từ vlu_orders_* và vlu_account_*.orders
         try {
@@ -1651,13 +1780,7 @@
           }
         } catch (scanErr) {}
 
-        // Chuẩn hóa ID đơn hàng và sắp xếp mới nhất lên đầu
-        list.forEach(function (o) {
-          if (o && o.order_code && String(o.id) !== String(o.order_code)) {
-            if (typeof o.id === 'number' && !o.db_id) o.db_id = o.id;
-            o.id = String(o.order_code);
-          }
-        });
+        var list = orderedKeys.map(function (key) { return mergedMap[key]; });
 
         list.sort(function (a, b) {
           var da = parseDateSafe(a && a.created_at);
@@ -1673,7 +1796,8 @@
 
     saveOrders: function (list, silent) {
       try {
-        localStorage.setItem(STORAGE_ORDERS, JSON.stringify(list));
+        var normalized = (Array.isArray(list) ? list : []).map(normalizeOrderRecord).filter(Boolean);
+        localStorage.setItem(STORAGE_ORDERS, JSON.stringify(normalized));
         localStorage.setItem('vlu_sync_timestamp', String(Date.now()));
         try {
           if (typeof BroadcastChannel !== 'undefined') {
@@ -1692,9 +1816,16 @@
 
     syncAccountOrder: function (order, remove, notifMeta) {
       if (!order) return;
-      var keys = this.getOrderIdentityKeys(order);
+      var normOrder = normalizeOrderRecord(order) || order;
+      var orderCode = formatOrderCode(normOrder.order_code || normOrder.id);
+      var orderKey = normalizeOrderKey(orderCode);
+      if (!orderKey) return;
+      normOrder.id = orderCode;
+      normOrder.order_code = orderCode;
+
+      var keys = this.getOrderIdentityKeys(normOrder);
       var self = this;
-      var nextNorm = this.normalizeOrderStatus(order.status);
+      var nextNorm = this.normalizeOrderStatus(normOrder.status);
       var statusLabel = this.getOrderStatusLabel(nextNorm);
 
       try {
@@ -1706,14 +1837,14 @@
           if (!Array.isArray(userOrders)) userOrders = [];
           if (remove) {
             userOrders = userOrders.filter(function (entry) {
-              return String(entry.id) !== String(order.id);
+              return !entry || normalizeOrderKey(entry.order_code || entry.id) !== orderKey;
             });
           } else {
             var uIdx = userOrders.findIndex(function (entry) {
-              return String(entry.id) === String(order.id);
+              return entry && normalizeOrderKey(entry.order_code || entry.id) === orderKey;
             });
-            if (uIdx === -1) userOrders.unshift(order);
-            else userOrders[uIdx] = order;
+            if (uIdx === -1) userOrders.unshift(normOrder);
+            else userOrders[uIdx] = normOrder;
           }
           localStorage.setItem(userOrdersKey, JSON.stringify(userOrders));
 
@@ -1722,29 +1853,29 @@
           if (!Array.isArray(account.orders)) account.orders = [];
           if (remove) {
             account.orders = account.orders.filter(function (entry) {
-              return String(entry.id) !== String(order.id);
+              return !entry || normalizeOrderKey(entry.order_code || entry.id) !== orderKey;
             });
           } else {
             var index = account.orders.findIndex(function (entry) {
-              return String(entry.id) === String(order.id);
+              return entry && normalizeOrderKey(entry.order_code || entry.id) === orderKey;
             });
             var previousStatus = index === -1 ? '' : self.normalizeOrderStatus(account.orders[index].status);
             var hadExplicitStatusChange = Boolean(notifMeta && notifMeta.forceNotify) || (previousStatus && previousStatus !== nextNorm);
-            if (index === -1) account.orders.unshift(order);
-            else account.orders[index] = order;
+            if (index === -1) account.orders.unshift(normOrder);
+            else account.orders[index] = normOrder;
 
             if (hadExplicitStatusChange) {
               if (!Array.isArray(account.notifications)) account.notifications = [];
-              var msg = 'Đơn ' + order.id + ' đã chuyển sang trạng thái "' + statusLabel + '".';
-              if (nextNorm === 'cancelled' && order.cancel_reason) {
-                msg += ' Lý do: ' + order.cancel_reason;
+              var msg = 'Đơn ' + orderCode + ' đã chuyển sang trạng thái "' + statusLabel + '".';
+              if (nextNorm === 'cancelled' && normOrder.cancel_reason) {
+                msg += ' Lý do: ' + normOrder.cancel_reason;
               }
               account.notifications.unshift({
                 id: 'N-' + Date.now() + '-' + Math.floor(Math.random() * 1000),
-                orderId: String(order.id),
+                orderId: orderCode,
                 status: nextNorm,
                 type: ['shipping', 'handed_over'].indexOf(nextNorm) !== -1 ? 'shipping' : 'order',
-                title: 'Cập nhật trạng thái đơn hàng #' + order.id,
+                title: 'Cập nhật trạng thái đơn hàng ' + orderCode,
                 message: msg,
                 read: false,
                 createdAt: new Date().toISOString()
@@ -1764,14 +1895,22 @@
     tryUpdateOrderStatus: function (orderId, newStatus, options) {
       var opts = options || {};
       var list = this.getOrders();
+      var targetKey = normalizeOrderKey(orderId);
       var targetIdx = list.findIndex(function (o) {
-        return o && (String(o.id) === String(orderId) || String(o.order_code || '') === String(orderId));
+        return o && (
+          normalizeOrderKey(o.order_code || o.id) === targetKey ||
+          (o.db_id && String(o.db_id) === String(orderId))
+        );
       });
       if (targetIdx === -1) {
-        return { ok: false, error: 'ORDER_NOT_FOUND', message: 'Không tìm thấy đơn hàng #' + orderId + '.' };
+        return { ok: false, error: 'ORDER_NOT_FOUND', message: 'Không tìm thấy đơn hàng ' + formatOrderCode(orderId) + '.' };
       }
 
-      var order = list[targetIdx];
+      var order = normalizeOrderRecord(list[targetIdx]);
+      var canonicalCode = formatOrderCode(order.order_code || order.id);
+      order.id = canonicalCode;
+      order.order_code = canonicalCode;
+
       var prevNorm = this.normalizeOrderStatus(order.status);
       var nextNorm = this.normalizeOrderStatus(newStatus);
 
@@ -1834,10 +1973,10 @@
       this.syncAccountOrder(order, false, { forceNotify: true });
       this.logActivity(
         'order_status',
-        'Cập nhật đơn ' + order.id + ' → ' + this.getOrderStatusLabel(nextNorm),
+        'Cập nhật đơn ' + canonicalCode + ' → ' + this.getOrderStatusLabel(nextNorm),
         this.getOrderStatusLabel(prevNorm) + ' → ' + this.getOrderStatusLabel(nextNorm) + (cancelReason ? (' · Lý do: ' + cancelReason) : ''),
         'orders',
-        order.id
+        canonicalCode
       );
 
       if (typeof fetch === 'function') {
@@ -1846,11 +1985,14 @@
           headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
           body: JSON.stringify({
             action: 'update_status',
-            order_id: order.id,
+            order_id: canonicalCode,
+            order_code: canonicalCode,
+            db_id: order.db_id || undefined,
             status: nextNorm,
             payment_status: this.resolveOrderPaymentStatus(order),
             cancel_reason: order.cancel_reason || '',
             status_history: order.status_history,
+            updated_at: order.updated_at,
             actor: actorName,
             note: opts.note || ''
           })
@@ -1872,11 +2014,13 @@
         return { ok: false, message: 'Trạng thái thanh toán không hợp lệ.' };
       }
       var list = this.getOrders();
+      var targetKey = normalizeOrderKey(orderId);
       var idx = list.findIndex(function (o) {
-        return o && (String(o.id) === String(orderId) || String(o.order_code || '') === String(orderId));
+        return o && normalizeOrderKey(o.order_code || o.id) === targetKey;
       });
       if (idx === -1) return { ok: false, message: 'Không tìm thấy đơn hàng.' };
-      var order = list[idx];
+      var order = normalizeOrderRecord(list[idx]);
+      var canonicalCode = formatOrderCode(order.order_code || order.id);
       var prevPay = this.resolveOrderPaymentStatus(order);
       order.payment_status = nextPay;
       order.updated_at = new Date().toISOString();
@@ -1885,10 +2029,10 @@
       this.syncAccountOrder(order, false, { forceNotify: false });
       this.logActivity(
         'order_payment',
-        'Cập nhật thanh toán ' + order.id,
+        'Cập nhật thanh toán ' + canonicalCode,
         this.getOrderPaymentStatusLabel(prevPay) + ' → ' + this.getOrderPaymentStatusLabel(nextPay),
         'orders',
-        order.id
+        canonicalCode
       );
       if (typeof fetch === 'function') {
         fetch('backend/api/orders.php', {
@@ -1896,7 +2040,9 @@
           headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
           body: JSON.stringify({
             action: 'update_order_meta',
-            order_id: order.id,
+            order_id: canonicalCode,
+            order_code: canonicalCode,
+            db_id: order.db_id || undefined,
             payment_status: nextPay
           })
         }).catch(function () {});
@@ -1910,8 +2056,9 @@
       if (text.length > 500) text = text.slice(0, 500);
 
       var list = this.getOrders();
+      var targetKey = normalizeOrderKey(orderId);
       var idx = list.findIndex(function (o) {
-        return o && (String(o.id) === String(orderId) || String(o.order_code || '') === String(orderId));
+        return o && normalizeOrderKey(o.order_code || o.id) === targetKey;
       });
       if (idx === -1) return { ok: false, message: 'Không tìm thấy đơn hàng.' };
 
@@ -1919,7 +2066,8 @@
       try { curActor = JSON.parse(localStorage.getItem('vlu_user') || 'null'); } catch (e) {}
       var actorName = (curActor && (curActor.fullname || curActor.username)) || 'Quản trị viên VLU';
 
-      var order = list[idx];
+      var order = normalizeOrderRecord(list[idx]);
+      var canonicalCode = formatOrderCode(order.order_code || order.id);
       var notes = Array.isArray(order.internal_notes) ? order.internal_notes.slice() : [];
       notes.unshift({
         id: 'NOTE-' + Date.now() + '-' + Math.floor(Math.random() * 100),
@@ -1933,7 +2081,7 @@
 
       this.saveOrders(list);
       this.syncAccountOrder(order, false, { forceNotify: false });
-      this.logActivity('order_note', 'Thêm ghi chú nội bộ đơn ' + order.id, text, 'orders', order.id);
+      this.logActivity('order_note', 'Thêm ghi chú nội bộ đơn ' + canonicalCode, text, 'orders', canonicalCode);
 
       if (typeof fetch === 'function') {
         fetch('backend/api/orders.php', {
@@ -1941,7 +2089,9 @@
           headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
           body: JSON.stringify({
             action: 'update_order_meta',
-            order_id: order.id,
+            order_id: canonicalCode,
+            order_code: canonicalCode,
+            db_id: order.db_id || undefined,
             internal_notes: notes
           })
         }).catch(function () {});
@@ -1988,20 +2138,22 @@
 
     deleteOrder: function (orderId) {
       var list = this.getOrders();
+      var targetKey = normalizeOrderKey(orderId);
       var removed = list.find(function (order) {
-        return order && (String(order.id) === String(orderId) || String(order.order_code || '') === String(orderId));
+        return order && normalizeOrderKey(order.order_code || order.id) === targetKey;
       });
       if (!removed) return false;
+      var canonicalCode = formatOrderCode(removed.order_code || removed.id);
       if (!this.canDeleteOrder(removed)) {
         this._lastOrderError = 'Không thể xóa cứng đơn hàng đã phát sinh giao dịch tài chính. Vui lòng sử dụng chức năng Hủy đơn.';
-        this.logActivity('order_delete_blocked', 'Chặn xóa cứng đơn ' + orderId, 'Bảo toàn chứng từ giao dịch tài chính', 'orders', orderId);
+        this.logActivity('order_delete_blocked', 'Chặn xóa cứng đơn ' + canonicalCode, 'Bảo toàn chứng từ giao dịch tài chính', 'orders', canonicalCode);
         return false;
       }
 
-      var filtered = list.filter(function (o) { return String(o.id) !== String(orderId) && String(o.order_code || '') !== String(orderId); });
+      var filtered = list.filter(function (o) { return !o || normalizeOrderKey(o.order_code || o.id) !== targetKey; });
       this.saveOrders(filtered);
       this.syncAccountOrder(removed, true);
-      this.logActivity('order_delete', 'Xóa đơn hàng nháp ' + orderId, 'Khách hàng: ' + (removed.customer_name || '--'), 'orders');
+      this.logActivity('order_delete', 'Xóa đơn hàng nháp ' + canonicalCode, 'Khách hàng: ' + (removed.customer_name || '--'), 'orders');
 
       // Xóa khỏi toàn bộ vlu_orders_* và vlu_account_*.orders đối với đơn nháp 0đ
       try {
@@ -2011,13 +2163,13 @@
           if (k.indexOf('vlu_orders_') === 0) {
             var uOrders = JSON.parse(localStorage.getItem(k) || '[]');
             if (Array.isArray(uOrders)) {
-              var nextU = uOrders.filter(function (o) { return o && String(o.id) !== String(orderId) && String(o.order_code || '') !== String(orderId); });
+              var nextU = uOrders.filter(function (o) { return o && normalizeOrderKey(o.order_code || o.id) !== targetKey; });
               if (nextU.length !== uOrders.length) localStorage.setItem(k, JSON.stringify(nextU));
             }
           } else if (k.indexOf('vlu_account_') === 0) {
             var acc = JSON.parse(localStorage.getItem(k) || '{}');
             if (acc && Array.isArray(acc.orders)) {
-              var nextA = acc.orders.filter(function (o) { return o && String(o.id) !== String(orderId) && String(o.order_code || '') !== String(orderId); });
+              var nextA = acc.orders.filter(function (o) { return o && normalizeOrderKey(o.order_code || o.id) !== targetKey; });
               if (nextA.length !== acc.orders.length) {
                 acc.orders = nextA;
                 localStorage.setItem(k, JSON.stringify(acc));
@@ -2031,7 +2183,7 @@
         fetch('backend/api/orders.php', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
-          body: JSON.stringify({ action: 'delete', order_id: orderId })
+          body: JSON.stringify({ action: 'delete', order_id: canonicalCode, order_code: canonicalCode })
         }).catch(function () {});
       }
       return true;
@@ -2349,8 +2501,8 @@
         if (!addrSeen[normAddr]) {
           addrSeen[normAddr] = true;
           addresses.push({
-            id: 'ORD-ADDR-' + o.id,
-            label: 'Từ đơn #' + o.id,
+            id: 'ORD-ADDR-' + formatOrderCode(o.order_code || o.id),
+            label: 'Từ đơn ' + formatOrderCode(o.order_code || o.id),
             recipient: o.customer_name || user.fullname,
             phone: o.customer_phone || user.phone || '',
             fullAddress: addrText,
@@ -3103,8 +3255,8 @@
           quantity: qty,
           colorKey: it.color || '',
           variantLabel: it.variant || it.storage || '',
-          reason: direction === 'inbound' ? ('Hoàn nhập kho do hủy đơn #' + order.id) : ('Xuất bán tự động cho đơn #' + order.id),
-          orderId: order.id,
+          reason: direction === 'inbound' ? ('Hoàn nhập kho do hủy đơn ' + formatOrderCode(order.order_code || order.id)) : ('Xuất bán tự động cho đơn ' + formatOrderCode(order.order_code || order.id)),
+          orderId: formatOrderCode(order.order_code || order.id),
           allowPartial: true,
           silent: true
         });
@@ -3701,8 +3853,8 @@
         id: (type === 'return' ? 'R-' : (type === 'refund' ? 'RF-' : 'W-')) + Date.now(),
         type: type,
         typeLabel: typeLabel,
-        subject: String((data && data.subject) || (typeLabel + (linkedOrd ? (' #' + linkedOrd.id) : ''))).trim(),
-        orderId: linkedOrd ? String(linkedOrd.id) : orderId,
+        subject: String((data && data.subject) || (typeLabel + (linkedOrd ? (' ' + formatOrderCode(linkedOrd.order_code || linkedOrd.id)) : ''))).trim(),
+        orderId: linkedOrd ? formatOrderCode(linkedOrd.order_code || linkedOrd.id) : (orderId ? formatOrderCode(orderId) : ''),
         customerName: customerName,
         message: message,
         status: 'Đã tiếp nhận',
@@ -3844,12 +3996,14 @@
       orders.forEach(function (o) {
         var pts = Math.floor((Number(o.total) || 0) / 100000);
         if (pts > 0) {
+          var ordCode = formatOrderCode(o.order_code || o.id);
+          seen['order:' + ordCode] = true;
           seen['order:' + o.id] = true;
           entries.push({
-            id: 'ORD-PT-' + o.id,
-            source: 'order:' + o.id,
+            id: 'ORD-PT-' + ordCode,
+            source: 'order:' + ordCode,
             points: pts,
-            description: 'Tích điểm đơn hàng #' + o.id,
+            description: 'Tích điểm đơn hàng ' + ordCode,
             createdAt: o.created_at
           });
         }
@@ -4795,8 +4949,9 @@
       var ordersOk = false;
       var usersOk = false;
 
-      var pOrders = fetch('backend/api/orders.php?action=list&is_admin=1', {
+      var pOrders = fetch('backend/api/orders.php?action=list&is_admin=1&_t=' + Date.now(), {
         method: 'GET',
+        cache: 'no-store',
         headers: { 'Accept': 'application/json' }
       })
         .then(function (res) { return res.json(); })
@@ -4806,40 +4961,42 @@
           if (!data.orders.length) return;
           var localOrders = self.getOrders();
           var changed = false;
+          var syncedOrders = [];
           data.orders.forEach(function (sqlOrder) {
-            if (!sqlOrder || !sqlOrder.id) return;
-            var code = String(sqlOrder.order_code || sqlOrder.id);
+            var normSql = normalizeOrderRecord(sqlOrder);
+            if (!normSql) return;
+            var sqlKey = normalizeOrderKey(normSql.order_code || normSql.id);
             var idx = localOrders.findIndex(function (o) {
-              return o && (String(o.order_code || o.id) === code || String(o.id) === String(sqlOrder.id));
+              return o && normalizeOrderKey(o.order_code || o.id) === sqlKey;
             });
             if (idx === -1) {
-              localOrders.unshift(sqlOrder);
+              localOrders.unshift(normSql);
+              syncedOrders.push(normSql);
               changed = true;
             } else {
               var cur = localOrders[idx];
-              var hasUpdatedDiff = (sqlOrder.status && cur.status !== sqlOrder.status) ||
-                Number(cur.total) !== Number(sqlOrder.total) ||
-                (sqlOrder.payment_status && cur.payment_status !== sqlOrder.payment_status) ||
-                (sqlOrder.cancel_reason && cur.cancel_reason !== sqlOrder.cancel_reason) ||
-                ((!Array.isArray(cur.items) || !cur.items.length) && Array.isArray(sqlOrder.items) && sqlOrder.items.length) ||
-                ((!Array.isArray(cur.status_history) || !cur.status_history.length) && Array.isArray(sqlOrder.status_history) && sqlOrder.status_history.length) ||
-                ((!Array.isArray(cur.internal_notes) || !cur.internal_notes.length) && Array.isArray(sqlOrder.internal_notes) && sqlOrder.internal_notes.length);
-              if (hasUpdatedDiff) {
-                localOrders[idx] = Object.assign({}, sqlOrder, cur, {
-                  status: sqlOrder.updated_at && (!cur.updated_at || sqlOrder.updated_at > cur.updated_at) ? sqlOrder.status : (cur.status || sqlOrder.status),
-                  payment_status: sqlOrder.payment_status || cur.payment_status,
-                  cancel_reason: sqlOrder.cancel_reason || cur.cancel_reason,
-                  shipping_fee: sqlOrder.shipping_fee !== undefined ? sqlOrder.shipping_fee : cur.shipping_fee,
-                  status_history: (Array.isArray(cur.status_history) && cur.status_history.length >= (Array.isArray(sqlOrder.status_history) ? sqlOrder.status_history.length : 0)) ? cur.status_history : sqlOrder.status_history,
-                  internal_notes: (Array.isArray(cur.internal_notes) && cur.internal_notes.length >= (Array.isArray(sqlOrder.internal_notes) ? sqlOrder.internal_notes.length : 0)) ? cur.internal_notes : sqlOrder.internal_notes,
-                  items: (Array.isArray(cur.items) && cur.items.length) ? cur.items : sqlOrder.items
-                });
+              var merged = mergeOrderRecords(cur, normSql, true);
+              var hasDiff = merged.status !== normalizeOrderStatusHelper(cur.status) ||
+                merged.id !== cur.id ||
+                Number(merged.total) !== Number(cur.total) ||
+                String(merged.payment_status || '') !== String(cur.payment_status || '') ||
+                String(merged.cancel_reason || '') !== String(cur.cancel_reason || '') ||
+                String(merged.updated_at || '') !== String(cur.updated_at || '') ||
+                (Array.isArray(merged.items) ? merged.items.length : 0) !== (Array.isArray(cur.items) ? cur.items.length : 0) ||
+                (Array.isArray(merged.status_history) ? merged.status_history.length : 0) !== (Array.isArray(cur.status_history) ? cur.status_history.length : 0) ||
+                (Array.isArray(merged.internal_notes) ? merged.internal_notes.length : 0) !== (Array.isArray(cur.internal_notes) ? cur.internal_notes.length : 0);
+              if (hasDiff) {
+                localOrders[idx] = merged;
+                syncedOrders.push(merged);
                 changed = true;
               }
             }
           });
           if (changed) {
             self.saveOrders(localOrders, true);
+            syncedOrders.forEach(function (ord) {
+              self.syncAccountOrder(ord, false, { forceNotify: false });
+            });
             anyChanged = true;
           }
         })

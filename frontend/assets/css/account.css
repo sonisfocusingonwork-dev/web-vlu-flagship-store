@@ -553,7 +553,7 @@
 }
 
 .account-modal {
-  width: min(660px, 100%);
+  width: min(680px, 100%);
   max-height: min(88vh, 900px);
   overflow-y: auto;
   padding: clamp(18px, 4vw, 28px);
@@ -561,6 +561,10 @@
   border-radius: 24px;
   background: rgba(255, 255, 255, 0.96);
   box-shadow: 0 24px 80px rgba(15, 23, 42, 0.25);
+}
+
+.account-modal-order {
+  width: min(780px, 100%);
 }
 
 .account-modal-compact {
@@ -578,40 +582,147 @@
   background: white;
   color: #475569;
   font-size: 22px;
+  cursor: pointer;
+}
+
+.account-timeline-wrap {
+  width: 100%;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  padding: 6px 2px 8px;
+  scrollbar-width: thin;
+  scrollbar-color: #cbd5e1 transparent;
 }
 
 .account-timeline {
   display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
-  gap: 8px;
-  margin-top: 14px;
+  grid-template-columns: repeat(6, minmax(92px, 1fr));
+  gap: 0;
+  min-width: 552px;
+  margin: 12px 0 0;
+  padding: 0;
+  list-style: none;
 }
 
 .account-timeline-step {
-  display: grid;
-  justify-items: center;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
   gap: 8px;
+  padding: 0 4px;
   color: #94a3b8;
-  font-size: 10px;
-  font-weight: 800;
+  font-size: 11px;
+  font-weight: 700;
+  line-height: 1.35;
   text-align: center;
 }
 
+.account-timeline-step:not(:last-child)::after {
+  content: "";
+  position: absolute;
+  top: 13px;
+  left: 50%;
+  width: 100%;
+  height: 3px;
+  background: #e2e8f0;
+  z-index: 0;
+  transition: background-color 200ms ease;
+}
+
+.account-timeline-step.is-complete:not(:last-child)::after {
+  background: #059669;
+}
+
 .account-timeline-dot {
-  width: 14px;
-  height: 14px;
-  border: 3px solid #cbd5e1;
+  position: relative;
+  z-index: 1;
+  display: grid;
+  place-items: center;
+  width: 28px;
+  height: 28px;
+  flex: 0 0 auto;
+  border: 2.5px solid #cbd5e1;
   border-radius: 50%;
-  background: white;
+  background: #ffffff;
+  color: #ffffff;
+  font-size: 13px;
+  font-weight: 900;
+  line-height: 1;
+  transition: border-color 200ms ease, background-color 200ms ease, box-shadow 200ms ease;
+}
+
+.account-timeline-label {
+  display: block;
+  max-width: 108px;
+  word-break: break-word;
 }
 
 .account-timeline-step.is-complete {
   color: #047857;
+  font-weight: 800;
 }
 
 .account-timeline-step.is-complete .account-timeline-dot {
   border-color: #059669;
-  background: #d1fae5;
+  background: #059669;
+  color: #ffffff;
+  box-shadow: 0 3px 10px rgba(5, 150, 105, 0.24);
+}
+
+.account-timeline-step.is-active {
+  color: #0f172a;
+  font-weight: 900;
+}
+
+.account-timeline-step.is-active .account-timeline-dot {
+  border-color: #059669;
+  background: #ecfdf5;
+  box-shadow: 0 0 0 5px rgba(5, 150, 105, 0.2);
+}
+
+.account-timeline-dot-core {
+  display: block;
+  width: 11px;
+  height: 11px;
+  border-radius: 50%;
+  background: #059669;
+}
+
+.account-timeline-step.is-cancelled {
+  color: #cbd5e1;
+  opacity: 0.72;
+}
+
+.account-timeline-step.is-cancelled .account-timeline-dot {
+  border-color: #fecaca;
+  background: #fef2f2;
+}
+
+.account-timeline-step.is-cancelled-past:not(:last-child)::after {
+  background: #fca5a5;
+}
+
+.account-cancel-banner {
+  margin-top: 14px;
+  padding: 12px 14px;
+  border: 1px solid #fecaca;
+  border-radius: 14px;
+  background: #fef2f2;
+  color: #b91c1c;
+  font-size: 12px;
+  line-height: 1.5;
+}
+
+.account-cancel-banner strong {
+  display: block;
+  font-size: 12px;
+  font-weight: 900;
+}
+
+.account-cancel-banner p {
+  margin-top: 3px;
+  font-weight: 600;
 }
 
 .account-profile-layout {
@@ -1128,7 +1239,28 @@
   }
 
   .account-timeline {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
+    grid-template-columns: repeat(6, minmax(80px, 1fr));
+    min-width: 480px;
+  }
+
+  .account-timeline-step {
+    font-size: 10px;
+    padding: 0 2px;
+  }
+
+  .account-timeline-dot {
+    width: 24px;
+    height: 24px;
+    font-size: 11px;
+  }
+
+  .account-timeline-step:not(:last-child)::after {
+    top: 11px;
+  }
+
+  .account-timeline-dot-core {
+    width: 9px;
+    height: 9px;
   }
 
   .account-session-card {

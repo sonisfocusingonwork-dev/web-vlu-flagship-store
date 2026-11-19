@@ -12,7 +12,15 @@
     try {
       var raw = localStorage.getItem(AUTH_STORAGE_KEY);
       var user = raw ? JSON.parse(raw) : null;
-      return user && typeof user === 'object' ? user : null;
+      if (!user || typeof user !== 'object') return null;
+      if (user.isGuest === true) return null;
+      var idStr = String(user.id == null ? '' : user.id).trim().toLowerCase();
+      var uname = String(user.username || '').trim().toLowerCase();
+      var email = String(user.email || '').trim().toLowerCase();
+      if (idStr === 'guest' || uname === 'guest' || email === 'guest@vluflagship.vn') return null;
+      var numId = Number(user.id);
+      if (!Number.isFinite(numId) || numId <= 0) return null;
+      return user;
     } catch (e) {
       return null;
     }
@@ -20,9 +28,8 @@
 
   function getCurrentUserId() {
     var user = getCurrentUser();
-    var identity = user && (user.username || user.email || user.id);
-    if (!identity) return 'guest';
-    return String(identity).trim().toLowerCase().replace(/[^a-z0-9._@-]+/g, '_') || 'guest';
+    if (!user) return 'guest';
+    return String(Number(user.id));
   }
 
   function getStorageKey(prefix) {

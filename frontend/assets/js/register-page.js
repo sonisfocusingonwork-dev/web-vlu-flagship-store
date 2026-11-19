@@ -25,6 +25,17 @@
   var confirmFeedback = document.getElementById('confirmFeedback');
   var registerErrorMsg = document.getElementById('registerErrorMsg');
 
+  // Truyền tiếp tham số ?next= sang link Đăng nhập nếu có
+  try {
+    var initNextParam = new URLSearchParams(window.location.search).get('next') || '';
+    if (initNextParam) {
+      var loginLink = document.querySelector('a[href^="login.html"]');
+      if (loginLink) {
+        loginLink.setAttribute('href', 'login.html?next=' + encodeURIComponent(initNextParam));
+      }
+    }
+  } catch (e) {}
+
   // Toggle Mật khẩu
   var togglePasswordBtn = document.getElementById('regTogglePasswordBtn');
   var toggleConfirmBtn = document.getElementById('regToggleConfirmBtn');
@@ -218,9 +229,17 @@
           if (window.VLU_CART && typeof window.VLU_CART.showToast === 'function') {
             window.VLU_CART.showToast(res.message);
           }
-          // Chuyển hướng sang trang chủ index.html sau 400ms
+          var loggedUser = res.user || (window.VLU_AUTH && window.VLU_AUTH.getUser ? window.VLU_AUTH.getUser() : null);
+          if (window.VLU_AUTH && typeof window.VLU_AUTH.mergeGuestCartToUser === 'function' && loggedUser) {
+            window.VLU_AUTH.mergeGuestCartToUser(loggedUser);
+          }
+          var nextParam = '';
+          try { nextParam = new URLSearchParams(window.location.search).get('next') || ''; } catch (err) {}
+          var targetUrl = (window.VLU_AUTH && typeof window.VLU_AUTH.getPostLoginUrl === 'function')
+            ? window.VLU_AUTH.getPostLoginUrl(loggedUser, nextParam)
+            : (nextParam || 'index.html');
           setTimeout(function () {
-            window.location.href = 'index.html';
+            window.location.href = targetUrl;
           }, 400);
         } else {
           if (btnRegisterSubmit) {
