@@ -111,9 +111,9 @@ vlu_ensure_json_defaults();
 if (!function_exists('vlu_ensure_column')) {
     function vlu_ensure_column(PDO $pdo, string $table, string $column, string $definition): void {
         try {
-            $stmt = $pdo->prepare("SHOW COLUMNS FROM `$table` LIKE :col");
-            $stmt->execute([':col' => $column]);
-            if (!$stmt->fetch()) {
+            $stmt = $pdo->prepare("SELECT COUNT(*) FROM information_schema.COLUMNS WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = :tbl AND COLUMN_NAME = :col");
+            $stmt->execute([':tbl' => $table, ':col' => $column]);
+            if (((int)$stmt->fetchColumn()) === 0) {
                 $pdo->exec("ALTER TABLE `$table` ADD COLUMN `$column` $definition");
             }
         } catch (Throwable $e) {
@@ -222,20 +222,23 @@ if (!function_exists('vlu_ensure_database_schema')) {
             ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci");
 
             // Đồng bộ các cột quan trọng của bảng orders
+            vlu_ensure_column($pdo, 'orders', 'user_identity', "VARCHAR(100) DEFAULT 'guest' AFTER `user_id`");
             vlu_ensure_column($pdo, 'orders', 'shipping_address', "TEXT DEFAULT NULL");
             vlu_ensure_column($pdo, 'orders', 'customer_address', "TEXT DEFAULT NULL");
             vlu_ensure_column($pdo, 'orders', 'delivery_method', "VARCHAR(50) DEFAULT 'home'");
             vlu_ensure_column($pdo, 'orders', 'shipping_method', "VARCHAR(50) DEFAULT 'home'");
             vlu_ensure_column($pdo, 'orders', 'installment_info', "TEXT DEFAULT NULL");
+            vlu_ensure_column($pdo, 'orders', 'installment_term', "INT(11) DEFAULT 0");
+            vlu_ensure_column($pdo, 'orders', 'installment_monthly', "DECIMAL(15,2) DEFAULT 0.00");
             vlu_ensure_column($pdo, 'orders', 'total_amount', "DECIMAL(15,2) NOT NULL DEFAULT 0.00");
             vlu_ensure_column($pdo, 'orders', 'total', "DECIMAL(15,2) NOT NULL DEFAULT 0.00");
             vlu_ensure_column($pdo, 'orders', 'store_location', "VARCHAR(255) DEFAULT NULL");
             vlu_ensure_column($pdo, 'orders', 'payment_key', "VARCHAR(50) DEFAULT 'cod'");
             vlu_ensure_column($pdo, 'orders', 'voucher_code', "VARCHAR(50) DEFAULT NULL");
-            vlu_ensure_column($pdo, 'orders', 'payment_status', "VARCHAR(30) DEFAULT 'pending'");
-            vlu_ensure_column($pdo, 'orders', 'cancel_reason', "TEXT DEFAULT NULL");
-            vlu_ensure_column($pdo, 'orders', 'status_history', "LONGTEXT DEFAULT NULL");
-            vlu_ensure_column($pdo, 'orders', 'internal_notes', "LONGTEXT DEFAULT NULL");
+            vlu_ensure_column($pdo, 'orders', 'payment_status', "VARCHAR(30) DEFAULT 'pending' AFTER `status`");
+            vlu_ensure_column($pdo, 'orders', 'cancel_reason', "TEXT DEFAULT NULL AFTER `payment_status`");
+            vlu_ensure_column($pdo, 'orders', 'status_history', "LONGTEXT DEFAULT NULL AFTER `cancel_reason`");
+            vlu_ensure_column($pdo, 'orders', 'internal_notes', "LONGTEXT DEFAULT NULL AFTER `status_history`");
             vlu_ensure_column($pdo, 'orders', 'updated_at', "TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP");
 
             // 4. Khởi tạo & đảm bảo bảng `order_details`
@@ -255,9 +258,11 @@ if (!function_exists('vlu_ensure_database_schema')) {
                 KEY `idx_order_details_order_id` (`order_id`)
             ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci");
 
+            vlu_ensure_column($pdo, 'order_details', 'order_code', "VARCHAR(50) DEFAULT NULL AFTER `order_id`");
             vlu_ensure_column($pdo, 'order_details', 'storage', "VARCHAR(100) DEFAULT 'Tiêu chuẩn'");
             vlu_ensure_column($pdo, 'order_details', 'variant', "VARCHAR(100) DEFAULT 'Tiêu chuẩn'");
             vlu_ensure_column($pdo, 'order_details', 'color', "VARCHAR(100) DEFAULT 'Mặc định'");
+            vlu_ensure_column($pdo, 'order_details', 'image', "VARCHAR(500) DEFAULT NULL");
 
             // 5. Tự động kiểm tra & cập nhật tài khoản Admin mặc định chuẩn (admin / admin123 / role = 1)
             $checkAdmin = $pdo->prepare("SELECT id, username, password, email, role FROM users WHERE LOWER(username) = 'admin' OR LOWER(email) = 'admin@vluflagship.vn' LIMIT 1");
